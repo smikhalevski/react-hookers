@@ -1,0 +1,50 @@
+{
+  "name": "@smikhalevski/react-hooks",
+  "version": "1.0.0",
+  "description": "The opinionated set of general-purpose React hooks.",
+  "main": "./lib/index-cjs.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "set -e; tsc; npm run rollup; npm run terser",
+    "rollup": "rollup --external react --input ./lib/index.js --file ./lib/index-cjs.js --format cjs --plugin @rollup/plugin-node-resolve",
+    "terser": "terser --compress --mangle toplevel --mangle-props keep_quoted --output ./lib/index-cjs.js -- ./lib/index-cjs.js",
+    "clean": "rm -rf ./lib",
+    "test": "jest --detectOpenHandles"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smikhalevski/react-hooks.git"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "render"
+  ],
+  "author": "Savva Mikhalevski <smikhalevski@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smikhalevski/react-hooks/issues"
+  },
+  "homepage": "https://github.com/smikhalevski/react-hooks#readme",
+  "jest": {
+    "preset": "ts-jest"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@types/jest": "^26.0.23",
+    "jest": "^27.0.2",
+    "react-hooks-testing-library": "^0.6.0",
+    "rollup": "^2.50.5",
+    "terser": "^5.7.0",
+    "ts-jest": "^27.0.2",
+    "typescript": "^4.3.2"
+  },
+  "peerDependencies": {
+    "react": ">=16.8"
+  }
+}
