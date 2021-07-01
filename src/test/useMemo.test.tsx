@@ -29,7 +29,7 @@ describe('useMemo', () => {
     expect(factoryMock).toHaveBeenCalledTimes(1);
 
     dep = 2;
-    hook.rerender()
+    hook.rerender();
 
     expect(factoryMock).toHaveBeenCalledTimes(2);
   });

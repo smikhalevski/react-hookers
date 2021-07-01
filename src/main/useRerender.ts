@@ -9,11 +9,10 @@ import React from 'react';
  *
  * Returned callback doesn't change between hook invocations.
  *
- * Using this hook makes you code imperative, which is a bad practice in most cases. It is recommended to use it only
- * with subscription-based updates that are initiated during render (may be required for SSR) and animations.
+ * Using this hook makes you code imperative, which is a bad practice in most cases.
  */
 export function useRerender(): (force?: boolean) => void {
-  const [, triggerRerender] = React.useReducer(xor, 0);
+  const [, triggerRerender] = React.useReducer(reducer, 0);
 
   const manager = React.useRef<ReturnType<typeof createManager>>().current ||= createManager(triggerRerender);
 
@@ -23,9 +22,13 @@ export function useRerender(): (force?: boolean) => void {
   return manager.rerender;
 }
 
-const xor = (x: number) => x ^ 1;
+const reducer: React.ReducerWithoutAction<number> = (prevState) => prevState ^ 1;
 
-const enum Phase {IDLE, DEFERRED, PREVENTED}
+const enum Phase {
+  IDLE,
+  DEFERRED,
+  PREVENTED,
+}
 
 function createManager(triggerRerender: () => void) {
 

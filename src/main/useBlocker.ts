@@ -9,7 +9,7 @@ export interface IBlocker<T> {
   readonly blocked: boolean;
 
   /**
-   * Returns promise that is resolved with the result passed to `unblock`. If blocker is already blocked then the same
+   * Returns promises that is resolved with the result passed to `unblock`. If blocker is already blocked then the same
    * promise is returned.
    */
   block(): Promise<T>;
@@ -33,26 +33,28 @@ function createBlocker<T>(rerender: () => void): IBlocker<T> {
   let promise: Promise<T> | undefined;
   let resolve: (result: T) => void;
 
-  return {
+  const block = () => {
+    if (!promise) {
+      promise = new Promise((nextResolve) => resolve = nextResolve);
+      rerender();
+    }
+    return promise;
+  };
 
-    get 'blocked'() {
+  const unblock = (result: T) => {
+    if (promise) {
+      resolve(result);
+      promise = undefined;
+      rerender();
+    }
+  };
+
+  return {
+    get blocked() {
       return promise != null;
     },
 
-    'block'() {
-      if (!promise) {
-        promise = new Promise((nextResolve) => resolve = nextResolve);
-        rerender();
-      }
-      return promise;
-    },
-
-    'unblock'(result) {
-      if (promise) {
-        resolve(result);
-        promise = undefined;
-        rerender();
-      }
-    },
+    block,
+    unblock,
   };
 }

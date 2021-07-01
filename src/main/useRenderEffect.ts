@@ -1,17 +1,18 @@
 import React from 'react';
 import {isEqualArrays} from './isEqualArrays';
 
-const EMPTY_DEPS: React.DependencyList = [];
+const NO_DEPS: React.DependencyList = [];
 
 /**
- * Analogue of `React.useEffect` that invokes `effect` synchronously during rendering if `deps` aren't defined or
- * doesn't equals deps provided during the previous render.
+ * Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or
+ * don't equal to deps provided during the previous render. This hook comes handy when you need to call an effect
+ * during SSR.
  */
 export function useRenderEffect(effect: React.EffectCallback, deps?: React.DependencyList): void {
   const manager = React.useRef<ReturnType<typeof createManager>>().current ||= createManager();
 
   manager.apply(effect, deps);
-  React.useEffect(manager.effect, EMPTY_DEPS);
+  React.useEffect(manager.effect, NO_DEPS);
 }
 
 function createManager() {
