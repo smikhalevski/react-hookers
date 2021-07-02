@@ -1,23 +1,58 @@
-export interface IExecutor<T> {
-
-  readonly disposed: boolean;
-  readonly pending: boolean;
-  readonly resolved: boolean;
-  readonly rejected: boolean;
-  readonly result: T | undefined;
-  readonly reason: any;
-  readonly promise: Promise<void> | undefined;
+export interface IExecution<T> {
 
   /**
-   * Marks executor as pending and invokes a callback. If other execution was started before the result is fulfilled
-   * then the provided signal is aborted and the returned result is ignored. Callback is always called asynchronously.
+   * `true` if an execution is currently pending.
    */
-  execute(cb: (signal: AbortSignal) => Promise<T | undefined> | T | undefined): Promise<void>;
+  pending: boolean;
+
+  /**
+   * `true` if the last execution was resolved.
+   */
+  resolved: boolean;
+
+  /**
+   * `true` if the last execution was rejected.
+   */
+  rejected: boolean;
+
+  /**
+   * The result of the last execution or `undefined` if there was no execution yet or if the last execution was
+   * rejected.
+   */
+  result: T | undefined;
+
+  /**
+   * The reason why the last execution was rejected.
+   */
+  reason: any;
+
+  /**
+   * The promise of the currently pending execution or `undefined` if there's no pending execution.
+   */
+  promise: Promise<void> | undefined;
+}
+
+export interface IExecutor<T> extends Readonly<IExecution<T>> {
+
+  /**
+   * `true` if this executor was disposed and shouldn't be used.
+   */
+  readonly disposed: boolean;
+
+  /**
+   * Instantly aborts pending execution (if any), marks executor as pending and invokes the callback.
+   *
+   * If other execution was started before the promise returned by the callback is fulfilled then the signal is aborted
+   * and the returned result is ignored.
+   *
+   * The returned promise is never rejected.
+   */
+  execute(cb: ExecutorCallback<T>): Promise<void>;
 
   /**
    * Instantly aborts pending execution and prevents any further executions.
    */
-  dispose(): void;
+  dispose(): this;
 
   /**
    * Clears available results and doesn't affect the pending execution.
@@ -41,18 +76,25 @@ export interface IExecutor<T> {
   reject(reason: any): this;
 }
 
-export function createExecutor<T>(listener: () => void, initialResult?: T): IExecutor<T> {
+export type ExecutorCallback<T> = (signal: AbortSignal) => Promise<T | undefined> | T | undefined;
+
+/**
+ * Creates a new {@link IExecutor}.
+ *
+ * @param listener The callback that is triggered when the executor state was changed.
+ */
+export function createExecutor<T>(listener: () => void): IExecutor<T> {
 
   let disposed = false;
   let pending = false;
-  let resolved = initialResult !== undefined;
+  let resolved = false;
   let rejected = false;
-  let result = initialResult;
+  let result: T | undefined;
   let reason: any;
   let promise: Promise<void> | undefined;
   let abortController: AbortController | undefined;
 
-  const execute = (cb: (signal: AbortSignal) => Promise<T | undefined> | T | undefined): Promise<void> => {
+  const execute = (cb: ExecutorCallback<T>): Promise<void> => {
 
     if (disposed) {
       return Promise.resolve();
@@ -61,31 +103,49 @@ export function createExecutor<T>(listener: () => void, initialResult?: T): IExe
     abortController?.abort();
     abortController = new AbortController();
 
+    let result;
+    try {
+      result = cb(abortController.signal);
+    } catch (error) {
+      reject(error);
+      return Promise.resolve();
+    }
+    if (!(result instanceof Promise)) {
+      resolve(result);
+      return Promise.resolve();
+    }
     if (!pending) {
       pending = true;
       listener();
     }
-
-    const signal = abortController.signal;
-
-    return promise = Promise.resolve().then(() => cb(signal)).then(
+    const cbPromise = promise = Promise.resolve(result).then(
         (result) => {
-          if (signal === abortController?.signal) {
+          if (cbPromise === promise) {
             resolve(result);
           }
         },
         (reason) => {
-          if (signal === abortController?.signal) {
+          if (cbPromise === promise) {
             reject(reason);
           }
         },
     );
+    return cbPromise;
+  };
+
+  const forceAbort = () => {
+    pending = false;
+    abortController?.abort();
+    promise = abortController = undefined;
   };
 
   const dispose = () => {
-    clear();
-    abort();
-    disposed = true;
+    if (!disposed) {
+      disposed = true;
+      forceAbort();
+      listener();
+    }
+    return executor;
   };
 
   const clear = () => {
@@ -99,33 +159,32 @@ export function createExecutor<T>(listener: () => void, initialResult?: T): IExe
 
   const abort = () => {
     if (!disposed && pending) {
-      pending = false;
-      abortController?.abort();
-      abortController = undefined;
-      promise = undefined;
+      forceAbort();
       listener();
     }
     return executor;
   };
 
   const resolve = (value: T | undefined) => {
-    if (!disposed && (pending || result !== value)) {
+    if (!disposed && (pending || !Object.is(result, value))) {
+      forceAbort();
       resolved = true;
       rejected = false;
       result = value;
       reason = undefined;
-      return abort();
+      listener();
     }
     return executor;
   };
 
   const reject = (value: any) => {
-    if (!disposed && (pending || reason !== value)) {
+    if (!disposed && (pending || !Object.is(reason, value))) {
+      forceAbort();
       resolved = false;
       rejected = true;
       result = undefined;
       reason = value;
-      return abort();
+      listener();
     }
     return executor;
   };

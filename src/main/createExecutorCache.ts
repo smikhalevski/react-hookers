@@ -5,12 +5,15 @@ export interface IExecutorProvider {
   /**
    * Creates a new {@link IExecutor} instance.
    */
-  createExecutor<T>(listener: () => void, initialResult?: T): IExecutor<T>;
+  createExecutor<T>(listener: () => void): IExecutor<T>;
 
   /**
    * Disposes an executor.
    */
   disposeExecutor(executor: IExecutor<unknown>): void;
+}
+
+export interface IExecutorCache extends IExecutorProvider {
 
   /**
    * Aborts all pending executors.
@@ -30,14 +33,14 @@ export interface IExecutorProvider {
 }
 
 /**
- * Creates an executor cache that can be used during server rendering to await pending requests.
+ * Creates an executor cache that can be used to monitor and await pending executors.
  */
-export function createExecutorProvider(): IExecutorProvider {
+export function createExecutorCache(): IExecutorCache {
   const executors: Array<IExecutor<any>> = [];
   return {
 
-    createExecutor(listener, initialResult) {
-      const executor = createExecutor<any>(listener, initialResult);
+    createExecutor(listener) {
+      const executor = createExecutor<any>(listener);
       executors.push(executor);
       return executor;
     },
@@ -48,9 +51,7 @@ export function createExecutorProvider(): IExecutorProvider {
     },
 
     abortAll() {
-      for (let i = 0; i < executors.length; i++) {
-        executors[i].abort();
-      }
+      executors.forEach((executor) => executor.abort());
     },
 
     isPending() {

@@ -14,9 +14,9 @@ import React from 'react';
 export function useRerender(): (force?: boolean) => void {
   const [, triggerRerender] = React.useReducer(reducer, 0);
 
-  const manager = React.useRef<ReturnType<typeof createManager>>().current ||= createManager(triggerRerender);
+  const manager = React.useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(triggerRerender);
 
-  manager.prevent();
+  manager.preventRerender();
   React.useEffect(manager.effect);
 
   return manager.rerender;
@@ -24,40 +24,40 @@ export function useRerender(): (force?: boolean) => void {
 
 const reducer: React.ReducerWithoutAction<number> = (prevState) => prevState ^ 1;
 
-const enum Phase {
+const enum RerenderState {
   IDLE,
   DEFERRED,
   PREVENTED,
 }
 
-function createManager(triggerRerender: () => void) {
+function createRerenderManager(triggerRerender: () => void) {
 
-  let phase = Phase.IDLE;
+  let state = RerenderState.IDLE;
 
-  const prevent = (): void => {
-    if (phase === Phase.IDLE) {
-      phase = Phase.PREVENTED;
+  const preventRerender = (): void => {
+    if (state === RerenderState.IDLE) {
+      state = RerenderState.PREVENTED;
     }
   };
 
   const rerender = (force?: boolean): void => {
-    if (phase === Phase.IDLE) {
+    if (state === RerenderState.IDLE) {
       triggerRerender();
     } else if (force) {
-      phase = Phase.DEFERRED;
+      state = RerenderState.DEFERRED;
     }
   };
 
   const effect: React.EffectCallback = () => {
-    if (phase === Phase.DEFERRED) {
+    if (state === RerenderState.DEFERRED) {
       triggerRerender();
     }
-    phase = Phase.IDLE;
-    return prevent;
+    state = RerenderState.IDLE;
+    return preventRerender;
   };
 
   return {
-    prevent,
+    preventRerender,
     rerender,
     effect,
   };

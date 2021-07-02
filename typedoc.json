@@ -1,0 +1,5 @@
+{
+  "name": "react-hooks",
+  "includeVersion": true,
+  "out": "./docs"
+}

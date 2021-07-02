@@ -1,5 +1,5 @@
 import React from 'react';
-import {isEqualArrays} from './isEqualArrays';
+import {areHookInputsEqual} from './areHookInputsEqual';
 
 export function createMemoHook(callable: boolean): (factory: () => any, deps: React.DependencyList | undefined) => any {
 
@@ -7,7 +7,7 @@ export function createMemoHook(callable: boolean): (factory: () => any, deps: Re
   let value: any;
 
   return (factory, deps) => {
-    if (prevDeps != null && deps != null && isEqualArrays(prevDeps, deps)) {
+    if (areHookInputsEqual(deps, prevDeps)) {
       return value;
     }
     prevDeps = deps;

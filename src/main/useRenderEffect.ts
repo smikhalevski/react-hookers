@@ -1,5 +1,5 @@
 import React from 'react';
-import {isEqualArrays} from './isEqualArrays';
+import {areHookInputsEqual} from './areHookInputsEqual';
 
 const NO_DEPS: React.DependencyList = [];
 
@@ -9,19 +9,19 @@ const NO_DEPS: React.DependencyList = [];
  * during SSR.
  */
 export function useRenderEffect(effect: React.EffectCallback, deps?: React.DependencyList): void {
-  const manager = React.useRef<ReturnType<typeof createManager>>().current ||= createManager();
+  const manager = React.useRef<ReturnType<typeof createRenderEffectManager>>().current ||= createRenderEffectManager();
 
-  manager.apply(effect, deps);
+  manager.applyEffect(effect, deps);
   React.useEffect(manager.effect, NO_DEPS);
 }
 
-function createManager() {
+function createRenderEffectManager() {
 
   let prevDeps: React.DependencyList | undefined;
   let destructor: (() => void) | void;
 
-  const apply = (effect: React.EffectCallback, deps: React.DependencyList | undefined) => {
-    if (prevDeps != null && deps != null && isEqualArrays(prevDeps, deps)) {
+  const applyEffect = (effect: React.EffectCallback, deps: React.DependencyList | undefined) => {
+    if (areHookInputsEqual(deps, prevDeps)) {
       return;
     }
     prevDeps = deps;
@@ -36,7 +36,7 @@ function createManager() {
   const effect: React.EffectCallback = () => () => destructor?.();
 
   return {
-    apply,
+    applyEffect,
     effect,
   };
 }
