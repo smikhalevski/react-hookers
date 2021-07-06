@@ -13,7 +13,7 @@
     "build": "set -e; tsc; npm run rollup; npm run terser",
     "rollup": "rollup --external react --input ./lib/index.js --file ./lib/index-cjs.js --format cjs --plugin @rollup/plugin-node-resolve",
     "terser": "terser --compress --mangle toplevel --mangle-props keep_quoted --output ./lib/index-cjs.js -- ./lib/index-cjs.js",
-    "clean": "rm -rf ./lib",
+    "clean": "rm -rf ./lib ./docs",
     "test": "jest --detectOpenHandles",
     "docs": "typedoc ./src/main/index.ts",
     "publish-docs": "set -ex; [ -d ./docs ]; [[ ! $(git status --porcelain) ]]; branch=$(git rev-parse --abbrev-ref HEAD); sha=$(git rev-parse --short HEAD); t=$(mktemp -d); cp -R ./docs/ $t; git checkout ghpages; ls -A | grep -wv .git | xargs rm -rf; cp -R $t/ .; git add .; git commit -m \"Updated docs ($sha)\"; git push; git checkout $branch",
