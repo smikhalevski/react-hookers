@@ -3,19 +3,11 @@ import {act, renderHook} from '@testing-library/react-hooks';
 import {IExecutorProvider} from '../main/createExecutorCache';
 import {ExecutorProviderContext, useExecutor} from '../main/useExecutor';
 import AbortController from 'node-abort-controller';
-
-import * as useRerenderModule from '../main/useRerender';
-import {createExecutor} from '../main';
-
-const useRerenderSpy = jest.spyOn(useRerenderModule, 'useRerender');
+import {createExecutor} from '../main/createExecutor';
 
 global.AbortController = AbortController;
 
 describe('useExecutor', () => {
-
-  beforeEach(() => {
-    useRerenderSpy.mockClear();
-  });
 
   test('creates a blank executor', () => {
     const hook = renderHook(() => useExecutor());
@@ -67,7 +59,7 @@ describe('useExecutor', () => {
 
     await act(async () => await hook.result.current.promise);
 
-    expect(hookMock).toHaveBeenCalledTimes(2);
+    expect(hookMock).toHaveBeenCalledTimes(3); // last re-render is forced
     expect(hook.result.current.disposed).toBe(false);
     expect(hook.result.current.pending).toBe(false);
     expect(hook.result.current.resolved).toBe(true);
@@ -133,13 +125,10 @@ describe('useExecutor', () => {
       children,
     });
 
-    const listenerStub = () => undefined;
-    useRerenderSpy.mockReturnValueOnce(listenerStub);
-
     renderHook(() => useExecutor(), {wrapper: Context});
 
     expect(executorProvider.createExecutor).toHaveBeenCalledTimes(1);
-    expect(executorProvider.createExecutor).toHaveBeenNthCalledWith(1, listenerStub);
+    expect(executorProvider.createExecutor).toHaveBeenNthCalledWith(1, expect.any(Function));
   });
 
   test('uses provider to dispose an executor', async () => {

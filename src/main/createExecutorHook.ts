@@ -17,7 +17,7 @@ export function createExecutorHook(providerContext: React.Context<IExecutorProvi
   return (initialCb) => {
     const provider = React.useContext(providerContext);
     const rerender = useRerender();
-    const executor = useMemo(() => provider.createExecutor<any>(rerender), [provider]);
+    const executor = useMemo(() => provider.createExecutor<any>(() => rerender(true)), [provider]);
 
     useRenderEffect(() => {
       if (typeof initialCb === 'function') {
