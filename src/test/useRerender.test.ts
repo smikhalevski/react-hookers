@@ -1,5 +1,5 @@
-import React from 'react';
 import {act, renderHook} from '@testing-library/react-hooks';
+import { useEffect } from 'react';
 import {useRerender} from '../main/useRerender';
 
 describe('useRerender', () => {
@@ -51,7 +51,7 @@ describe('useRerender', () => {
     renderHook(() => {
       const rerender = useRerenderSpy();
 
-      React.useEffect(() => rerender(), []);
+      useEffect(() => rerender(), []);
     });
 
     expect(useRerenderSpy).toHaveBeenCalledTimes(2);

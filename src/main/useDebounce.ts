@@ -1,6 +1,6 @@
-import React from 'react';
+import {DependencyList, useEffect, useRef} from 'react';
 
-const NO_DEPS: React.DependencyList = [];
+const NO_DEPS: DependencyList = [];
 
 export type Debounce = <A extends Array<unknown>>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
 
@@ -8,9 +8,9 @@ export type Debounce = <A extends Array<unknown>>(cb: (...args: A) => void, dela
  * The replacement for `setTimeout` that is cancelled when component is unmounted.
  */
 export function useDebounce(): Readonly<[debounce: Debounce, cancel: () => void]> {
-  const manager = React.useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager();
+  const manager = useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager();
 
-  React.useEffect(manager.effect, NO_DEPS);
+  useEffect(manager.effect, NO_DEPS);
 
   return manager.result;
 }

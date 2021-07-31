@@ -1,9 +1,9 @@
-import React from 'react';
 import {act, renderHook} from '@testing-library/react-hooks';
 import {IExecutorProvider} from '../main/createExecutorCache';
 import {ExecutorProviderContext, useExecutor} from '../main/useExecutor';
 import AbortController from 'node-abort-controller';
 import {createExecutor} from '../main/createExecutor';
+import {createElement, FunctionComponent} from 'react';
 
 global.AbortController = AbortController;
 
@@ -120,7 +120,7 @@ describe('useExecutor', () => {
       disposeExecutor: () => undefined,
     };
 
-    const Context: React.FC = ({children}) => React.createElement(ExecutorProviderContext.Provider, {
+    const Context: FunctionComponent = ({children}) => createElement(ExecutorProviderContext.Provider, {
       value: executorProvider,
       children,
     });
@@ -137,7 +137,7 @@ describe('useExecutor', () => {
       disposeExecutor: jest.fn(),
     };
 
-    const Context: React.FC = ({children}) => React.createElement(ExecutorProviderContext.Provider, {
+    const Context: FunctionComponent = ({children}) => createElement(ExecutorProviderContext.Provider, {
       value: executorProvider,
       children,
     });

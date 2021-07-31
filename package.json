@@ -34,7 +34,14 @@
   },
   "homepage": "https://github.com/smikhalevski/react-hooks#readme",
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "ignoreCodes": [151001]
+        }
+      }
+    }
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.0",

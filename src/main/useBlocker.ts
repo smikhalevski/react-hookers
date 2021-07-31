@@ -1,4 +1,4 @@
-import React from 'react';
+import {useRef} from 'react';
 import {useRerender} from './useRerender';
 import {createBlocker, IBlocker} from './createBlocker';
 
@@ -36,5 +36,5 @@ import {createBlocker, IBlocker} from './createBlocker';
  */
 export function useBlocker<T = void>(): IBlocker<T> {
   const rerender = useRerender();
-  return React.useRef<IBlocker<T>>().current ||= createBlocker<T>(rerender);
+  return useRef<IBlocker<T>>().current ||= createBlocker<T>(rerender);
 }

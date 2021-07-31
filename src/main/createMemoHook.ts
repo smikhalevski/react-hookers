@@ -1,9 +1,9 @@
-import React from 'react';
+import {DependencyList} from 'react';
 import {areHookInputsEqual} from './areHookInputsEqual';
 
-export function createMemoHook(callable: boolean): (factory: () => any, deps: React.DependencyList | undefined) => any {
+export function createMemoHook(callable: boolean): (factory: () => any, deps: DependencyList | undefined) => any {
 
-  let prevDeps: React.DependencyList | undefined;
+  let prevDeps: DependencyList | undefined;
   let value: any;
 
   return (factory, deps) => {

@@ -1,9 +1,9 @@
-import React from 'react';
+import {createContext} from 'react';
 import {createExecutorCache, IExecutorProvider} from './createExecutorCache';
 import {IExecutor} from './createExecutor';
 import {createExecutorHook} from './createExecutorHook';
 
-export const ExecutorProviderContext = React.createContext<IExecutorProvider>(createExecutorCache());
+export const ExecutorProviderContext = createContext<IExecutorProvider>(createExecutorCache());
 
 /**
  * Creates a new {@link IExecutor}.

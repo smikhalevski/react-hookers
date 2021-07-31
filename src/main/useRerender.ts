@@ -1,4 +1,4 @@
-import React from 'react';
+import {EffectCallback, ReducerWithoutAction, useEffect, useReducer, useRef} from 'react';
 
 /**
  * Returns a callback that triggers a component re-render.
@@ -12,17 +12,17 @@ import React from 'react';
  * Using this hook makes you code imperative, which is a bad practice in most cases.
  */
 export function useRerender(): (force?: boolean) => void {
-  const [, triggerRerender] = React.useReducer(reducer, 0);
+  const [, triggerRerender] = useReducer(reducer, 0);
 
-  const manager = React.useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(triggerRerender);
+  const manager = useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(triggerRerender);
 
   manager.preventRerender();
-  React.useEffect(manager.effect);
+  useEffect(manager.effect);
 
   return manager.rerender;
 }
 
-const reducer: React.ReducerWithoutAction<number> = (prevState) => prevState ^ 1;
+const reducer: ReducerWithoutAction<number> = (prevState) => prevState ^ 1;
 
 const enum RerenderState {
   IDLE,
@@ -48,7 +48,7 @@ function createRerenderManager(triggerRerender: () => void) {
     }
   };
 
-  const effect: React.EffectCallback = () => {
+  const effect: EffectCallback = () => {
     if (state === RerenderState.DEFERRED) {
       triggerRerender();
     }
