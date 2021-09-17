@@ -1,8 +1,8 @@
-import React from 'react';
+import {Context, useContext} from 'react';
 import {IExecutorProvider} from './createExecutorCache';
 import {ExecutorCallback, IExecutor} from './createExecutor';
 import {useRerender} from './useRerender';
-import {useMemo} from './useMemo';
+import {useSemanticMemo} from './useSemanticMemo';
 import {useRenderEffect} from './useRenderEffect';
 
 /**
@@ -13,11 +13,12 @@ import {useRenderEffect} from './useRenderEffect';
  * @see {@link ExecutorProviderContext}
  * @see {@link useExecutor}
  */
-export function createExecutorHook(providerContext: React.Context<IExecutorProvider>): <T>(initialCb?: ExecutorCallback<T> | T) => IExecutor<T> {
+export function createExecutorHook(providerContext: Context<IExecutorProvider>): <T>(initialCb?: ExecutorCallback<T> | T) => IExecutor<T> {
   return (initialCb) => {
-    const provider = React.useContext(providerContext);
+
+    const provider = useContext(providerContext);
     const rerender = useRerender();
-    const executor = useMemo(() => provider.createExecutor<any>(rerender), [provider]);
+    const executor = useSemanticMemo(() => provider.createExecutor<any>(() => rerender(true)), [provider]);
 
     useRenderEffect(() => {
       if (typeof initialCb === 'function') {
