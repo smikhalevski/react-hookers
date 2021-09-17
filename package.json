@@ -1,6 +1,6 @@
 {
   "name": "@smikhalevski/react-hooks",
-  "version": "1.0.1-next.0",
+  "version": "2.0.0",
   "description": "The set of opinionated general-purpose React hooks.",
   "main": "./lib/index-cjs.js",
   "module": "./lib/index.js",
@@ -39,7 +39,9 @@
     "globals": {
       "ts-jest": {
         "diagnostics": {
-          "ignoreCodes": [151001]
+          "ignoreCodes": [
+            151001
+          ]
         }
       }
     }
