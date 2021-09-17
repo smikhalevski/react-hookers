@@ -1,5 +1,5 @@
 import {act, renderHook} from '@testing-library/react-hooks';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 import {useRerender} from '../main/useRerender';
 
 describe('useRerender', () => {

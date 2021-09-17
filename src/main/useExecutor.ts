@@ -8,12 +8,13 @@ export const ExecutorProviderContext = createContext<IExecutorProvider>(createEx
 /**
  * Creates a new {@link IExecutor}.
  *
- * ```ts
+ * ```tsx
  * const executor = useExecutor();
  *
  * const handleDelete = () => {
  *   executor.execute(async () => {
- *     // Do delete request here fetch(…)
+ *     // Do delete request here
+ *     // fetch(…)
  *   });
  * };
  *

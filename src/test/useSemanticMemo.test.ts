@@ -1,17 +1,17 @@
 import {renderHook} from '@testing-library/react-hooks';
-import {useMemo} from '../main/useMemo';
+import {useSemanticMemo} from '../main/useSemanticMemo';
 
-describe('useMemo', () => {
+describe('useSemanticMemo', () => {
 
   test('runs factory invocation result', () => {
-    const hook = renderHook(() => useMemo(() => 123, undefined));
+    const hook = renderHook(() => useSemanticMemo(() => 123, undefined));
 
     expect(hook.result.current).toBe(123);
   });
 
   test('runs factory only once', () => {
     const factoryMock = jest.fn();
-    const hook = renderHook(() => useMemo(factoryMock, []));
+    const hook = renderHook(() => useSemanticMemo(factoryMock, []));
 
     hook.rerender();
     hook.rerender();
@@ -23,7 +23,7 @@ describe('useMemo', () => {
   test('runs factory when deps are changed', () => {
     let dep = 1;
     const factoryMock = jest.fn();
-    const hook = renderHook(() => useMemo(factoryMock, [dep]));
+    const hook = renderHook(() => useSemanticMemo(factoryMock, [dep]));
 
     expect(factoryMock).toHaveBeenCalledTimes(1);
 

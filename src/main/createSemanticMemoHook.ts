@@ -1,7 +1,7 @@
 import {DependencyList} from 'react';
 import {areHookInputsEqual} from './areHookInputsEqual';
 
-export function createMemoHook(callable: boolean): (factory: () => any, deps: DependencyList | undefined) => any {
+export function createSemanticMemoHook(callable: boolean): (factory: () => any, deps: DependencyList | undefined) => any {
 
   let prevDeps: DependencyList | undefined;
   let value: any;

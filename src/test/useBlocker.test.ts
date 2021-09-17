@@ -1,4 +1,3 @@
-import React from 'react';
 import {act, renderHook} from '@testing-library/react-hooks';
 import {useBlocker} from '../main/useBlocker';
 

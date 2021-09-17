@@ -7,12 +7,12 @@ export type Debounce = <A extends Array<unknown>>(cb: (...args: A) => void, dela
 /**
  * The replacement for `setTimeout` that is cancelled when component is unmounted.
  */
-export function useDebounce(): Readonly<[debounce: Debounce, cancel: () => void]> {
+export function useDebounce(): readonly [debounce: Debounce, cancel: () => void] {
   const manager = useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager();
 
   useEffect(manager.effect, NO_DEPS);
 
-  return manager.result;
+  return manager.protocol;
 }
 
 function createDebounceManager() {
@@ -30,6 +30,6 @@ function createDebounceManager() {
 
   return {
     effect,
-    result: [debounce, cancel] as const,
+    protocol: [debounce, cancel] as const,
   };
 }

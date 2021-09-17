@@ -5,7 +5,7 @@ import {createBlocker, IBlocker} from './createBlocker';
 /**
  * Blocks UI from the async context. For example, open a popup from async context by locking and close it by unlocking.
  *
- * ```ts
+ * ```tsx
  * const blocker = useBlocker<boolean>();
  *
  * const handleDelete = async () => {

@@ -1,18 +1,18 @@
 import {renderHook} from '@testing-library/react-hooks';
-import {useCallback} from '../main/useCallback';
+import {useSemanticCallback} from '../main/useSemanticCallback';
 
-describe('useCallback', () => {
+describe('useSemanticCallback', () => {
 
   test('runs cb', () => {
     const cb = () => undefined;
-    const hook = renderHook(() => useCallback(cb, undefined));
+    const hook = renderHook(() => useSemanticCallback(cb, undefined));
 
     expect(hook.result.current).toBe(cb);
   });
 
   test('returns the same cb', () => {
     const cb = () => undefined;
-    const hook = renderHook(() => useCallback(cb, undefined));
+    const hook = renderHook(() => useSemanticCallback(cb, undefined));
 
     hook.rerender();
     expect(hook.result.current).toBe(cb);
@@ -33,7 +33,7 @@ describe('useCallback', () => {
     cbProvider.mockReturnValueOnce(cb2);
     cbProvider.mockReturnValueOnce(cb3);
 
-    const hook = renderHook(() => useCallback(cbProvider(), [dep]));
+    const hook = renderHook(() => useSemanticCallback(cbProvider(), [dep]));
 
     expect(hook.result.current).toBe(cb1);
 
