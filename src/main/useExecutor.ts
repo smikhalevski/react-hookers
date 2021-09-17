@@ -9,21 +9,26 @@ export const ExecutorProviderContext = createContext<IExecutorProvider>(createEx
  * Creates a new {@link IExecutor}.
  *
  * ```tsx
- * const executor = useExecutor();
+ * const DeleteButton: FC = () => {
  *
- * const handleDelete = () => {
- *   executor.execute(async () => {
- *     // Do delete request here
- *     // fetch(…)
- *   });
+ *   const executor = useExecutor();
+ *
+ *   const handleDelete = () => {
+ *     executor.execute(async () => {
+ *       // Do delete request here
+ *       // fetch(…)
+ *     });
+ *   };
+ *
+ *   return (
+ *       <button
+ *           onClick={handleDelete}
+ *           disabled={executor.pending}
+ *       >
+ *         {'Delete'}
+ *       </button>
+ *   );
  * };
- *
- * <button
- *   onClick={handleDelete}
- *   disabled={executor.pending}
- * >
- *   {'Delete'}
- * </button>
  * ```
  *
  * @see {@link ExecutorProviderContext}

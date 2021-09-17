@@ -6,32 +6,39 @@ import {createBlocker, IBlocker} from './createBlocker';
  * Blocks UI from the async context. For example, open a popup from async context by locking and close it by unlocking.
  *
  * ```tsx
- * const blocker = useBlocker<boolean>();
+ * const DeleteButton: FC = () => {
  *
- * const handleDelete = async () => {
- *   if (await blocker.block()) {
- *     // Proceed with deletion
- *   }
+ *   const blocker = useBlocker<boolean>();
+ *
+ *   const handleDelete = async () => {
+ *     if (await blocker.block()) {
+ *       // Proceed with deletion
+ *     }
+ *   };
+ *
+ *   return (
+ *       <>
+ *         <Popup opened={blocker.blocked}>
+ *           {'Are you sure?'}
+ *
+ *           <button onClick={() => blocker.unblock(false)}>
+ *             {'No, don\'t delete'}
+ *           </button>
+ *
+ *           <button onClick={() => blocker.unblock(true)}>
+ *             {'Yes, delete'}
+ *           </button>
+ *         </Popup>
+ *
+ *         <button
+ *             disabled={blocker.blocked}
+ *             onClick={handleDelete}
+ *         >
+ *           {'Delete'}
+ *         </button>
+ *       </>
+ *   );
  * };
- *
- * <Popup opened={blocker.blocked}>
- *   {'Are you sure?'}
- *
- *   <button onClick={() => blocker.unblock(false)}>
- *     {'No, don\'t delete'}
- *   </button>
- *
- *   <button onClick={() => blocker.unblock(true)}>
- *     {'Yes, delete'}
- *   </button>
- * </Popup>
- *
- * <button
- *   disabled={blocker.blocked}
- *   onClick={handleDelete}
- * >
- *   {'Delete'}
- * </button>
  * ```
  */
 export function useBlocker<T = void>(): IBlocker<T> {
