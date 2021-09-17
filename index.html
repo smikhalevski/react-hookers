@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>react-hooks - v1.0.0</title>
-	<meta name="description" content="Documentation for react-hooks - v1.0.0">
+	<title>react-hooks - v2.0.0</title>
+	<meta name="description" content="Documentation for react-hooks - v2.0.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 	<script async src="assets/js/search.js" id="search-script"></script>
@@ -23,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">react-hooks - v1.0.0</a>
+					<a href="index.html" class="title">react-hooks - v2.0.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -50,7 +50,7 @@
 	</div>
 	<div class="tsd-page-title">
 		<div class="container">
-			<h1>react-hooks - v1.0.0</h1>
+			<h1>react-hooks - v2.0.0</h1>
 		</div>
 	</div>
 </header>
@@ -58,11 +58,127 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#react-hooks" id="react-hooks" style="color: inherit; text-decoration: none;">
-					<h1>react-hooks</h1>
+				<a href="#react-hooks-" id="react-hooks-" style="color: inherit; text-decoration: none;">
+					<h1>react-hooks <a href="https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml"><img src="https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml/badge.svg?branch=master&event=push" alt="build"></a></h1>
 				</a>
 				<p>The set of opinionated general-purpose React hooks.</p>
-				<p><a href="https://smikhalevski.github.io/react-hooks/">API documentation is available here.</a></p>
+				<pre><code class="language-sh"><span style="color: #000000">npm install --save-prod @smikhalevski/react-hooks</span>
+</code></pre>
+				<p>⚠️ <a href="https://smikhalevski.github.io/react-hooks/">API documentation is available here.</a></p>
+				<a href="#useblocker" id="useblocker" style="color: inherit; text-decoration: none;">
+					<h3><code>useBlocker</code></h3>
+				</a>
+				<p>Blocks UI from the async context. For example, open a popup from async context by locking and close it by unlocking.</p>
+				<pre><code class="language-tsx"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">FC</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;react&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">useBlocker</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@smikhalevski/react-hooks&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">DeleteButton</span><span style="color: #000000">: </span><span style="color: #267F99">FC</span><span style="color: #000000"> = () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">blocker</span><span style="color: #000000"> = </span><span style="color: #795E26">useBlocker</span><span style="color: #000000">&lt;</span><span style="color: #267F99">boolean</span><span style="color: #000000">&gt;();</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">handleDelete</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">blocker</span><span style="color: #000000">.</span><span style="color: #795E26">block</span><span style="color: #000000">()) {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// Proceed with deletion</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">  };</span>
+
+<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> (</span>
+<span style="color: #000000">      </span><span style="color: #800000">&lt;&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;</span><span style="color: #267F99">Popup</span><span style="color: #000000"> </span><span style="color: #FF0000">opened</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">blocker</span><span style="color: #000000FF">.</span><span style="color: #001080">blocked</span><span style="color: #0000FF">}</span><span style="color: #800000">&gt;</span>
+<span style="color: #000000">          </span><span style="color: #0000FF">{</span><span style="color: #A31515">&#039;Are you sure?&#039;</span><span style="color: #0000FF">}</span>
+
+<span style="color: #000000">          </span><span style="color: #800000">&lt;button</span><span style="color: #000000"> </span><span style="color: #FF0000">onClick</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #000000FF">() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000FF"> </span><span style="color: #001080">blocker</span><span style="color: #000000FF">.</span><span style="color: #795E26">unblock</span><span style="color: #000000FF">(</span><span style="color: #0000FF">false</span><span style="color: #000000FF">)</span><span style="color: #0000FF">}</span><span style="color: #800000">&gt;</span>
+<span style="color: #000000">            </span><span style="color: #0000FF">{</span><span style="color: #A31515">&#039;No, don</span><span style="color: #EE0000">\&#039;</span><span style="color: #A31515">t delete&#039;</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">          </span><span style="color: #800000">&lt;/button&gt;</span>
+
+<span style="color: #000000">          </span><span style="color: #800000">&lt;button</span><span style="color: #000000"> </span><span style="color: #FF0000">onClick</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #000000FF">() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000FF"> </span><span style="color: #001080">blocker</span><span style="color: #000000FF">.</span><span style="color: #795E26">unblock</span><span style="color: #000000FF">(</span><span style="color: #0000FF">true</span><span style="color: #000000FF">)</span><span style="color: #0000FF">}</span><span style="color: #800000">&gt;</span>
+<span style="color: #000000">            </span><span style="color: #0000FF">{</span><span style="color: #A31515">&#039;Yes, delete&#039;</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">          </span><span style="color: #800000">&lt;/button&gt;</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;/</span><span style="color: #267F99">Popup</span><span style="color: #800000">&gt;</span>
+
+<span style="color: #000000">        </span><span style="color: #800000">&lt;button</span>
+<span style="color: #000000">            </span><span style="color: #FF0000">disabled</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">blocker</span><span style="color: #000000FF">.</span><span style="color: #001080">blocked</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">            </span><span style="color: #FF0000">onClick</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">handleDelete</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">        </span><span style="color: #800000">&gt;</span>
+<span style="color: #000000">          </span><span style="color: #0000FF">{</span><span style="color: #A31515">&#039;Delete&#039;</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">        </span><span style="color: #800000">&lt;/button&gt;</span>
+<span style="color: #000000">      </span><span style="color: #800000">&lt;/&gt;</span>
+<span style="color: #000000">  );</span>
+<span style="color: #000000">};</span>
+</code></pre>
+				<a href="#usedebounce" id="usedebounce" style="color: inherit; text-decoration: none;">
+					<h3><code>useDebounce</code></h3>
+				</a>
+				<p>The replacement for <code>setTimeout</code> that is cancelled when component is unmounted.</p>
+				<a href="#useexecution" id="useexecution" style="color: inherit; text-decoration: none;">
+					<h3><code>useExecution</code></h3>
+				</a>
+				<p>Executes a callback when dependencies are changed and returns
+				an <a href="https://smikhalevski.github.io/react-hooks/interfaces/iexecution.html"><code>IExecution</code></a>.</p>
+				<a href="#useexecutor" id="useexecutor" style="color: inherit; text-decoration: none;">
+					<h3><code>useExecutor</code></h3>
+				</a>
+				<p>Creates a new <a href="https://smikhalevski.github.io/react-hooks/interfaces/iexecutor.html"><code>IExecutor</code></a>.</p>
+				<pre><code class="language-tsx"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">FC</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;react&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">useExecutor</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@smikhalevski/react-hooks&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">DeleteButton</span><span style="color: #000000">: </span><span style="color: #267F99">FC</span><span style="color: #000000"> = () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">executor</span><span style="color: #000000"> = </span><span style="color: #795E26">useExecutor</span><span style="color: #000000">();</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">handleDelete</span><span style="color: #000000"> = () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">executor</span><span style="color: #000000">.</span><span style="color: #795E26">execute</span><span style="color: #000000">(</span><span style="color: #0000FF">async</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// Do delete request here</span>
+<span style="color: #000000">      </span><span style="color: #008000">// fetch(…)</span>
+<span style="color: #000000">    });</span>
+<span style="color: #000000">  };</span>
+
+<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> (</span>
+<span style="color: #000000">      </span><span style="color: #800000">&lt;button</span>
+<span style="color: #000000">          </span><span style="color: #FF0000">onClick</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">handleDelete</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">          </span><span style="color: #FF0000">disabled</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">executor</span><span style="color: #000000FF">.</span><span style="color: #001080">pending</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">      </span><span style="color: #800000">&gt;</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">{</span><span style="color: #A31515">&#039;Delete&#039;</span><span style="color: #0000FF">}</span>
+<span style="color: #000000">      </span><span style="color: #800000">&lt;/button&gt;</span>
+<span style="color: #000000">  );</span>
+<span style="color: #000000">};</span>
+</code></pre>
+				<a href="#usemountsignal" id="usemountsignal" style="color: inherit; text-decoration: none;">
+					<h3><code>useMountSignal</code></h3>
+				</a>
+				<p>Returns <code>AbortSignal</code> that is aborted when the component is unmounted.</p>
+				<a href="#userefcallback" id="userefcallback" style="color: inherit; text-decoration: none;">
+					<h3><code>useRefCallback</code></h3>
+				</a>
+				<p>Returns a ref object and a callback to update the value of this ref.</p>
+				<a href="#userendereffect" id="userendereffect" style="color: inherit; text-decoration: none;">
+					<h3><code>useRenderEffect</code></h3>
+				</a>
+				<p>Analogue of <code>React.useEffect</code> that invokes an <code>effect</code> synchronously during rendering if <code>deps</code> aren&#39;t defined or don&#39;t
+				equal to deps provided during the previous render. This hook comes handy when you need to call an effect during SSR.</p>
+				<a href="#usererender" id="usererender" style="color: inherit; text-decoration: none;">
+					<h3><code>useRerender</code></h3>
+				</a>
+				<p>Returns a callback that triggers a component re-render.</p>
+				<p>Re-render callback can be safely invoked at any time of the component life cycle. By default, if a component is being
+					rendered at the time of re-render callback invocation then re-render is ignored. If <code>force</code> is set to <code>true</code> then
+				re-render is deferred and triggered after current render completes.</p>
+				<p>Returned callback doesn&#39;t change between hook invocations.</p>
+				<p>Using this hook makes you code imperative, which is a bad practice in most cases.</p>
+				<a href="#usesemanticcallback" id="usesemanticcallback" style="color: inherit; text-decoration: none;">
+					<h3><code>useSemanticCallback</code></h3>
+				</a>
+				<p>A semantic guarantee drop-in replacement for <code>React.useCallback</code>. It guarantees that the callback won&#39;t be &quot;forgotten&quot;
+				until the hook is unmounted.</p>
+				<a href="#usesemanticmemo" id="usesemanticmemo" style="color: inherit; text-decoration: none;">
+					<h3><code>useSemanticMemo</code></h3>
+				</a>
+				<p>A semantic guarantee drop-in replacement for <code>React.useMemo</code>. It guarantees that the value produced by factory won&#39;t
+				be &quot;forgotten&quot; until the hook is unmounted.</p>
+				<a href="#usetoggle" id="usetoggle" style="color: inherit; text-decoration: none;">
+					<h3><code>useToggle</code></h3>
+				</a>
+				<p>Returns a boolean flag and functions to toggle its value.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -94,6 +210,9 @@
 						<a href="modules.html#debounce" class="tsd-kind-icon">Debounce</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#exactrefcallback" class="tsd-kind-icon">Exact<wbr>Ref<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#executorcallback" class="tsd-kind-icon">Executor<wbr>Callback</a>
 					</li>
 					<li class=" tsd-kind-variable">
@@ -112,13 +231,10 @@
 						<a href="modules.html#createexecutorhook" class="tsd-kind-icon">create<wbr>Executor<wbr>Hook</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="modules.html#creatememohook" class="tsd-kind-icon">create<wbr>Memo<wbr>Hook</a>
+						<a href="modules.html#createsemanticmemohook" class="tsd-kind-icon">create<wbr>Semantic<wbr>Memo<wbr>Hook</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="modules.html#useblocker" class="tsd-kind-icon">use<wbr>Blocker</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#usecallback" class="tsd-kind-icon">use<wbr>Callback</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#usedebounce" class="tsd-kind-icon">use<wbr>Debounce</a>
@@ -129,14 +245,23 @@
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="modules.html#useexecutor" class="tsd-kind-icon">use<wbr>Executor</a>
 					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#usemountsignal" class="tsd-kind-icon">use<wbr>Mount<wbr>Signal</a>
+					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#usememo" class="tsd-kind-icon">use<wbr>Memo</a>
+						<a href="modules.html#userefcallback" class="tsd-kind-icon">use<wbr>Ref<wbr>Callback</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#userendereffect" class="tsd-kind-icon">use<wbr>Render<wbr>Effect</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#usererender" class="tsd-kind-icon">use<wbr>Rerender</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#usesemanticcallback" class="tsd-kind-icon">use<wbr>Semantic<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#usesemanticmemo" class="tsd-kind-icon">use<wbr>Semantic<wbr>Memo</a>
 					</li>
 				</ul>
 			</nav>
