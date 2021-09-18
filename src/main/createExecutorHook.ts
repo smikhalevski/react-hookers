@@ -1,6 +1,6 @@
 import {Context, useContext} from 'react';
-import {IExecutorProvider} from './createExecutorCache';
-import {ExecutorCallback, IExecutor} from './createExecutor';
+import {IExecutorProvider} from './ExecutorCache';
+import {Executor, ExecutorCallback} from './Executor';
 import {useRerender} from './useRerender';
 import {useSemanticMemo} from './useSemanticMemo';
 import {useRenderEffect} from './useRenderEffect';
@@ -13,7 +13,7 @@ import {useRenderEffect} from './useRenderEffect';
  * @see {@link ExecutorProviderContext}
  * @see {@link useExecutor}
  */
-export function createExecutorHook(providerContext: Context<IExecutorProvider>): <T>(initialCb?: ExecutorCallback<T> | T) => IExecutor<T> {
+export function createExecutorHook(providerContext: Context<IExecutorProvider>): <T>(initialCb?: ExecutorCallback<T> | T) => Executor<T> {
   return (initialCb) => {
 
     const provider = useContext(providerContext);

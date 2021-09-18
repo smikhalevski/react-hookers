@@ -1,8 +1,8 @@
 import {act, renderHook} from '@testing-library/react-hooks';
-import {IExecutorProvider} from '../main/createExecutorCache';
+import {IExecutorProvider} from '../main/ExecutorCache';
 import {ExecutorProviderContext, useExecutor} from '../main/useExecutor';
 import AbortController from 'node-abort-controller';
-import {createExecutor} from '../main/createExecutor';
+import {Executor} from '../main/Executor';
 import {createElement, FunctionComponent} from 'react';
 
 global.AbortController = AbortController;
@@ -133,7 +133,7 @@ describe('useExecutor', () => {
 
   test('uses provider to dispose an executor', async () => {
     const executorProvider: IExecutorProvider = {
-      createExecutor: (listener) => createExecutor<any>(listener),
+      createExecutor: (listener) => new Executor<any>(listener),
       disposeExecutor: jest.fn(),
     };
 

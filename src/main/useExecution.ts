@@ -1,4 +1,4 @@
-import {ExecutorCallback, IExecution} from './createExecutor';
+import {ExecutorCallback, IExecution} from './Executor';
 import {DependencyList, useEffect} from 'react';
 import {useExecutor} from './useExecutor';
 
