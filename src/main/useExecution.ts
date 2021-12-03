@@ -10,9 +10,7 @@ const NO_DEPS: DependencyList = [];
 export function useExecution<T>(cb: ExecutorCallback<T>, deps?: DependencyList): IExecution<T> {
   const executor = useExecutor<T>();
 
-  useEffect(() => {
-    executor.execute(cb);
-  }, deps || NO_DEPS);
+  useEffect(() => void executor.execute(cb), deps || NO_DEPS);
 
   return executor;
 }

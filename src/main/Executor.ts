@@ -47,8 +47,8 @@ export class Executor<T> implements IExecution<T> {
   public reason: any;
   public promise: Promise<void> | undefined;
 
-  private readonly listener;
-  private abortController: AbortController | undefined;
+  private _listener;
+  private _abortController: AbortController | undefined;
 
   /**
    * Creates a new {@link Executor}.
@@ -56,7 +56,7 @@ export class Executor<T> implements IExecution<T> {
    * @param listener The callback that is triggered when the executor state was changed.
    */
   public constructor(listener: () => void) {
-    this.listener = listener;
+    this._listener = listener;
   }
 
   /**
@@ -73,12 +73,12 @@ export class Executor<T> implements IExecution<T> {
       return Promise.resolve();
     }
 
-    this.abortController?.abort();
-    this.abortController = new AbortController();
+    this._abortController?.abort();
+    this._abortController = new AbortController();
 
     let result;
     try {
-      result = cb(this.abortController.signal);
+      result = cb(this._abortController.signal);
     } catch (error) {
       this.reject(error);
       return Promise.resolve();
@@ -89,7 +89,7 @@ export class Executor<T> implements IExecution<T> {
     }
     if (!this.pending) {
       this.pending = true;
-      this.listener();
+      this._listener();
     }
     const cbPromise = this.promise = Promise.resolve(result).then(
         (result) => {
@@ -106,20 +106,14 @@ export class Executor<T> implements IExecution<T> {
     return cbPromise;
   }
 
-  private forceAbort() {
-    this.pending = false;
-    this.abortController?.abort();
-    this.promise = this.abortController = undefined;
-  };
-
   /**
    * Instantly aborts pending execution and prevents any further executions.
    */
   public dispose(): this {
     if (!this.disposed) {
       this.disposed = true;
-      this.forceAbort();
-      this.listener();
+      this._forceAbort();
+      this._listener();
     }
     return this;
   }
@@ -131,7 +125,7 @@ export class Executor<T> implements IExecution<T> {
     if (!this.disposed && (this.resolved || this.rejected)) {
       this.resolved = this.rejected = false;
       this.result = this.reason = undefined;
-      this.listener();
+      this._listener();
     }
     return this;
   }
@@ -142,8 +136,8 @@ export class Executor<T> implements IExecution<T> {
    */
   public abort(): this {
     if (!this.disposed && this.pending) {
-      this.forceAbort();
-      this.listener();
+      this._forceAbort();
+      this._listener();
     }
     return this;
   }
@@ -153,12 +147,12 @@ export class Executor<T> implements IExecution<T> {
    */
   public resolve(result: T | undefined): this {
     if (!this.disposed && (this.pending || !Object.is(this.result, result))) {
-      this.forceAbort();
+      this._forceAbort();
       this.resolved = true;
       this.rejected = false;
       this.result = result;
       this.reason = undefined;
-      this.listener();
+      this._listener();
     }
     return this;
   }
@@ -168,13 +162,19 @@ export class Executor<T> implements IExecution<T> {
    */
   public reject(reason: any): this {
     if (!this.disposed && (this.pending || !Object.is(this.reason, reason))) {
-      this.forceAbort();
+      this._forceAbort();
       this.resolved = false;
       this.rejected = true;
       this.result = undefined;
       this.reason = reason;
-      this.listener();
+      this._listener();
     }
     return this;
+  }
+
+  private _forceAbort() {
+    this.pending = false;
+    this._abortController?.abort();
+    this.promise = this._abortController = undefined;
   }
 }

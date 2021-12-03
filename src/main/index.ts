@@ -1,4 +1,5 @@
-export * from './createBlocker';
+export * from './areHookInputsEqual';
+export * from './Blocker';
 export * from './createExecutorHook';
 export * from './createSemanticMemoHook';
 export * from './Executor';

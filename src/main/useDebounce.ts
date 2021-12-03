@@ -4,15 +4,17 @@ const NO_DEPS: DependencyList = [];
 
 export type Debounce = <A extends Array<unknown>>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
 
+export type DebounceProtocol = [debounce: Debounce, cancel: () => void];
+
 /**
  * The replacement for `setTimeout` that is cancelled when component is unmounted.
  */
-export function useDebounce(): readonly [debounce: Debounce, cancel: () => void] {
+export function useDebounce(): Readonly<DebounceProtocol>  {
   const manager = useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager();
 
-  useEffect(manager.effect, NO_DEPS);
+  useEffect(manager._effect, NO_DEPS);
 
-  return manager.protocol;
+  return manager._protocol;
 }
 
 function createDebounceManager() {
@@ -26,10 +28,10 @@ function createDebounceManager() {
 
   const cancel = () => clearTimeout(timeout);
 
-  const effect = () => cancel;
+  const _effect = () => cancel;
 
   return {
-    effect,
-    protocol: [debounce, cancel] as const,
+    _effect,
+    _protocol: [debounce, cancel] as const,
   };
 }

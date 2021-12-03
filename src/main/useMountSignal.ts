@@ -8,18 +8,18 @@ const NO_DEPS: DependencyList = [];
 export function useMountSignal(): AbortSignal {
   const manager = useRef<ReturnType<typeof createMountSignalManager>>().current ||= createMountSignalManager();
 
-  useEffect(manager.effect, NO_DEPS);
+  useEffect(manager._effect, NO_DEPS);
 
-  return manager.signal;
+  return manager._signal;
 }
 
 function createMountSignalManager() {
   const abortController = new AbortController();
 
-  const effect: EffectCallback = () => () => abortController.abort();
+  const _effect: EffectCallback = () => () => abortController.abort();
 
   return {
-    effect,
-    signal: abortController.signal,
+    _effect,
+    _signal: abortController.signal,
   };
 }

@@ -8,7 +8,7 @@ export type ToggleProtocol = [value: boolean, enable: () => void, disable: () =>
 export function useToggle(initialValue = false): Readonly<ToggleProtocol> {
   const [value, setValue] = useState(initialValue);
 
-  const protocol = useRef<ReturnType<typeof createToggleProtocol>>().current ||= createToggleProtocol(setValue);
+  const protocol = useRef<ToggleProtocol>().current ||= createToggleProtocol(setValue);
 
   protocol[0] = value;
 
