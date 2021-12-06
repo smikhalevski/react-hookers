@@ -1,6 +1,6 @@
 {
   "name": "@smikhalevski/react-hooks",
-  "version": "2.0.0",
+  "version": "3.0.0-next.0",
   "description": "The set of opinionated general-purpose React hooks.",
   "main": "./lib/index-cjs.js",
   "module": "./lib/index.js",
