@@ -1,4 +1,4 @@
-import {act, renderHook} from '@testing-library/react-hooks';
+import {act, renderHook} from '@testing-library/react-hooks/native';
 import {useBlocker} from '../main/useBlocker';
 
 describe('useBlocker', () => {

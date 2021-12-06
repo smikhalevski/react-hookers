@@ -1,4 +1,4 @@
-import {act, renderHook} from '@testing-library/react-hooks';
+import {act, renderHook} from '@testing-library/react-hooks/native';
 import {IExecutorProvider} from '../main/ExecutorCache';
 import {ExecutorProviderContext, useExecutor} from '../main/useExecutor';
 import AbortController from 'node-abort-controller';

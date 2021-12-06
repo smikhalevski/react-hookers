@@ -19,7 +19,7 @@ export function useDebounce(): Readonly<DebounceProtocol>  {
 
 function createDebounceManager() {
 
-  let timeout: number;
+  let timeout: ReturnType<typeof setTimeout>;
 
   const debounce: Debounce = (...args) => {
     cancel();

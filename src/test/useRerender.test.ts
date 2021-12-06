@@ -1,4 +1,4 @@
-import {act, renderHook} from '@testing-library/react-hooks';
+import {act, renderHook} from '@testing-library/react-hooks/native';
 import {useEffect} from 'react';
 import {useRerender} from '../main/useRerender';
 
