@@ -34,8 +34,9 @@ export class Blocker<T> {
    */
   public unblock(result: T): void {
     if (this._resolve) {
-      this._resolve(result);
+      const resolve = this._resolve;
       this._resolve = undefined;
+      resolve(result);
       this._listener();
     }
   }
