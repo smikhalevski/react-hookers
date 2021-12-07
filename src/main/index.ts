@@ -5,6 +5,7 @@ export * from './createSemanticMemoHook';
 export * from './Executor';
 export * from './ExecutorCache';
 export * from './useBlocker';
+export * from './useCheckpoint';
 export * from './useDebounce';
 export * from './useExecution';
 export * from './useExecutor';
