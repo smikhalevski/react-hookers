@@ -30,7 +30,7 @@ export const ExecutorProviderContext = createContext<IExecutorProvider>(new Exec
  * };
  * ```
  *
- * @see {@link ExecutorProviderContext}
- * @see {@link createExecutorHook}
+ * @see ExecutorProviderContext
+ * @see createExecutorHook
  */
 export const useExecutor = createExecutorHook(ExecutorProviderContext);

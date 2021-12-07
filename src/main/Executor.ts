@@ -34,7 +34,7 @@ export interface IExecution<T> {
 
 export type ExecutorCallback<T> = (signal: AbortSignal) => Promise<T | undefined> | T | undefined;
 
-export class Executor<T> implements IExecution<T> {
+export class Executor<T = unknown> implements IExecution<T> {
 
   /**
    * `true` if this executor was disposed and shouldn't be used.
