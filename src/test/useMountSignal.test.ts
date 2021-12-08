@@ -1,9 +1,5 @@
-import AbortController, {AbortSignal} from 'node-abort-controller';
 import {renderHook} from '@testing-library/react-hooks/native';
 import {useMountSignal} from '../main';
-
-global.AbortController = AbortController;
-global.AbortSignal = AbortSignal;
 
 describe('useMountSignal', () => {
 

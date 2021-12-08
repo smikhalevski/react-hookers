@@ -1,10 +1,6 @@
 import {Checkpoint} from '../main/Checkpoint';
 import {Executor} from '../main/Executor';
-import AbortController, {AbortSignal} from 'node-abort-controller';
 import * as sleep from 'sleep-promise';
-
-global.AbortController = AbortController;
-global.AbortSignal = AbortSignal;
 
 describe('Checkpoint', () => {
 

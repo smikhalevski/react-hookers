@@ -1,7 +1,4 @@
-import AbortController from 'node-abort-controller';
 import {Executor} from '../main/Executor';
-
-global.AbortController = AbortController;
 
 describe('createExecutor', () => {
 

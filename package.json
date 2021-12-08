@@ -36,6 +36,9 @@
   "homepage": "https://github.com/smikhalevski/react-hooks#readme",
   "jest": {
     "preset": "ts-jest",
+    "setupFiles": [
+      "./src/test/test-init.ts"
+    ],
     "globals": {
       "ts-jest": {
         "diagnostics": {

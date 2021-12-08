@@ -1,11 +1,8 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
 import {IExecutorProvider} from '../main/ExecutorCache';
 import {ExecutorProviderContext, useExecutor} from '../main/useExecutor';
-import AbortController from 'node-abort-controller';
 import {Executor} from '../main/Executor';
 import {createElement, FunctionComponent} from 'react';
-
-global.AbortController = AbortController;
 
 describe('useExecutor', () => {
 
