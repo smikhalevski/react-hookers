@@ -14,6 +14,11 @@ export type CheckpointCondition = (signal: AbortSignal) => unknown;
 
 export type CheckpointFallback = (replay: (force?: boolean) => void) => void;
 
+/**
+ * Allows to extract precondition logic from event handlers.
+ * @param condition
+ * @param fallback
+ */
 export function useCheckpoint(condition: CheckpointCondition, fallback?: CheckpointFallback): ICheckpoint {
   const manager = useRef<ReturnType<typeof createCheckpointManager>>().current ||= createCheckpointManager();
 

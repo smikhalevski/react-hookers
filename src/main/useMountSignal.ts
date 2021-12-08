@@ -1,6 +1,5 @@
-import {DependencyList, EffectCallback, useEffect, useRef} from 'react';
-
-const NO_DEPS: DependencyList = [];
+import {EffectCallback, useRef} from 'react';
+import {useEffectOnce} from './useEffectOnce';
 
 /**
  * Returns `AbortSignal` that is aborted when the component is unmounted.
@@ -8,7 +7,7 @@ const NO_DEPS: DependencyList = [];
 export function useMountSignal(): AbortSignal {
   const manager = useRef<ReturnType<typeof createMountSignalManager>>().current ||= createMountSignalManager();
 
-  useEffect(manager._effect, NO_DEPS);
+  useEffectOnce(manager._effect);
 
   return manager._signal;
 }
