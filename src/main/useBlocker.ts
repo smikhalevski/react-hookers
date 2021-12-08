@@ -1,6 +1,6 @@
 import {useRef} from 'react';
 import {useRerender} from './useRerender';
-import {createBlocker, IBlocker} from './createBlocker';
+import {Blocker} from './Blocker';
 
 /**
  * Blocks UI from the async context. For example, open a popup from async context by locking and close it by unlocking.
@@ -41,7 +41,7 @@ import {createBlocker, IBlocker} from './createBlocker';
  * };
  * ```
  */
-export function useBlocker<T = void>(): IBlocker<T> {
+export function useBlocker<T = void>(): Blocker<T> {
   const rerender = useRerender();
-  return useRef<IBlocker<T>>().current ||= createBlocker<T>(rerender);
+  return useRef<Blocker<T>>().current ||= new Blocker<T>(rerender);
 }

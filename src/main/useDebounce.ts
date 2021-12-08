@@ -1,23 +1,24 @@
-import {DependencyList, useEffect, useRef} from 'react';
+import {useRef} from 'react';
+import {useEffectOnce} from './useEffectOnce';
 
-const NO_DEPS: DependencyList = [];
+export type Debounce = <A extends unknown[]>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
 
-export type Debounce = <A extends Array<unknown>>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
+export type DebounceProtocol = [debounce: Debounce, cancel: () => void];
 
 /**
  * The replacement for `setTimeout` that is cancelled when component is unmounted.
  */
-export function useDebounce(): readonly [debounce: Debounce, cancel: () => void] {
+export function useDebounce(): Readonly<DebounceProtocol>  {
   const manager = useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager();
 
-  useEffect(manager.effect, NO_DEPS);
+  useEffectOnce(manager._effect);
 
-  return manager.protocol;
+  return manager._protocol;
 }
 
 function createDebounceManager() {
 
-  let timeout: number;
+  let timeout: ReturnType<typeof setTimeout>;
 
   const debounce: Debounce = (...args) => {
     cancel();
@@ -26,10 +27,10 @@ function createDebounceManager() {
 
   const cancel = () => clearTimeout(timeout);
 
-  const effect = () => cancel;
+  const _effect = () => cancel;
 
   return {
-    effect,
-    protocol: [debounce, cancel] as const,
+    _effect,
+    _protocol: [debounce, cancel] as const,
   };
 }

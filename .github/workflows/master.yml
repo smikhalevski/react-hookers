@@ -16,6 +16,6 @@ jobs:
           node-version: 14.x
           cache: npm
       - run: npm ci
-      - run: npm install react react-dom react-test-renderer
+      - run: npm install react
       - run: npm run build
       - run: npm test

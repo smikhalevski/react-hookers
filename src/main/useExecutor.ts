@@ -1,12 +1,11 @@
 import {createContext} from 'react';
-import {createExecutorCache, IExecutorProvider} from './createExecutorCache';
-import {IExecutor} from './createExecutor';
+import {ExecutorCache, IExecutorProvider} from './ExecutorCache';
 import {createExecutorHook} from './createExecutorHook';
 
-export const ExecutorProviderContext = createContext<IExecutorProvider>(createExecutorCache());
+export const ExecutorProviderContext = createContext<IExecutorProvider>(new ExecutorCache());
 
 /**
- * Creates a new {@link IExecutor}.
+ * Creates a new {@link Executor}.
  *
  * ```tsx
  * const DeleteButton: FC = () => {
@@ -31,7 +30,7 @@ export const ExecutorProviderContext = createContext<IExecutorProvider>(createEx
  * };
  * ```
  *
- * @see {@link ExecutorProviderContext}
- * @see {@link createExecutorHook}
+ * @see ExecutorProviderContext
+ * @see createExecutorHook
  */
 export const useExecutor = createExecutorHook(ExecutorProviderContext);

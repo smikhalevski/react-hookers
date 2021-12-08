@@ -1,4 +1,4 @@
-import {act, renderHook} from '@testing-library/react-hooks';
+import {act, renderHook} from '@testing-library/react-hooks/native';
 import {useEffect} from 'react';
 import {useRerender} from '../main/useRerender';
 
@@ -11,59 +11,59 @@ describe('useRerender', () => {
   });
 
   test('returns same function on every render', () => {
-    const useRerenderSpy = jest.fn(useRerender);
-    const hook = renderHook(() => useRerenderSpy());
+    const useRerenderMock = jest.fn(useRerender);
+    const hook = renderHook(() => useRerenderMock());
     const fn = hook.result.current;
 
     hook.rerender();
 
-    expect(useRerenderSpy).toHaveBeenCalledTimes(2);
+    expect(useRerenderMock).toHaveBeenCalledTimes(2);
     expect(hook.result.current).toBe(fn);
   });
 
   test('re-render component', () => {
-    const useRerenderSpy = jest.fn(useRerender);
-    const hook = renderHook(() => useRerenderSpy());
+    const useRerenderMock = jest.fn(useRerender);
+    const hook = renderHook(() => useRerenderMock());
 
-    expect(useRerenderSpy).toHaveBeenCalledTimes(1);
+    expect(useRerenderMock).toHaveBeenCalledTimes(1);
 
     act(() => hook.result.current());
     act(() => hook.result.current());
 
-    expect(useRerenderSpy).toHaveBeenCalledTimes(3);
+    expect(useRerenderMock).toHaveBeenCalledTimes(3);
   });
 
   test('does not re-render unmounted component', () => {
-    const useRerenderSpy = jest.fn(useRerender);
-    const hook = renderHook(() => useRerenderSpy());
+    const useRerenderMock = jest.fn(useRerender);
+    const hook = renderHook(() => useRerenderMock());
 
     hook.unmount();
 
     act(() => hook.result.current());
     act(() => hook.result.current());
 
-    expect(useRerenderSpy).toHaveBeenCalledTimes(1);
+    expect(useRerenderMock).toHaveBeenCalledTimes(1);
   });
 
   test('triggers re-render when called from an effect', () => {
-    const useRerenderSpy = jest.fn(useRerender);
+    const useRerenderMock = jest.fn(useRerender);
 
     renderHook(() => {
-      const rerender = useRerenderSpy();
+      const rerender = useRerenderMock();
 
       useEffect(() => rerender(), []);
     });
 
-    expect(useRerenderSpy).toHaveBeenCalledTimes(2);
+    expect(useRerenderMock).toHaveBeenCalledTimes(2);
   });
 
   test('does not re-render when called during render', () => {
-    const useRerenderSpy = jest.fn(useRerender);
+    const useRerenderMock = jest.fn(useRerender);
 
     let rerenderEnabled = true;
 
     renderHook(() => {
-      const rerender = useRerenderSpy();
+      const rerender = useRerenderMock();
 
       if (rerenderEnabled) {
         rerenderEnabled = false;
@@ -71,16 +71,16 @@ describe('useRerender', () => {
       }
     });
 
-    expect(useRerenderSpy).toHaveBeenCalledTimes(1);
+    expect(useRerenderMock).toHaveBeenCalledTimes(1);
   });
 
   test('defers re-render when called during render in forced mode', () => {
-    const useRerenderSpy = jest.fn(useRerender);
+    const useRerenderMock = jest.fn(useRerender);
 
     let rerenderEnabled = true;
 
     renderHook(() => {
-      const rerender = useRerenderSpy();
+      const rerender = useRerenderMock();
 
       if (rerenderEnabled) {
         rerenderEnabled = false;
@@ -88,6 +88,6 @@ describe('useRerender', () => {
       }
     });
 
-    expect(useRerenderSpy).toHaveBeenCalledTimes(2);
+    expect(useRerenderMock).toHaveBeenCalledTimes(2);
   });
 });

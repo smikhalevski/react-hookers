@@ -1,17 +1,15 @@
-import {act, renderHook} from '@testing-library/react-hooks';
-import {IExecutorProvider} from '../main/createExecutorCache';
+import {act, renderHook} from '@testing-library/react-hooks/native';
+import {IExecutorProvider} from '../main/ExecutorCache';
 import {ExecutorProviderContext, useExecutor} from '../main/useExecutor';
-import AbortController from 'node-abort-controller';
-import {createExecutor} from '../main/createExecutor';
+import {Executor} from '../main/Executor';
 import {createElement, FunctionComponent} from 'react';
-
-global.AbortController = AbortController;
 
 describe('useExecutor', () => {
 
-  test('creates a blank executor', () => {
+  test('creates a blank Executor instance', () => {
     const hook = renderHook(() => useExecutor());
 
+    expect(hook.result.current).toBeInstanceOf(Executor);
     expect(hook.result.current.disposed).toBe(false);
     expect(hook.result.current.pending).toBe(false);
     expect(hook.result.current.resolved).toBe(false);
@@ -133,7 +131,7 @@ describe('useExecutor', () => {
 
   test('uses provider to dispose an executor', async () => {
     const executorProvider: IExecutorProvider = {
-      createExecutor: (listener) => createExecutor<any>(listener),
+      createExecutor: (listener) => new Executor<any>(listener),
       disposeExecutor: jest.fn(),
     };
 

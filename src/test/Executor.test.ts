@@ -1,16 +1,13 @@
-import AbortController from 'node-abort-controller';
-import {createExecutor, IExecutor} from '../main/createExecutor';
-
-global.AbortController = AbortController;
+import {Executor} from '../main/Executor';
 
 describe('createExecutor', () => {
 
   let listenerMock: jest.Mock;
-  let executor: IExecutor<string | number>;
+  let executor: Executor<string | number>;
 
   beforeEach(() => {
     listenerMock = jest.fn();
-    executor = createExecutor(listenerMock);
+    executor = new Executor(listenerMock);
   });
 
   it('creates a blank executor', () => {

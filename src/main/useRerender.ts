@@ -16,10 +16,10 @@ export function useRerender(): (force?: boolean) => void {
 
   const manager = useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(triggerRerender);
 
-  manager.preventRerender();
-  useEffect(manager.effect);
+  manager._preventRerender();
+  useEffect(manager._effect);
 
-  return manager.rerender;
+  return manager._rerender;
 }
 
 const reducer: ReducerWithoutAction<number> = (prevState) => prevState ^ 1;
@@ -34,13 +34,13 @@ function createRerenderManager(triggerRerender: () => void) {
 
   let state = RerenderState.IDLE;
 
-  const preventRerender = (): void => {
+  const _preventRerender = (): void => {
     if (state === RerenderState.IDLE) {
       state = RerenderState.PREVENTED;
     }
   };
 
-  const rerender = (force?: boolean): void => {
+  const _rerender = (force?: boolean): void => {
     if (state === RerenderState.IDLE) {
       triggerRerender();
     } else if (force) {
@@ -48,17 +48,17 @@ function createRerenderManager(triggerRerender: () => void) {
     }
   };
 
-  const effect: EffectCallback = () => {
+  const _effect: EffectCallback = () => {
     if (state === RerenderState.DEFERRED) {
       triggerRerender();
     }
     state = RerenderState.IDLE;
-    return preventRerender;
+    return _preventRerender;
   };
 
   return {
-    preventRerender,
-    rerender,
-    effect,
+    _preventRerender,
+    _rerender,
+    _effect,
   };
 }
