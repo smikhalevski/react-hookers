@@ -1,5 +1,6 @@
 export * from './areHookInputsEqual';
 export * from './Blocker';
+export * from './Checkpoint';
 export * from './createExecutorHook';
 export * from './createSemanticMemoHook';
 export * from './Executor';

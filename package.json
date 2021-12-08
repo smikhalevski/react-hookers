@@ -55,6 +55,7 @@
     "node-abort-controller": "^2.0.0",
     "react-test-renderer": "^17.0.2",
     "rollup": "^2.50.5",
+    "sleep-promise": "^9.1.0",
     "terser": "^5.7.0",
     "ts-jest": "^27.0.2",
     "typedoc": "^0.21.2",
