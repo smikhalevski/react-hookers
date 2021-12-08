@@ -8,7 +8,7 @@ import {useRenderEffect} from './useRenderEffect';
 export type ExecutorHook = <T>(initialValue?: ExecutorCallback<T> | T) => Executor<T>;
 
 /**
- * Creates a hook that is bound to the given {@link ExecutorProviderContext}. The hook creates a new executor and
+ * Creates a hook that is bound to the given {@link IExecutorProvider} context. The hook creates a new executor and
  * subscribes the component to its updates. Pending execution is aborted when hook is unmounted. The provider is
  * suitable for awaiting pending async results during SSR.
  *

@@ -10,7 +10,7 @@ export interface IExecutorProvider {
   /**
    * Disposes an executor.
    */
-  disposeExecutor(executor: Executor<unknown>): void;
+  disposeExecutor(executor: Executor): void;
 }
 
 /**
@@ -18,7 +18,7 @@ export interface IExecutorProvider {
  */
 export class ExecutorCache implements IExecutorProvider {
 
-  public executors: Array<Executor<any>> = [];
+  public executors: Executor[] = [];
 
   public createExecutor<T>(listener: () => void): Executor<T> {
     const executor = new Executor<any>(listener);
@@ -26,7 +26,7 @@ export class ExecutorCache implements IExecutorProvider {
     return executor;
   }
 
-  public disposeExecutor(executor: Executor<unknown>): void {
+  public disposeExecutor(executor: Executor): void {
     executor.dispose();
     this.executors.splice(this.executors.indexOf(executor), 1);
   }

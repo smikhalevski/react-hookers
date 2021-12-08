@@ -1,7 +1,7 @@
 import {useRef} from 'react';
 import {useEffectOnce} from './useEffectOnce';
 
-export type Debounce = <A extends Array<unknown>>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
+export type Debounce = <A extends unknown[]>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
 
 export type DebounceProtocol = [debounce: Debounce, cancel: () => void];
 
