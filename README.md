@@ -12,6 +12,9 @@ npm install --save-prod @smikhalevski/react-hooks
 
 Allows extracting conditional logic from event handlers and callbacks.
 
+<details>
+<summary>Usage example</summary>
+
 ```tsx
 import {FC, MouseEvent} from 'react';
 import {useCheckpoint} from '@smikhalevski/react-hooks';
@@ -48,9 +51,14 @@ const DeleteButton: FC = () => {
 }
 ```
 
+</details>
+
 ### `useBlocker`
 
 Blocks UI from the async context. For example, open a popup from async context by locking and close it by unlocking.
+
+<details>
+<summary>Usage example</summary>
 
 ```tsx
 import {FC} from 'react';
@@ -91,6 +99,8 @@ const DeleteButton: FC = () => {
 };
 ```
 
+</details>
+
 ### `useDebounce`
 
 The replacement for `setTimeout` that is cancelled when component is unmounted.
@@ -103,6 +113,9 @@ an [`IExecution`](https://smikhalevski.github.io/react-hooks/interfaces/iexecuti
 ### `useExecutor`
 
 Creates a new [`IExecutor`](https://smikhalevski.github.io/react-hooks/interfaces/iexecutor.html).
+
+<details>
+<summary>Usage example</summary>
 
 ```tsx
 import {FC} from 'react';
@@ -128,6 +141,8 @@ const DeleteButton: FC = () => {
   );
 };
 ```
+
+</details>
 
 ### `useMountSignal`
 
