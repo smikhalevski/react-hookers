@@ -2,6 +2,10 @@ import {act, renderHook} from '@testing-library/react-hooks/native';
 import {useCheckpoint} from '../main/useCheckpoint';
 import {Checkpoint} from '../main/Checkpoint';
 import * as sleep from 'sleep-promise';
+import AbortController, {AbortSignal} from 'node-abort-controller';
+
+global.AbortController = AbortController;
+global.AbortSignal = AbortSignal;
 
 describe('useCheckpoint', () => {
 
