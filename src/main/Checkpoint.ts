@@ -22,14 +22,14 @@ export class Checkpoint {
   /**
    * `true` if a condition is currently being checked.
    */
-  get pending(): boolean {
+  public get pending(): boolean {
     return this.executor.pending;
   }
 
   /**
    * Aborts the pending condition check. If there's no pending condition then no-op.
    */
-  abort(): void {
+  public abort(): void {
     this.executor.abort();
   }
 
@@ -39,10 +39,11 @@ export class Checkpoint {
    *
    * @param cb The callback to guard.
    * @param captureArgs Receives arguments passed to `cb` and returns a persisted version of these arguments. This may
-   *     be required if arguments are transient, since the condition check, fallback and replay invocations are async.
+   *     be required if arguments are transient (for example React synthetic events), since the condition check,
+   *     fallback and replay invocations are async.
    * @returns The proxy callback with the same signature as `cb`.
    */
-  guard<A extends unknown[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void): (...args: A) => void {
+  public guard<A extends unknown[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void): (...args: A) => void {
     return (...args) => {
       const capturedArgs = captureArgs?.(...args) || args;
 

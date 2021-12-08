@@ -1,71 +1,20 @@
 import {useRef} from 'react';
 import {useExecutor} from './useExecutor';
-import {Executor} from './Executor';
-
-export interface ICheckpoint {
-  pending: boolean;
-
-  guard<A extends Array<unknown>>(cb: (...args: A) => void, captureArgs?: (...args: A) => A | void): (...args: A) => void;
-
-  abort(): void;
-}
-
-export type CheckpointCondition = (signal: AbortSignal) => unknown;
-
-export type CheckpointFallback = (replay: (force?: boolean) => void) => void;
+import {Checkpoint, CheckpointCondition, CheckpointFallback} from './Checkpoint';
 
 /**
- * Allows to extract precondition logic from event handlers.
- * @param condition
- * @param fallback
+ * Allows extracting conditional logic from event handlers and callbacks.
+ *
+ * @param condition The condition that should be met.
+ * @param fallback The callback that is invoked if condition wasn't met.
  */
-export function useCheckpoint(condition: CheckpointCondition, fallback?: CheckpointFallback): ICheckpoint {
-  const manager = useRef<ReturnType<typeof createCheckpointManager>>().current ||= createCheckpointManager();
+export function useCheckpoint(condition: CheckpointCondition, fallback?: CheckpointFallback): Checkpoint {
+  const executor = useExecutor();
+  const checkpoint = useRef<Checkpoint>().current ||= new Checkpoint(executor, condition, fallback);
 
-  manager._update(useExecutor(), condition, fallback);
+  checkpoint.executor = executor;
+  checkpoint.condition = condition;
+  checkpoint.fallback = fallback;
 
-  return manager._checkpoint;
-}
-
-export function createCheckpointManager() {
-
-  let executor: Executor;
-  let condition: CheckpointCondition;
-  let fallback: CheckpointFallback | undefined;
-
-  const guard: ICheckpoint['guard'] = (cb, captureArgs) => (...args) => {
-    const capturedArgs = captureArgs?.(...args) || args;
-
-    executor.execute((signal) => Promise.resolve(condition(signal)).then((ok) => {
-      if (signal.aborted) {
-        return;
-      }
-      if (ok) {
-        cb(...capturedArgs);
-      } else {
-        fallback?.(guard(() => cb(...capturedArgs)));
-      }
-    }));
-  };
-
-  const _checkpoint: ICheckpoint = {
-    pending: false,
-    guard,
-    abort: () => executor.abort(),
-  };
-
-  Object.defineProperty(_checkpoint, 'pending', {
-    get: () => executor.pending,
-  });
-
-  const _update = (nextExecutor: Executor, nextCondition: CheckpointCondition, nextFallback?: CheckpointFallback) => {
-    executor = nextExecutor;
-    condition = nextCondition;
-    fallback = nextFallback;
-  };
-
-  return {
-    _checkpoint,
-    _update,
-  };
+  return checkpoint;
 }

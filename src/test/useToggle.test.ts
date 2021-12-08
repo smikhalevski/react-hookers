@@ -15,13 +15,13 @@ describe('useToggle', () => {
   });
 
   test('returns the same accessor on every render', () => {
-    const useToggleSpy = jest.fn(useToggle);
-    const hook = renderHook(() => useToggleSpy());
+    const useToggleMock = jest.fn(useToggle);
+    const hook = renderHook(() => useToggleMock());
     const accessor = hook.result.current;
 
     hook.rerender();
 
-    expect(useToggleSpy).toHaveBeenCalledTimes(2);
+    expect(useToggleMock).toHaveBeenCalledTimes(2);
     expect(hook.result.current).toBe(accessor);
   });
 
@@ -38,46 +38,46 @@ describe('useToggle', () => {
   });
 
   test('re-renders when enabled', () => {
-    const useToggleSpy = jest.fn(useToggle);
-    const hook = renderHook(() => useToggleSpy());
+    const useToggleMock = jest.fn(useToggle);
+    const hook = renderHook(() => useToggleMock());
 
     act(() => hook.result.current[1]());
 
-    expect(useToggleSpy).toHaveBeenCalledTimes(2);
+    expect(useToggleMock).toHaveBeenCalledTimes(2);
     expect(hook.result.current[0]).toBe(true);
   });
 
   test('re-renders when disabled', () => {
-    const useToggleSpy = jest.fn(useToggle);
-    const hook = renderHook(() => useToggleSpy());
+    const useToggleMock = jest.fn(useToggle);
+    const hook = renderHook(() => useToggleMock());
 
     act(() => hook.result.current[1]());
     act(() => hook.result.current[2]());
 
-    expect(useToggleSpy).toHaveBeenCalledTimes(3);
+    expect(useToggleMock).toHaveBeenCalledTimes(3);
     expect(hook.result.current[0]).toBe(false);
   });
 
   test('re-renders when toggled', () => {
-    const useToggleSpy = jest.fn(useToggle);
-    const hook = renderHook(() => useToggleSpy());
+    const useToggleMock = jest.fn(useToggle);
+    const hook = renderHook(() => useToggleMock());
 
     act(() => hook.result.current[3]());
 
-    expect(useToggleSpy).toHaveBeenCalledTimes(2);
+    expect(useToggleMock).toHaveBeenCalledTimes(2);
     expect(hook.result.current[0]).toBe(true);
   });
 
   test('does not re-render if value is unchanged', async () => {
-    const useToggleSpy = jest.fn(useToggle);
-    const hook = renderHook(() => useToggleSpy());
+    const useToggleMock = jest.fn(useToggle);
+    const hook = renderHook(() => useToggleMock());
 
     act(() => hook.result.current[1]());
     act(() => hook.result.current[1]());
     act(() => hook.result.current[1]());
     act(() => hook.result.current[1]());
 
-    expect(useToggleSpy).toHaveBeenCalledTimes(3);
+    expect(useToggleMock).toHaveBeenCalledTimes(3);
     expect(hook.result.current[0]).toBe(true);
   });
 });

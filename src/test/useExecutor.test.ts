@@ -9,9 +9,10 @@ global.AbortController = AbortController;
 
 describe('useExecutor', () => {
 
-  test('creates a blank executor', () => {
+  test('creates a blank Executor instance', () => {
     const hook = renderHook(() => useExecutor());
 
+    expect(hook.result.current).toBeInstanceOf(Executor);
     expect(hook.result.current.disposed).toBe(false);
     expect(hook.result.current.pending).toBe(false);
     expect(hook.result.current.resolved).toBe(false);

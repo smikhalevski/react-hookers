@@ -8,6 +8,46 @@ npm install --save-prod @smikhalevski/react-hooks
 
 ⚠️ [API documentation is available here.](https://smikhalevski.github.io/react-hooks/)
 
+### `useCheckpoint`
+
+Allows extracting conditional logic from event handlers and callbacks.
+
+```tsx
+import {FC, MouseEvent} from 'react';
+import {useCheckpoint} from '@smikhalevski/react-hooks';
+
+// The delete button that requires user to be logged in.
+const DeleteButton: FC = () => {
+
+  // The event handler that must be called only if user is logged in.
+  const handleClick = (event: MouseEvent): void => {
+    // Proceed with deletion.
+  };
+
+  // The callback that checks that the user is logged in, can be async.
+  const isUserLoggedIn = (): void => {
+    return false;
+  };
+
+  // The checkpoint fallback logic that should be used if user tried to
+  // invoke a handler, but wasn't logged in.
+  const handleOpenLoginPopup = (replay: () => void): void => {
+    // Open a login popup here. After user was successfully logged in,
+    // you can replay user the action that caused the fallback.
+  };
+
+  const loginCheckpoint = useCheckpoint(isUserLoggedIn, handleOpenLoginPopup);
+
+  // After the button is clicked, the checkpoint ensures that user is
+  // logged in and then invokes the handler or the fallback. 
+  return (
+      <button onClick={loginCheckpoint.guard(handleClick, (event) => event.persist())}>
+        {'Delete'}
+      </button>
+  );
+}
+```
+
 ### `useBlocker`
 
 Blocks UI from the async context. For example, open a popup from async context by locking and close it by unlocking.
@@ -22,7 +62,7 @@ const DeleteButton: FC = () => {
 
   const handleDelete = async () => {
     if (await blocker.block()) {
-      // Proceed with deletion
+      // Proceed with deletion.
     }
   };
 
@@ -74,8 +114,7 @@ const DeleteButton: FC = () => {
 
   const handleDelete = () => {
     executor.execute(async () => {
-      // Do delete request here
-      // fetch(…)
+      // Execute deletion login here.
     });
   };
 

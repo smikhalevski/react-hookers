@@ -13,13 +13,13 @@ describe('useRefCallback', () => {
   });
 
   test('returns the same accessor on every render', () => {
-    const useRefCallbackSpy = jest.fn(useRefCallback);
-    const hook = renderHook(() => useRefCallbackSpy());
+    const useRefCallbackMock = jest.fn(useRefCallback);
+    const hook = renderHook(() => useRefCallbackMock());
     const accessor = hook.result.current;
 
     hook.rerender();
 
-    expect(useRefCallbackSpy).toHaveBeenCalledTimes(2);
+    expect(useRefCallbackMock).toHaveBeenCalledTimes(2);
     expect(hook.result.current).toBe(accessor);
   });
 
