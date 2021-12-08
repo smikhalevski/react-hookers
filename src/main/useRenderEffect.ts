@@ -3,8 +3,8 @@ import {areHookInputsEqual} from './areHookInputsEqual';
 import {useEffectOnce} from './useEffectOnce';
 
 /**
- * Analogue of `React.useEffect` that invokes an `_effect` synchronously during rendering if `deps` aren't defined or
- * don't equal to deps provided during the previous render. This hook comes handy when you need to call an _effect
+ * Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or
+ * don't equal to deps provided during the previous render. This hook comes handy when you need to call an effect
  * during SSR.
  */
 export function useRenderEffect(effect: EffectCallback, deps?: DependencyList): void {

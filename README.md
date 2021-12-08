@@ -100,8 +100,8 @@ Returns a ref object and a callback to update the value of this ref.
 
 ### `useRenderEffect`
 
-Analogue of `React.useEffect` that invokes an `_effect` synchronously during rendering if `deps` aren't defined or don't
-equal to deps provided during the previous render. This hook comes handy when you need to call an _effect during SSR.
+Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
+equal to deps provided during the previous render. This hook comes handy when you need to call an effect during SSR.
 
 ### `useRerender`
 
