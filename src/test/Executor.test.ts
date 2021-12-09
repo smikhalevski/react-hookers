@@ -1,6 +1,6 @@
 import {Executor} from '../main/Executor';
 
-describe('createExecutor', () => {
+describe('Executor', () => {
 
   let listenerMock: jest.Mock;
   let executor: Executor<string | number>;
