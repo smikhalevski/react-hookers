@@ -57,7 +57,7 @@ describe('useRerender', () => {
     expect(useRerenderMock).toHaveBeenCalledTimes(2);
   });
 
-  test('does not re-render when called during render', () => {
+  test('defers re-render when called during render', () => {
     const useRerenderMock = jest.fn(useRerender);
 
     let rerenderEnabled = true;
@@ -68,23 +68,6 @@ describe('useRerender', () => {
       if (rerenderEnabled) {
         rerenderEnabled = false;
         rerender();
-      }
-    });
-
-    expect(useRerenderMock).toHaveBeenCalledTimes(1);
-  });
-
-  test('defers re-render when called during render in forced mode', () => {
-    const useRerenderMock = jest.fn(useRerender);
-
-    let rerenderEnabled = true;
-
-    renderHook(() => {
-      const rerender = useRerenderMock();
-
-      if (rerenderEnabled) {
-        rerenderEnabled = false;
-        rerender(true);
       }
     });
 

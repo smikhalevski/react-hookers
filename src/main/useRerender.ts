@@ -1,17 +1,12 @@
 import {EffectCallback, ReducerWithoutAction, useEffect, useReducer, useRef} from 'react';
 
 /**
- * Returns a callback that triggers a component re-render.
+ * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
+ * component life cycle. Returned callback doesn't change between hook invocations.
  *
- * Re-render callback can be safely invoked at any time of the component life cycle. By default, if a component is
- * being rendered at the time of re-render callback invocation then re-render is ignored. If `force` is set to `true`
- * then re-render is deferred and triggered after current render completes.
- *
- * Returned callback doesn't change between hook invocations.
- *
- * Using this hook makes you code imperative, which is a bad practice in most cases.
+ * **Note:** Using this hook makes you code imperative, which is a bad practice in most cases.
  */
-export function useRerender(): (force?: boolean) => void {
+export function useRerender(): () => void {
   const [, triggerRerender] = useReducer(reducer, 0);
 
   const manager = useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(triggerRerender);
@@ -40,10 +35,10 @@ function createRerenderManager(triggerRerender: () => void) {
     }
   };
 
-  const _rerender = (force?: boolean): void => {
+  const _rerender = (): void => {
     if (state === RerenderState.IDLE) {
       triggerRerender();
-    } else if (force) {
+    } else {
       state = RerenderState.DEFERRED;
     }
   };

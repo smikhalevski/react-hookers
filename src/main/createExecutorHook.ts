@@ -20,7 +20,7 @@ export function createExecutorHook(providerContext: Context<IExecutorProvider>):
 
     const provider = useContext(providerContext);
     const rerender = useRerender();
-    const executor = useSemanticMemo(() => provider.createExecutor<any>(() => rerender(true)), [provider]);
+    const executor = useSemanticMemo(() => provider.createExecutor<any>(rerender), [provider]);
 
     useRenderEffect(() => {
       if (typeof initialValue === 'function') {
