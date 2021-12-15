@@ -15,8 +15,10 @@ The set of general-purpose React hooks.
 - [`useRenderEffect`](#userendereffect)
 - `useRenderEffectOnce`
 - [`useRerender`](#usererender)
+- `useRerenderInterval`
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
+- `useTime`
 - [`useToggle`](#usetoggle)
 
 ```sh
@@ -260,15 +262,10 @@ equal to deps provided during the previous render. This hook comes handy when yo
 
 ## `useRerender`
 
-Returns a callback that triggers a component re-render.
+Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
+component life cycle. Returned callback doesn't change between hook invocations.
 
-Re-render callback can be safely invoked at any time of the component life cycle. By default, if a component is being
-rendered at the time of re-render callback invocation then re-render is ignored. If `force` is set to `true` then
-re-render is deferred and triggered after current render completes.
-
-Returned callback doesn't change between hook invocations.
-
-Using this hook makes you code imperative, which is a bad practice in most cases.
+**Note:** Using this hook makes you code imperative, which is generally considered a bad practice.
 
 ## `useSemanticCallback`
 
