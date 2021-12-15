@@ -40,6 +40,10 @@ import {Blocker} from './Blocker';
  *   );
  * };
  * ```
+ *
+ * @see Blocker
+ * @see Lock
+ * @see useLock
  */
 export function useBlocker<T = void>(): Blocker<T> {
   const rerender = useRerender();

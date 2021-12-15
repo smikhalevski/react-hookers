@@ -3,7 +3,7 @@ import {useExecutor} from './useExecutor';
 import {Checkpoint, CheckpointCondition, CheckpointFallback} from './Checkpoint';
 
 /**
- * Allows extracting conditional logic from event handlers and callbacks.
+ * Allows extracting shared conditional logic from event handlers and callbacks.
  *
  * @param condition The condition that should be met.
  * @param fallback The callback that is invoked if condition wasn't met.
