@@ -15,6 +15,7 @@ export * from './useExecutor';
 export * from './useMountSignal';
 export * from './useRefCallback';
 export * from './useRenderEffect';
+export * from './useRenderEffectOnce';
 export * from './useRerender';
 export * from './useSemanticCallback';
 export * from './useSemanticMemo';

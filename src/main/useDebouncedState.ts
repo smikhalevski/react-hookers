@@ -1,12 +1,29 @@
 import {Dispatch, SetStateAction, useRef} from 'react';
 import {useEffectOnce} from './useEffectOnce';
-import {isFunction} from './isFunction';
+import {isFunction} from './utils';
 import {useRerender} from './useRerender';
 
 export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: Dispatch<SetStateAction<S>>];
 
+/**
+ * Returns a stateful values, and a function to update it. Upon invocation of `setState`, the `nextState` is assigned
+ * synchronously and component is re-rendered. After the `delay` the `currState` is set to `nextState` and component is
+ * re-rendered again.
+ *
+ * @param delay The delay after which `currState` is synchronized with `nextState`.
+ * @param initialState Thee initial state or a callback that returns an initial state.
+ * @template S The type of stateful value.
+ */
 export function useDebouncedState<S>(delay: number, initialState: S | (() => S)): Readonly<DebouncedStateProtocol<S>>;
 
+/**
+ * Returns a stateful values, and a function to update it. Upon invocation of `setState`, the `nextState` is assigned
+ * synchronously and component is re-rendered. After the `delay` the `currState` is set to `nextState` and component is
+ * re-rendered again.
+ *
+ * @param delay The delay after which `currState` is synchronized with `nextState`.
+ * @template S The type of stateful value.
+ */
 export function useDebouncedState<S = undefined>(delay: number): Readonly<DebouncedStateProtocol<S | undefined>>;
 
 export function useDebouncedState<S>(delay: number, initialState?: S | (() => S)) {
@@ -47,7 +64,7 @@ function createDebouncedStateManager<S>(delay: number, rerender: () => void, ini
 
   const protocol: DebouncedStateProtocol<S | undefined> = [currState, nextState, setState];
 
-  const _effect = () => clearTimeout(timeout);
+  const _effect = () => () => clearTimeout(timeout);
 
   return {
     _effect,

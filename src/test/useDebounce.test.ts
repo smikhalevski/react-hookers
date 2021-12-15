@@ -1,5 +1,6 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
 import {useDebounce} from '../main/useDebounce';
+import * as sleep from 'sleep-promise';
 
 describe('useDebounce', () => {
 
@@ -14,58 +15,62 @@ describe('useDebounce', () => {
     expect(cancel1).toEqual(cancel2);
   });
 
-  test('invokes the callback', (done) => {
+  test('invokes the callback', async () => {
     const cbMock = jest.fn();
     const hook = renderHook(() => useDebounce());
 
-    act(() => hook.result.current[0](cbMock, 50));
+    const [debounce] = hook.result.current;
 
-    setTimeout(() => {
-      expect(cbMock).toHaveBeenCalled();
-      done();
-    }, 100);
+    act(() => debounce(cbMock, 50));
+
+    await sleep(100);
+
+    expect(cbMock).toHaveBeenCalled();
   });
 
-  test('the consequent calls override the invoked callback', (done) => {
+  test('consequent calls override the invoked callback', async () => {
     const cbMock1 = jest.fn();
     const cbMock2 = jest.fn();
     const hook = renderHook(() => useDebounce());
 
-    act(() => hook.result.current[0](cbMock1, 50));
-    act(() => hook.result.current[0](cbMock2, 50));
+    const [debounce] = hook.result.current;
 
-    setTimeout(() => {
-      expect(cbMock1).not.toHaveBeenCalled();
-      expect(cbMock2).toHaveBeenCalled();
-      done();
-    }, 100);
+    act(() => debounce(cbMock1, 50));
+    act(() => debounce(cbMock2, 50));
+
+    await sleep(100);
+
+    expect(cbMock1).not.toHaveBeenCalled();
+    expect(cbMock2).toHaveBeenCalled();
   });
 
-  test('does not invoke the callback after unmount', (done) => {
+  test('does not invoke the callback after unmount', async () => {
     const cbMock = jest.fn();
     const hook = renderHook(() => useDebounce());
 
-    act(() => hook.result.current[0](cbMock, 50));
+    const [debounce] = hook.result.current;
+
+    act(() => debounce(cbMock, 50));
 
     hook.unmount();
 
-    setTimeout(() => {
-      expect(cbMock).not.toHaveBeenCalled();
-      done();
-    }, 100);
+    await sleep(100);
+
+    expect(cbMock).not.toHaveBeenCalled();
   });
 
-  test('the callback invocation is canceled', (done) => {
+  test('the callback invocation is canceled', async () => {
     const cbMock = jest.fn();
     const hook = renderHook(() => useDebounce());
 
-    act(() => hook.result.current[0](cbMock, 50));
+    const [debounce, cancel] = hook.result.current;
 
-    act(() => hook.result.current[1]());
+    act(() => debounce(cbMock, 50));
 
-    setTimeout(() => {
-      expect(cbMock).not.toHaveBeenCalled();
-      done();
-    }, 100);
+    act(() => cancel());
+
+    await sleep(100);
+
+    expect(cbMock).not.toHaveBeenCalled();
   });
 });

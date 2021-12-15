@@ -4,7 +4,7 @@ import {Executor, ExecutorCallback} from './Executor';
 import {useRerender} from './useRerender';
 import {useSemanticMemo} from './useSemanticMemo';
 import {useRenderEffect} from './useRenderEffect';
-import {isFunction} from './isFunction';
+import {isFunction} from './utils';
 
 export type ExecutorHook = <T>(initialValue?: ExecutorCallback<T> | T) => Executor<T>;
 
