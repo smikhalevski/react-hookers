@@ -4,7 +4,7 @@ import {EffectCallback, ReducerWithoutAction, useEffect, useReducer, useRef} fro
  * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
  * component life cycle. Returned callback doesn't change between hook invocations.
  *
- * **Note:** Using this hook makes you code imperative, which is a bad practice in most cases.
+ * **Note:** Using this hook makes you code imperative, which is generally considered a bad practice.
  */
 export function useRerender(): () => void {
   const [, triggerRerender] = useReducer(reducer, 0);

@@ -27,9 +27,10 @@ import {ExecutorProviderContext} from './ExecutorProviderContext';
  * };
  * ```
  *
- * @see Executor
- * @see ExecutorCallback
- * @see ExecutorProviderContext
- * @see createExecutorHook
+ * @see {@link Executor}
+ * @see {@link ExecutorProviderContext}
+ * @see {@link createExecutorHook}
+ * @see {@link useExecution}
+ * @see {@link executorCache}
  */
 export const useExecutor = createExecutorHook(ExecutorProviderContext);

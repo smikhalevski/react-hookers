@@ -41,9 +41,12 @@ import {Blocker} from './Blocker';
  * };
  * ```
  *
- * @see Blocker
- * @see Lock
- * @see useLock
+ * @template T The type of value that can be passed to {@link Blocker.unblock} to resolve the `Promise` returned by
+ *     {@link Blocker.block}.
+ *
+ * @see {@link Blocker}
+ * @see {@link Lock}
+ * @see {@link useLock}
  */
 export function useBlocker<T = void>(): Blocker<T> {
   const rerender = useRerender();

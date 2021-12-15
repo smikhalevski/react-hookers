@@ -9,9 +9,9 @@ import {useEffectOnce} from './useEffectOnce';
  *
  * @param effect The callback that is invoked synchronously during rendering if `deps` have changed. An effect may
  *     return a destructor / cleanup callback. The previous effect is cleaned up before executing the next effect.
- * @param [deps] Optional list of dependencies. If omitted then `effect` is called during every render.
+ * @param deps The optional list of dependencies. If omitted then `effect` is called during every render.
  *
- * @see https://reactjs.org/docs/hooks-reference.html#useeffect React.useEffect
+ * @see {@link https://reactjs.org/docs/hooks-reference.html#useeffect React.useEffect}
  */
 export function useRenderEffect(effect: EffectCallback, deps?: DependencyList): void {
   const manager = useRef<ReturnType<typeof createRenderEffectManager>>().current ||= createRenderEffectManager();

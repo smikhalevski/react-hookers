@@ -7,10 +7,18 @@ export type CheckpointFallback = (replay: () => void) => void;
 export class Checkpoint {
 
   /**
-   * Thee executor that invokes the {@link condition}.
+   * The executor that invokes the {@link condition}.
    */
   public executor;
+
+  /**
+   * The callback that returns truthy or falsy value that determines that condition is met or not.
+   */
   public condition;
+
+  /**
+   * The callback that is invoked if condition wasn't met.
+   */
   public fallback;
 
   public constructor(executor: Executor, condition: CheckpointCondition, fallback?: CheckpointFallback) {

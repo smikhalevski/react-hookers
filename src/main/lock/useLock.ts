@@ -22,9 +22,9 @@ import {Lock} from './Lock';
  * Multiple parties may call `lock.acquire()`, but they would receive a release callback only after the previous party
  * released the lock.
  *
- * @see https://en.wikipedia.org/wiki/Lock_(computer_science) Lock (computer science)
- * @see Lock
- * @see useBlocker
+ * @see {@link https://en.wikipedia.org/wiki/Lock_(computer_science) Lock (computer science)}
+ * @see {@link Lock}
+ * @see {@link useBlocker}
  */
 export function useLock(): Lock {
   return useRef<Lock>().current ||= new Lock();

@@ -5,7 +5,7 @@ import {createSemanticMemoHook, SemanticMemoHook} from './createSemanticMemoHook
  * A semantic guarantee drop-in replacement for `React.useMemo`. It guarantees that the value produced by `factory`
  * won't be "forgotten" until the hook is unmounted.
  *
- * @see https://reactjs.org/docs/hooks-reference.html#usememo React.useMemo
+ * @see {@link https://reactjs.org/docs/hooks-reference.html#usememo React.useMemo}
  */
 export function useSemanticMemo<T>(factory: () => T, deps?: DependencyList): T {
   const hook = useRef<SemanticMemoHook>().current ||= createSemanticMemoHook(false);

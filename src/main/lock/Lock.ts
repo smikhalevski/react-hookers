@@ -4,7 +4,7 @@
  * When someone tries to acquire a `Lock` they receive a `Promise` for a release callback that is resolved as soon as
  * previous lock owner invokes their release callback.
  *
- * @see https://en.wikipedia.org/wiki/Lock_(computer_science) Lock
+ * @see {@link https://en.wikipedia.org/wiki/Lock_(computer_science) Lock (computer science)}
  */
 export class Lock {
 

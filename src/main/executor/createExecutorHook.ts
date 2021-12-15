@@ -9,12 +9,14 @@ import {isFunction} from '../utils';
 export type ExecutorHook = <T>(initialValue?: ExecutorCallback<T> | T) => Executor<T>;
 
 /**
- * Creates a hook that is bound to the given {@link IExecutorProvider} context. The hook creates a new executor and
- * subscribes the component to its updates. Pending execution is aborted when hook is unmounted. The provider is
- * suitable for awaiting pending async results during SSR.
+ * Creates a hook that is bound to the given {@link IExecutorProvider} context.
  *
- * @see ExecutorProviderContext
- * @see useExecutor
+ * The produced hook creates a new executor and subscribes the component to its updates. Pending execution is aborted
+ * when hook is unmounted. The provider is suitable for awaiting pending async results during SSR.
+ *
+ * @see {@link useExecutor}
+ * @see {@link ExecutorProviderContext}
+ * @see {@link executorCache}
  */
 export function createExecutorHook(providerContext: Context<IExecutorProvider>): ExecutorHook {
   return (initialValue) => {

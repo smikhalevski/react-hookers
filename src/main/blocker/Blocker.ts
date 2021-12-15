@@ -1,3 +1,9 @@
+/**
+ * Provides mechanism for blocking async processes and unblocking them from an external context.
+ *
+ * @template T The type of value that can be passed to {@link Blocker.unblock} to resolve the `Promise` returned by
+ *     {@link Blocker.block}.
+ */
 export class Blocker<T> {
 
   private _promise?: Promise<T>;
