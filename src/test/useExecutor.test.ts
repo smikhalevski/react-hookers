@@ -7,65 +7,79 @@ import {ExecutorProviderContext} from '../main/ExecutorProviderContext';
 
 describe('useExecutor', () => {
 
+  test('returns the same Executor on every render', () => {
+    const hook = renderHook(() => useExecutor());
+    const executor1 = hook.result.current;
+
+    hook.rerender();
+    const executor2 = hook.result.current;
+
+    expect(executor1).toBe(executor2);
+  });
+
   test('creates a blank Executor instance', () => {
     const hook = renderHook(() => useExecutor());
+    const executor = hook.result.current;
 
-    expect(hook.result.current).toBeInstanceOf(Executor);
-    expect(hook.result.current.disposed).toBe(false);
-    expect(hook.result.current.pending).toBe(false);
-    expect(hook.result.current.resolved).toBe(false);
-    expect(hook.result.current.rejected).toBe(false);
-    expect(hook.result.current.result).toBe(undefined);
-    expect(hook.result.current.reason).toBe(undefined);
-    expect(hook.result.current.promise).toBe(undefined);
+    expect(executor).toBeInstanceOf(Executor);
+    expect(executor.disposed).toBe(false);
+    expect(executor.pending).toBe(false);
+    expect(executor.resolved).toBe(false);
+    expect(executor.rejected).toBe(false);
+    expect(executor.result).toBe(undefined);
+    expect(executor.reason).toBe(undefined);
+    expect(executor.promise).toBe(undefined);
   });
 
   test('creates an executor with non-function initial result', () => {
     const hook = renderHook(() => useExecutor(123));
+    const executor = hook.result.current;
 
-    expect(hook.result.current.disposed).toBe(false);
-    expect(hook.result.current.pending).toBe(false);
-    expect(hook.result.current.resolved).toBe(true);
-    expect(hook.result.current.rejected).toBe(false);
-    expect(hook.result.current.result).toBe(123);
-    expect(hook.result.current.reason).toBe(undefined);
-    expect(hook.result.current.promise).toBe(undefined);
+    expect(executor.disposed).toBe(false);
+    expect(executor.pending).toBe(false);
+    expect(executor.resolved).toBe(true);
+    expect(executor.rejected).toBe(false);
+    expect(executor.result).toBe(123);
+    expect(executor.reason).toBe(undefined);
+    expect(executor.promise).toBe(undefined);
   });
 
   test('creates an executor with synchronous function initial result', () => {
     const hook = renderHook(() => useExecutor(() => 123));
+    const executor = hook.result.current;
 
-    expect(hook.result.current.disposed).toBe(false);
-    expect(hook.result.current.pending).toBe(false);
-    expect(hook.result.current.resolved).toBe(true);
-    expect(hook.result.current.rejected).toBe(false);
-    expect(hook.result.current.result).toBe(123);
-    expect(hook.result.current.reason).toBe(undefined);
-    expect(hook.result.current.promise).toBe(undefined);
+    expect(executor.disposed).toBe(false);
+    expect(executor.pending).toBe(false);
+    expect(executor.resolved).toBe(true);
+    expect(executor.rejected).toBe(false);
+    expect(executor.result).toBe(123);
+    expect(executor.reason).toBe(undefined);
+    expect(executor.promise).toBe(undefined);
   });
 
   test('creates an executor with asynchronous function initial result', async () => {
     const hookMock = jest.fn(() => useExecutor(() => Promise.resolve(123)));
     const hook = renderHook(hookMock);
+    const executor = hook.result.current;
 
-    expect(hook.result.current.disposed).toBe(false);
-    expect(hook.result.current.pending).toBe(true);
-    expect(hook.result.current.resolved).toBe(false);
-    expect(hook.result.current.rejected).toBe(false);
-    expect(hook.result.current.result).toBe(undefined);
-    expect(hook.result.current.reason).toBe(undefined);
-    expect(hook.result.current.promise).toBeInstanceOf(Promise);
+    expect(executor.disposed).toBe(false);
+    expect(executor.pending).toBe(true);
+    expect(executor.resolved).toBe(false);
+    expect(executor.rejected).toBe(false);
+    expect(executor.result).toBe(undefined);
+    expect(executor.reason).toBe(undefined);
+    expect(executor.promise).toBeInstanceOf(Promise);
 
     await act(async () => await hook.result.current.promise);
 
     expect(hookMock).toHaveBeenCalledTimes(3); // last re-render is forced
-    expect(hook.result.current.disposed).toBe(false);
-    expect(hook.result.current.pending).toBe(false);
-    expect(hook.result.current.resolved).toBe(true);
-    expect(hook.result.current.rejected).toBe(false);
-    expect(hook.result.current.result).toBe(123);
-    expect(hook.result.current.reason).toBe(undefined);
-    expect(hook.result.current.promise).toBe(undefined);
+    expect(executor.disposed).toBe(false);
+    expect(executor.pending).toBe(false);
+    expect(executor.resolved).toBe(true);
+    expect(executor.rejected).toBe(false);
+    expect(executor.result).toBe(123);
+    expect(executor.reason).toBe(undefined);
+    expect(executor.promise).toBe(undefined);
   });
 
   test('disposes executor after unmount', () => {
@@ -152,6 +166,6 @@ describe('useExecutor', () => {
     expect(executorProvider.disposeExecutor).toHaveBeenNthCalledWith(1, executor);
 
     // Hooks delegates disposal to the provider
-    expect(hook.result.current.disposed).toBe(false);
+    expect(executor.disposed).toBe(false);
   });
 });
