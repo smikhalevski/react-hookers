@@ -1,5 +1,5 @@
 import {renderHook} from '@testing-library/react-hooks/native';
-import {useRefCallback} from '../main/useRefCallback';
+import {useRefCallback} from '../main';
 
 describe('useRefCallback', () => {
 

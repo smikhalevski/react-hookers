@@ -1,5 +1,5 @@
 import {EffectCallback, useRef} from 'react';
-import {useEffectOnce} from './useEffectOnce';
+import {useEffectOnce} from './effect';
 
 /**
  * Returns `AbortSignal` that is aborted when the component is unmounted.
