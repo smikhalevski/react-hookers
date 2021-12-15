@@ -1,15 +1,12 @@
-import {ExecutorCallback, IExecution} from './Executor';
-import {DependencyList, useEffect} from 'react';
+import {IExecution} from './Executor';
 import {useExecutor} from './useExecutor';
-import {emptyDeps} from './utils';
+import {createExecutionHook} from './createExecutionHook';
+import {ExecutorProviderContext} from './ExecutorProviderContext';
 
 /**
  * Executes a callback when dependencies are changed and returns an {@link IExecution}.
+ *
+ * @see Executor
+ * @see useExecutor
  */
-export function useExecution<T>(cb: ExecutorCallback<T>, deps?: DependencyList): IExecution<T> {
-  const executor = useExecutor<T>();
-
-  useEffect(() => void executor.execute(cb), deps || emptyDeps);
-
-  return executor;
-}
+export const useExecution = createExecutionHook(ExecutorProviderContext);

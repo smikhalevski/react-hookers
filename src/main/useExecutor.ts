@@ -1,8 +1,5 @@
-import {createContext} from 'react';
-import {ExecutorCache, IExecutorProvider} from './ExecutorCache';
 import {createExecutorHook} from './createExecutorHook';
-
-export const ExecutorProviderContext = createContext<IExecutorProvider>(new ExecutorCache());
+import {ExecutorProviderContext} from './ExecutorProviderContext';
 
 /**
  * Creates a new {@link Executor}.
@@ -30,6 +27,8 @@ export const ExecutorProviderContext = createContext<IExecutorProvider>(new Exec
  * };
  * ```
  *
+ * @see Executor
+ * @see ExecutorCallback
  * @see ExecutorProviderContext
  * @see createExecutorHook
  */

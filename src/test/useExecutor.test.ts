@@ -1,8 +1,9 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
 import {IExecutorProvider} from '../main/ExecutorCache';
-import {ExecutorProviderContext, useExecutor} from '../main/useExecutor';
+import {useExecutor} from '../main/useExecutor';
 import {Executor} from '../main/Executor';
 import {createElement, FunctionComponent} from 'react';
+import {ExecutorProviderContext} from '../main/ExecutorProviderContext';
 
 describe('useExecutor', () => {
 
