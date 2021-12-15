@@ -1,7 +1,7 @@
 import {Dispatch, SetStateAction, useRef} from 'react';
 import {useEffectOnce} from '../effect';
 import {isFunction} from '../utils';
-import {useRerender} from '../useRerender';
+import {useRerender} from '../rerender';
 
 export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: Dispatch<SetStateAction<S>>];
 

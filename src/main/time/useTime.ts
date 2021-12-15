@@ -1,4 +1,6 @@
-import {createTimeHook} from './createTimeHook';
 import {TimeContext} from './TimeContext';
+import {useContext} from 'react';
 
-export const useTime = createTimeHook(TimeContext);
+export function useTime() {
+  return useContext(TimeContext);
+}

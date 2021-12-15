@@ -1,10 +1,14 @@
 export class Time {
 
-  private _listenerMap: Record<number, {timeout?: ReturnType<typeof setTimeout>, listeners: Set<() => void>}> = {};
+  /**
+   * The offset in milliseconds between `Date.now()` and timestamp returned by {@link Time.now}.
+   */
   private _offset = 0;
 
   /**
-   * Returns reliable current timestamp.
+   * Returns current timestamp.
+   *
+   * @return The current timestamp in milliseconds.
    */
   public now(): number {
     return Date.now() + this._offset;
@@ -13,36 +17,9 @@ export class Time {
   /**
    * Sets current timestamp.
    *
-   * @param timestamp The timestamp that would be used as an offset for calculating {@link now}.
+   * @param timestamp The timestamp that would be used as an offset for calculating {@link Time.now}.
    */
   public setTimestamp(timestamp: number): void {
     this._offset = timestamp - Date.now();
-  }
-
-  /**
-   * Subscribes listener to changes of the timestamp.
-   */
-  public subscribe(delay: number, listener: () => void): () => void {
-    const q = this._listenerMap[delay] ||= {listeners: new Set()};
-
-    if (q.listeners.size === 0) {
-      const loop = () => q.timeout = setTimeout(() => {
-        q.listeners.forEach((l) => {
-          l();
-        });
-        loop();
-      });
-    }
-
-    q.listeners.add(listener);
-
-    return () => {
-      q.listeners.delete(listener);
-
-      if (q.timeout !== undefined && q.listeners.size === 0) {
-        clearTimeout(q.timeout);
-        q.timeout = undefined;
-      }
-    };
   }
 }

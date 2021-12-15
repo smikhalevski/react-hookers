@@ -1,7 +1,7 @@
 import {Context, useContext} from 'react';
 import {IExecutorProvider} from './ExecutorCache';
 import {Executor, ExecutorCallback} from './Executor';
-import {useRerender} from '../useRerender';
+import {useRerender} from '../rerender';
 import {useSemanticMemo} from '../memo';
 import {useRenderEffect} from '../effect';
 import {isFunction} from '../utils';
