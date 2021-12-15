@@ -8,6 +8,7 @@ export * from './ExecutorCache';
 export * from './useBlocker';
 export * from './useCheckpoint';
 export * from './useDebounce';
+export * from './useDebouncedState';
 export * from './useEffectOnce';
 export * from './useExecution';
 export * from './useExecutor';

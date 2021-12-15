@@ -4,6 +4,7 @@ import {Executor, ExecutorCallback} from './Executor';
 import {useRerender} from './useRerender';
 import {useSemanticMemo} from './useSemanticMemo';
 import {useRenderEffect} from './useRenderEffect';
+import {isFunction} from './isFunction';
 
 export type ExecutorHook = <T>(initialValue?: ExecutorCallback<T> | T) => Executor<T>;
 
@@ -23,8 +24,8 @@ export function createExecutorHook(providerContext: Context<IExecutorProvider>):
     const executor = useSemanticMemo(() => provider.createExecutor<any>(rerender), [provider]);
 
     useRenderEffect(() => {
-      if (typeof initialValue === 'function') {
-        executor.execute(initialValue as ExecutorCallback<unknown>);
+      if (isFunction(initialValue)) {
+        executor.execute(initialValue);
       } else if (initialValue !== undefined) {
         executor.resolve(initialValue);
       }
