@@ -29,7 +29,9 @@ export function createExecutorHook(providerContext: Context<IExecutorProvider>):
       } else if (initialValue !== undefined) {
         executor.resolve(initialValue);
       }
-      return () => provider.disposeExecutor(executor);
+      return () => {
+        provider.disposeExecutor(executor);
+      };
     }, [executor]);
 
     return executor;

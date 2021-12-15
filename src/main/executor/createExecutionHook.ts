@@ -12,7 +12,9 @@ export function createExecutionHook(providerContext: Context<IExecutorProvider>)
   return (cb, deps) => {
     const executor = useExecutor<any>();
 
-    useEffect(() => void executor.execute(cb), deps || emptyDeps);
+    useEffect(() => {
+      executor.execute(cb);
+    }, deps || emptyDeps);
 
     return executor;
   };

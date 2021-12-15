@@ -43,7 +43,7 @@ export class Checkpoint {
    *     fallback and replay invocations are async.
    * @returns The proxy callback with the same signature as `cb`.
    */
-  public guard<A extends unknown[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void): (...args: A) => void {
+  public guard<A extends any[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void): (...args: A) => void {
     return (...args) => {
       const capturedArgs = captureArgs?.(...args) || args;
 
@@ -55,7 +55,9 @@ export class Checkpoint {
           cb(...capturedArgs);
           return;
         }
-        this.fallback?.(this.guard(() => cb(...capturedArgs)));
+        this.fallback?.(this.guard(() => {
+          cb(...capturedArgs);
+        }));
       }));
     };
   }

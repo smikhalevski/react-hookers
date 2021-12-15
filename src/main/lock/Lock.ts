@@ -23,11 +23,13 @@ export class Lock {
   public acquire(): Promise<() => void> {
     let release: () => void;
 
-    let promise = new Promise<void>((resolve) => release = () => {
-      resolve();
-      if (this._promise === promise) {
-        this._promise = undefined;
-      }
+    let promise = new Promise<void>((resolve) => {
+      release = () => {
+        resolve();
+        if (this._promise === promise) {
+          this._promise = undefined;
+        }
+      };
     });
 
     if (this._promise) {

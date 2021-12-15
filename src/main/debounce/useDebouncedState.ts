@@ -64,7 +64,9 @@ function createDebouncedStateManager<S>(delay: number, rerender: () => void, ini
 
   const protocol: DebouncedStateProtocol<S | undefined> = [currState, nextState, setState];
 
-  const _effect = () => () => clearTimeout(timeout);
+  const _effect = () => () => {
+    clearTimeout(timeout);
+  };
 
   return {
     _effect,

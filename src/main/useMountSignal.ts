@@ -15,7 +15,9 @@ export function useMountSignal(): AbortSignal {
 function createMountSignalManager() {
   const abortController = new AbortController();
 
-  const _effect: EffectCallback = () => () => abortController.abort();
+  const _effect: EffectCallback = () => () => {
+    abortController.abort();
+  };
 
   return {
     _effect,

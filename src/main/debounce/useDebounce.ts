@@ -1,7 +1,7 @@
 import {useRef} from 'react';
 import {useEffectOnce} from '../effect';
 
-export type Debounce = <A extends unknown[]>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
+export type Debounce = <A extends any[]>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
 
 export type DebounceProtocol = [debounce: Debounce, cancel: () => void];
 
@@ -25,7 +25,9 @@ function createDebounceManager() {
     timeout = setTimeout(...args);
   };
 
-  const cancel = () => clearTimeout(timeout);
+  const cancel = () => {
+    clearTimeout(timeout);
+  };
 
   const _effect = () => cancel;
 

@@ -23,7 +23,9 @@ export class Blocker<T> {
    */
   public block(): Promise<T> {
     if (!this._promise) {
-      this._promise = new Promise((resolve) => this._resolve = resolve);
+      this._promise = new Promise((resolve) => {
+        this._resolve = resolve;
+      });
       this._listener();
     }
     return this._promise;

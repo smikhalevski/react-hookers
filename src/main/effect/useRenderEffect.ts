@@ -38,7 +38,9 @@ function createRenderEffectManager() {
     }
   };
 
-  const _effect: EffectCallback = () => () => destructor?.();
+  const _effect: EffectCallback = () => () => {
+    destructor?.();
+  };
 
   return {
     _applyEffect,

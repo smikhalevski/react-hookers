@@ -35,7 +35,9 @@ export class ExecutorCache implements IExecutorProvider {
    * Aborts all pending executors.
    */
   public abortAll(): void {
-    this.executors.forEach((executor) => executor.abort());
+    this.executors.forEach((executor) => {
+      executor.abort();
+    });
   }
 
   /**
