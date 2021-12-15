@@ -12,11 +12,12 @@ The set of general-purpose React hooks.
 - [`useLock`](#uselock)
 - [`useMountSignal`](#usemountsignal)
 - [`useRefCallback`](#userefcallback)
-- `useRenderedValueRef`
+- `useStateRef`
 - [`useRenderEffect`](#userendereffect)
 - `useRenderEffectOnce`
 - [`useRerender`](#usererender)
 - `useRerenderInterval`
+- `usePrevState`
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
 - `useTime`

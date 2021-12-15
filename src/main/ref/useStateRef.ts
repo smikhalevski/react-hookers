@@ -4,9 +4,9 @@ import {RefObject, useRef} from 'react';
  * Creates ref-like object that keeps ref to the given value. It comes handy if you want to use props in the async
  * context but want to use the actual values but not the ones captured during the render when async context emerged.
  *
- * @example
+ * ```ts
  * const Foo: React.FC<{ onDone(res: Response): void }> = (props) => {
- *   const propsRef = useRenderedValueRef(props);
+ *   const propsRef = useStateRef(props);
  *
  *   React.useEffect(() => {
  *     (async () => {
@@ -19,9 +19,10 @@ import {RefObject, useRef} from 'react';
  *
  *   return null;
  * }
+ * ```
  */
-export function useRenderedValueRef<T>(value: T): RefObject<T> {
-  const ref = useRef(value);
-  ref.current = value;
+export function useStateRef<T>(state: T): RefObject<T> {
+  const ref = useRef(state);
+  ref.current = state;
   return ref;
 }
