@@ -12,6 +12,7 @@ The set of general-purpose React hooks.
 - [`useLock`](#uselock)
 - [`useMountSignal`](#usemountsignal)
 - [`useRefCallback`](#userefcallback)
+- `useRenderedValueRef`
 - [`useRenderEffect`](#userendereffect)
 - `useRenderEffectOnce`
 - [`useRerender`](#usererender)
