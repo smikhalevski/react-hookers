@@ -19,7 +19,7 @@ export class Blocker<T> {
     this._listener = listener;
   }
 
-  get blocked() {
+  public get blocked() {
     return this._resolve != null;
   }
 
