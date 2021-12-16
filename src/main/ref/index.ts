@@ -1,2 +1,2 @@
 export * from './useRefCallback';
-export * from './useStateRef';
+export * from './useRenderedValueRef';

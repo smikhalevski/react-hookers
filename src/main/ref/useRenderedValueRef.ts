@@ -6,7 +6,7 @@ import {RefObject, useRef} from 'react';
  *
  * ```ts
  * const Foo: React.FC<{ onDone(res: Response): void }> = (props) => {
- *   const propsRef = useStateRef(props);
+ *   const propsRef = useRenderedValueRef(props);
  *
  *   React.useEffect(() => {
  *     (async () => {
@@ -21,8 +21,8 @@ import {RefObject, useRef} from 'react';
  * }
  * ```
  */
-export function useStateRef<T>(state: T): RefObject<T> {
-  const ref = useRef(state);
-  ref.current = state;
+export function useRenderedValueRef<T>(value: T): RefObject<T> {
+  const ref = useRef(value);
+  ref.current = value;
   return ref;
 }
