@@ -3,6 +3,7 @@ export * from './checkpoint';
 export * from './debounce';
 export * from './effect';
 export * from './executor';
+export * from './intreval';
 export * from './lock';
 export * from './memo';
 export * from './ref';

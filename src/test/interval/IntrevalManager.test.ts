@@ -7,7 +7,7 @@ describe('IntervalManager', () => {
     const intervalManager = new IntervalManager();
     const listenerMock = jest.fn();
 
-    const abortInterval = intervalManager.scheduleInterval(listenerMock, 50);
+    const abortInterval = intervalManager.scheduleInterval(50, listenerMock);
 
     await sleep(200);
     abortInterval();
@@ -19,7 +19,7 @@ describe('IntervalManager', () => {
     const intervalManager = new IntervalManager();
     const listenerMock = jest.fn();
 
-    const abortInterval = intervalManager.scheduleInterval(listenerMock, 50);
+    const abortInterval = intervalManager.scheduleInterval(50, listenerMock);
 
     await sleep(200);
     abortInterval();

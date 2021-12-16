@@ -13,18 +13,17 @@ interface IInterval {
 
 export class IntervalManager {
 
-  /**
-   * The map from the delay to corresponding {@link IInterval}.
-   */
   private _intervalMap = new Map<number, IInterval>();
 
   /**
    * Schedules a listener to be invoked after each interval.
    *
+   * All listeners that were scheduled with the same delay are invoked synchronously.
+   *
    * @param delay The interval duration in milliseconds.
    * @param listener The listener to invoke.
    */
-  public scheduleInterval(listener: () => void, delay: number): () => void {
+  public scheduleInterval(delay: number, listener: () => void): () => void {
 
     const interval = this._getOrCreateInterval(delay);
     const listeners = interval._listeners;

@@ -7,20 +7,21 @@ The set of general-purpose React hooks.
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 - `useEffectOnce`
-- [`useExecution`](#useexecution)
-- [`useExecutor`](#useexecutor)
-- [`useLock`](#uselock)
-- [`useMountSignal`](#usemountsignal)
-- [`useRefCallback`](#userefcallback)
-- `useRenderedValueRef`
 - [`useRenderEffect`](#userendereffect)
 - `useRenderEffectOnce`
-- [`useRerender`](#usererender)
-- `useRerenderInterval`
+- [`useExecution`](#useexecution)
+- [`useExecutor`](#useexecutor)
+- `useInterval`
+- [`useLock`](#uselock)
 - `usePrevState`
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
+- [`useRefCallback`](#userefcallback)
+- `useRenderedValueRef`
+- [`useRerender`](#usererender)
+- `useRerenderInterval`
 - `useTime`
+- [`useMountSignal`](#usemountsignal)
 - [`useToggle`](#usetoggle)
 
 ```sh

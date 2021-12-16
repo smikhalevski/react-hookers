@@ -1,4 +1,4 @@
-import {RefObject, useRef} from 'react';
+import {MutableRefObject, useRef} from 'react';
 
 /**
  * Creates ref-like object that keeps ref to the given value. It comes handy if you want to use props in the async
@@ -21,7 +21,7 @@ import {RefObject, useRef} from 'react';
  * }
  * ```
  */
-export function useRenderedValueRef<T>(value: T): RefObject<T> {
+export function useRenderedValueRef<T>(value: T): MutableRefObject<T> {
   const ref = useRef(value);
   ref.current = value;
   return ref;
