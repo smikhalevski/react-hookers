@@ -1,4 +1,8 @@
+import {EventBus} from 'yaeb';
+
 export class Time {
+
+  private _eventBus = new EventBus();
 
   /**
    * The offset in milliseconds between `Date.now()` and timestamp returned by {@link Time.now}.
@@ -20,6 +24,18 @@ export class Time {
    * @param timestamp The timestamp that would be used as an offset for calculating {@link Time.now}.
    */
   public setTimestamp(timestamp: number): void {
-    this.offset = timestamp - Date.now();
+    const prevOffset = this.offset;
+    const currOffset = this.offset = timestamp - Date.now();
+
+    if (prevOffset !== currOffset) {
+      this._eventBus.publish();
+    }
+  }
+
+  /**
+   * Subscribes listener to updates of the timestamp offset.
+   */
+  public subscribe(listener: () => void): () => void {
+    return this._eventBus.subscribe(listener);
   }
 }
