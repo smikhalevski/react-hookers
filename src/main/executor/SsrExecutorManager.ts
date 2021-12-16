@@ -5,7 +5,7 @@ import {ExecutorManager} from './ExecutorManager';
 /**
  * The executor manager that keeps references to all created executors and provides batch operation for them.
  */
-export class SsrExecutorManager extends ExecutorManager {
+export class SsrExecutorManager implements ExecutorManager {
 
   public executors = new Set<Executor>();
 
