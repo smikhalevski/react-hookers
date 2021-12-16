@@ -1,5 +1,5 @@
 import {createExecutorHook} from './createExecutorHook';
-import {ExecutorProviderContext} from './ExecutorProviderContext';
+import {ExecutorManagerContext} from './ExecutorManagerContext';
 
 /**
  * Creates a new {@link Executor}.
@@ -28,9 +28,8 @@ import {ExecutorProviderContext} from './ExecutorProviderContext';
  * ```
  *
  * @see {@link Executor}
- * @see {@link ExecutorProviderContext}
+ * @see {@link ExecutorManagerContext}
  * @see {@link createExecutorHook}
  * @see {@link useExecution}
- * @see {@link executorCache}
  */
-export const useExecutor = createExecutorHook(ExecutorProviderContext);
+export const useExecutor = createExecutorHook(ExecutorManagerContext);

@@ -173,6 +173,7 @@ const DeleteButton: FC = () => {
   const handleDelete = () => {
     executor.execute(async (signal) => {
       // Execute deletion login here.
+      // Signal would be aborted when component unmounts.
     });
   };
 
@@ -187,45 +188,38 @@ const DeleteButton: FC = () => {
 };
 ```
 
-You can manage how executors are created with `IExecutorProvider` and its basic
-implementation [`ExecutorCache`](https://smikhalevski.github.io/react-hooks/classes/ExecutorCache.html). This comes
-handy during SSR.
+You can manage how executors are created with `ExecutorManager`
+and [`SsrExecutorManager`](https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {ExecutorCache} from '@smikhalevski/react-hooks';
+import {SsrExecutorManager} from '@smikhalevski/react-hooks';
 
-const executorCache = new ExecutorCache();
+const mySsrExecutorManager = new SsrExecutorManager();
 
 renderToString(
-    <ExecutorProviderContext.Provider value={executorCache}>
+    <ExecutorManagerContext.Provider value={mySsrExecutorManager}>
       <DeleteButton/>
-    </ExecutorProviderContext.Provider>
+    </ExecutorManagerContext.Provider>
 );
 
-// Aborts all pending executors via signal
-executorCache.abortAll();
-
-// Waits for all executors to complete pending execution.
-await executorCache.toPromise();
+// Waits for all executors to complete pending executions.
+await mySsrExecutorManager.waitForExecutorsToComplete();
 ```
 
 You can create a custom `useExecutor` hook that is bound to a custom context.
 
 ```ts
 import {createContext} from 'react';
-import {createExecutorHook, Executor, IExecutorProvider} from '@smikhalevski/react-hooks';
+import {createExecutorHook, Executor, ExecutorManager} from '@smikhalevski/react-hooks';
 
-const MyExecutorProviderContext = createContext<IExecutorProvider>({
-  createExecutor(listener) {
-    return new Executor(listener);
-  },
-  disposeExecutor(executor) {
-    executor.dispose();
-  },
-});
+class MyExecutorManager extends ExecutorManager {
+  // Your overrides here.
+}
 
-const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
+const MyExecutorManagerContext = createContext(new MyExecutorManager());
+
+const useMyExecutor = createExecutorHook(MyExecutorManagerContext);
 ```
 
 ## `useLock`
@@ -234,7 +228,7 @@ Creates a new `Lock`.
 
 Lock can be used for ordering asynchronous events.
 
-For example, you may have multiple popups that are opened independently and you want them to be opened one after
+For example, you may have multiple popups that are opened independently, and you want them to be opened one after
 another.
 
 ```ts
@@ -256,7 +250,7 @@ Returns `AbortSignal` that is aborted when the component is unmounted.
 
 ## `useRefCallback`
 
-Returns a ref object and a callback to update the value of this ref.
+Returns a ref object, and a callback to update the value of this ref.
 
 ## `useRenderEffect`
 

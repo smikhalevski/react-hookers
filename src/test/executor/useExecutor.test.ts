@@ -1,5 +1,5 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
-import {Executor, ExecutorProviderContext, IExecutorProvider, useExecutor} from '../../main';
+import {Executor, ExecutorManagerContext, ExecutorManager, useExecutor} from '../../main';
 import {createElement, FunctionComponent} from 'react';
 
 describe('useExecutor', () => {
@@ -125,30 +125,26 @@ describe('useExecutor', () => {
   });
 
   test('uses provider to create an executor', async () => {
-    const executorProvider: IExecutorProvider = {
-      createExecutor: jest.fn(),
-      disposeExecutor: () => undefined,
-    };
+    const executorManager = new ExecutorManager();
+    executorManager.createExecutor = jest.fn();
 
-    const Context: FunctionComponent = ({children}) => createElement(ExecutorProviderContext.Provider, {
-      value: executorProvider,
-      children,
+    const Context: FunctionComponent = (props) => createElement(ExecutorManagerContext.Provider, {
+      value: executorManager,
+      children: props.children,
     });
 
     renderHook(() => useExecutor(), {wrapper: Context});
 
-    expect(executorProvider.createExecutor).toHaveBeenCalledTimes(1);
-    expect(executorProvider.createExecutor).toHaveBeenNthCalledWith(1, expect.any(Function));
+    expect(executorManager.createExecutor).toHaveBeenCalledTimes(1);
+    expect(executorManager.createExecutor).toHaveBeenNthCalledWith(1, expect.any(Function));
   });
 
   test('uses provider to dispose an executor', async () => {
-    const executorProvider: IExecutorProvider = {
-      createExecutor: (listener) => new Executor<any>(listener),
-      disposeExecutor: jest.fn(),
-    };
+    const executorManager = new ExecutorManager();
+    executorManager.disposeExecutor = jest.fn();
 
-    const Context: FunctionComponent = ({children}) => createElement(ExecutorProviderContext.Provider, {
-      value: executorProvider,
+    const Context: FunctionComponent = ({children}) => createElement(ExecutorManagerContext.Provider, {
+      value: executorManager,
       children,
     });
 
@@ -159,8 +155,8 @@ describe('useExecutor', () => {
 
     hook.unmount();
 
-    expect(executorProvider.disposeExecutor).toHaveBeenCalledTimes(1);
-    expect(executorProvider.disposeExecutor).toHaveBeenNthCalledWith(1, executor);
+    expect(executorManager.disposeExecutor).toHaveBeenCalledTimes(1);
+    expect(executorManager.disposeExecutor).toHaveBeenNthCalledWith(1, executor);
 
     // Hooks delegates disposal to the provider
     expect(executor.disposed).toBe(false);
