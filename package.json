@@ -64,7 +64,7 @@
     "typedoc": "^0.21.2",
     "typescript": "^4.3.2"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "react": ">=16.14.0"
   },
   "dependencies": {
