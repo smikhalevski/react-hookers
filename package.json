@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "tsc && npm run rollup && npm run terser",
-    "rollup": "rollup --external react,yaeb --input ./lib/index.js --file ./lib/index-cjs.js --format cjs --plugin @rollup/plugin-node-resolve",
+    "rollup": "rollup --external @smikhalevski/event-bus,react --input ./lib/index.js --file ./lib/index-cjs.js --format cjs --plugin @rollup/plugin-node-resolve",
     "terser": "for file in $(find ./lib -name '*.js'); do terser --compress --mangle --mangle-props regex=/^_/ --output $file -- $file; done || exit 1",
     "clean": "rm -rf ./lib ./docs",
     "test": "jest --detectOpenHandles",
@@ -68,6 +68,6 @@
     "react": ">=16.14.0"
   },
   "dependencies": {
-    "yaeb": "^1.0.0"
+    "@smikhalevski/event-bus": "^1.0.0"
   }
 }

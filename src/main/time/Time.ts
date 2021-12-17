@@ -1,4 +1,4 @@
-import {EventBus} from 'yaeb';
+import {EventBus} from '@smikhalevski/event-bus';
 
 export class Time {
 
