@@ -46,7 +46,6 @@ import {Blocker} from './Blocker';
  *
  * @see {@link Blocker}
  * @see {@link Lock}
- * @see {@link useLock}
  */
 export function useBlocker<T = void>(): Blocker<T> {
   const rerender = useRerender();
