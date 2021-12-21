@@ -1,13 +1,13 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
-import {Checkpoint, useCheckpoint} from '../../main';
+import {Guard, useGuard} from '../../main';
 import * as sleep from 'sleep-promise';
 
-describe('useCheckpoint', () => {
+describe('useGuard', () => {
 
-  test('returns a Checkpoint instance', () => {
-    const hook = renderHook(() => useCheckpoint(() => true));
+  test('returns a Guard instance', () => {
+    const hook = renderHook(() => useGuard(() => true));
 
-    expect(hook.result.current).toBeInstanceOf(Checkpoint);
+    expect(hook.result.current).toBeInstanceOf(Guard);
     expect(hook.result.current.pending).toBe(false);
   });
 
@@ -15,12 +15,12 @@ describe('useCheckpoint', () => {
     const setPendingMock = jest.fn();
 
     const hook = renderHook(() => {
-      const checkpoint = useCheckpoint(async () => {
+      const guard = useGuard(async () => {
         await sleep(50);
         return true;
       });
-      setPendingMock(checkpoint.pending);
-      return checkpoint;
+      setPendingMock(guard.pending);
+      return guard;
     });
 
     expect(setPendingMock).toHaveBeenCalledTimes(1);
@@ -46,7 +46,7 @@ describe('useCheckpoint', () => {
       await sleep(50);
       return false;
     });
-    const hookMock = jest.fn(() => useCheckpoint(conditionMock, (replay) => lastReplay = replay));
+    const hookMock = jest.fn(() => useGuard(conditionMock, (replay) => lastReplay = replay));
     const hook = renderHook(hookMock);
 
     const guardedCb = hook.result.current.guard(() => undefined);
@@ -75,7 +75,7 @@ describe('useCheckpoint', () => {
     let condition = conditionMock1;
     let fallback = fallbackMock1;
 
-    const hook = renderHook(() => useCheckpoint(condition, fallback));
+    const hook = renderHook(() => useGuard(condition, fallback));
 
     const guardedCb = hook.result.current.guard(() => undefined);
     act(() => guardedCb());

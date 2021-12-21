@@ -1,13 +1,13 @@
-import {Checkpoint, Executor} from '../../main';
+import {Guard, Executor} from '../../main';
 import * as sleep from 'sleep-promise';
 
-describe('Checkpoint', () => {
+describe('Guard', () => {
 
   test('guard is a function', () => {
     const executor = new Executor(() => undefined);
-    const checkpoint = new Checkpoint(executor, () => undefined);
+    const guard = new Guard(executor, () => undefined);
 
-    expect(checkpoint.guard(() => undefined)).toBeInstanceOf(Function);
+    expect(guard.guard(() => undefined)).toBeInstanceOf(Function);
   });
 
   test('invokes callback if condition is met', async () => {
@@ -17,16 +17,16 @@ describe('Checkpoint', () => {
     const cbMock = jest.fn();
 
     const executor = new Executor(listenerMock);
-    const checkpoint = new Checkpoint(executor, conditionMock, fallbackMock);
-    const guardedCb = checkpoint.guard(cbMock);
+    const guard = new Guard(executor, conditionMock, fallbackMock);
+    const guardedCb = guard.guard(cbMock);
 
     guardedCb(123, 'abc');
 
-    expect(checkpoint.pending).toBe(true);
+    expect(guard.pending).toBe(true);
 
     await sleep(50);
 
-    expect(checkpoint.pending).toBe(false);
+    expect(guard.pending).toBe(false);
 
     expect(conditionMock).toHaveBeenCalledTimes(1);
     expect(conditionMock).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
@@ -44,8 +44,8 @@ describe('Checkpoint', () => {
     const captureArgsMock = jest.fn((): [number, string] => [456, 'def']);
 
     const executor = new Executor(() => undefined);
-    const checkpoint = new Checkpoint(executor, () => true);
-    const guardedCb = checkpoint.guard(cbMock, captureArgsMock);
+    const guard = new Guard(executor, () => true);
+    const guardedCb = guard.guard(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
 
@@ -65,16 +65,16 @@ describe('Checkpoint', () => {
     const cbMock = jest.fn();
 
     const executor = new Executor(listenerMock);
-    const checkpoint = new Checkpoint(executor, conditionMock, fallbackMock);
-    const guardedCb = checkpoint.guard(cbMock);
+    const guard = new Guard(executor, conditionMock, fallbackMock);
+    const guardedCb = guard.guard(cbMock);
 
     guardedCb(123, 'abc');
 
-    expect(checkpoint.pending).toBe(true);
+    expect(guard.pending).toBe(true);
 
     await sleep(50);
 
-    expect(checkpoint.pending).toBe(false);
+    expect(guard.pending).toBe(false);
 
     expect(conditionMock).toHaveBeenCalledTimes(1);
     expect(conditionMock).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
@@ -96,8 +96,8 @@ describe('Checkpoint', () => {
     const cbMock = jest.fn();
 
     const executor = new Executor(listenerMock);
-    const checkpoint = new Checkpoint(executor, conditionMock, fallbackMock);
-    const guardedCb = checkpoint.guard(cbMock);
+    const guard = new Guard(executor, conditionMock, fallbackMock);
+    const guardedCb = guard.guard(cbMock);
 
     guardedCb(123, 'abc');
 
@@ -129,8 +129,8 @@ describe('Checkpoint', () => {
     const captureArgsMock = jest.fn((): [number, string] => [456, 'def']);
 
     const executor = new Executor(() => undefined);
-    const checkpoint = new Checkpoint(executor, conditionMock, (replay) => lastReplay = replay);
-    const guardedCb = checkpoint.guard(cbMock, captureArgsMock);
+    const guard = new Guard(executor, conditionMock, (replay) => lastReplay = replay);
+    const guardedCb = guard.guard(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
 
@@ -164,15 +164,15 @@ describe('Checkpoint', () => {
     const cbMock = jest.fn();
 
     const executor = new Executor(listenerMock);
-    const checkpoint = new Checkpoint(executor, conditionMock, fallbackMock);
+    const guard = new Guard(executor, conditionMock, fallbackMock);
 
-    const guardedCb = checkpoint.guard(cbMock);
+    const guardedCb = guard.guard(cbMock);
 
     guardedCb();
 
     expect(conditionSignal?.aborted).toBe(false);
 
-    checkpoint.abort();
+    guard.abort();
 
     expect(conditionSignal?.aborted).toBe(true);
 

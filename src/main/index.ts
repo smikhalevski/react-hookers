@@ -1,5 +1,5 @@
 export * from './blocker';
-export * from './checkpoint';
+export * from './guard';
 export * from './debounce';
 export * from './effect';
 export * from './executor';

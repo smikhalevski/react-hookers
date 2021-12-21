@@ -1,13 +1,13 @@
 import {Executor} from '../executor';
 
-export type CheckpointCondition = (signal: AbortSignal) => unknown;
+export type GuardCondition = (signal: AbortSignal) => unknown;
 
-export type CheckpointFallback = (replay: () => void) => void;
+export type GuardFallback = (replay: () => void) => void;
 
-export class Checkpoint {
+export class Guard {
 
   /**
-   * The executor that invokes the {@link condition}.
+   * The executor that invokes the {@link Guard.condition}.
    */
   public executor;
 
@@ -21,7 +21,7 @@ export class Checkpoint {
    */
   public fallback;
 
-  public constructor(executor: Executor, condition: CheckpointCondition, fallback?: CheckpointFallback) {
+  public constructor(executor: Executor, condition: GuardCondition, fallback?: GuardFallback) {
     this.executor = executor;
     this.condition = condition;
     this.fallback = fallback;
@@ -42,8 +42,8 @@ export class Checkpoint {
   }
 
   /**
-   * Returns a proxy callback that verifies the {@link condition} and executes the `cb` if condition is met or
-   * {@link fallback} otherwise.
+   * Returns a proxy callback that verifies the {@link Guard.condition} and executes the `cb` if condition is met or
+   * {@link Guard.fallback} otherwise.
    *
    * @param cb The callback to guard.
    * @param captureArgs Receives arguments passed to `cb` and returns a persisted version of these arguments. This may

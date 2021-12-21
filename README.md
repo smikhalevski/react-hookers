@@ -3,7 +3,7 @@
 The set of general-purpose React hooks.
 
 - [`useBlocker`](#useblocker)
-- [`useCheckpoint`](#usecheckpoint)
+- [`useGuard`](#useguard)
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 - `useEffectOnce`
@@ -74,13 +74,13 @@ const DeleteButton: FC = () => {
 };
 ```
 
-## `useCheckpoint`
+## `useGuard`
 
 Allows extracting shared conditional logic from event handlers and callbacks.
 
 ```tsx
 import {FC, MouseEvent} from 'react';
-import {useCheckpoint} from '@smikhalevski/react-hooks';
+import {useGuard} from '@smikhalevski/react-hooks';
 
 // The delete button that requires the user to be logged in.
 const DeleteButton: FC = () => {
@@ -95,19 +95,19 @@ const DeleteButton: FC = () => {
     return false;
   };
 
-  // The checkpoint fallback logic that should be used if user tried to
+  // The guard fallback logic that should be used if user tried to
   // invoke a handler, but wasn't logged in.
   const handleOpenLoginPopup = (replay: () => void): void => {
     // Open a login popup here. After user was successfully logged in,
     // you can replay user the action that caused the fallback.
   };
 
-  const loginCheckpoint = useCheckpoint(isUserLoggedIn, handleOpenLoginPopup);
+  const loginGuard = useGuard(isUserLoggedIn, handleOpenLoginPopup);
 
-  // After the button is clicked, the checkpoint ensures that user is
+  // After the button is clicked, the guard ensures that user is
   // logged in and then invokes the handler or the fallback. 
   return (
-      <button onClick={loginCheckpoint.guard(handleClick, (event) => event.persist())}>
+      <button onClick={loginGuard.guard(handleClick, (event) => event.persist())}>
         {'Delete'}
       </button>
   );
