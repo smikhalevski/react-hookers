@@ -12,3 +12,5 @@ export const time = new Time();
  * @see {@link time}
  */
 export const TimeContext = createContext(time);
+
+TimeContext.displayName = 'TimeContext';

@@ -12,3 +12,5 @@ export const intervalManager = new IntervalManager();
  * @see {@link intervalManager}
  */
 export const IntervalManagerContext = createContext(intervalManager);
+
+IntervalManagerContext.displayName = 'IntervalManagerContext';
