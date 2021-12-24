@@ -107,7 +107,7 @@ const DeleteButton: FC = () => {
   // After the button is clicked, the guard ensures that user is
   // logged in and then invokes the handler or the fallback. 
   return (
-      <button onClick={loginGuard.guard(handleClick, (event) => event.persist())}>
+      <button onClick={loginGuard.guardCallback(handleClick, (event) => event.persist())}>
         {'Delete'}
       </button>
   );

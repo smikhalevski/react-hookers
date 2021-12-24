@@ -51,7 +51,7 @@ export class Guard {
    *     fallback and replay invocations are async.
    * @returns The proxy callback with the same signature as `cb`.
    */
-  public guard<A extends any[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void): (...args: A) => void {
+  public guardCallback<A extends any[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void): (...args: A) => void {
     return (...args) => {
       const capturedArgs = captureArgs?.(...args) || args;
 
@@ -63,7 +63,7 @@ export class Guard {
           cb(...capturedArgs);
           return;
         }
-        this.fallback?.(this.guard(() => {
+        this.fallback?.(this.guardCallback(() => {
           cb(...capturedArgs);
         }));
       }));

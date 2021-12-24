@@ -26,7 +26,7 @@ describe('useGuard', () => {
     expect(setPendingMock).toHaveBeenCalledTimes(1);
     expect(setPendingMock).toHaveBeenNthCalledWith(1, false);
 
-    const guardedCb = hook.result.current.guard(() => undefined);
+    const guardedCb = hook.result.current.guardCallback(() => undefined);
 
     act(() => guardedCb());
 
@@ -49,7 +49,7 @@ describe('useGuard', () => {
     const hookMock = jest.fn(() => useGuard(conditionMock, (replay) => lastReplay = replay));
     const hook = renderHook(hookMock);
 
-    const guardedCb = hook.result.current.guard(() => undefined);
+    const guardedCb = hook.result.current.guardCallback(() => undefined);
 
     act(() => guardedCb());
 
@@ -77,7 +77,7 @@ describe('useGuard', () => {
 
     const hook = renderHook(() => useGuard(condition, fallback));
 
-    const guardedCb = hook.result.current.guard(() => undefined);
+    const guardedCb = hook.result.current.guardCallback(() => undefined);
     act(() => guardedCb());
     await hook.waitForNextUpdate();
 

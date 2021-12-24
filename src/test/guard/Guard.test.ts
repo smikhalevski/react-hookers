@@ -3,11 +3,11 @@ import * as sleep from 'sleep-promise';
 
 describe('Guard', () => {
 
-  test('guard is a function', () => {
+  test('returns a function', () => {
     const executor = new Executor(() => undefined);
     const guard = new Guard(executor, () => undefined);
 
-    expect(guard.guard(() => undefined)).toBeInstanceOf(Function);
+    expect(guard.guardCallback(() => undefined)).toBeInstanceOf(Function);
   });
 
   test('invokes callback if condition is met', async () => {
@@ -18,7 +18,7 @@ describe('Guard', () => {
 
     const executor = new Executor(listenerMock);
     const guard = new Guard(executor, conditionMock, fallbackMock);
-    const guardedCb = guard.guard(cbMock);
+    const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
 
@@ -45,7 +45,7 @@ describe('Guard', () => {
 
     const executor = new Executor(() => undefined);
     const guard = new Guard(executor, () => true);
-    const guardedCb = guard.guard(cbMock, captureArgsMock);
+    const guardedCb = guard.guardCallback(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
 
@@ -66,7 +66,7 @@ describe('Guard', () => {
 
     const executor = new Executor(listenerMock);
     const guard = new Guard(executor, conditionMock, fallbackMock);
-    const guardedCb = guard.guard(cbMock);
+    const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
 
@@ -97,7 +97,7 @@ describe('Guard', () => {
 
     const executor = new Executor(listenerMock);
     const guard = new Guard(executor, conditionMock, fallbackMock);
-    const guardedCb = guard.guard(cbMock);
+    const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
 
@@ -130,7 +130,7 @@ describe('Guard', () => {
 
     const executor = new Executor(() => undefined);
     const guard = new Guard(executor, conditionMock, (replay) => lastReplay = replay);
-    const guardedCb = guard.guard(cbMock, captureArgsMock);
+    const guardedCb = guard.guardCallback(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
 
@@ -166,7 +166,7 @@ describe('Guard', () => {
     const executor = new Executor(listenerMock);
     const guard = new Guard(executor, conditionMock, fallbackMock);
 
-    const guardedCb = guard.guard(cbMock);
+    const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb();
 
