@@ -1,3 +1,4 @@
+export * from './animation';
 export * from './blocker';
 export * from './guard';
 export * from './debounce';
