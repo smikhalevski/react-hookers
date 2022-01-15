@@ -60,17 +60,17 @@ describe('useRerender', () => {
   test('defers re-render when called during render', () => {
     const useRerenderMock = jest.fn(useRerender);
 
-    let rerenderEnabled = true;
+    let rerenderCount = 0;
 
     renderHook(() => {
       const rerender = useRerenderMock();
 
-      if (rerenderEnabled) {
-        rerenderEnabled = false;
+      if (rerenderCount < 3) {
+        ++rerenderCount;
         rerender();
       }
     });
 
-    expect(useRerenderMock).toHaveBeenCalledTimes(2);
+    expect(useRerenderMock).toHaveBeenCalledTimes(4);
   });
 });

@@ -1,4 +1,5 @@
-import {EffectCallback, ReducerWithoutAction, useEffect, useReducer, useRef} from 'react';
+import {EffectCallback, ReducerWithoutAction, useReducer, useRef} from 'react';
+import {useEffectOnce} from '../effect';
 
 /**
  * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
@@ -7,52 +8,32 @@ import {EffectCallback, ReducerWithoutAction, useEffect, useReducer, useRef} fro
  * **Note:** Using this hook makes you code imperative, which is generally considered a bad practice.
  */
 export function useRerender(): () => void {
-  const [, triggerRerender] = useReducer(reducer, 0);
+  const [, dispatch] = useReducer(reduceCount, 0);
 
-  const manager = useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(triggerRerender);
+  const manager = useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(dispatch);
 
-  manager._preventRerender();
-  useEffect(manager._effect);
+  useEffectOnce(manager._effect);
 
   return manager._rerender;
 }
 
-const reducer: ReducerWithoutAction<number> = (prevState) => prevState ^ 1;
+const reduceCount: ReducerWithoutAction<number> = (count) => count + 1;
 
-const enum RerenderState {
-  IDLE,
-  DEFERRED,
-  PREVENTED,
-}
+function createRerenderManager(dispatch: () => void) {
 
-function createRerenderManager(triggerRerender: () => void) {
-
-  let state = RerenderState.IDLE;
-
-  const _preventRerender = (): void => {
-    if (state === RerenderState.IDLE) {
-      state = RerenderState.PREVENTED;
-    }
-  };
+  let mounted = true;
 
   const _rerender = (): void => {
-    if (state === RerenderState.IDLE) {
-      triggerRerender();
-    } else {
-      state = RerenderState.DEFERRED;
+    if (mounted) {
+      dispatch();
     }
   };
 
-  const _effect: EffectCallback = () => {
-    if (state === RerenderState.DEFERRED) {
-      triggerRerender();
-    }
-    state = RerenderState.IDLE;
-    return _preventRerender;
+  const _effect: EffectCallback = () => () => {
+    mounted = false;
   };
 
   return {
-    _preventRerender,
     _rerender,
     _effect,
   };
