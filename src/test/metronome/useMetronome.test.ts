@@ -1,27 +1,27 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
-import {useDebounce} from '../../main';
+import {useMetronome} from '../../main';
 import * as sleep from 'sleep-promise';
 
-describe('useDebounce', () => {
+describe('useMetronome', () => {
 
   test('returns same callbacks on every call', () => {
-    const hook = renderHook(() => useDebounce());
+    const hook = renderHook(() => useMetronome());
 
-    const [debounce1, cancel1] = hook.result.current;
+    const [start1, stop1] = hook.result.current;
     hook.rerender();
-    const [debounce2, cancel2] = hook.result.current;
+    const [start2, stop2] = hook.result.current;
 
-    expect(debounce1).toEqual(debounce2);
-    expect(cancel1).toEqual(cancel2);
+    expect(start1).toEqual(start2);
+    expect(stop1).toEqual(stop2);
   });
 
   test('invokes the callback', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useDebounce());
+    const hook = renderHook(() => useMetronome());
 
-    const [debounce] = hook.result.current;
+    const [start] = hook.result.current;
 
-    act(() => debounce(cbMock, 50));
+    act(() => start(cbMock, 50));
 
     await sleep(100);
 
@@ -31,12 +31,12 @@ describe('useDebounce', () => {
   test('consequent calls override the invoked callback', async () => {
     const cbMock1 = jest.fn();
     const cbMock2 = jest.fn();
-    const hook = renderHook(() => useDebounce());
+    const hook = renderHook(() => useMetronome());
 
-    const [debounce] = hook.result.current;
+    const [start] = hook.result.current;
 
-    act(() => debounce(cbMock1, 50));
-    act(() => debounce(cbMock2, 50));
+    act(() => start(cbMock1, 50));
+    act(() => start(cbMock2, 50));
 
     await sleep(100);
 
@@ -46,11 +46,11 @@ describe('useDebounce', () => {
 
   test('does not invoke the callback after unmount', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useDebounce());
+    const hook = renderHook(() => useMetronome());
 
-    const [debounce] = hook.result.current;
+    const [start] = hook.result.current;
 
-    act(() => debounce(cbMock, 50));
+    act(() => start(cbMock, 50));
 
     hook.unmount();
 
@@ -61,13 +61,13 @@ describe('useDebounce', () => {
 
   test('the callback invocation is canceled', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useDebounce());
+    const hook = renderHook(() => useMetronome());
 
-    const [debounce, cancel] = hook.result.current;
+    const [start, stop] = hook.result.current;
 
-    act(() => debounce(cbMock, 50));
+    act(() => start(cbMock, 50));
 
-    act(() => cancel());
+    act(() => stop());
 
     await sleep(100);
 

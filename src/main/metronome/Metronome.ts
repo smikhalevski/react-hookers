@@ -17,15 +17,19 @@ export class Metronome {
   }
 
   private loop = (): void => {
-    this.stop();
-    this.callbacks.forEach(call);
-    this.timeout = setTimeout(this.loop, this.ms);
+    try {
+      this.callbacks.forEach(call);
+    } finally {
+      this.schedule();
+    }
   };
 
-  /**
-   * Stops the metronome.
-   */
-  public stop(): void {
+  private schedule(): void {
+    this.stop();
+    this.timeout = setTimeout(this.loop, this.ms);
+  }
+
+  private stop(): void {
     clearTimeout(this.timeout!);
   }
 
@@ -36,7 +40,7 @@ export class Metronome {
    */
   public add(cb: () => void): void {
     if (this.callbacks.add(cb).size === 1) {
-      this.loop();
+      this.schedule();
     }
   };
 

@@ -1,7 +1,7 @@
-import {useContext} from 'react';
+import {useContext, useEffect} from 'react';
 import {useSemanticMemo} from '../memo';
-import {MetronomeManager} from './MetronomeManager';
-import {MetronomeManagerContext} from './MetronomeManagerContext';
+import {MetronomeProvider} from './MetronomeProvider';
+import {MetronomeProviderContext} from './MetronomeProviderContext';
 import {SetTimeout} from '../shared-types';
 
 export type MetronomeProtocol = [start: SetTimeout, stop: () => void];
@@ -22,18 +22,22 @@ export type MetronomeProtocol = [start: SetTimeout, stop: () => void];
  * @see {@link useRerenderMetronome}
  */
 export function useMetronome(): Readonly<MetronomeProtocol> {
-  const manager = useContext(MetronomeManagerContext);
-  return useSemanticMemo(() => createMetronomeProtocol(manager), [manager]);
+  const provider = useContext(MetronomeProviderContext);
+  const manager = useSemanticMemo(() => createMetronomeManager(provider), [provider]);
+
+  useEffect(manager._effect);
+
+  return manager._protocol;
 }
 
-function createMetronomeProtocol(manager: MetronomeManager) {
+function createMetronomeManager(provider: MetronomeProvider) {
 
   let cleanup: (() => void) | undefined;
 
   const start: SetTimeout = (cb, ms = 0, ...args) => {
     stop();
 
-    const metronome = manager.getMetronome(ms);
+    const metronome = provider.getMetronome(ms);
 
     const callback = () => {
       cb(...args);
@@ -47,7 +51,13 @@ function createMetronomeProtocol(manager: MetronomeManager) {
 
   const stop = () => {
     cleanup?.();
+    cleanup = undefined;
   };
 
-  return [start, stop] as const;
+  const _effect = () => stop;
+
+  return {
+    _effect,
+    _protocol: [start, stop] as const,
+  };
 }

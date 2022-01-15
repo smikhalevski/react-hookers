@@ -1,4 +1,4 @@
 export * from './Metronome';
-export * from './MetronomeManager';
-export * from './MetronomeManagerContext';
+export * from './MetronomeProvider';
+export * from './MetronomeProviderContext';
 export * from './useMetronome';

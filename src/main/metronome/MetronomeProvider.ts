@@ -1,6 +1,6 @@
 import {Metronome} from './Metronome';
 
-export class MetronomeManager {
+export class MetronomeProvider {
 
   private metronomes = new Map<number, Metronome>();
 
