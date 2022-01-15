@@ -1,5 +1,5 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
-import {Executor, ExecutorManagerContext, ExecutorManager, useExecutor} from '../../main';
+import {Executor, ExecutorProvider, ExecutorProviderContext, useExecutor} from '../../main';
 import {createElement, FunctionComponent} from 'react';
 
 describe('useExecutor', () => {
@@ -125,10 +125,10 @@ describe('useExecutor', () => {
   });
 
   test('uses provider to create an executor', async () => {
-    const executorManager = new ExecutorManager();
+    const executorManager = new ExecutorProvider();
     executorManager.createExecutor = jest.fn();
 
-    const Context: FunctionComponent = (props) => createElement(ExecutorManagerContext.Provider, {
+    const Context: FunctionComponent = (props) => createElement(ExecutorProviderContext.Provider, {
       value: executorManager,
       children: props.children,
     });
@@ -140,10 +140,10 @@ describe('useExecutor', () => {
   });
 
   test('uses provider to dispose an executor', async () => {
-    const executorManager = new ExecutorManager();
+    const executorManager = new ExecutorProvider();
     executorManager.disposeExecutor = jest.fn();
 
-    const Context: FunctionComponent = ({children}) => createElement(ExecutorManagerContext.Provider, {
+    const Context: FunctionComponent = ({children}) => createElement(ExecutorProviderContext.Provider, {
       value: executorManager,
       children,
     });

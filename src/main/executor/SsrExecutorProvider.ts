@@ -1,11 +1,11 @@
 import {Executor} from './Executor';
 import {noop} from '../utils';
-import {ExecutorManager} from './ExecutorManager';
+import {ExecutorProvider} from './ExecutorProvider';
 
 /**
- * The executor manager that keeps references to all created executors and provides batch operation for them.
+ * The executor provider that keeps references to all created executors and provides batch operation for them.
  */
-export class SsrExecutorManager implements ExecutorManager {
+export class SsrExecutorProvider implements ExecutorProvider {
 
   public executors = new Set<Executor>();
 

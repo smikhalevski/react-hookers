@@ -11,7 +11,7 @@ describe('Metronome', () => {
 
     await sleep(200);
 
-    expect(cbMock.mock.calls.length).toBeGreaterThanOrEqual(8);
+    expect(cbMock.mock.calls.length).toBeGreaterThanOrEqual(6);
   });
 
   test('stops invoking a callback after it was removed', async () => {

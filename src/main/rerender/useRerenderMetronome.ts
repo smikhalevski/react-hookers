@@ -1,7 +1,6 @@
 import {useMetronome} from '../metronome';
 import {useRerender} from './useRerender';
-import {useRef} from 'react';
-import {useEffectOnce} from '../effect';
+import {useEffect} from 'react';
 
 /**
  * Re-renders the component on interval.
@@ -15,5 +14,5 @@ export function useRerenderMetronome(ms: number): void {
   const [start] = useMetronome();
   const rerender = useRerender();
 
-  useEffectOnce(useRef<() => void>().current ||= () => start(rerender, ms));
+  useEffect(() => start(rerender, ms), [start, ms]);
 }

@@ -112,7 +112,7 @@ export class Executor<T = unknown> implements Execution<T> {
   public dispose(): this {
     if (!this.disposed) {
       this.disposed = true;
-      this._forceAbort();
+      this.forceAbort();
       this.listener();
     }
     return this;
@@ -136,7 +136,7 @@ export class Executor<T = unknown> implements Execution<T> {
    */
   public abort(): this {
     if (!this.disposed && this.pending) {
-      this._forceAbort();
+      this.forceAbort();
       this.listener();
     }
     return this;
@@ -147,7 +147,7 @@ export class Executor<T = unknown> implements Execution<T> {
    */
   public resolve(result: T | undefined): this {
     if (!this.disposed && (this.pending || !Object.is(this.result, result))) {
-      this._forceAbort();
+      this.forceAbort();
       this.resolved = true;
       this.rejected = false;
       this.result = result;
@@ -162,7 +162,7 @@ export class Executor<T = unknown> implements Execution<T> {
    */
   public reject(reason: any): this {
     if (!this.disposed && (this.pending || !Object.is(this.reason, reason))) {
-      this._forceAbort();
+      this.forceAbort();
       this.resolved = false;
       this.rejected = true;
       this.result = undefined;
@@ -172,7 +172,7 @@ export class Executor<T = unknown> implements Execution<T> {
     return this;
   }
 
-  private _forceAbort() {
+  private forceAbort() {
     this.pending = false;
     this.abortController?.abort();
     this.promise = this.abortController = undefined;

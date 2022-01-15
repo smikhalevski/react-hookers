@@ -187,38 +187,38 @@ const DeleteButton: FC = () => {
 };
 ```
 
-You can manage how executors are created with `ExecutorManager`
-and [`SsrExecutorManager`](https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html).
+You can manage how executors are created with `ExecutorProvider`
+and [`SsrExecutorProvider`](https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {SsrExecutorManager} from '@smikhalevski/react-hooks';
+import {SsrExecutorProvider} from '@smikhalevski/react-hooks';
 
-const mySsrExecutorManager = new SsrExecutorManager();
+const mySsrProviderManager = new SsrExecutorProvider();
 
 renderToString(
-    <ExecutorManagerContext.Provider value={mySsrExecutorManager}>
+    <ExecutorProviderContext.Provider value={mySsrProviderManager}>
       <DeleteButton/>
-    </ExecutorManagerContext.Provider>
+    </ExecutorProviderContext.Provider>
 );
 
 // Waits for all executors to complete pending executions.
-await mySsrExecutorManager.waitForExecutorsToComplete();
+await mySsrProviderManager.waitForExecutorsToComplete();
 ```
 
 You can create a custom `useExecutor` hook that is bound to a custom context.
 
 ```ts
 import {createContext} from 'react';
-import {createExecutorHook, Executor, ExecutorManager} from '@smikhalevski/react-hooks';
+import {createExecutorHook, Executor, ExecutorProvider} from '@smikhalevski/react-hooks';
 
-class MyExecutorManager extends ExecutorManager {
+class MyExecutorProvider extends ExecutorProvider {
   // Your overrides here.
 }
 
-const MyExecutorManagerContext = createContext(new MyExecutorManager());
+const MyExecutorProviderContext = createContext(new MyExecutorProvider());
 
-const useMyExecutor = createExecutorHook(MyExecutorManagerContext);
+const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
 ```
 
 ## `useMountSignal`

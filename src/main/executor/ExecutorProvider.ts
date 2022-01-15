@@ -1,9 +1,9 @@
 import {Executor} from './Executor';
 
 /**
- * The stateless manager that creates and disposes executors.
+ * The stateless provider that creates and disposes executors.
  */
-export class ExecutorManager {
+export class ExecutorProvider {
 
   /**
    * Creates a new {@link Executor} instance.
