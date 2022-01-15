@@ -1,14 +1,13 @@
 import {useRef} from 'react';
 import {useEffectOnce} from '../effect';
+import {SetTimeout} from '../shared-types';
 
-export type Debounce = <A extends any[]>(cb: (...args: A) => void, delay?: number, ...args: A) => void;
-
-export type DebounceProtocol = [debounce: Debounce, cancel: () => void];
+export type DebounceProtocol = [debounce: SetTimeout, cancel: () => void];
 
 /**
  * The replacement for `setTimeout` that is cancelled when component is unmounted.
  */
-export function useDebounce(): Readonly<DebounceProtocol>  {
+export function useDebounce(): Readonly<DebounceProtocol> {
   const manager = useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager();
 
   useEffectOnce(manager._effect);
@@ -20,7 +19,7 @@ function createDebounceManager() {
 
   let timeout: ReturnType<typeof setTimeout>;
 
-  const debounce: Debounce = (...args) => {
+  const debounce: SetTimeout = (...args) => {
     cancel();
     timeout = setTimeout(...args);
   };

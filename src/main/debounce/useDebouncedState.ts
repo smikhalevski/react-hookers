@@ -10,32 +10,32 @@ export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: D
  * synchronously and component is re-rendered. After the `delay` the `currState` is set to `nextState` and component is
  * re-rendered again.
  *
- * @param delay The delay after which `currState` is synchronized with `nextState`.
+ * @param ms The delay after which `currState` is synchronized with `nextState`.
  * @param initialState Thee initial state or a callback that returns an initial state.
  * @template S The type of stateful value.
  */
-export function useDebouncedState<S>(delay: number, initialState: S | (() => S)): Readonly<DebouncedStateProtocol<S>>;
+export function useDebouncedState<S>(ms: number, initialState: S | (() => S)): Readonly<DebouncedStateProtocol<S>>;
 
 /**
  * Returns a stateful values, and a function to update it. Upon invocation of `setState`, the `nextState` is assigned
  * synchronously and component is re-rendered. After the `delay` the `currState` is set to `nextState` and component is
  * re-rendered again.
  *
- * @param delay The delay after which `currState` is synchronized with `nextState`.
+ * @param ms The delay after which `currState` is synchronized with `nextState`.
  * @template S The type of stateful value.
  */
-export function useDebouncedState<S = undefined>(delay: number): Readonly<DebouncedStateProtocol<S | undefined>>;
+export function useDebouncedState<S = undefined>(ms: number): Readonly<DebouncedStateProtocol<S | undefined>>;
 
-export function useDebouncedState<S>(delay: number, initialState?: S | (() => S)) {
+export function useDebouncedState<S>(ms: number, initialState?: S | (() => S)) {
   const rerender = useRerender();
-  const manager = useRef<ReturnType<typeof createDebouncedStateManager>>().current ||= createDebouncedStateManager<unknown>(delay, rerender, initialState);
+  const manager = useRef<ReturnType<typeof createDebouncedStateManager>>().current ||= createDebouncedStateManager<unknown>(ms, rerender, initialState);
 
   useEffectOnce(manager._effect);
 
   return manager._protocol;
 }
 
-function createDebouncedStateManager<S>(delay: number, rerender: () => void, initialState: S | (() => S) | undefined) {
+function createDebouncedStateManager<S>(ms: number, rerender: () => void, initialState: S | (() => S) | undefined) {
 
   let timeout: ReturnType<typeof setTimeout>;
   let currState = isFunction(initialState) ? initialState() : initialState;
@@ -59,7 +59,7 @@ function createDebouncedStateManager<S>(delay: number, rerender: () => void, ini
     timeout = setTimeout(() => {
       protocol[0] = currState = nextState;
       rerender();
-    }, delay);
+    }, ms);
   };
 
   const protocol: DebouncedStateProtocol<S | undefined> = [currState, nextState, setState];

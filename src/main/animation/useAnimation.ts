@@ -37,13 +37,13 @@ function createAnimationManager() {
 
     const index = count;
 
-    const nextFrame: FrameRequestCallback = (time) => {
+    const loop: FrameRequestCallback = (time) => {
       if (index === count) {
         cb(time);
-        requestAnimationFrame(nextFrame);
+        requestAnimationFrame(loop);
       }
     };
-    requestAnimationFrame(nextFrame);
+    requestAnimationFrame(loop);
   };
 
   const stop = () => {

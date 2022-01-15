@@ -11,14 +11,14 @@ The set of general-purpose React hooks.
 - `useRenderEffectOnce`
 - [`useExecution`](#useexecution)
 - [`useExecutor`](#useexecutor)
-- `useInterval`
+- `useMetronome`
 - `usePrevState`
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
 - [`useRefCallback`](#userefcallback)
 - `useRenderedValueRef`
 - [`useRerender`](#usererender)
-- `useRerenderInterval`
+- `useRerenderMetronome`
 - `useTime`
 - [`useMountSignal`](#usemountsignal)
 - [`useToggle`](#usetoggle)
