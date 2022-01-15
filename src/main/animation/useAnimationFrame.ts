@@ -15,7 +15,7 @@ export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void,
  * useEffect(() => {
  *
  *   start(() => {
- *     // Compute animation
+ *     // Apply animation changes
  *   });
  * }, []);
  * ```

@@ -2,32 +2,44 @@
 
 The set of general-purpose React hooks.
 
-- [`useBlocker`](#useblocker)
-- [`useGuard`](#useguard)
-- [`useDebounce`](#usedebounce)
-- [`useDebouncedState`](#usedebouncedstate)
-- `useEffectOnce`
-- [`useRenderEffect`](#userendereffect)
-- `useRenderEffectOnce`
-- [`useExecution`](#useexecution)
-- [`useExecutor`](#useexecutor)
-- `useMetronome`
-- `usePrevState`
-- [`useSemanticCallback`](#usesemanticcallback)
-- [`useSemanticMemo`](#usesemanticmemo)
-- [`useRefCallback`](#userefcallback)
-- `useRenderedValueRef`
-- [`useRerender`](#usererender)
-- `useRerenderMetronome`
-- `useTime`
-- [`useMountSignal`](#usemountsignal)
-- [`useToggle`](#usetoggle)
-
 ```sh
 npm install --save-prod @smikhalevski/react-hooks
 ```
 
 ⚠️ [API documentation is available here.](https://smikhalevski.github.io/react-hooks/)
+
+**State**
+
+- `usePrevState`
+- [`useRefCallback`](#userefcallback)
+- `useRenderedValueRef`
+- [`useSemanticCallback`](#usesemanticcallback)
+- [`useSemanticMemo`](#usesemanticmemo)
+- [`useExecution`](#useexecution)
+- [`useExecutor`](#useexecutor)
+- [`useToggle`](#usetoggle)
+
+**Rendering**
+
+- [`useRerender`](#usererender)
+- [`useMountSignal`](#usemountsignal)
+- [`useRenderEffect`](#userendereffect)
+- `useEffectOnce`
+- `useRenderEffectOnce`
+- `useRerenderMetronome`
+
+**Time**
+
+- `useTime`
+- `useAnimationFrame`
+- `useMetronome`
+- [`useDebounce`](#usedebounce)
+- [`useDebouncedState`](#usedebouncedstate)
+
+**User flow**
+
+- [`useBlocker`](#useblocker)
+- [`useGuard`](#useguard)
 
 ## `useBlocker`
 
