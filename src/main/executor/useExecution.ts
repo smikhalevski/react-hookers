@@ -1,9 +1,9 @@
-import {IExecution} from './Executor';
+import {Execution} from './Executor';
 import {createExecutionHook} from './createExecutionHook';
 import {ExecutorManagerContext} from './ExecutorManagerContext';
 
 /**
- * Executes a callback when dependencies are changed and returns an {@link IExecution}.
+ * Executes a callback when dependencies are changed and returns an {@link Execution}.
  *
  * @see {@link Executor}
  * @see {@link ExecutorManagerContext}

@@ -1,10 +1,10 @@
 import {Context, DependencyList, useEffect} from 'react';
-import {ExecutorCallback, IExecution} from './Executor';
+import {Execution, ExecutorCallback} from './Executor';
 import {emptyDeps} from '../utils';
 import {createExecutorHook} from './createExecutorHook';
 import {ExecutorManager} from './ExecutorManager';
 
-export type ExecutionHook = <T>(cb: ExecutorCallback<T>, deps?: DependencyList) => IExecution<T>;
+export type ExecutionHook = <T>(cb: ExecutorCallback<T>, deps?: DependencyList) => Execution<T>;
 
 /**
  * Creates a hook that is bound to the given {@link ExecutorManager} context.

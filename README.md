@@ -139,7 +139,7 @@ const [currState, nextState, setState] = useDebouncedState(500);
 ## `useExecution`
 
 Executes a callback when dependencies are changed and returns
-an [`IExecution`](https://smikhalevski.github.io/react-hooks/interfaces/iexecution.html).
+an [`Execution`](https://smikhalevski.github.io/react-hooks/interfaces/iexecution.html).
 
 ```tsx
 import {FC} from 'react';

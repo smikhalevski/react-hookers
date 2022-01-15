@@ -1,4 +1,4 @@
-export interface IExecution<T> {
+export interface Execution<T> {
 
   /**
    * `true` if an execution is currently pending.
@@ -34,7 +34,7 @@ export interface IExecution<T> {
 
 export type ExecutorCallback<T> = (signal: AbortSignal) => Promise<T | undefined> | T | undefined;
 
-export class Executor<T = unknown> implements IExecution<T> {
+export class Executor<T = unknown> implements Execution<T> {
 
   /**
    * `true` if this executor was disposed and shouldn't be used.
@@ -47,8 +47,8 @@ export class Executor<T = unknown> implements IExecution<T> {
   public reason: any;
   public promise: Promise<void> | undefined;
 
-  private _listener;
-  private _abortController: AbortController | undefined;
+  private listener;
+  private abortController: AbortController | undefined;
 
   /**
    * Creates a new {@link Executor}.
@@ -56,7 +56,7 @@ export class Executor<T = unknown> implements IExecution<T> {
    * @param listener The callback that is triggered when the executor state was changed.
    */
   public constructor(listener: () => void) {
-    this._listener = listener;
+    this.listener = listener;
   }
 
   /**
@@ -73,12 +73,12 @@ export class Executor<T = unknown> implements IExecution<T> {
       return Promise.resolve();
     }
 
-    this._abortController?.abort();
-    this._abortController = new AbortController();
+    this.abortController?.abort();
+    this.abortController = new AbortController();
 
     let result;
     try {
-      result = cb(this._abortController.signal);
+      result = cb(this.abortController.signal);
     } catch (error) {
       this.reject(error);
       return Promise.resolve();
@@ -89,7 +89,7 @@ export class Executor<T = unknown> implements IExecution<T> {
     }
     if (!this.pending) {
       this.pending = true;
-      this._listener();
+      this.listener();
     }
     const cbPromise = this.promise = Promise.resolve(result).then(
         (result) => {
@@ -113,7 +113,7 @@ export class Executor<T = unknown> implements IExecution<T> {
     if (!this.disposed) {
       this.disposed = true;
       this._forceAbort();
-      this._listener();
+      this.listener();
     }
     return this;
   }
@@ -125,7 +125,7 @@ export class Executor<T = unknown> implements IExecution<T> {
     if (!this.disposed && (this.resolved || this.rejected)) {
       this.resolved = this.rejected = false;
       this.result = this.reason = undefined;
-      this._listener();
+      this.listener();
     }
     return this;
   }
@@ -137,7 +137,7 @@ export class Executor<T = unknown> implements IExecution<T> {
   public abort(): this {
     if (!this.disposed && this.pending) {
       this._forceAbort();
-      this._listener();
+      this.listener();
     }
     return this;
   }
@@ -152,7 +152,7 @@ export class Executor<T = unknown> implements IExecution<T> {
       this.rejected = false;
       this.result = result;
       this.reason = undefined;
-      this._listener();
+      this.listener();
     }
     return this;
   }
@@ -167,14 +167,14 @@ export class Executor<T = unknown> implements IExecution<T> {
       this.rejected = true;
       this.result = undefined;
       this.reason = reason;
-      this._listener();
+      this.listener();
     }
     return this;
   }
 
   private _forceAbort() {
     this.pending = false;
-    this._abortController?.abort();
-    this.promise = this._abortController = undefined;
+    this.abortController?.abort();
+    this.promise = this.abortController = undefined;
   }
 }
