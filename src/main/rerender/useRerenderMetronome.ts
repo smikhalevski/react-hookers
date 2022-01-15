@@ -14,5 +14,7 @@ export function useRerenderMetronome(ms: number): void {
   const [start] = useMetronome();
   const rerender = useRerender();
 
-  useEffect(() => start(rerender, ms), [start, ms]);
+  useEffect(() => {
+    start(rerender, ms);
+  }, [start, ms]);
 }

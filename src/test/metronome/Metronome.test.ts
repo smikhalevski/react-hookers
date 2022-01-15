@@ -11,6 +11,8 @@ describe('Metronome', () => {
 
     await sleep(200);
 
+    metronome.remove(cbMock);
+
     expect(cbMock.mock.calls.length).toBeGreaterThanOrEqual(6);
   });
 
@@ -27,6 +29,8 @@ describe('Metronome', () => {
     metronome.remove(cbMock1);
 
     await sleep(200);
+
+    metronome.remove(cbMock2);
 
     expect(cbMock1.mock.calls.length).toBeLessThanOrEqual(10);
     expect(cbMock2.mock.calls.length).toBeGreaterThanOrEqual(16);

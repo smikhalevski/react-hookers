@@ -11,6 +11,8 @@ describe('useMetronome', () => {
     hook.rerender();
     const [start2, stop2] = hook.result.current;
 
+    hook.unmount();
+
     expect(start1).toEqual(start2);
     expect(stop1).toEqual(stop2);
   });
@@ -24,6 +26,8 @@ describe('useMetronome', () => {
     act(() => start(cbMock, 50));
 
     await sleep(100);
+
+    hook.unmount();
 
     expect(cbMock).toHaveBeenCalled();
   });
@@ -39,6 +43,8 @@ describe('useMetronome', () => {
     act(() => start(cbMock2, 50));
 
     await sleep(100);
+
+    hook.unmount();
 
     expect(cbMock1).not.toHaveBeenCalled();
     expect(cbMock2).toHaveBeenCalled();
@@ -70,6 +76,8 @@ describe('useMetronome', () => {
     act(() => stop());
 
     await sleep(100);
+
+    hook.unmount();
 
     expect(cbMock).not.toHaveBeenCalled();
   });

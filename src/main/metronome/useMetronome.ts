@@ -1,8 +1,9 @@
-import {useContext, useEffect} from 'react';
+import {useContext} from 'react';
 import {useSemanticMemo} from '../memo';
 import {MetronomeProvider} from './MetronomeProvider';
 import {MetronomeProviderContext} from './MetronomeProviderContext';
 import {SetTimeout} from '../shared-types';
+import {useEffectOnce} from '../effect';
 
 export type MetronomeProtocol = [start: SetTimeout, stop: () => void];
 
@@ -25,7 +26,7 @@ export function useMetronome(): Readonly<MetronomeProtocol> {
   const provider = useContext(MetronomeProviderContext);
   const manager = useSemanticMemo(() => createMetronomeManager(provider), [provider]);
 
-  useEffect(manager._effect);
+  useEffectOnce(manager._effect);
 
   return manager._protocol;
 }
@@ -39,7 +40,7 @@ function createMetronomeManager(provider: MetronomeProvider) {
 
     const metronome = provider.getMetronome(ms);
 
-    const callback = () => {
+    const callback = args.length === 0 ? cb : () => {
       cb(...args);
     };
     metronome.add(callback);
