@@ -1,7 +1,7 @@
 import {useRef} from 'react';
 import {useEffectOnce} from '../effect';
 
-export type AnimationProtocol = [start: (cb: FrameRequestCallback) => void, stop: () => void];
+export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void, stop: () => void];
 
 /**
  * Returns protocol to start and stop an animation loop.
@@ -10,7 +10,7 @@ export type AnimationProtocol = [start: (cb: FrameRequestCallback) => void, stop
  * animation was already pending then it is stopped and started with the new callback.
  *
  * ```ts
- * const [start, stop] = useAnimation();
+ * const [start, stop] = useAnimationFrame();
  *
  * useEffect(() => {
  *
@@ -20,34 +20,30 @@ export type AnimationProtocol = [start: (cb: FrameRequestCallback) => void, stop
  * }, []);
  * ```
  */
-export function useAnimation(): Readonly<AnimationProtocol> {
-  const manager = useRef<ReturnType<typeof createAnimationManager>>().current ||= createAnimationManager();
+export function useAnimationFrame(): Readonly<AnimationFrameProtocol> {
+  const manager = useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager();
 
   useEffectOnce(manager._effect);
 
   return manager._protocol;
 }
 
-function createAnimationManager() {
+function createAnimationFrameManager() {
 
-  let count: number;
+  let handle: number;
 
   const start = (cb: FrameRequestCallback) => {
     stop();
 
-    const index = count;
-
     const loop: FrameRequestCallback = (time) => {
-      if (index === count) {
-        cb(time);
-        requestAnimationFrame(loop);
-      }
+      cb(time);
+      handle = requestAnimationFrame(loop);
     };
-    requestAnimationFrame(loop);
+    handle = requestAnimationFrame(loop);
   };
 
   const stop = () => {
-    ++count;
+    cancelAnimationFrame(handle);
   };
 
   const _effect = () => stop;
