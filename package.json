@@ -1,6 +1,6 @@
 {
   "name": "@smikhalevski/react-hooks",
-  "version": "3.0.0",
+  "version": "4.0.1-next.0",
   "description": "The set of general-purpose React hooks.",
   "main": "./lib/index-cjs.js",
   "module": "./lib/index.js",
@@ -11,10 +11,10 @@
   ],
   "scripts": {
     "build": "tsc && npm run rollup && npm run terser",
-    "rollup": "rollup --external react --input ./lib/index.js --file ./lib/index-cjs.js --format cjs --plugin @rollup/plugin-node-resolve",
-    "terser": "for file in ./lib/*.js; do terser --compress --mangle --mangle-props regex=/^_/ --output $file -- $file; done || exit 1",
+    "rollup": "rollup --external @smikhalevski/event-bus,react --input ./lib/index.js --file ./lib/index-cjs.js --format cjs --plugin @rollup/plugin-node-resolve",
+    "terser": "for file in $(find ./lib -name '*.js'); do terser --compress --mangle --mangle-props reserved=[__esModule],regex=/^__/ --output $file -- $file; done || exit 1",
     "clean": "rm -rf ./lib ./docs",
-    "test": "jest --detectOpenHandles",
+    "test": "jest --detectOpenHandles --forceExit",
     "docs": "typedoc ./src/main/index.ts",
     "publish-docs": "[ -d ./docs ] && [[ ! $(git status --porcelain) ]] && branch=$(git rev-parse --abbrev-ref HEAD) && sha=$(git rev-parse --short HEAD) && t=$(mktemp -d) && cp -R ./docs/ $t && git checkout ghpages && ls -A | grep -wv .git | xargs rm -rf && cp -R $t/ . && git add . && git commit -m \"Updated docs ($sha)\" && git push && git checkout $branch",
     "release-docs": "npm run clean && npm run docs && npm run publish-docs"
@@ -66,5 +66,8 @@
   },
   "peerDependencies": {
     "react": ">=16.14.0"
+  },
+  "dependencies": {
+    "@smikhalevski/event-bus": "^1.0.0"
   }
 }

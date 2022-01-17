@@ -17,11 +17,17 @@ export function useToggle(initialValue = false): Readonly<ToggleProtocol> {
 
 function createToggleProtocol(setValue: Dispatch<SetStateAction<boolean>>): ToggleProtocol {
 
-  const enable = () => setValue(true);
+  const enable = () => {
+    setValue(true);
+  };
 
-  const disable = () => setValue(false);
+  const disable = () => {
+    setValue(false);
+  };
 
-  const toggle = (value?: boolean): void => setValue(value != null ? value : (value) => !value);
+  const toggle = (value?: boolean): void => {
+    setValue(value != null ? value : (value) => !value);
+  };
 
   return [false, enable, disable, toggle];
 }
