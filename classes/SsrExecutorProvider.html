@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ExecutorCache | react-hooks - v3.0.0</title>
-	<meta name="description" content="Documentation for react-hooks - v3.0.0">
+	<title>SsrExecutorProvider | react-hooks - v4.0.1</title>
+	<meta name="description" content="Documentation for react-hooks - v4.0.1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<script async src="../assets/js/search.js" id="search-script"></script>
@@ -23,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">react-hooks - v3.0.0</a>
+					<a href="../index.html" class="title">react-hooks - v4.0.1</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -52,13 +52,13 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../modules.html">react-hooks - v3.0.0</a>
+					<a href="../modules.html">react-hooks - v4.0.1</a>
 				</li>
 				<li>
-					<a href="ExecutorCache.html">ExecutorCache</a>
+					<a href="SsrExecutorProvider.html">SsrExecutorProvider</a>
 				</li>
 			</ul>
-			<h1>Class ExecutorCache</h1>
+			<h1>Class SsrExecutorProvider</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>An executor cache that can be used to monitor and await pending executors.</p>
+						<p>The executor provider that keeps references to all created executors and provides batch operation for them.</p>
 					</div>
 				</div>
 			</section>
@@ -76,14 +76,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ExecutorCache</span>
+						<span class="target">SsrExecutorProvider</span>
 					</li>
 				</ul>
 			</section>
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/IExecutorProvider.html" class="tsd-signature-type" data-tsd-kind="Interface">IExecutorProvider</a></li>
+					<li><a href="ExecutorProvider.html" class="tsd-signature-type" data-tsd-kind="Class">ExecutorProvider</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -93,23 +93,23 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="ExecutorCache.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="SsrExecutorProvider.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ExecutorCache.html#executors" class="tsd-kind-icon">executors</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="SsrExecutorProvider.html#executors" class="tsd-kind-icon">executors</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ExecutorCache.html#abortAll" class="tsd-kind-icon">abort<wbr>All</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="ExecutorCache.html#createExecutor" class="tsd-kind-icon">create<wbr>Executor</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ExecutorCache.html#disposeExecutor" class="tsd-kind-icon">dispose<wbr>Executor</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ExecutorCache.html#isPending" class="tsd-kind-icon">is<wbr>Pending</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ExecutorCache.html#toPromise" class="tsd-kind-icon">to<wbr>Promise</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="SsrExecutorProvider.html#abortExecutors" class="tsd-kind-icon">abort<wbr>Executors</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="SsrExecutorProvider.html#createExecutor" class="tsd-kind-icon">create<wbr>Executor</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="SsrExecutorProvider.html#disposeExecutor" class="tsd-kind-icon">dispose<wbr>Executor</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="SsrExecutorProvider.html#hasPendingExecutors" class="tsd-kind-icon">has<wbr>Pending<wbr>Executors</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="SsrExecutorProvider.html#waitForExecutorsToComplete" class="tsd-kind-icon">wait<wbr>For<wbr>Executors<wbr>ToComplete</a></li>
 							</ul>
 						</section>
 					</div>
@@ -121,13 +121,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Executor<wbr>Cache<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ExecutorCache.html" class="tsd-signature-type" data-tsd-kind="Class">ExecutorCache</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Ssr<wbr>Executor<wbr>Provider<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SsrExecutorProvider.html" class="tsd-signature-type" data-tsd-kind="Class">SsrExecutorProvider</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="ExecutorCache.html" class="tsd-signature-type" data-tsd-kind="Class">ExecutorCache</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="SsrExecutorProvider.html" class="tsd-signature-type" data-tsd-kind="Class">SsrExecutorProvider</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -137,10 +137,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="executors" class="tsd-anchor"></a>
 					<h3>executors</h3>
-					<div class="tsd-signature tsd-kind-icon">executors<span class="tsd-signature-symbol">:</span> <a href="Executor.html" class="tsd-signature-type" data-tsd-kind="Class">Executor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+					<div class="tsd-signature tsd-kind-icon">executors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="Executor.html" class="tsd-signature-type" data-tsd-kind="Class">Executor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/0c9de06/src/main/ExecutorCache.ts#L21">ExecutorCache.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/5c97eee/src/main/executor/SsrExecutorProvider.ts#L10">executor/SsrExecutorProvider.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -148,16 +148,16 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="abortAll" class="tsd-anchor"></a>
-					<h3>abort<wbr>All</h3>
+					<a name="abortExecutors" class="tsd-anchor"></a>
+					<h3>abort<wbr>Executors</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">abort<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">abort<wbr>Executors<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/0c9de06/src/main/ExecutorCache.ts#L37">ExecutorCache.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/5c97eee/src/main/executor/SsrExecutorProvider.ts#L36">executor/SsrExecutorProvider.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -178,16 +178,11 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IExecutorProvider.html">IExecutorProvider</a>.<a href="../interfaces/IExecutorProvider.html#createExecutor">createExecutor</a></p>
+								<p>Implementation of ExecutorProvider.createExecutor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/0c9de06/src/main/ExecutorCache.ts#L23">ExecutorCache.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/5c97eee/src/main/executor/SsrExecutorProvider.ts#L12">executor/SsrExecutorProvider.ts:12</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Creates a new <a href="Executor.html">Executor</a> instance.</p>
-								</div>
-							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
 								<li>
@@ -225,16 +220,11 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IExecutorProvider.html">IExecutorProvider</a>.<a href="../interfaces/IExecutorProvider.html#disposeExecutor">disposeExecutor</a></p>
+								<p>Implementation of ExecutorProvider.disposeExecutor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/0c9de06/src/main/ExecutorCache.ts#L29">ExecutorCache.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/5c97eee/src/main/executor/SsrExecutorProvider.ts#L18">executor/SsrExecutorProvider.ts:18</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Disposes an executor.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -246,16 +236,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="isPending" class="tsd-anchor"></a>
-					<h3>is<wbr>Pending</h3>
+					<a name="hasPendingExecutors" class="tsd-anchor"></a>
+					<h3>has<wbr>Pending<wbr>Executors</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Pending<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Pending<wbr>Executors<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/0c9de06/src/main/ExecutorCache.ts#L44">ExecutorCache.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/5c97eee/src/main/executor/SsrExecutorProvider.ts#L27">executor/SsrExecutorProvider.ts:27</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -268,22 +258,22 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="toPromise" class="tsd-anchor"></a>
-					<h3>to<wbr>Promise</h3>
+					<a name="waitForExecutorsToComplete" class="tsd-anchor"></a>
+					<h3>wait<wbr>For<wbr>Executors<wbr>ToComplete</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Promise<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">wait<wbr>For<wbr>Executors<wbr>ToComplete<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/0c9de06/src/main/ExecutorCache.ts#L52">ExecutorCache.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/smikhalevski/react-hooks/blob/5c97eee/src/main/executor/SsrExecutorProvider.ts#L46">executor/SsrExecutorProvider.ts:46</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Creates a new promise that is resolved as soon as all pending executors are resolved. All executions that started
-									after the <a href="ExecutorCache.html#toPromise">toPromise</a> call won&#39;t be considered and won&#39;t affect the returned promise.</p>
+									after the <a href="SsrExecutorProvider.html#waitForExecutorsToComplete">waitForExecutorsToComplete</a> call won&#39;t be considered and won&#39;t affect the returned promise.</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -302,120 +292,36 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="Blocker.html" class="tsd-kind-icon">Blocker</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="Checkpoint.html" class="tsd-kind-icon">Checkpoint</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="Executor.html" class="tsd-kind-icon">Executor</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="ExecutorCache.html" class="tsd-kind-icon">Executor<wbr>Cache</a>
+						<a href="SsrExecutorProvider.html" class="tsd-kind-icon">Ssr<wbr>Executor<wbr>Provider</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="ExecutorCache.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="SsrExecutorProvider.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="ExecutorCache.html#executors" class="tsd-kind-icon">executors</a>
+								<a href="SsrExecutorProvider.html#executors" class="tsd-kind-icon">executors</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ExecutorCache.html#abortAll" class="tsd-kind-icon">abort<wbr>All</a>
+								<a href="SsrExecutorProvider.html#abortExecutors" class="tsd-kind-icon">abort<wbr>Executors</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="ExecutorCache.html#createExecutor" class="tsd-kind-icon">create<wbr>Executor</a>
+								<a href="SsrExecutorProvider.html#createExecutor" class="tsd-kind-icon">create<wbr>Executor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ExecutorCache.html#disposeExecutor" class="tsd-kind-icon">dispose<wbr>Executor</a>
+								<a href="SsrExecutorProvider.html#disposeExecutor" class="tsd-kind-icon">dispose<wbr>Executor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ExecutorCache.html#isPending" class="tsd-kind-icon">is<wbr>Pending</a>
+								<a href="SsrExecutorProvider.html#hasPendingExecutors" class="tsd-kind-icon">has<wbr>Pending<wbr>Executors</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ExecutorCache.html#toPromise" class="tsd-kind-icon">to<wbr>Promise</a>
+								<a href="SsrExecutorProvider.html#waitForExecutorsToComplete" class="tsd-kind-icon">wait<wbr>For<wbr>Executors<wbr>ToComplete</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="../interfaces/IExecution.html" class="tsd-kind-icon">IExecution</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/IExecutorProvider.html" class="tsd-kind-icon">IExecutor<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#CheckpointCondition" class="tsd-kind-icon">Checkpoint<wbr>Condition</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#CheckpointFallback" class="tsd-kind-icon">Checkpoint<wbr>Fallback</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#Debounce" class="tsd-kind-icon">Debounce</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#DebounceProtocol" class="tsd-kind-icon">Debounce<wbr>Protocol</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="../modules.html#ExactRefCallback" class="tsd-kind-icon">Exact<wbr>Ref<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="../modules.html#ExecutorCallback" class="tsd-kind-icon">Executor<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#ExecutorHook" class="tsd-kind-icon">Executor<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="../modules.html#SemanticMemoHook" class="tsd-kind-icon">Semantic<wbr>Memo<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../modules.html#ExecutorProviderContext" class="tsd-kind-icon">Executor<wbr>Provider<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#areHookInputsEqual" class="tsd-kind-icon">are<wbr>Hook<wbr>Inputs<wbr>Equal</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#createExecutorHook" class="tsd-kind-icon">create<wbr>Executor<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#createSemanticMemoHook" class="tsd-kind-icon">create<wbr>Semantic<wbr>Memo<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="../modules.html#useBlocker" class="tsd-kind-icon">use<wbr>Blocker</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#useCheckpoint" class="tsd-kind-icon">use<wbr>Checkpoint</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#useDebounce" class="tsd-kind-icon">use<wbr>Debounce</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="../modules.html#useExecution" class="tsd-kind-icon">use<wbr>Execution</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="../modules.html#useExecutor" class="tsd-kind-icon">use<wbr>Executor</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#useMountSignal" class="tsd-kind-icon">use<wbr>Mount<wbr>Signal</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="../modules.html#useRefCallback" class="tsd-kind-icon">use<wbr>Ref<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#useRenderEffect" class="tsd-kind-icon">use<wbr>Render<wbr>Effect</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../modules.html#useRerender" class="tsd-kind-icon">use<wbr>Rerender</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="../modules.html#useSemanticCallback" class="tsd-kind-icon">use<wbr>Semantic<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="../modules.html#useSemanticMemo" class="tsd-kind-icon">use<wbr>Semantic<wbr>Memo</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -429,14 +335,6 @@
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
 			</ul>
 		</div>
 	</div>
