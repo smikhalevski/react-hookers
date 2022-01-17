@@ -8,17 +8,6 @@ export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void,
  *
  * When `start` is called the animation loop starts invoking the provided callback using `requestAnimationFrame`. If
  * animation was already pending then it is stopped and started with the new callback.
- *
- * ```ts
- * const [start, stop] = useAnimationFrame();
- *
- * useEffect(() => {
- *
- *   start(() => {
- *     // Apply animation changes
- *   });
- * }, []);
- * ```
  */
 export function useAnimationFrame(): Readonly<AnimationFrameProtocol> {
   const manager = useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager();

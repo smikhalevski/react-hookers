@@ -1,8 +1,12 @@
 import {TimeContext} from './TimeContext';
 import {useContext, useEffect} from 'react';
 import {useRerender} from '../rerender';
+import {Time} from './Time';
 
-export function useTime() {
+/**
+ * Returns the {@link Time} instance.
+ */
+export function useTime(): Time {
   const rerender = useRerender();
   const time = useContext(TimeContext);
 

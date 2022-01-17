@@ -6,13 +6,13 @@ The set of general-purpose React hooks.
 npm install --save-prod @smikhalevski/react-hooks
 ```
 
-⚠️ [API documentation is available here.](https://smikhalevski.github.io/react-hooks/)
+📚 [API documentation is available here.](https://smikhalevski.github.io/react-hooks/)
 
 **State**
 
-- `usePrevState`
+- [`usePrevState`](#useprevstate)
 - [`useRefCallback`](#userefcallback)
-- `useRenderedValueRef`
+- [`useRenderedValueRef`](#userenderedvalueref)
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
 - [`useExecution`](#useexecution)
@@ -24,15 +24,15 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useRerender`](#usererender)
 - [`useMountSignal`](#usemountsignal)
 - [`useRenderEffect`](#userendereffect)
-- `useEffectOnce`
-- `useRenderEffectOnce`
-- `useRerenderMetronome`
+- [`useEffectOnce`](#useeffectonce)
+- [`useRenderEffectOnce`](#userendereffectonce)
+- [`useRerenderMetronome`](#usererendermetronome)
 
 **Time**
 
-- `useTime`
-- `useAnimationFrame`
-- `useMetronome`
+- [`useTime`](#usetime)
+- [`useAnimationFrame`](#useanimationframe)
+- [`useMetronome`](#usemetronome)
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 
@@ -41,228 +41,369 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useBlocker`](#useblocker)
 - [`useGuard`](#useguard)
 
-## `useBlocker`
+# State
 
-Blocks UI from the async context. For example, open a popup from async context by blocking and close it by unblocking.
+### `usePrevState`
 
-```tsx
-import {FC} from 'react';
-import {useBlocker} from '@smikhalevski/react-hooks';
-
-const DeleteButton: FC = () => {
-
-  const blocker = useBlocker<boolean>();
-
-  const handleDelete = async () => {
-
-    // This would re-render the component and open a popup.
-    if (await blocker.block()) {
-      // Proceed with deletion.
-    }
-  };
-
-  return (
-      <>
-        <Popup opened={blocker.blocked}>
-          {'Are you sure?'}
-
-          <button onClick={() => blocker.unblock(false)}>
-            {'No, don\'t delete'}
-          </button>
-
-          <button onClick={() => blocker.unblock(true)}>
-            {'Yes, delete'}
-          </button>
-        </Popup>
-
-        <button
-            disabled={blocker.blocked}
-            onClick={handleDelete}
-        >
-          {'Delete'}
-        </button>
-      </>
-  );
-};
-```
-
-## `useGuard`
-
-Allows extracting shared conditional logic from event handlers and callbacks.
-
-```tsx
-import {FC, MouseEvent} from 'react';
-import {useGuard} from '@smikhalevski/react-hooks';
-
-// The delete button that requires the user to be logged in.
-const DeleteButton: FC = () => {
-
-  // The event handler that must be called only if the user is logged in.
-  const handleClick = (event: MouseEvent): void => {
-    // Proceed with deletion.
-  };
-
-  // The callback that checks that the user is logged in, can be async.
-  const isUserLoggedIn = (): void => {
-    return false;
-  };
-
-  // The guard fallback logic that should be used if user tried to
-  // invoke a handler, but wasn't logged in.
-  const handleOpenLoginPopup = (replay: () => void): void => {
-    // Open a login popup here. After user was successfully logged in,
-    // you can replay user the action that caused the fallback.
-  };
-
-  const loginGuard = useGuard(isUserLoggedIn, handleOpenLoginPopup);
-
-  // After the button is clicked, the guard ensures that user is
-  // logged in and then invokes the handler or the fallback. 
-  return (
-      <button onClick={loginGuard.guardCallback(handleClick, (event) => event.persist())}>
-        {'Delete'}
-      </button>
-  );
-}
-```
-
-## `useDebounce`
-
-The replacement for `setTimeout` that is cancelled when component is unmounted.
+Compares the state passed during the previous render with the newly given state, and if they differ based on equality
+checker, then the new state is returned.
 
 ```ts
-const [debounce, cancel] = useDebounce();
-
-debounce((value) => console.log(value), 500, 'abc');
-
-cancel();
+const nextValue = usePrevState(
+    value,
+    (prevValue, value) => prevValue !== value,
+);
 ```
 
-## `useDebouncedState`
+### `useRefCallback`
 
-Returns a stateful values, and a function to update it. Upon invocation of `setState`, the `nextState` is assigned
-synchronously and component is re-rendered. After the `delay` the `currState` is set to `nextState` and component is
-re-rendered again.
+Returns a ref object and a callback to update the value of this ref.
 
 ```ts
-const [currState, nextState, setState] = useDebouncedState(500);
+const [ref, updateRef] = useRefCallback(initialValue);
 ```
 
-## `useExecution`
+### `useRenderedValueRef`
 
-Executes a callback when dependencies are changed and returns
-an [`Execution`](https://smikhalevski.github.io/react-hooks/interfaces/iexecution.html).
+Creates a `MutableRefObject` that keeps ref to the given value. This hook comes in handy if you want to use the props
+provided during the most recent render in the async context.
+
+```ts
+const valueRef = useRenderedValueRef(value);
+```
+
+### `useSemanticCallback`
+
+The drop-in replacement for `React.useCallback` which provides the semantic guarantee that the callback won't be "
+forgotten" until the hook is unmounted.
+
+```ts
+const memoizedCallback = useSemanticCallback(
+    () => doSomething(a, b),
+    [a, b],
+);
+```
+
+### `useSemanticMemo`
+
+The drop-in replacement for `React.useMemo` which provides thee semantic guarantee that the value produced by factory
+won't be "forgotten" until the hook is unmounted.
+
+```ts
+const memoizedValue = useSemanticMemo(
+    () => computeExpensiveValue(a, b),
+    [a, b],
+);
+```
+
+### `useExecution`
+
+Executes a callback when dependencies are changed and returns an
+[`Execution`](https://smikhalevski.github.io/react-hooks/interfaces/execution.html) instance that describes the result
+and status.
 
 ```tsx
-import {FC} from 'react';
-
-const UserDetails: FC<{ userId: string }> = ({userId}) => {
-
-  // Execution would automatically re-fetch the user if userId is changed. 
-  const userExecution = useExecution(() => fetch('http://localhost/users/' + userId), [userId]);
-
-  if (userExecution.pending) {
-    return <span>{'Loading'}</span>;
-  }
-
-  return <span>{userExecution.result?.firstName}</span>;
-};
+const execution = useExecution(
+    async (signal) => doSomething(a, b),
+    [a, b],
+);
 ```
 
-## `useExecutor`
+### `useExecutor`
 
-Creates a new [`IExecutor`](https://smikhalevski.github.io/react-hooks/interfaces/iexecutor.html).
+Creates a new [`Executor`](https://smikhalevski.github.io/react-hooks/interfaces/executor.html) instance that provides
+means to call, abort and monitor async callbacks.
 
 ```tsx
-import {FC} from 'react';
-import {useExecutor} from '@smikhalevski/react-hooks';
+const executor = useExecutor(initialValue);
 
-const DeleteButton: FC = () => {
-
-  const executor = useExecutor();
-
-  const handleDelete = () => {
-    executor.execute(async (signal) => {
-      // Execute deletion login here.
-      // Signal would be aborted when component unmounts.
-    });
-  };
-
-  return (
-      <button
-          onClick={handleDelete}
-          disabled={executor.pending}
-      >
-        {'Delete'}
-      </button>
-  );
-};
+// Starts a new execution.
+// If there's pending execution, it is aborted via signal.
+executor.execute(async (signal) => doSomething());
 ```
 
-You can manage how executors are created with `ExecutorProvider`
-and [`SsrExecutorProvider`](https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html).
+You can manage how executors are created with `ExecutorProvider` and
+[`SsrExecutorProvider`](https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {SsrExecutorProvider} from '@smikhalevski/react-hooks';
+import {SsrExecutorProvider, ExecutorProviderContext} from '@smikhalevski/react-hooks';
 
-const mySsrProviderManager = new SsrExecutorProvider();
+const mySsrExecutorProvider = new SsrExecutorProvider();
 
 renderToString(
-    <ExecutorProviderContext.Provider value={mySsrProviderManager}>
-      <DeleteButton/>
+    <ExecutorProviderContext.Provider value={mySsrExecutorProvider}>
+      {/* */}
     </ExecutorProviderContext.Provider>
 );
 
-// Waits for all executors to complete pending executions.
-await mySsrProviderManager.waitForExecutorsToComplete();
+// Waits for all executors to complete pending executions
+await mySsrExecutorProvider.waitForExecutorsToComplete();
 ```
 
 You can create a custom `useExecutor` hook that is bound to a custom context.
 
 ```ts
 import {createContext} from 'react';
-import {createExecutorHook, Executor, ExecutorProvider} from '@smikhalevski/react-hooks';
+import {createExecutorHook, ExecutorProvider} from '@smikhalevski/react-hooks';
 
-class MyExecutorProvider extends ExecutorProvider {
-  // Your overrides here.
-}
-
-const MyExecutorProviderContext = createContext(new MyExecutorProvider());
+const MyExecutorProviderContext = createContext(new ExecutorProvider());
 
 const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
 ```
 
-## `useMountSignal`
+### `useToggle`
 
-Returns `AbortSignal` that is aborted when the component is unmounted.
+Returns a boolean flag and functions to toggle its value.
 
-## `useRefCallback`
+```ts
+const [enabled, enable, disable] = useToggle(initialValue);
+```
 
-Returns a ref object, and a callback to update the value of this ref.
+# Rendering
 
-## `useRenderEffect`
-
-Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
-equal to deps provided during the previous render. This hook comes handy when you need to call an effect during SSR.
-
-## `useRerender`
+### `useRerender`
 
 Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
 component life cycle. Returned callback doesn't change between hook invocations.
 
-**Note:** Using this hook makes you code imperative, which is generally considered a bad practice.
+**Note:** Using this hook makes your code imperative, which is generally considered a bad practice.
 
-## `useSemanticCallback`
+```ts
+const rerender = useRerender();
 
-A semantic guarantee drop-in replacement for `React.useCallback`. It guarantees that the callback won't be "forgotten"
-until the hook is unmounted.
+rerender();
+```
 
-## `useSemanticMemo`
+### `useMountSignal`
 
-A semantic guarantee drop-in replacement for `React.useMemo`. It guarantees that the value produced by factory won't
-be "forgotten" until the hook is unmounted.
+Returns `AbortSignal` that is aborted when the component is unmounted.
 
-## `useToggle`
+```ts
+const signal = useMountSignal();
 
-Returns a boolean flag and functions to toggle its value.
+// Returns true if componenet was unmounted
+signal.aborted;
+```
+
+### `useRenderEffect`
+
+Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
+equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
+
+The optional cleanup callback is called synchronously during rendering.
+
+```ts
+useRenderEffect(
+    () => {
+      doSomething(a, b);
+
+      return () => {
+        cleanup();
+      };
+    },
+    [a, b],
+);
+```
+
+### `useEffectOnce`
+
+Same as `React.useEffect` but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useEffectOnce(() => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
+```
+
+### `useRenderEffectOnce`
+
+Same as [`useRenderEffect`](#userendereffect) but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useRenderEffectOnce(() => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
+```
+
+### `useRerenderMetronome`
+
+Re-renders the component on interval.
+
+```ts
+useRerenderMetronome(500);
+```
+
+# Time
+
+### `useTime`
+
+Returns the [`Time`](https://smikhalevski.github.io/react-hooks/classes/Time.html) instance that provides the current
+timestamp.
+
+```ts
+const time = useTime();
+
+// Use this instead of Date.now()
+time.now();
+```
+
+You can alter the timestamp by providing the custom
+[`Time`](https://smikhalevski.github.io/react-hooks/classes/Time.html) implementation.
+
+```tsx
+import {renderToString} from 'react-dom';
+import {Time, TimeContext} from '@smikhalevski/react-hooks';
+
+const myTime = new Time();
+
+// After this, myTime.now() would return the timestamp
+// that is 1 munute ahead of the Date.now()
+myTime.setTimestamp(Date.now() + 60_000);
+
+renderToString(
+    <TimeContext.Provider value={myTime}>
+      {/* */}
+    </TimeContext.Provider>
+);
+```
+
+### `useAnimationFrame`
+
+Returns protocol to start and stop an animation loop.
+
+When `start` is called the animation loop starts invoking the provided callback using `requestAnimationFrame`. If the
+animation was already pending then it is stopped and started with the new callback.
+
+```ts
+const [start, stop] = useAnimationFrame();
+
+// Cancels pending animation loop and schedules the new animation loop
+start(() => {
+  // Apply animation changes
+});
+
+// Stop the animation
+stop();
+```
+
+### `useMetronome`
+
+The replacement for `setInterval` that is cancelled when component is unmounted. Schedules a function to be repeatedly
+called with a fixed time delay between each call.
+
+All functions that were scheduled with the same delay are invoked synchronously.
+
+```ts
+const [start, stop] = useMetronome();
+
+// Cancels pending interval and schedules the new interval
+start(
+    (a, b) => {
+      doSomething(a, b);
+    },
+    500, // Interval delay
+    a, b, // Varargs that are passed to the callback
+);
+
+// Stops invoking the callback that was last provided to start()
+stop();
+```
+
+You can alter how metronomes are created by providing the custom
+[`MetronomeProvider`](https://smikhalevski.github.io/react-hooks/classes/MetronomeProvider.html) implementation.
+
+```tsx
+import {renderToString} from 'react-dom';
+import {MetronomeProvider, MetronomeProviderContext} from '@smikhalevski/react-hooks';
+
+const myMetronomeProvider = new MetronomeProvider();
+
+renderToString(
+    <MetronomeProviderContext.Provider value={myMetronomeProvider}>
+      {/* */}
+    </MetronomeProviderContext.Provider>
+);
+```
+
+### `useDebounce`
+
+The replacement for `setTimeout` that is cancelled when component is unmounted.
+
+```ts
+const [debounce, cancel] = useDebounce();
+
+// Cancels pending debounce and schedules the new call
+debounce(
+    (a, b) => {
+      doSomething(a, b);
+    },
+    500, // Timeout after which the callback is called
+    a, b, // Varargs that are passed to the callback
+);
+
+// Cancels the last debounce call
+cancel();
+```
+
+### `useDebouncedState`
+
+Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
+synchronously, and the component is re-rendered. After the `delay` the `currState` is set to `nextState` and component
+is re-rendered again.
+
+```ts
+const [currState, nextState, setState] = useDebouncedState(500);
+```
+
+# User flow
+
+### `useBlocker`
+
+Blocks UI from the async context.
+
+```tsx
+const blocker = useBlocker<boolean>();
+
+// Returns Promise that is resolved with the value passed to blocker.unblock(value)
+blocker.block(); // → Promise<boolean>
+
+// Unblocks the blocker with given value.
+blocker.unblock(true);
+```
+
+### `useGuard`
+
+Extract shared conditional logic from event handlers and callbacks.
+
+```tsx
+const guard = useGuard(
+    async () => checkCondition(),
+
+    async (replay) => {
+      // Invoked if the guarded callback was called when condition wasn't met.
+      doFallback();
+
+      // Invoke the guarded callback with the same arguments.
+      replay();
+    },
+);
+
+const myGuardedCallback = guard.guardCallback((a, b) => {
+  myCallback(a, b);
+});
+
+myGuardedCallback(a, b);
+```

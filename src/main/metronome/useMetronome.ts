@@ -8,17 +8,10 @@ import {useEffectOnce} from '../effect';
 export type MetronomeProtocol = [start: SetTimeout, stop: () => void];
 
 /**
- * Schedules a function to be repeatedly called with a fixed time delay between each call.
+ * The replacement for `setInterval` that is cancelled when component is unmounted. Schedules a function to be
+ * repeatedly called with a fixed time delay between each call.
  *
  * All functions that were scheduled with the same delay are invoked synchronously.
- *
- * ```ts
- * const [start, stop] = useMetronome();
- *
- * useEffect(() => start(() => {
- *   // Called every 500 milliseconds
- * }, 500), []);
- * ```
  *
  * @see {@link useRerenderMetronome}
  */

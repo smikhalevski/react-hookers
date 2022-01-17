@@ -6,9 +6,9 @@ import {useRerender} from '../rerender';
 export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: Dispatch<SetStateAction<S>>];
 
 /**
- * Returns a stateful values, and a function to update it. Upon invocation of `setState`, the `nextState` is assigned
- * synchronously and component is re-rendered. After the `delay` the `currState` is set to `nextState` and component is
- * re-rendered again.
+ * Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
+ * synchronously, and the component is re-rendered. After the `delay` the `currState` is set to `nextState` and
+ * component is re-rendered again.
  *
  * @param ms The delay after which `currState` is synchronized with `nextState`.
  * @param initialState Thee initial state or a callback that returns an initial state.
@@ -17,9 +17,9 @@ export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: D
 export function useDebouncedState<S>(ms: number, initialState: S | (() => S)): Readonly<DebouncedStateProtocol<S>>;
 
 /**
- * Returns a stateful values, and a function to update it. Upon invocation of `setState`, the `nextState` is assigned
- * synchronously and component is re-rendered. After the `delay` the `currState` is set to `nextState` and component is
- * re-rendered again.
+ * Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
+ * synchronously, and the component is re-rendered. After the `delay` the `currState` is set to `nextState` and
+ * component is re-rendered again.
  *
  * @param ms The delay after which `currState` is synchronized with `nextState`.
  * @template S The type of stateful value.

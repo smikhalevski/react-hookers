@@ -2,7 +2,7 @@ import {DependencyList, useRef} from 'react';
 import {createSemanticMemoHook, SemanticMemoHook} from './createSemanticMemoHook';
 
 /**
- * A semantic guarantee drop-in replacement for `React.useMemo`. It guarantees that the value produced by `factory`
+ * The drop-in replacement for `React.useMemo` which provides the semantic guarantee that the value produced by factory
  * won't be "forgotten" until the hook is unmounted.
  *
  * @see {@link https://reactjs.org/docs/hooks-reference.html#usememo React.useMemo}

@@ -5,7 +5,7 @@ import {useEffectOnce} from '../effect';
  * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
  * component life cycle. Returned callback doesn't change between hook invocations.
  *
- * **Note:** Using this hook makes you code imperative, which is generally considered a bad practice.
+ * **Note:** Using this hook makes your code imperative, which is generally considered a bad practice.
  */
 export function useRerender(): () => void {
   const [, dispatch] = useReducer(reduceCount, 0);

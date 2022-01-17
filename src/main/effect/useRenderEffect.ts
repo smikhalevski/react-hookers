@@ -4,8 +4,9 @@ import {useEffectOnce} from './useEffectOnce';
 
 /**
  * Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or
- * don't equal to deps provided during the previous render. This hook comes handy when you need to call an effect
- * during SSR.
+ * don't equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
+ *
+ * The optional cleanup callback is called synchronously during rendering.
  *
  * @param effect The callback that is invoked synchronously during rendering if `deps` have changed. An effect may
  *     return a destructor / cleanup callback. The previous effect is cleaned up before executing the next effect.
