@@ -1,6 +1,7 @@
 import {DependencyList, EffectCallback, useRef} from 'react';
 import {areHookInputsEqual} from '../areHookInputsEqual';
 import {useEffectOnce} from './useEffectOnce';
+import {isFunction} from '../utils';
 
 /**
  * Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or
@@ -35,7 +36,7 @@ function createRenderEffectManager() {
     destructor?.();
     destructor = effect();
 
-    if (typeof destructor !== 'function') {
+    if (!isFunction(destructor)) {
       destructor = undefined;
     }
   };

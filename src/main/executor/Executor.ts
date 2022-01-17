@@ -2,24 +2,9 @@ export type ExecutorCallback<T> = (signal: AbortSignal) => Promise<T | undefined
 
 export class Executor<T = unknown> {
 
-  /**
-   * `true` if this executor was disposed and shouldn't be used.
-   */
   public disposed = false;
-
-  /**
-   * `true` if an execution is currently pending.
-   */
   public pending = false;
-
-  /**
-   * `true` if the last execution was resolved.
-   */
   public resolved = false;
-
-  /**
-   * `true` if the last execution was rejected.
-   */
   public rejected = false;
 
   /**
