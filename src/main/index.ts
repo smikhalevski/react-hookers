@@ -6,6 +6,7 @@ export * from './effect';
 export * from './executor';
 export * from './memo';
 export * from './metronome';
+export * from './polling';
 export * from './ref';
 export * from './rerender';
 export * from './time';
