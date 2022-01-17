@@ -17,8 +17,8 @@ describe('useAnimationFrame', () => {
 
     hook.unmount();
 
-    expect(start1).toEqual(start2);
-    expect(stop1).toEqual(stop2);
+    expect(start1).toBe(start2);
+    expect(stop1).toBe(stop2);
   });
 
   test('invokes the callback', async () => {

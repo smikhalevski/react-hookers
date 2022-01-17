@@ -14,8 +14,8 @@ describe('useDebouncedState', () => {
     const protocol2 = hook.result.current;
     const [, , setState2] = protocol1;
 
-    expect(protocol1).toEqual(protocol2);
-    expect(setState1).toEqual(setState2);
+    expect(protocol1).toBe(protocol2);
+    expect(setState1).toBe(setState2);
   });
 
   test('updates current state after the delay', async () => {
@@ -25,24 +25,24 @@ describe('useDebouncedState', () => {
     const [currState1, nextState1, setState] = hook.result.current;
 
     expect(hookMock).toHaveBeenCalledTimes(1);
-    expect(currState1).toEqual('AAA');
-    expect(nextState1).toEqual('AAA');
+    expect(currState1).toBe('AAA');
+    expect(nextState1).toBe('AAA');
 
     act(() => setState('BBB'));
 
     const [currState2, nextState2] = hook.result.current;
 
     expect(hookMock).toHaveBeenCalledTimes(2);
-    expect(currState2).toEqual('AAA');
-    expect(nextState2).toEqual('BBB');
+    expect(currState2).toBe('AAA');
+    expect(nextState2).toBe('BBB');
 
     await hook.waitForNextUpdate();
 
     const [currState3, nextState3] = hook.result.current;
 
     expect(hookMock).toHaveBeenCalledTimes(3);
-    expect(currState3).toEqual('BBB');
-    expect(nextState3).toEqual('BBB');
+    expect(currState3).toBe('BBB');
+    expect(nextState3).toBe('BBB');
   });
 
   test('does not re-render if next state is unchanged', async () => {
@@ -87,7 +87,7 @@ describe('useDebouncedState', () => {
 
     const [currState] = hook.result.current;
 
-    expect(currState).toEqual('CCC');
+    expect(currState).toBe('CCC');
     expect(hookMock).toHaveBeenCalledTimes(4);
   });
 
@@ -104,7 +104,7 @@ describe('useDebouncedState', () => {
 
     const [currState, nextState] = hook.result.current;
 
-    expect(currState).toEqual('AAA');
-    expect(nextState).toEqual('BBB');
+    expect(currState).toBe('AAA');
+    expect(nextState).toBe('BBB');
   });
 });

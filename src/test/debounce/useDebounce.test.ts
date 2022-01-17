@@ -11,8 +11,8 @@ describe('useDebounce', () => {
     hook.rerender();
     const [debounce2, cancel2] = hook.result.current;
 
-    expect(debounce1).toEqual(debounce2);
-    expect(cancel1).toEqual(cancel2);
+    expect(debounce1).toBe(debounce2);
+    expect(cancel1).toBe(cancel2);
   });
 
   test('invokes the callback', async () => {

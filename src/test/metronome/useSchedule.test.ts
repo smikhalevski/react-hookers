@@ -13,8 +13,8 @@ describe('useSchedule', () => {
 
     hook.unmount();
 
-    expect(schedule1).toEqual(schedule2);
-    expect(cancel1).toEqual(cancel2);
+    expect(schedule1).toBe(schedule2);
+    expect(cancel1).toBe(cancel2);
   });
 
   test('invokes the callback', async () => {
@@ -72,7 +72,6 @@ describe('useSchedule', () => {
     const [schedule, cancel] = hook.result.current;
 
     act(() => schedule(cbMock, 50));
-
     act(() => cancel());
 
     await sleep(100);
