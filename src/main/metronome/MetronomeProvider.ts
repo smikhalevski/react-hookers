@@ -2,7 +2,7 @@ import {Metronome} from './Metronome';
 
 export class MetronomeProvider {
 
-  private metronomes = new Map<number, Metronome>();
+  public metronomes = new Map<number, Metronome>();
 
   /**
    * Returns a cached {@link Metronome} instance that uses the given delay.

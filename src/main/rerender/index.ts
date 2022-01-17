@@ -1,2 +1,2 @@
 export * from './useRerender';
-export * from './useRerenderMetronome';
+export * from './useRerenderSchedule';

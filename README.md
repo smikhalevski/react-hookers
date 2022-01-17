@@ -26,13 +26,14 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useRenderEffect`](#userendereffect)
 - [`useEffectOnce`](#useeffectonce)
 - [`useRenderEffectOnce`](#userendereffectonce)
-- [`useRerenderMetronome`](#usererendermetronome)
+- [`useRerenderSchedule`](#usererenderschedule)
 
 **Time**
 
 - [`useTime`](#usetime)
 - [`useAnimationFrame`](#useanimationframe)
 - [`useMetronome`](#usemetronome)
+- [`useSchedule`](#useschedule)
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 
@@ -238,12 +239,12 @@ useRenderEffectOnce(() => {
 });
 ```
 
-### `useRerenderMetronome`
+### `useRerenderSchedule`
 
-Re-renders the component on interval.
+Re-renders the component on periodic interval.
 
 ```ts
-useRerenderMetronome(500);
+useRerenderSchedule(500);
 ```
 
 # Time
@@ -301,25 +302,19 @@ stop();
 
 ### `useMetronome`
 
-The replacement for `setInterval` that is cancelled when component is unmounted. Schedules a function to be repeatedly
-called with a fixed time delay between each call.
-
-All functions that were scheduled with the same delay are invoked synchronously.
+Returns a [`Metronome`](https://smikhalevski.github.io/react-hooks/classes/Metronome.html) instance. Use this to
+schedule callback invocation.
 
 ```ts
-const [start, stop] = useMetronome();
+const metronome = useMetronome(500);
 
-// Cancels pending interval and schedules the new interval
-start(
-    (a, b) => {
-      doSomething(a, b);
-    },
-    500, // Interval delay
-    a, b, // Varargs that are passed to the callback
+useEffect(
+    () => metronome.schedule(() => {
+      // Invoked every 500 ms
+      doSomething();
+    }),
+    [metronome],
 );
-
-// Stops invoking the callback that was last provided to start()
-stop();
 ```
 
 You can alter how metronomes are created by providing the custom
@@ -336,6 +331,29 @@ renderToString(
       {/* */}
     </MetronomeProviderContext.Provider>
 );
+```
+
+### `useSchedule`
+
+The replacement for `setInterval` that is cancelled when component is unmounted. Schedules a function to be repeatedly
+called with a fixed time delay between each call.
+
+All functions that were scheduled with the same delay are invoked synchronously.
+
+```ts
+const [schedule, cancel] = useSchedule();
+
+// Cancels currently scheduled callback and schedules the new one
+schedule(
+    (a, b) => {
+      doSomething(a, b);
+    },
+    500, // Interval delay
+    a, b, // Varargs that are passed to the callback
+);
+
+// Stops invoking the callback that was last provided to schedule()
+cancel();
 ```
 
 ### `useDebounce`

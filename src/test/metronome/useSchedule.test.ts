@@ -1,29 +1,29 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
-import {useMetronome} from '../../main';
+import {useSchedule} from '../../main';
 import * as sleep from 'sleep-promise';
 
-describe('useMetronome', () => {
+describe('useSchedule', () => {
 
   test('returns same callbacks on every call', () => {
-    const hook = renderHook(() => useMetronome());
+    const hook = renderHook(() => useSchedule());
 
-    const [start1, stop1] = hook.result.current;
+    const [schedule1, cancel1] = hook.result.current;
     hook.rerender();
-    const [start2, stop2] = hook.result.current;
+    const [schedule2, cancel2] = hook.result.current;
 
     hook.unmount();
 
-    expect(start1).toEqual(start2);
-    expect(stop1).toEqual(stop2);
+    expect(schedule1).toEqual(schedule2);
+    expect(cancel1).toEqual(cancel2);
   });
 
   test('invokes the callback', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useMetronome());
+    const hook = renderHook(() => useSchedule());
 
-    const [start] = hook.result.current;
+    const [schedule] = hook.result.current;
 
-    act(() => start(cbMock, 50));
+    act(() => schedule(cbMock, 50));
 
     await sleep(100);
 
@@ -35,12 +35,12 @@ describe('useMetronome', () => {
   test('consequent calls override the invoked callback', async () => {
     const cbMock1 = jest.fn();
     const cbMock2 = jest.fn();
-    const hook = renderHook(() => useMetronome());
+    const hook = renderHook(() => useSchedule());
 
-    const [start] = hook.result.current;
+    const [schedule] = hook.result.current;
 
-    act(() => start(cbMock1, 50));
-    act(() => start(cbMock2, 50));
+    act(() => schedule(cbMock1, 50));
+    act(() => schedule(cbMock2, 50));
 
     await sleep(100);
 
@@ -52,11 +52,11 @@ describe('useMetronome', () => {
 
   test('does not invoke the callback after unmount', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useMetronome());
+    const hook = renderHook(() => useSchedule());
 
-    const [start] = hook.result.current;
+    const [schedule] = hook.result.current;
 
-    act(() => start(cbMock, 50));
+    act(() => schedule(cbMock, 50));
 
     hook.unmount();
 
@@ -67,13 +67,13 @@ describe('useMetronome', () => {
 
   test('the callback invocation is canceled', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useMetronome());
+    const hook = renderHook(() => useSchedule());
 
-    const [start, stop] = hook.result.current;
+    const [schedule, cancel] = hook.result.current;
 
-    act(() => start(cbMock, 50));
+    act(() => schedule(cbMock, 50));
 
-    act(() => stop());
+    act(() => cancel());
 
     await sleep(100);
 

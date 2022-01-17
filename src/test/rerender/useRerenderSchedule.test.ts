@@ -1,10 +1,10 @@
 import {renderHook} from '@testing-library/react-hooks/native';
-import {useRerenderMetronome} from '../../main';
+import {useRerenderSchedule} from '../../main';
 
-describe('useRerenderMetronome', () => {
+describe('useRerenderSchedule', () => {
 
   test('re-renders component after delay', async () => {
-    const hook = renderHook(() => useRerenderMetronome(100));
+    const hook = renderHook(() => useRerenderSchedule(100));
     const timestamp = Date.now();
 
     await hook.waitForNextUpdate();

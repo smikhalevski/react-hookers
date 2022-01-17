@@ -3,6 +3,8 @@
  */
 export class Metronome {
 
+  public paused = false;
+
   private ms: number;
   private timeout: ReturnType<typeof setTimeout> | undefined;
   private callbacks = new Set<() => void>();
@@ -16,46 +18,59 @@ export class Metronome {
     this.ms = ms;
   }
 
+  /**
+   * Starts the metronome if it isn't started yet.
+   */
+  public start(): void {
+    this.paused = false;
+    this.startLoop();
+  }
+
+  /**
+   * Pauses the metronome.
+   */
+  public pause(): void {
+    this.paused = true;
+    this.stopLoop();
+  }
+
+  /**
+   * Schedules a callback to be invoked by the metronome.
+   *
+   * @param cb The callback to schedule.
+   * @returns The callback that removes `cb` from the metronome.
+   */
+  public schedule(cb: () => void): () => void {
+    if (this.callbacks.add(cb).size === 1 && !this.paused) {
+      this.startLoop();
+    }
+    return () => {
+      this.callbacks.delete(cb);
+
+      if (this.callbacks.size === 0) {
+        this.stopLoop();
+      }
+    };
+  };
+
   private loop = (): void => {
-    try {
-      this.callbacks.forEach(call);
-    } finally {
-      this.schedule();
-    }
-  };
-
-  private schedule(): void {
-    this.stop();
     this.timeout = setTimeout(this.loop, this.ms);
-  }
-
-  private stop(): void {
-    clearTimeout(this.timeout!);
-  }
-
-  /**
-   * Adds a new callback for the metronome to call.
-   *
-   * @param cb The callback to add.
-   */
-  public add(cb: () => void): void {
-    if (this.callbacks.add(cb).size === 1) {
-      this.schedule();
-    }
+    this.callbacks.forEach(call);
   };
 
-  /**
-   * Removes the callback for the metronome.
-   *
-   * @param cb The callback to remove.
-   */
-  public remove(cb: () => void): void {
-    this.callbacks.delete(cb);
-
-    if (this.callbacks.size === 0) {
-      this.stop();
+  private startLoop(): void {
+    if (this.timeout === undefined && this.callbacks.size !== 0) {
+      this.timeout = setTimeout(this.loop, this.ms);
     }
-  };
+  }
+
+  private stopLoop(): void {
+    if (this.timeout === undefined) {
+      return;
+    }
+    clearTimeout(this.timeout);
+    this.timeout = undefined;
+  }
 }
 
 function call(cb: () => void): void {
