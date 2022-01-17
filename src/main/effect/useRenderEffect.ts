@@ -17,8 +17,9 @@ import {useEffectOnce} from './useEffectOnce';
 export function useRenderEffect(effect: EffectCallback, deps?: DependencyList): void {
   const manager = useRef<ReturnType<typeof createRenderEffectManager>>().current ||= createRenderEffectManager();
 
-  manager._applyEffect(effect, deps);
-  useEffectOnce(manager._effect);
+  manager.__applyEffect(effect, deps);
+
+  useEffectOnce(manager.__effect);
 }
 
 function createRenderEffectManager() {
@@ -26,7 +27,7 @@ function createRenderEffectManager() {
   let prevDeps: DependencyList | undefined;
   let destructor: (() => void) | void;
 
-  const _applyEffect = (effect: EffectCallback, deps: DependencyList | undefined) => {
+  const __applyEffect = (effect: EffectCallback, deps: DependencyList | undefined) => {
     if (areHookInputsEqual(deps, prevDeps)) {
       return;
     }
@@ -39,12 +40,12 @@ function createRenderEffectManager() {
     }
   };
 
-  const _effect: EffectCallback = () => () => {
+  const __effect: EffectCallback = () => () => {
     destructor?.();
   };
 
   return {
-    _applyEffect,
-    _effect,
+    __applyEffect,
+    __effect,
   };
 }

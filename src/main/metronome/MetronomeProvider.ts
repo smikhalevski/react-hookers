@@ -10,7 +10,7 @@ export class MetronomeProvider {
    * @param ms The number of milliseconds between calls.
    * @returns The {@link Metronome} instance.
    */
-  public getMetronome(ms: number): Metronome {
+  public createMetronome(ms: number): Metronome {
     let metronome = this.metronomes.get(ms);
 
     if (!metronome) {

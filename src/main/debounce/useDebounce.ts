@@ -10,9 +10,9 @@ export type DebounceProtocol = [debounce: SetTimeout, cancel: () => void];
 export function useDebounce(): Readonly<DebounceProtocol> {
   const manager = useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager();
 
-  useEffectOnce(manager._effect);
+  useEffectOnce(manager.__effect);
 
-  return manager._protocol;
+  return manager.__protocol;
 }
 
 function createDebounceManager() {
@@ -28,10 +28,10 @@ function createDebounceManager() {
     clearTimeout(timeout);
   };
 
-  const _effect = () => cancel;
+  const __effect = () => cancel;
 
   return {
-    _effect,
-    _protocol: [debounce, cancel] as const,
+    __effect,
+    __protocol: [debounce, cancel] as const,
   };
 }

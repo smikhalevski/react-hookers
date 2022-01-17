@@ -12,9 +12,9 @@ export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void,
 export function useAnimationFrame(): Readonly<AnimationFrameProtocol> {
   const manager = useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager();
 
-  useEffectOnce(manager._effect);
+  useEffectOnce(manager.__effect);
 
-  return manager._protocol;
+  return manager.__protocol;
 }
 
 function createAnimationFrameManager() {
@@ -35,10 +35,10 @@ function createAnimationFrameManager() {
     cancelAnimationFrame(handle);
   };
 
-  const _effect = () => stop;
+  const __effect = () => stop;
 
   return {
-    _effect,
-    _protocol: [start, stop] as const,
+    __effect,
+    __protocol: [start, stop] as const,
   };
 }

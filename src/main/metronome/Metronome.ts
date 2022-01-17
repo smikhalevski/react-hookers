@@ -5,9 +5,9 @@ export class Metronome {
 
   public paused = false;
 
-  private ms: number;
-  private timeout: ReturnType<typeof setTimeout> | undefined;
-  private callbacks = new Set<() => void>();
+  private _ms: number;
+  private _timeout: ReturnType<typeof setTimeout> | undefined;
+  private _callbacks = new Set<() => void>();
 
   /**
    * Creates a new {@link Metronome} instance.
@@ -15,7 +15,7 @@ export class Metronome {
    * @param ms The number of milliseconds between calls.
    */
   constructor(ms: number) {
-    this.ms = ms;
+    this._ms = ms;
   }
 
   /**
@@ -23,7 +23,7 @@ export class Metronome {
    */
   public start(): void {
     this.paused = false;
-    this.startLoop();
+    this._startLoop();
   }
 
   /**
@@ -31,7 +31,7 @@ export class Metronome {
    */
   public pause(): void {
     this.paused = true;
-    this.stopLoop();
+    this._stopLoop();
   }
 
   /**
@@ -41,35 +41,35 @@ export class Metronome {
    * @returns The callback that removes `cb` from the metronome.
    */
   public schedule(cb: () => void): () => void {
-    if (this.callbacks.add(cb).size === 1 && !this.paused) {
-      this.startLoop();
+    if (this._callbacks.add(cb).size === 1 && !this.paused) {
+      this._startLoop();
     }
     return () => {
-      this.callbacks.delete(cb);
+      this._callbacks.delete(cb);
 
-      if (this.callbacks.size === 0) {
-        this.stopLoop();
+      if (this._callbacks.size === 0) {
+        this._stopLoop();
       }
     };
   };
 
-  private loop = (): void => {
-    this.timeout = setTimeout(this.loop, this.ms);
-    this.callbacks.forEach(call);
+  private _loop = (): void => {
+    this._timeout = setTimeout(this._loop, this._ms);
+    this._callbacks.forEach(call);
   };
 
-  private startLoop(): void {
-    if (this.timeout === undefined && this.callbacks.size !== 0) {
-      this.timeout = setTimeout(this.loop, this.ms);
+  private _startLoop(): void {
+    if (this._timeout === undefined && this._callbacks.size !== 0) {
+      this._timeout = setTimeout(this._loop, this._ms);
     }
   }
 
-  private stopLoop(): void {
-    if (this.timeout === undefined) {
+  private _stopLoop(): void {
+    if (this._timeout === undefined) {
       return;
     }
-    clearTimeout(this.timeout);
-    this.timeout = undefined;
+    clearTimeout(this._timeout);
+    this._timeout = undefined;
   }
 }
 

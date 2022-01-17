@@ -9,5 +9,5 @@ import {Metronome} from './Metronome';
  * @returns The {@link Metronome} instance.
  */
 export function useMetronome(ms: number): Metronome {
-  return useContext(MetronomeProviderContext).getMetronome(ms);
+  return useContext(MetronomeProviderContext).createMetronome(ms);
 }

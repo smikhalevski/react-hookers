@@ -1,19 +1,19 @@
-import {Execution, Executor, ExecutorCallback} from './Executor';
+import {Executor, ExecutorCallback} from './Executor';
 import {Metronome, useMetronome} from '../metronome';
 import {useExecutor} from './useExecutor';
 import {useEffect} from 'react';
 import {useSemanticMemo} from '../memo';
 
-export type PollProtocol<T> = [execution: Execution<T>, poll: (cb: ExecutorCallback<T>) => void, abort: () => void];
+export type PollProtocol<T> = [executor: Executor<T>, poll: (cb: ExecutorCallback<T>) => void, abort: () => void];
 
 export function usePoll<T = unknown>(ms: number, initialValue?: ExecutorCallback<T> | T): Readonly<PollProtocol<T>> {
   const metronome = useMetronome(ms);
   const executor = useExecutor<T>(initialValue);
   const manager = useSemanticMemo(() => createPollManager(metronome, executor), [metronome, executor]);
 
-  useEffect(manager._effect, [manager]);
+  useEffect(manager.__effect, [manager]);
 
-  return manager._protocol;
+  return manager.__protocol;
 }
 
 function createPollManager<T>(metronome: Metronome, executor: Executor<T>) {
@@ -34,10 +34,10 @@ function createPollManager<T>(metronome: Metronome, executor: Executor<T>) {
     cancel = undefined;
   };
 
-  const _effect = () => abort;
+  const __effect = () => abort;
 
   return {
-    _effect,
-    _protocol: [executor, poll, abort] as const,
+    __effect,
+    __protocol: [executor, poll, abort] as const,
   };
 }

@@ -2,7 +2,7 @@ import {EventBus} from '@smikhalevski/event-bus';
 
 export class Time {
 
-  private eventBus = new EventBus();
+  private _eventBus = new EventBus();
 
   /**
    * The offset in milliseconds between `Date.now()` and timestamp returned by {@link Time.now}.
@@ -28,7 +28,7 @@ export class Time {
     const currOffset = this.offset = timestamp - Date.now();
 
     if (prevOffset !== currOffset) {
-      this.eventBus.publish();
+      this._eventBus.publish();
     }
   }
 
@@ -36,6 +36,6 @@ export class Time {
    * Subscribes listener to updates of the timestamp offset.
    */
   public subscribe(listener: () => void): () => void {
-    return this.eventBus.subscribe(listener);
+    return this._eventBus.subscribe(listener);
   }
 }

@@ -6,9 +6,9 @@
  */
 export class Blocker<T> {
 
-  private promise?: Promise<T>;
-  private resolve?: (result: T) => void;
-  private listener;
+  private _promise?: Promise<T>;
+  private _resolve?: (result: T) => void;
+  private _listener;
 
   /**
    * Creates a new {@link Blocker}.
@@ -16,11 +16,11 @@ export class Blocker<T> {
    * @param listener The callback that is triggered when {@link Blocker} is blocked or unblocked.
    */
   public constructor(listener: () => void) {
-    this.listener = listener;
+    this._listener = listener;
   }
 
   public get blocked() {
-    return this.resolve != null;
+    return this._resolve != null;
   }
 
   /**
@@ -28,24 +28,24 @@ export class Blocker<T> {
    * the same promise is returned.
    */
   public block(): Promise<T> {
-    if (!this.promise) {
-      this.promise = new Promise((resolve) => {
-        this.resolve = resolve;
+    if (!this._promise) {
+      this._promise = new Promise((resolve) => {
+        this._resolve = resolve;
       });
-      this.listener();
+      this._listener();
     }
-    return this.promise;
+    return this._promise;
   }
 
   /**
    * Resolves the promise returned from {@link block}. If the blocker isn't blocked then no-op.
    */
   public unblock(result: T): void {
-    if (this.resolve) {
-      const resolve = this.resolve;
-      this.resolve = undefined;
+    if (this._resolve) {
+      const resolve = this._resolve;
+      this._resolve = undefined;
       resolve(result);
-      this.listener();
+      this._listener();
     }
   }
 }

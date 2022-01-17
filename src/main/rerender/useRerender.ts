@@ -1,4 +1,4 @@
-import {EffectCallback, ReducerWithoutAction, useReducer, useRef} from 'react';
+import {EffectCallback, useReducer, useRef} from 'react';
 import {useEffectOnce} from '../effect';
 
 /**
@@ -12,29 +12,31 @@ export function useRerender(): () => void {
 
   const manager = useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(dispatch);
 
-  useEffectOnce(manager._effect);
+  useEffectOnce(manager.__effect);
 
-  return manager._rerender;
+  return manager.__rerender;
 }
 
-const reduceCount: ReducerWithoutAction<number> = (count) => count + 1;
+function reduceCount(count: number) {
+  return count + 1;
+}
 
 function createRerenderManager(dispatch: () => void) {
 
   let mounted = true;
 
-  const _rerender = (): void => {
+  const __rerender = (): void => {
     if (mounted) {
       dispatch();
     }
   };
 
-  const _effect: EffectCallback = () => () => {
+  const __effect: EffectCallback = () => () => {
     mounted = false;
   };
 
   return {
-    _rerender,
-    _effect,
+    __rerender,
+    __effect,
   };
 }

@@ -7,20 +7,20 @@ import {useEffectOnce} from './effect';
 export function useMountSignal(): AbortSignal {
   const manager = useRef<ReturnType<typeof createMountSignalManager>>().current ||= createMountSignalManager();
 
-  useEffectOnce(manager._effect);
+  useEffectOnce(manager.__effect);
 
-  return manager._signal;
+  return manager.__signal;
 }
 
 function createMountSignalManager() {
   const abortController = new AbortController();
 
-  const _effect: EffectCallback = () => () => {
+  const __effect: EffectCallback = () => () => {
     abortController.abort();
   };
 
   return {
-    _effect,
-    _signal: abortController.signal,
+    __effect,
+    __signal: abortController.signal,
   };
 }

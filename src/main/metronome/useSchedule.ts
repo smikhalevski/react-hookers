@@ -19,9 +19,9 @@ export function useSchedule(): Readonly<ScheduleProtocol> {
   const provider = useContext(MetronomeProviderContext);
   const manager = useSemanticMemo(() => createScheduleManager(provider), [provider]);
 
-  useEffectOnce(manager._effect);
+  useEffectOnce(manager.__effect);
 
-  return manager._protocol;
+  return manager.__protocol;
 }
 
 function createScheduleManager(provider: MetronomeProvider) {
@@ -30,7 +30,7 @@ function createScheduleManager(provider: MetronomeProvider) {
 
   const schedule: SetTimeout = (cb, ms = 0, ...args) => {
     cancel();
-    cleanup = provider.getMetronome(ms).schedule(args.length === 0 ? cb : () => {
+    cleanup = provider.createMetronome(ms).schedule(args.length === 0 ? cb : () => {
       cb(...args);
     });
   };
@@ -40,10 +40,10 @@ function createScheduleManager(provider: MetronomeProvider) {
     cleanup = undefined;
   };
 
-  const _effect = () => cancel;
+  const __effect = () => cancel;
 
   return {
-    _effect,
-    _protocol: [schedule, cancel] as const,
+    __effect,
+    __protocol: [schedule, cancel] as const,
   };
 }

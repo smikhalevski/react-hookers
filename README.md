@@ -100,11 +100,11 @@ const memoizedValue = useSemanticMemo(
 ### `useExecution`
 
 Executes a callback when dependencies are changed and returns an
-[`Execution`](https://smikhalevski.github.io/react-hooks/interfaces/execution.html) instance that describes the result
+[`Executor`](https://smikhalevski.github.io/react-hooks/classes/executor.html) instance that describes the result
 and status.
 
 ```tsx
-const execution = useExecution(
+const executor = useExecution(
     async (signal) => doSomething(a, b),
     [a, b],
 );
@@ -390,7 +390,7 @@ const [currState, nextState, setState] = useDebouncedState(500);
 
 ### `useBlocker`
 
-Blocks UI from the async context.
+Provides mechanism for blocking async processes and unblocking them from an external context.
 
 ```tsx
 const blocker = useBlocker<boolean>();

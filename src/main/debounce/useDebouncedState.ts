@@ -30,9 +30,9 @@ export function useDebouncedState<S>(ms: number, initialState?: S | (() => S)) {
   const rerender = useRerender();
   const manager = useRef<ReturnType<typeof createDebouncedStateManager>>().current ||= createDebouncedStateManager<unknown>(ms, rerender, initialState);
 
-  useEffectOnce(manager._effect);
+  useEffectOnce(manager.__effect);
 
-  return manager._protocol;
+  return manager.__protocol;
 }
 
 function createDebouncedStateManager<S>(ms: number, rerender: () => void, initialState: S | (() => S) | undefined) {
@@ -64,12 +64,12 @@ function createDebouncedStateManager<S>(ms: number, rerender: () => void, initia
 
   const protocol: DebouncedStateProtocol<S | undefined> = [currState, nextState, setState];
 
-  const _effect = () => () => {
+  const __effect = () => () => {
     clearTimeout(timeout);
   };
 
   return {
-    _effect,
-    _protocol: protocol,
+    __effect,
+    __protocol: protocol,
   };
 }

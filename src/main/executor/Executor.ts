@@ -1,54 +1,45 @@
-export interface Execution<T> {
-
-  /**
-   * `true` if an execution is currently pending.
-   */
-  pending: boolean;
-
-  /**
-   * `true` if the last execution was resolved.
-   */
-  resolved: boolean;
-
-  /**
-   * `true` if the last execution was rejected.
-   */
-  rejected: boolean;
-
-  /**
-   * The result of the last execution or `undefined` if there was no execution yet or if the last execution was
-   * rejected.
-   */
-  result: T | undefined;
-
-  /**
-   * The reason why the last execution was rejected.
-   */
-  reason: any;
-
-  /**
-   * The promise of the currently pending execution or `undefined` if there's no pending execution.
-   */
-  promise: Promise<void> | undefined;
-}
-
 export type ExecutorCallback<T> = (signal: AbortSignal) => Promise<T | undefined> | T | undefined;
 
-export class Executor<T = unknown> implements Execution<T> {
+export class Executor<T = unknown> {
 
   /**
    * `true` if this executor was disposed and shouldn't be used.
    */
   public disposed = false;
+
+  /**
+   * `true` if an execution is currently pending.
+   */
   public pending = false;
+
+  /**
+   * `true` if the last execution was resolved.
+   */
   public resolved = false;
+
+  /**
+   * `true` if the last execution was rejected.
+   */
   public rejected = false;
+
+  /**
+   * The result of the last execution or `undefined` if there was no execution yet or if the last execution was
+   * rejected.
+   */
   public result: T | undefined;
+
+  /**
+   * The reason why the last execution was rejected.
+   */
   public reason: any;
+
+  /**
+   * The promise of the currently pending execution or `undefined` if there's no pending execution.
+   */
   public promise: Promise<void> | undefined;
 
-  private listener;
-  private abortController: AbortController | undefined;
+  private _listener;
+  private _abortController: AbortController | undefined;
 
   /**
    * Creates a new {@link Executor}.
@@ -56,7 +47,7 @@ export class Executor<T = unknown> implements Execution<T> {
    * @param listener The callback that is triggered when the executor state was changed.
    */
   public constructor(listener: () => void) {
-    this.listener = listener;
+    this._listener = listener;
   }
 
   /**
@@ -73,12 +64,12 @@ export class Executor<T = unknown> implements Execution<T> {
       return Promise.resolve();
     }
 
-    this.abortController?.abort();
-    this.abortController = new AbortController();
+    this._abortController?.abort();
+    this._abortController = new AbortController();
 
     let result;
     try {
-      result = cb(this.abortController.signal);
+      result = cb(this._abortController.signal);
     } catch (error) {
       this.reject(error);
       return Promise.resolve();
@@ -89,7 +80,7 @@ export class Executor<T = unknown> implements Execution<T> {
     }
     if (!this.pending) {
       this.pending = true;
-      this.listener();
+      this._listener();
     }
     const cbPromise = this.promise = Promise.resolve(result).then(
         (result) => {
@@ -112,8 +103,8 @@ export class Executor<T = unknown> implements Execution<T> {
   public dispose(): this {
     if (!this.disposed) {
       this.disposed = true;
-      this.forceAbort();
-      this.listener();
+      this._forceAbort();
+      this._listener();
     }
     return this;
   }
@@ -125,7 +116,7 @@ export class Executor<T = unknown> implements Execution<T> {
     if (!this.disposed && (this.resolved || this.rejected)) {
       this.resolved = this.rejected = false;
       this.result = this.reason = undefined;
-      this.listener();
+      this._listener();
     }
     return this;
   }
@@ -136,8 +127,8 @@ export class Executor<T = unknown> implements Execution<T> {
    */
   public abort(): this {
     if (!this.disposed && this.pending) {
-      this.forceAbort();
-      this.listener();
+      this._forceAbort();
+      this._listener();
     }
     return this;
   }
@@ -147,12 +138,12 @@ export class Executor<T = unknown> implements Execution<T> {
    */
   public resolve(result: T | undefined): this {
     if (!this.disposed && (this.pending || !Object.is(this.result, result))) {
-      this.forceAbort();
+      this._forceAbort();
       this.resolved = true;
       this.rejected = false;
       this.result = result;
       this.reason = undefined;
-      this.listener();
+      this._listener();
     }
     return this;
   }
@@ -162,19 +153,19 @@ export class Executor<T = unknown> implements Execution<T> {
    */
   public reject(reason: any): this {
     if (!this.disposed && (this.pending || !Object.is(this.reason, reason))) {
-      this.forceAbort();
+      this._forceAbort();
       this.resolved = false;
       this.rejected = true;
       this.result = undefined;
       this.reason = reason;
-      this.listener();
+      this._listener();
     }
     return this;
   }
 
-  private forceAbort() {
+  private _forceAbort() {
     this.pending = false;
-    this.abortController?.abort();
-    this.promise = this.abortController = undefined;
+    this._abortController?.abort();
+    this.promise = this._abortController = undefined;
   }
 }
