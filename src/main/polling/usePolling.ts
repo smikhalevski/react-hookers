@@ -1,6 +1,6 @@
 import {Executor, ExecutorCallback, useExecutor} from '../executor';
 import {Metronome, useMetronome} from '../metronome';
-import {useEffect} from 'react';
+import {EffectCallback, useEffect} from 'react';
 import {useSemanticMemo} from '../memo';
 
 export type PollingProtocol<T> = [executor: Executor<T>, start: (cb: ExecutorCallback<T>) => void, stop: () => void];
@@ -34,7 +34,7 @@ function createPollManager<T>(metronome: Metronome, executor: Executor<T>) {
     cleanup = undefined;
   };
 
-  const __effect = () => stop;
+  const __effect: EffectCallback = () => stop;
 
   return {
     __effect,

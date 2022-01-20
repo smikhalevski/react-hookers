@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {EffectCallback, useContext} from 'react';
 import {useSemanticMemo} from '../memo';
 import {MetronomeProvider} from './MetronomeProvider';
 import {MetronomeProviderContext} from './MetronomeProviderContext';
@@ -40,7 +40,7 @@ function createScheduleManager(provider: MetronomeProvider) {
     cleanup = undefined;
   };
 
-  const __effect = () => cancel;
+  const __effect: EffectCallback = () => cancel;
 
   return {
     __effect,
