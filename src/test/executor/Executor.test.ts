@@ -135,6 +135,28 @@ describe('Executor', () => {
     expect(executor.promise).toBe(undefined);
   });
 
+  it('asynchronously resolves', async () => {
+    executor.resolve(Promise.resolve(123));
+
+    expect(listenerMock).toHaveBeenCalledTimes(1);
+    expect(executor.pending).toBe(true);
+    expect(executor.resolved).toBe(false);
+    expect(executor.rejected).toBe(false);
+    expect(executor.result).toBe(undefined);
+    expect(executor.reason).toBe(undefined);
+    expect(executor.promise).toBeInstanceOf(Promise);
+
+    await executor.promise;
+
+    expect(listenerMock).toHaveBeenCalledTimes(2);
+    expect(executor.pending).toBe(false);
+    expect(executor.resolved).toBe(true);
+    expect(executor.rejected).toBe(false);
+    expect(executor.result).toBe(123);
+    expect(executor.reason).toBe(undefined);
+    expect(executor.promise).toBe(undefined);
+  });
+
   it('synchronously rejects', () => {
     executor.reject('abc');
 

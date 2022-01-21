@@ -120,8 +120,20 @@ export class Executor<T = unknown> {
 
   /**
    * Instantly aborts pending execution and resolves with the given result.
+   *
+   * ```ts
+   * executor.resolve(new Promise((resolve, reject) => {
+   *   // Async process
+   * }));
+   * // or
+   * executor.resolve(value);
+   * ```
    */
-  public resolve(result: T | undefined): this {
+  public resolve(result: Promise<T> | T | undefined): this {
+    if (result instanceof Promise) {
+      this.execute(() => result);
+      return this;
+    }
     if (!this.disposed && (this.pending || !Object.is(this.result, result))) {
       this._forceAbort();
       this.resolved = true;
