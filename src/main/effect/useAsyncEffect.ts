@@ -4,46 +4,63 @@ import {isFunction} from '../utils';
 
 export type AsyncEffectCallback = (signal: AbortSignal) => AwaitableLike<(() => void) | void>;
 
-export function useAsyncEffect(effect: AsyncEffectCallback, deps: DependencyList): void {
+/**
+ * Analogue of `React.useEffect` that can handle a `Promise` returned from the `effect`. Returned `Promise` may resolve
+ * with a cleanup callback. An effect callback receives an `AbortSignal` that is aborted if effect is called again
+ * before the previously returned `Promise` is resolved.
+ *
+ * @param effect The callback that is invoked if `deps` have changed. An effect may return a destructor / cleanup
+ *     callback. The previous effect is cleaned up before executing the next effect.
+ * @param deps The optional list of dependencies. If omitted then `effect` is called on every render.
+ *
+ * @see {@link https://reactjs.org/docs/hooks-reference.html#useeffect React.useEffect}
+ * @see {@link useExecutor}
+ */
+export function useAsyncEffect(effect: AsyncEffectCallback, deps: DependencyList | undefined): void {
   const manager = useRef<ReturnType<typeof createAsyncEffectManager>>().current = createAsyncEffectManager(effect);
 
-  manager.__callback = effect;
+  manager.__asyncEffect = effect;
 
   useEffect(manager.__effect, deps);
 }
 
-export function createAsyncEffectManager(effect: AsyncEffectCallback) {
+function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
 
+  let ac: AbortController | undefined;
   let destructor: (() => void) | void;
-  let abortController: AbortController | undefined;
-
-  const setDestructor = (d: (() => void) | void) => {
-    destructor = isFunction(d) ? d : undefined;
-  };
 
   const cleanup = () => {
+    ac?.abort();
+    ac = undefined;
+
     destructor?.();
     destructor = undefined;
-    abortController?.abort();
-    abortController = undefined;
   };
 
   const __effect: EffectCallback = () => {
-    abortController = new AbortController();
-
-    const result = manager.__callback(abortController.signal);
+    const currAc = new AbortController();
+    const result = manager.__asyncEffect(currAc.signal);
 
     if (isPromiseLike(result)) {
-      result.then(setDestructor);
+      ac = currAc;
+
+      result.then((result) => {
+        if (ac !== currAc) {
+          return;
+        }
+        ac = undefined;
+        destructor = isFunction(result) ? result : undefined;
+      });
     } else {
-      setDestructor(result);
+      ac = undefined;
+      destructor = isFunction(result) ? result : undefined;
     }
 
     return cleanup;
   };
 
   const manager = {
-    __callback: effect,
+    __asyncEffect: asyncEffect,
     __effect,
   };
 
