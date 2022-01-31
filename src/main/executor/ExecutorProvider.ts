@@ -1,4 +1,4 @@
-import {Executor} from './Executor';
+import {Executor} from 'parallel-universe';
 
 /**
  * The stateless provider that creates and disposes executors.
@@ -6,16 +6,15 @@ import {Executor} from './Executor';
 export class ExecutorProvider {
 
   /**
-   * Creates a new {@link Executor} instance.
+   * Creates a new `Executor` instance.
    */
-  public createExecutor<T>(listener: () => void): Executor<T> {
-    return new Executor<T>(listener);
+  public createExecutor(): Executor<any> {
+    return new Executor();
   }
 
   /**
    * Disposes an executor.
    */
   public disposeExecutor(executor: Executor): void {
-    executor.dispose();
   }
 }

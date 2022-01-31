@@ -1,5 +1,5 @@
 import {Context, DependencyList, useEffect} from 'react';
-import {Executor, ExecutorCallback} from './Executor';
+import {Executor, ExecutorCallback} from 'parallel-universe';
 import {emptyDeps} from '../utils';
 import {createExecutorHook} from './createExecutorHook';
 import {ExecutorProvider} from './ExecutorProvider';

@@ -1,4 +1,5 @@
-import {Executor, ExecutorCallback, useExecutor} from '../executor';
+import {Executor, ExecutorCallback} from 'parallel-universe';
+import {useExecutor} from '../executor';
 import {Metronome, useMetronome} from '../metronome';
 import {EffectCallback, useEffect} from 'react';
 import {useSemanticMemo} from '../memo';

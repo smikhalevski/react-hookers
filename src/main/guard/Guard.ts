@@ -1,4 +1,4 @@
-import {Executor} from '../executor';
+import {Executor} from 'parallel-universe';
 
 export type GuardCondition = (signal: AbortSignal) => unknown;
 

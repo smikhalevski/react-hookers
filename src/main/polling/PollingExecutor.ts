@@ -1,4 +1,4 @@
-import {Executor, ExecutorCallback} from '../executor';
+import {Executor, ExecutorCallback} from 'parallel-universe';
 import {Metronome} from '../metronome';
 
 export class PollingExecutor<T = unknown> extends Executor<T> {
@@ -6,8 +6,8 @@ export class PollingExecutor<T = unknown> extends Executor<T> {
   private _metronome;
   private _cancel: (() => void) | undefined;
 
-  public constructor(listener: () => void, metronome: Metronome) {
-    super(listener);
+  public constructor(metronome: Metronome) {
+    super();
     this._metronome = metronome;
   }
 

@@ -1,5 +1,5 @@
 import {Context, useContext} from 'react';
-import {Executor, ExecutorCallback} from './Executor';
+import {Executor, ExecutorCallback} from 'parallel-universe';
 import {useRerender} from '../rerender';
 import {useSemanticMemo} from '../memo';
 import {useRenderEffect} from '../effect';
@@ -22,7 +22,7 @@ export function createExecutorHook(providerContext: Context<ExecutorProvider>): 
 
     const provider = useContext(providerContext);
     const rerender = useRerender();
-    const executor = useSemanticMemo(() => provider.createExecutor<any>(rerender), [provider]);
+    const executor = useSemanticMemo(() => provider.createExecutor(), [provider]);
 
     useRenderEffect(() => {
       if (isFunction(initialValue)) {
@@ -30,7 +30,11 @@ export function createExecutorHook(providerContext: Context<ExecutorProvider>): 
       } else if (initialValue !== undefined) {
         executor.resolve(initialValue);
       }
+
+      const unsubscribe = executor.subscribe(rerender);
+
       return () => {
+        unsubscribe();
         provider.disposeExecutor(executor);
       };
     }, [executor]);
