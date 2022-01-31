@@ -1,3 +1,4 @@
+export * from './useAsyncEffect';
 export * from './useEffectOnce';
 export * from './useIsomorphicLayoutEffect';
 export * from './useRenderEffect';

@@ -1,6 +1,6 @@
 import {Context, useContext} from 'react';
 import {Executor, ExecutorCallback} from 'parallel-universe';
-import {useRerender} from '../rerender';
+import {useRerender} from '../render';
 import {useSemanticMemo} from '../memo';
 import {useRenderEffect} from '../effect';
 import {isFunction} from '../utils';

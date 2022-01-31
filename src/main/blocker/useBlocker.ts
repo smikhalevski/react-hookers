@@ -1,5 +1,5 @@
 import {useRef} from 'react';
-import {useRerender} from '../rerender';
+import {useRerender} from '../render';
 import {Blocker} from 'parallel-universe';
 import {useEffectOnce} from '../effect';
 
