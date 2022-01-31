@@ -19,13 +19,19 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useExecutor`](#useexecutor)
 - [`useToggle`](#usetoggle)
 
+**Side effects**
+
+- [`useAsyncEffect`](#useasynceffect)
+- [`useAsyncEffectOnce`](#useasynceffectonce)
+- [`useEffectOnce`](#useeffectonce)
+- [`useIsomorphicLayoutEffect`](#useisomorphiclayouteffect)
+- [`useRenderEffect`](#userendereffect)
+- [`useRenderEffectOnce`](#userendereffectonce)
+
 **Rendering**
 
 - [`useRerender`](#usererender)
 - [`useMountSignal`](#usemountsignal)
-- [`useRenderEffect`](#userendereffect)
-- [`useEffectOnce`](#useeffectonce)
-- [`useRenderEffectOnce`](#userendereffectonce)
 - [`useRerenderSchedule`](#usererenderschedule)
 
 **Time**
@@ -100,8 +106,8 @@ const memoizedValue = useSemanticMemo(
 ### `useExecution`
 
 Executes a callback when dependencies are changed and returns an
-[`Executor`](https://smikhalevski.github.io/react-hooks/classes/executor.html) instance that describes the result
-and status.
+[`Executor`](https://smikhalevski.github.io/react-hooks/classes/executor.html) instance that describes the result and
+status.
 
 ```tsx
 const executor = useExecution(
@@ -161,6 +167,113 @@ Returns a boolean flag and functions to toggle its value.
 const [enabled, enable, disable] = useToggle(initialValue);
 ```
 
+# Side effects
+
+### `useAsyncEffect`
+
+Analogue of `React.useEffect` that can handle a `Promise` returned from the effect callback. Returned `Promise` may
+resolve with a destructor / cleanup callback. An effect callback receives an
+[`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) that is aborted if effect is called
+again before the previously returned `Promise` is resolved.
+
+```ts
+useAsyncEffect(
+    async (signal) => {
+      doSomething(a, b);
+
+      return () => {
+        cleanup();
+      };
+    },
+    [a, b],
+);
+```
+
+### `useAsyncEffectOnce`
+
+Same as [`useAsyncEffect`](#useasynceffect) but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useAsyncEffectOnce(async (signal) => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
+```
+
+### `useEffectOnce`
+
+Same as `React.useEffect` but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useEffectOnce(() => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
+```
+
+### `useIsomorphicLayoutEffect`
+
+Same as `React.useLayoutEffect` but doesn't produce warnings during SSR.
+
+```ts
+useIsomorphicLayoutEffect(
+    () => {
+      doSomething(a, b);
+
+      return () => {
+        cleanup();
+      };
+    },
+    [a, b],
+);
+```
+
+### `useRenderEffect`
+
+Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
+equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
+
+The optional cleanup callback is called synchronously during rendering.
+
+```ts
+useRenderEffect(
+    () => {
+      doSomething(a, b);
+
+      return () => {
+        cleanup();
+      };
+    },
+    [a, b],
+);
+```
+
+### `useRenderEffectOnce`
+
+Same as [`useRenderEffect`](#userendereffect) but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useRenderEffectOnce(() => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
+```
+
 # Rendering
 
 ### `useRerender`
@@ -185,58 +298,6 @@ const signal = useMountSignal();
 
 // Returns true if componenet was unmounted
 signal.aborted;
-```
-
-### `useRenderEffect`
-
-Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
-equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
-
-The optional cleanup callback is called synchronously during rendering.
-
-```ts
-useRenderEffect(
-    () => {
-      doSomething(a, b);
-
-      return () => {
-        cleanup();
-      };
-    },
-    [a, b],
-);
-```
-
-### `useEffectOnce`
-
-Same as `React.useEffect` but calls effect only once after the component is mounted.
-
-The optional cleanup callback is called when the component is unmounted.
-
-```ts
-useEffectOnce(() => {
-  doSomething(a, b);
-
-  return () => {
-    cleanup();
-  };
-});
-```
-
-### `useRenderEffectOnce`
-
-Same as [`useRenderEffect`](#userendereffect) but calls effect only once after the component is mounted.
-
-The optional cleanup callback is called when the component is unmounted.
-
-```ts
-useRenderEffectOnce(() => {
-  doSomething(a, b);
-
-  return () => {
-    cleanup();
-  };
-});
 ```
 
 ### `useRerenderSchedule`

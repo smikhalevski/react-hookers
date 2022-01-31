@@ -5,9 +5,9 @@ import {isFunction} from '../utils';
 export type AsyncEffectCallback = (signal: AbortSignal) => AwaitableLike<(() => void) | void>;
 
 /**
- * Analogue of `React.useEffect` that can handle a `Promise` returned from the `effect`. Returned `Promise` may resolve
- * with a cleanup callback. An effect callback receives an `AbortSignal` that is aborted if effect is called again
- * before the previously returned `Promise` is resolved.
+ * Analogue of `React.useEffect` that can handle a `Promise` returned from the effect callback. Returned `Promise` may
+ * resolve with a destructor / cleanup callback. An effect callback receives an `AbortSignal` that is aborted if effect
+ * is called again before the previously returned `Promise` is resolved.
  *
  * @param effect The callback that is invoked if `deps` have changed. An effect may return a destructor / cleanup
  *     callback. The previous effect is cleaned up before executing the next effect.
