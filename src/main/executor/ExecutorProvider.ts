@@ -8,7 +8,7 @@ export class ExecutorProvider {
   /**
    * Creates a new `Executor` instance.
    */
-  public createExecutor(): Executor<any> {
+  public createExecutor(): Executor {
     return new Executor();
   }
 
@@ -16,5 +16,6 @@ export class ExecutorProvider {
    * Disposes an executor.
    */
   public disposeExecutor(executor: Executor): void {
+    executor.abort();
   }
 }

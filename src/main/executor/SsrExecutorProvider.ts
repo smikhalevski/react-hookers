@@ -16,7 +16,8 @@ export class SsrExecutorProvider implements ExecutorProvider {
   }
 
   public disposeExecutor(executor: Executor): void {
-    this.executors.delete(executor)
+    executor.abort();
+    this.executors.delete(executor);
   }
 
   /**
