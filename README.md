@@ -106,8 +106,8 @@ const memoizedValue = useSemanticMemo(
 ### `useExecution`
 
 Executes a callback when dependencies are changed and returns an
-[`Executor`](https://smikhalevski.github.io/react-hooks/classes/executor.html) instance that describes the result and
-status.
+[`Executor`](https://smikhalevski.github.io/parallel-universe/classes/executor.html) instance that describes the result
+and status.
 
 ```tsx
 const executor = useExecution(
@@ -118,8 +118,8 @@ const executor = useExecution(
 
 ### `useExecutor`
 
-Creates a new [`Executor`](https://smikhalevski.github.io/react-hooks/interfaces/executor.html) instance that provides
-means to call, abort and monitor async callbacks.
+Creates a new [`Executor`](https://smikhalevski.github.io/parallel-universe/classes/executor.html) instance that
+provides means to call, abort and monitor async callbacks.
 
 ```tsx
 const executor = useExecutor(initialValue);
