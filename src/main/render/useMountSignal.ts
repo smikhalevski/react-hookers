@@ -13,14 +13,14 @@ export function useMountSignal(): AbortSignal {
 }
 
 function createMountSignalManager() {
-  const abortController = new AbortController();
+  const ac = new AbortController();
 
   const __effect: EffectCallback = () => () => {
-    abortController.abort();
+    ac.abort();
   };
 
   return {
     __effect,
-    __signal: abortController.signal,
+    __signal: ac.signal,
   };
 }

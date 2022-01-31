@@ -2,7 +2,7 @@ import {EventBus} from '@smikhalevski/event-bus';
 
 export class Time {
 
-  private _eventBus = new EventBus();
+  private readonly _eventBus = new EventBus();
 
   /**
    * The offset in milliseconds between `Date.now()` and timestamp returned by {@link Time.now}.
