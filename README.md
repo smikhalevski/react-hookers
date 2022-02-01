@@ -106,11 +106,11 @@ const memoizedValue = useSemanticMemo(
 ### `useExecution`
 
 Executes a callback when dependencies are changed and returns an
-[`Executor`](https://smikhalevski.github.io/parallel-universe/classes/executor.html) instance that describes the result
-and status.
+[`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/execution.html) instance that describes the
+result and status.
 
 ```tsx
-const executor = useExecution(
+const execution = useExecution(
     async (signal) => doSomething(a, b),
     [a, b],
 );
@@ -475,7 +475,8 @@ const guard = useGuard(
       // Invoked if the guarded callback was called when condition wasn't met.
       doFallback();
 
-      // Invoke the guarded callback with the same arguments.
+      // Replay the guarded callback invokation
+      // (original arguments are bound to the replay callback).
       replay();
     },
 );

@@ -11,7 +11,7 @@ export type AsyncEffectCallback = (signal: AbortSignal) => AwaitableLike<(() => 
  *
  * @param effect The callback that is invoked if `deps` have changed. An effect may return a destructor / cleanup
  *     callback. The previous effect is cleaned up before executing the next effect.
- * @param deps The optional list of dependencies. If omitted then `effect` is called on every render.
+ * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.
  *
  * @see {@link https://reactjs.org/docs/hooks-reference.html#useeffect React.useEffect}
  * @see {@link useExecutor}

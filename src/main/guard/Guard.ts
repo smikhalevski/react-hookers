@@ -7,7 +7,7 @@ export type GuardFallback = (replay: () => void) => void;
 export class Guard {
 
   /**
-   * The executor that invokes the {@link Guard.condition}.
+   * The executor that invokes the {@link condition}.
    */
   public executor;
 
@@ -42,8 +42,8 @@ export class Guard {
   }
 
   /**
-   * Returns a proxy callback that verifies the {@link Guard.condition} and executes the `cb` if condition is met or
-   * {@link Guard.fallback} otherwise.
+   * Returns a proxy callback that verifies the {@link condition} and executes the `cb` if condition is met or
+   * {@link fallback} otherwise.
    *
    * @param cb The callback to guard.
    * @param captureArgs Receives arguments passed to `cb` and returns a persisted version of these arguments. This may
