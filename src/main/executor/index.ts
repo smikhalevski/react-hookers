@@ -5,3 +5,4 @@ export * from './ExecutorProviderContext';
 export * from './SsrExecutorProvider';
 export * from './useExecution';
 export * from './useExecutor';
+export * from './usePolling';
