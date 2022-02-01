@@ -47,6 +47,7 @@ npm install --save-prod @smikhalevski/react-hooks
 **User flow**
 
 - [`useBlocker`](#useblocker)
+- [`useLock`](#uselock)
 - [`useGuard`](#useguard)
 
 # State
@@ -474,8 +475,30 @@ const blocker = useBlocker<boolean>();
 // Returns Promise that is resolved with the value passed to blocker.unblock(value)
 blocker.block(); // → Promise<boolean>
 
-// Unblocks the blocker with given value.
+// Unblocks the blocker with given value
 blocker.unblock(true);
+```
+
+### `useLock`
+
+Returns the `Lock` instance that can be used to synchronize async processes.
+
+```tsx
+const lock = useLock();
+
+async function doSomething() {
+  const release = await lock.acquire();
+  try {
+    // Long process starts here
+  } finally {
+    release();
+  }
+}
+
+// Long process would be executed three times sequentially
+doSomething();
+doSomething();
+doSomething();
 ```
 
 ### `useGuard`
@@ -487,11 +510,11 @@ const guard = useGuard(
     async () => checkCondition(),
 
     async (replay) => {
-      // Invoked if the guarded callback was called when condition wasn't met.
+      // Invoked if the guarded callback was called when condition wasn't met
       doFallback();
 
       // Replay the guarded callback invokation
-      // (original arguments are bound to the replay callback).
+      // (original arguments are bound to the replay callback)
       replay();
     },
 );
