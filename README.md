@@ -17,6 +17,7 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useSemanticMemo`](#usesemanticmemo)
 - [`useExecution`](#useexecution)
 - [`useExecutor`](#useexecutor)
+- [`usePolling`](#usepolling)
 - [`useToggle`](#usetoggle)
 
 **Side effects**
@@ -159,6 +160,19 @@ const MyExecutorProviderContext = createContext(new ExecutorProvider());
 const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
 ```
 
+### `usePolling`
+
+Returns an [`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/execution.html) instance that is
+periodically updated.
+
+```tsx
+const execution = usePolling(
+    async (signal) => doSomething(a, b),
+    100, // Interval delay
+    [a, b],
+);
+```
+
 ### `useToggle`
 
 Returns a boolean flag and functions to toggle its value.
@@ -174,7 +188,8 @@ const [enabled, enable, disable] = useToggle(initialValue);
 Analogue of `React.useEffect` that can handle a `Promise` returned from the effect callback. Returned `Promise` may
 resolve with a destructor / cleanup callback. An effect callback receives an
 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) that is aborted if effect is called
-again before the previously returned `Promise` is resolved.
+again before the previously returned `Promise` is resolved. Cleanup callbacks returned from the aborted effects are
+ignored.
 
 ```ts
 useAsyncEffect(
