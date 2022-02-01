@@ -108,7 +108,7 @@ const memoizedValue = useSemanticMemo(
 ### `useExecution`
 
 Executes a callback when dependencies are changed and returns an
-[`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/execution.html) instance that describes the
+[`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html) instance that describes the
 result and status.
 
 ```tsx
@@ -120,7 +120,7 @@ const execution = useExecution(
 
 ### `useExecutor`
 
-Creates a new [`Executor`](https://smikhalevski.github.io/parallel-universe/classes/executor.html) instance that
+Creates a new [`Executor`](https://smikhalevski.github.io/parallel-universe/classes/Executor.html) instance that
 provides means to call, abort and monitor async callbacks.
 
 ```tsx
@@ -163,7 +163,7 @@ const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
 
 ### `usePolling`
 
-Returns an [`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/execution.html) instance that is
+Returns an [`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html) instance that is
 periodically updated.
 
 ```tsx
