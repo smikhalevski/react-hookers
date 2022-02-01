@@ -1,6 +1,6 @@
 import {renderHook} from '@testing-library/react-hooks/native';
+import {sleep} from 'parallel-universe';
 import {useAsyncEffect} from '../../main';
-import * as sleep from 'sleep-promise';
 
 describe('useAsyncEffect', () => {
 

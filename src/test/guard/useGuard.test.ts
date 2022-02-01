@@ -1,6 +1,6 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
+import {sleep} from 'parallel-universe';
 import {Guard, useGuard} from '../../main';
-import * as sleep from 'sleep-promise';
 
 describe('useGuard', () => {
 

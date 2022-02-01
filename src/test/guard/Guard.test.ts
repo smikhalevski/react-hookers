@@ -1,6 +1,5 @@
 import {Guard} from '../../main';
-import {Executor} from 'parallel-universe';
-import * as sleep from 'sleep-promise';
+import {Executor, sleep} from 'parallel-universe';
 
 describe('Guard', () => {
 

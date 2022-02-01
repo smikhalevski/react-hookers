@@ -1,6 +1,6 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
+import {sleep} from 'parallel-universe';
 import {useAnimationFrame} from '../../main';
-import * as sleep from 'sleep-promise';
 
 global.requestAnimationFrame = (cb) => setTimeout(cb, 0);
 
