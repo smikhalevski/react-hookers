@@ -307,7 +307,7 @@ Returns `AbortSignal` that is aborted when the component is unmounted.
 ```ts
 const signal = useMountSignal();
 
-// Returns true if componenet was unmounted
+// Returns true if component was unmounted
 signal.aborted;
 ```
 
