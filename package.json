@@ -1,5 +1,5 @@
 {
-  "name": "@smikhalevski/react-hooks",
+  "name": "react-hookers",
   "version": "4.0.1",
   "description": "The set of general-purpose React hooks.",
   "main": "./lib/index-cjs.js",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/smikhalevski/react-hooks.git"
+    "url": "git+https://github.com/smikhalevski/react-hookers.git"
   },
   "keywords": [
     "react",
@@ -31,9 +31,9 @@
   "author": "Savva Mikhalevski <smikhalevski@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/smikhalevski/react-hooks/issues"
+    "url": "https://github.com/smikhalevski/react-hookers/issues"
   },
-  "homepage": "https://github.com/smikhalevski/react-hooks#readme",
+  "homepage": "https://github.com/smikhalevski/react-hookers#readme",
   "jest": {
     "preset": "ts-jest",
     "setupFiles": [

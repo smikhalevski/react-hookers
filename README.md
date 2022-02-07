@@ -1,14 +1,14 @@
-# react-hooks 🪝 [![build](https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml/badge.svg?branch=master&event=push)](https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml)
+# react-hookers [![build](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml/badge.svg?branch=master&event=push)](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml)
 
-The set of general-purpose React hooks.
+<img alt="Bender" width="250" src="https://raw.githubusercontent.com/smikhalevski/react-hookers/master/bender.png">
 
 ```sh
-npm install --save-prod @smikhalevski/react-hooks
+npm install --save-prod react-hookers
 ```
 
-📚 [API documentation is available here.](https://smikhalevski.github.io/react-hooks/)
+🤖 [API documentation is available here.](https://smikhalevski.github.io/react-hookers/)
 
-**State**
+[**State**](#state)
 
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
@@ -19,7 +19,7 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useRefCallback`](#userefcallback)
 - [`useValueRef`](#usevalueref)
 
-**Side effects**
+[**Side effects**](#side-effects)
 
 - [`useAsyncEffect`](#useasynceffect)
 - [`useAsyncEffectOnce`](#useasynceffectonce)
@@ -28,13 +28,13 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useRenderEffect`](#userendereffect)
 - [`useRenderEffectOnce`](#userendereffectonce)
 
-**Rendering**
+[**Rendering**](#rendering)
 
 - [`useRerender`](#usererender)
 - [`useMountSignal`](#usemountsignal)
 - [`useRerenderSchedule`](#usererenderschedule)
 
-**Time**
+[**Time**](#time)
 
 - [`useTime`](#usetime)
 - [`useAnimationFrame`](#useanimationframe)
@@ -43,7 +43,7 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 
-**User flow**
+[**User flow**](#user-flow)
 
 - [`useBlocker`](#useblocker)
 - [`useLock`](#uselock)
@@ -53,8 +53,8 @@ npm install --save-prod @smikhalevski/react-hooks
 
 ### `useSemanticCallback`
 
-The drop-in replacement for `React.useCallback` which provides the semantic guarantee that the callback won't be "
-forgotten" until the hook is unmounted.
+The drop-in replacement for [`React.useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback) which
+provides the semantic guarantee that the callback won't be "forgotten" until the hook is unmounted.
 
 ```ts
 const memoizedCallback = useSemanticCallback(
@@ -65,8 +65,8 @@ const memoizedCallback = useSemanticCallback(
 
 ### `useSemanticMemo`
 
-The drop-in replacement for `React.useMemo` which provides thee semantic guarantee that the value produced by factory
-won't be "forgotten" until the hook is unmounted.
+The drop-in replacement for [`React.useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo) which provides the
+semantic guarantee that the value produced by factory won't be "forgotten" until the hook is unmounted.
 
 ```ts
 const memoizedValue = useSemanticMemo(
@@ -96,17 +96,17 @@ provides means to call, abort and monitor async callbacks.
 ```tsx
 const executor = useExecutor(initialValue);
 
-// Starts a new execution.
-// If there's pending execution, it is aborted via signal.
+// Starts a new execution; if there's pending execution, it is aborted via signal
 executor.execute(async (signal) => doSomething());
 ```
 
-You can manage how executors are created with `ExecutorProvider` and
-[`SsrExecutorProvider`](https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html).
+You can manage how executors are created with
+[`ExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html) and
+[`SsrExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {SsrExecutorProvider, ExecutorProviderContext} from '@smikhalevski/react-hooks';
+import {SsrExecutorProvider, ExecutorProviderContext} from 'react-hookers';
 
 const mySsrExecutorProvider = new SsrExecutorProvider();
 
@@ -124,7 +124,7 @@ You can create a custom `useExecutor` hook that is bound to a custom context.
 
 ```ts
 import {createContext} from 'react';
-import {createExecutorHook, ExecutorProvider} from '@smikhalevski/react-hooks';
+import {createExecutorHook, ExecutorProvider} from 'react-hookers';
 
 const MyExecutorProviderContext = createContext(new ExecutorProvider());
 
@@ -178,11 +178,11 @@ valueRef.current;
 
 ### `useAsyncEffect`
 
-Analogue of `React.useEffect` that can handle a `Promise` returned from the effect callback. Returned `Promise` may
-resolve with a destructor / cleanup callback. An effect callback receives an
-[`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) that is aborted if effect is called
-again before the previously returned `Promise` is resolved. Cleanup callbacks returned from the aborted effects are
-ignored.
+Analogue of [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect) that can handle a `Promise`
+returned from the effect callback. Returned `Promise` may resolve with a destructor / cleanup callback. An effect
+callback receives an [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) that is aborted
+if effect is called again before the previously returned `Promise` is resolved. Cleanup callbacks returned from the
+aborted effects are ignored.
 
 ```ts
 useAsyncEffect(
@@ -215,7 +215,8 @@ useAsyncEffectOnce(async (signal) => {
 
 ### `useEffectOnce`
 
-Same as `React.useEffect` but calls effect only once after the component is mounted.
+Same as [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect) but calls effect only once after
+the component is mounted.
 
 The optional cleanup callback is called when the component is unmounted.
 
@@ -231,7 +232,8 @@ useEffectOnce(() => {
 
 ### `useIsomorphicLayoutEffect`
 
-Same as `React.useLayoutEffect` but doesn't produce warnings during SSR.
+Same as [`React.useLayoutEffect`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect) but doesn't produce
+warnings during SSR.
 
 ```ts
 useIsomorphicLayoutEffect(
@@ -248,8 +250,9 @@ useIsomorphicLayoutEffect(
 
 ### `useRenderEffect`
 
-Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
-equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
+Analogue of [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useffect) that invokes an `effect`
+synchronously during rendering if `deps` aren't defined or don't equal to deps provided during the previous render. This
+hook comes in handy when calling an effect during SSR.
 
 The optional cleanup callback is called synchronously during rendering.
 
@@ -320,7 +323,7 @@ useRerenderSchedule(500);
 
 ### `useTime`
 
-Returns the [`Time`](https://smikhalevski.github.io/react-hooks/classes/Time.html) instance that provides the current
+Returns the [`Time`](https://smikhalevski.github.io/react-hookers/classes/Time.html) instance that provides the current
 timestamp.
 
 ```ts
@@ -331,11 +334,11 @@ time.now();
 ```
 
 You can alter the timestamp by providing the custom
-[`Time`](https://smikhalevski.github.io/react-hooks/classes/Time.html) implementation.
+[`Time`](https://smikhalevski.github.io/react-hookers/classes/Time.html) implementation.
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {Time, TimeContext} from '@smikhalevski/react-hooks';
+import {Time, TimeContext} from 'react-hookers';
 
 const myTime = new Time();
 
@@ -371,7 +374,7 @@ stop();
 
 ### `useMetronome`
 
-Returns a [`Metronome`](https://smikhalevski.github.io/react-hooks/classes/Metronome.html) instance. Use this to
+Returns a [`Metronome`](https://smikhalevski.github.io/react-hookers/classes/Metronome.html) instance. Use this to
 schedule callback invocation.
 
 ```ts
@@ -387,11 +390,11 @@ useEffect(
 ```
 
 You can alter how metronomes are created by providing the custom
-[`MetronomeProvider`](https://smikhalevski.github.io/react-hooks/classes/MetronomeProvider.html) implementation.
+[`MetronomeProvider`](https://smikhalevski.github.io/react-hookers/classes/MetronomeProvider.html) implementation.
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {MetronomeProvider, MetronomeProviderContext} from '@smikhalevski/react-hooks';
+import {MetronomeProvider, MetronomeProviderContext} from 'react-hookers';
 
 const myMetronomeProvider = new MetronomeProvider();
 
@@ -459,7 +462,8 @@ const [currState, nextState, setState] = useDebouncedState(500);
 
 ### `useBlocker`
 
-Provides mechanism for blocking async processes and unblocking them from an external context.
+Returns the [`Blocker`](https://smikhalevski.github.io/parallel-universe/classes/Blocker.html) instance that provides
+mechanism for blocking async processes and unblocking them from an external context.
 
 ```tsx
 const blocker = useBlocker<boolean>();
@@ -473,7 +477,8 @@ blocker.unblock(true);
 
 ### `useLock`
 
-Returns the `Lock` instance that can be used to synchronize async processes.
+Returns the [`Lock`](https://smikhalevski.github.io/parallel-universe/classes/Lock.html) instance that can be used to
+synchronize async processes.
 
 ```tsx
 const lock = useLock();
@@ -495,7 +500,8 @@ doSomething();
 
 ### `useGuard`
 
-Extract shared conditional logic from event handlers and callbacks.
+Returns the [`Guard`](https://smikhalevski.github.io/react-hookers/classes/Guard.html) instance that extracts shared
+conditional logic from event handlers and callbacks.
 
 ```tsx
 const guard = useGuard(
