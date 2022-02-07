@@ -1,6 +1,6 @@
 # react-hookers [![build](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml/badge.svg?branch=master&event=push)](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml)
 
-<img alt="Bender" width="250" src="https://github.com/smikhalevski/react-hookers/raw/next/bender.png">
+<img alt="Bender" width="250" src="https://raw.githubusercontent.com/smikhalevski/react-hookers/master/bender.png">
 
 ```sh
 npm install --save-prod react-hookers
@@ -8,7 +8,7 @@ npm install --save-prod react-hookers
 
 🤖 [API documentation is available here.](https://smikhalevski.github.io/react-hookers/)
 
-**State**
+[**State**](#state)
 
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
@@ -19,7 +19,7 @@ npm install --save-prod react-hookers
 - [`useRefCallback`](#userefcallback)
 - [`useValueRef`](#usevalueref)
 
-**Side effects**
+[**Side effects**](#side-effects)
 
 - [`useAsyncEffect`](#useasynceffect)
 - [`useAsyncEffectOnce`](#useasynceffectonce)
@@ -28,13 +28,13 @@ npm install --save-prod react-hookers
 - [`useRenderEffect`](#userendereffect)
 - [`useRenderEffectOnce`](#userendereffectonce)
 
-**Rendering**
+[**Rendering**](#rendering)
 
 - [`useRerender`](#usererender)
 - [`useMountSignal`](#usemountsignal)
 - [`useRerenderSchedule`](#usererenderschedule)
 
-**Time**
+[**Time**](#time)
 
 - [`useTime`](#usetime)
 - [`useAnimationFrame`](#useanimationframe)
@@ -43,7 +43,7 @@ npm install --save-prod react-hookers
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 
-**User flow**
+[**User flow**](#user-flow)
 
 - [`useBlocker`](#useblocker)
 - [`useLock`](#uselock)
@@ -53,8 +53,8 @@ npm install --save-prod react-hookers
 
 ### `useSemanticCallback`
 
-The drop-in replacement for `React.useCallback` which provides the semantic guarantee that the callback won't be "
-forgotten" until the hook is unmounted.
+The drop-in replacement for [`React.useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback) which
+provides the semantic guarantee that the callback won't be "forgotten" until the hook is unmounted.
 
 ```ts
 const memoizedCallback = useSemanticCallback(
@@ -65,8 +65,8 @@ const memoizedCallback = useSemanticCallback(
 
 ### `useSemanticMemo`
 
-The drop-in replacement for `React.useMemo` which provides thee semantic guarantee that the value produced by factory
-won't be "forgotten" until the hook is unmounted.
+The drop-in replacement for [`React.useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo) which provides the
+semantic guarantee that the value produced by factory won't be "forgotten" until the hook is unmounted.
 
 ```ts
 const memoizedValue = useSemanticMemo(
@@ -96,12 +96,12 @@ provides means to call, abort and monitor async callbacks.
 ```tsx
 const executor = useExecutor(initialValue);
 
-// Starts a new execution.
-// If there's pending execution, it is aborted via signal.
+// Starts a new execution; if there's pending execution, it is aborted via signal
 executor.execute(async (signal) => doSomething());
 ```
 
-You can manage how executors are created with `ExecutorProvider` and
+You can manage how executors are created with
+[`ExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html) and
 [`SsrExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
 
 ```tsx
@@ -178,11 +178,11 @@ valueRef.current;
 
 ### `useAsyncEffect`
 
-Analogue of `React.useEffect` that can handle a `Promise` returned from the effect callback. Returned `Promise` may
-resolve with a destructor / cleanup callback. An effect callback receives an
-[`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) that is aborted if effect is called
-again before the previously returned `Promise` is resolved. Cleanup callbacks returned from the aborted effects are
-ignored.
+Analogue of [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect) that can handle a `Promise`
+returned from the effect callback. Returned `Promise` may resolve with a destructor / cleanup callback. An effect
+callback receives an [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) that is aborted
+if effect is called again before the previously returned `Promise` is resolved. Cleanup callbacks returned from the
+aborted effects are ignored.
 
 ```ts
 useAsyncEffect(
@@ -215,7 +215,8 @@ useAsyncEffectOnce(async (signal) => {
 
 ### `useEffectOnce`
 
-Same as `React.useEffect` but calls effect only once after the component is mounted.
+Same as [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect) but calls effect only once after
+the component is mounted.
 
 The optional cleanup callback is called when the component is unmounted.
 
@@ -231,7 +232,8 @@ useEffectOnce(() => {
 
 ### `useIsomorphicLayoutEffect`
 
-Same as `React.useLayoutEffect` but doesn't produce warnings during SSR.
+Same as [`React.useLayoutEffect`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect) but doesn't produce
+warnings during SSR.
 
 ```ts
 useIsomorphicLayoutEffect(
@@ -248,8 +250,9 @@ useIsomorphicLayoutEffect(
 
 ### `useRenderEffect`
 
-Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
-equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
+Analogue of [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useffect) that invokes an `effect`
+synchronously during rendering if `deps` aren't defined or don't equal to deps provided during the previous render. This
+hook comes in handy when calling an effect during SSR.
 
 The optional cleanup callback is called synchronously during rendering.
 
@@ -459,7 +462,8 @@ const [currState, nextState, setState] = useDebouncedState(500);
 
 ### `useBlocker`
 
-Provides mechanism for blocking async processes and unblocking them from an external context.
+Returns the [`Blocker`](https://smikhalevski.github.io/parallel-universe/classes/Blocker.html) instance that provides
+mechanism for blocking async processes and unblocking them from an external context.
 
 ```tsx
 const blocker = useBlocker<boolean>();
@@ -473,7 +477,8 @@ blocker.unblock(true);
 
 ### `useLock`
 
-Returns the `Lock` instance that can be used to synchronize async processes.
+Returns the [`Lock`](https://smikhalevski.github.io/parallel-universe/classes/Lock.html) instance that can be used to
+synchronize async processes.
 
 ```tsx
 const lock = useLock();
@@ -495,7 +500,8 @@ doSomething();
 
 ### `useGuard`
 
-Extract shared conditional logic from event handlers and callbacks.
+Returns the [`Guard`](https://smikhalevski.github.io/react-hookers/classes/Guard.html) instance that extracts shared
+conditional logic from event handlers and callbacks.
 
 ```tsx
 const guard = useGuard(
