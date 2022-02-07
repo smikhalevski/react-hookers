@@ -1,5 +1,6 @@
 import {Executor} from 'parallel-universe';
 import {noop} from '../utils';
+import {disposeExecutor} from './disposeExecutor';
 import {ExecutorProvider} from './ExecutorProvider';
 
 /**
@@ -9,15 +10,15 @@ export class SsrExecutorProvider implements ExecutorProvider {
 
   public executors = new Set<Executor>();
 
-  public createExecutor(): Executor<any> {
+  public createExecutor(): Executor {
     const executor = new Executor();
     this.executors.add(executor);
     return executor;
   }
 
   public disposeExecutor(executor: Executor): void {
-    executor.abort();
     this.executors.delete(executor);
+    disposeExecutor(executor);
   }
 
   /**

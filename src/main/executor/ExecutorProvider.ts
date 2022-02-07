@@ -1,4 +1,5 @@
 import {Executor} from 'parallel-universe';
+import {disposeExecutor} from './disposeExecutor';
 
 /**
  * The stateless provider that creates and disposes executors.
@@ -16,6 +17,6 @@ export class ExecutorProvider {
    * Disposes an executor.
    */
   public disposeExecutor(executor: Executor): void {
-    executor.abort();
+    disposeExecutor(executor);
   }
 }
