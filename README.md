@@ -10,15 +10,14 @@ npm install --save-prod @smikhalevski/react-hooks
 
 **State**
 
-- [`usePrevState`](#useprevstate)
-- [`useRefCallback`](#userefcallback)
-- [`useRenderedValueRef`](#userenderedvalueref)
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
 - [`useExecution`](#useexecution)
 - [`useExecutor`](#useexecutor)
 - [`usePolling`](#usepolling)
 - [`useToggle`](#usetoggle)
+- [`useRefCallback`](#userefcallback)
+- [`useValueRef`](#usevalueref)
 
 **Side effects**
 
@@ -51,35 +50,6 @@ npm install --save-prod @smikhalevski/react-hooks
 - [`useGuard`](#useguard)
 
 # State
-
-### `usePrevState`
-
-Compares the state passed during the previous render with the newly given state, and if they differ based on equality
-checker, then the new state is returned.
-
-```ts
-const nextValue = usePrevState(
-    value,
-    (prevValue, value) => prevValue !== value,
-);
-```
-
-### `useRefCallback`
-
-Returns a ref object and a callback to update the value of this ref.
-
-```ts
-const [ref, updateRef] = useRefCallback(initialValue);
-```
-
-### `useRenderedValueRef`
-
-Creates a `MutableRefObject` that keeps ref to the given value. This hook comes in handy if you want to use the props
-provided during the most recent render in the async context.
-
-```ts
-const valueRef = useRenderedValueRef(value);
-```
 
 ### `useSemanticCallback`
 
@@ -180,6 +150,28 @@ Returns a boolean flag and functions to toggle its value.
 
 ```ts
 const [enabled, enable, disable] = useToggle(initialValue);
+```
+
+### `useRefCallback`
+
+Returns a ref object and a callback to update the value of this ref.
+
+```ts
+const [ref, updateRef] = useRefCallback(initialValue);
+```
+
+### `useValueRef`
+
+Creates a `RefObject` that is updated on every render with the given value.
+
+For example, this hook comes in handy when a value is used in the effect, and you don't want the effect to be triggered
+every time the value changes. Then you pass the value to `useValueRef` and use the returned ref in the effect.
+
+```ts
+const valueRef = useValueRef(value);
+
+// The latest rendered value
+valueRef.current;
 ```
 
 # Side effects
