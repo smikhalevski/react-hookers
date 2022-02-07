@@ -1,6 +1,6 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
+import {sleep} from 'parallel-universe';
 import {useDebounce} from '../../main';
-import * as sleep from 'sleep-promise';
 
 describe('useDebounce', () => {
 

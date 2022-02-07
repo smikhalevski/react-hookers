@@ -1,6 +1,6 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
+import {sleep} from 'parallel-universe';
 import {useSchedule} from '../../main';
-import * as sleep from 'sleep-promise';
 
 describe('useSchedule', () => {
 

@@ -1,5 +1,5 @@
+import {sleep} from 'parallel-universe';
 import {Metronome} from '../../main';
-import * as sleep from 'sleep-promise';
 
 describe('Metronome', () => {
 

@@ -1,2 +1,2 @@
-export * from './Blocker';
 export * from './useBlocker';
+export * from './useLock';

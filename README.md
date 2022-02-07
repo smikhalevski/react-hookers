@@ -10,22 +10,28 @@ npm install --save-prod @smikhalevski/react-hooks
 
 **State**
 
-- [`usePrevState`](#useprevstate)
-- [`useRefCallback`](#userefcallback)
-- [`useRenderedValueRef`](#userenderedvalueref)
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
 - [`useExecution`](#useexecution)
 - [`useExecutor`](#useexecutor)
+- [`usePolling`](#usepolling)
 - [`useToggle`](#usetoggle)
+- [`useRefCallback`](#userefcallback)
+- [`useValueRef`](#usevalueref)
+
+**Side effects**
+
+- [`useAsyncEffect`](#useasynceffect)
+- [`useAsyncEffectOnce`](#useasynceffectonce)
+- [`useEffectOnce`](#useeffectonce)
+- [`useIsomorphicLayoutEffect`](#useisomorphiclayouteffect)
+- [`useRenderEffect`](#userendereffect)
+- [`useRenderEffectOnce`](#userendereffectonce)
 
 **Rendering**
 
 - [`useRerender`](#usererender)
 - [`useMountSignal`](#usemountsignal)
-- [`useRenderEffect`](#userendereffect)
-- [`useEffectOnce`](#useeffectonce)
-- [`useRenderEffectOnce`](#userendereffectonce)
 - [`useRerenderSchedule`](#usererenderschedule)
 
 **Time**
@@ -40,38 +46,10 @@ npm install --save-prod @smikhalevski/react-hooks
 **User flow**
 
 - [`useBlocker`](#useblocker)
+- [`useLock`](#uselock)
 - [`useGuard`](#useguard)
 
 # State
-
-### `usePrevState`
-
-Compares the state passed during the previous render with the newly given state, and if they differ based on equality
-checker, then the new state is returned.
-
-```ts
-const nextValue = usePrevState(
-    value,
-    (prevValue, value) => prevValue !== value,
-);
-```
-
-### `useRefCallback`
-
-Returns a ref object and a callback to update the value of this ref.
-
-```ts
-const [ref, updateRef] = useRefCallback(initialValue);
-```
-
-### `useRenderedValueRef`
-
-Creates a `MutableRefObject` that keeps ref to the given value. This hook comes in handy if you want to use the props
-provided during the most recent render in the async context.
-
-```ts
-const valueRef = useRenderedValueRef(value);
-```
 
 ### `useSemanticCallback`
 
@@ -100,11 +78,11 @@ const memoizedValue = useSemanticMemo(
 ### `useExecution`
 
 Executes a callback when dependencies are changed and returns an
-[`Executor`](https://smikhalevski.github.io/react-hooks/classes/executor.html) instance that describes the result
-and status.
+[`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html) instance that describes the
+result and status.
 
 ```tsx
-const executor = useExecution(
+const execution = useExecution(
     async (signal) => doSomething(a, b),
     [a, b],
 );
@@ -112,8 +90,8 @@ const executor = useExecution(
 
 ### `useExecutor`
 
-Creates a new [`Executor`](https://smikhalevski.github.io/react-hooks/interfaces/executor.html) instance that provides
-means to call, abort and monitor async callbacks.
+Creates a new [`Executor`](https://smikhalevski.github.io/parallel-universe/classes/Executor.html) instance that
+provides means to call, abort and monitor async callbacks.
 
 ```tsx
 const executor = useExecutor(initialValue);
@@ -153,12 +131,155 @@ const MyExecutorProviderContext = createContext(new ExecutorProvider());
 const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
 ```
 
+### `usePolling`
+
+Returns an [`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html) instance that is
+periodically updated.
+
+```tsx
+const execution = usePolling(
+    async (signal) => doSomething(a, b),
+    100, // Interval delay
+    [a, b],
+);
+```
+
 ### `useToggle`
 
 Returns a boolean flag and functions to toggle its value.
 
 ```ts
 const [enabled, enable, disable] = useToggle(initialValue);
+```
+
+### `useRefCallback`
+
+Returns a ref object and a callback to update the value of this ref.
+
+```ts
+const [ref, updateRef] = useRefCallback(initialValue);
+```
+
+### `useValueRef`
+
+Creates a `RefObject` that is updated on every render with the given value.
+
+For example, this hook comes in handy when a value is used in the effect, and you don't want the effect to be triggered
+every time the value changes. Then you pass the value to `useValueRef` and use the returned ref in the effect.
+
+```ts
+const valueRef = useValueRef(value);
+
+// The latest rendered value
+valueRef.current;
+```
+
+# Side effects
+
+### `useAsyncEffect`
+
+Analogue of `React.useEffect` that can handle a `Promise` returned from the effect callback. Returned `Promise` may
+resolve with a destructor / cleanup callback. An effect callback receives an
+[`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) that is aborted if effect is called
+again before the previously returned `Promise` is resolved. Cleanup callbacks returned from the aborted effects are
+ignored.
+
+```ts
+useAsyncEffect(
+    async (signal) => {
+      doSomething(a, b);
+
+      return () => {
+        cleanup();
+      };
+    },
+    [a, b],
+);
+```
+
+### `useAsyncEffectOnce`
+
+Same as [`useAsyncEffect`](#useasynceffect) but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useAsyncEffectOnce(async (signal) => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
+```
+
+### `useEffectOnce`
+
+Same as `React.useEffect` but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useEffectOnce(() => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
+```
+
+### `useIsomorphicLayoutEffect`
+
+Same as `React.useLayoutEffect` but doesn't produce warnings during SSR.
+
+```ts
+useIsomorphicLayoutEffect(
+    () => {
+      doSomething(a, b);
+
+      return () => {
+        cleanup();
+      };
+    },
+    [a, b],
+);
+```
+
+### `useRenderEffect`
+
+Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
+equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
+
+The optional cleanup callback is called synchronously during rendering.
+
+```ts
+useRenderEffect(
+    () => {
+      doSomething(a, b);
+
+      return () => {
+        cleanup();
+      };
+    },
+    [a, b],
+);
+```
+
+### `useRenderEffectOnce`
+
+Same as [`useRenderEffect`](#userendereffect) but calls effect only once after the component is mounted.
+
+The optional cleanup callback is called when the component is unmounted.
+
+```ts
+useRenderEffectOnce(() => {
+  doSomething(a, b);
+
+  return () => {
+    cleanup();
+  };
+});
 ```
 
 # Rendering
@@ -185,58 +306,6 @@ const signal = useMountSignal();
 
 // Returns true if componenet was unmounted
 signal.aborted;
-```
-
-### `useRenderEffect`
-
-Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or don't
-equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.
-
-The optional cleanup callback is called synchronously during rendering.
-
-```ts
-useRenderEffect(
-    () => {
-      doSomething(a, b);
-
-      return () => {
-        cleanup();
-      };
-    },
-    [a, b],
-);
-```
-
-### `useEffectOnce`
-
-Same as `React.useEffect` but calls effect only once after the component is mounted.
-
-The optional cleanup callback is called when the component is unmounted.
-
-```ts
-useEffectOnce(() => {
-  doSomething(a, b);
-
-  return () => {
-    cleanup();
-  };
-});
-```
-
-### `useRenderEffectOnce`
-
-Same as [`useRenderEffect`](#userendereffect) but calls effect only once after the component is mounted.
-
-The optional cleanup callback is called when the component is unmounted.
-
-```ts
-useRenderEffectOnce(() => {
-  doSomething(a, b);
-
-  return () => {
-    cleanup();
-  };
-});
 ```
 
 ### `useRerenderSchedule`
@@ -398,8 +467,30 @@ const blocker = useBlocker<boolean>();
 // Returns Promise that is resolved with the value passed to blocker.unblock(value)
 blocker.block(); // → Promise<boolean>
 
-// Unblocks the blocker with given value.
+// Unblocks the blocker with given value
 blocker.unblock(true);
+```
+
+### `useLock`
+
+Returns the `Lock` instance that can be used to synchronize async processes.
+
+```tsx
+const lock = useLock();
+
+async function doSomething() {
+  const release = await lock.acquire();
+  try {
+    // Long process starts here
+  } finally {
+    release();
+  }
+}
+
+// Long process would be executed three times sequentially
+doSomething();
+doSomething();
+doSomething();
 ```
 
 ### `useGuard`
@@ -411,10 +502,11 @@ const guard = useGuard(
     async () => checkCondition(),
 
     async (replay) => {
-      // Invoked if the guarded callback was called when condition wasn't met.
+      // Invoked if the guarded callback was called when condition wasn't met
       doFallback();
 
-      // Invoke the guarded callback with the same arguments.
+      // Replay the guarded callback invokation
+      // (original arguments are bound to the replay callback)
       replay();
     },
 );

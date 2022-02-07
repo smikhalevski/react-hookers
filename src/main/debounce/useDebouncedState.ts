@@ -1,7 +1,7 @@
-import {Dispatch, SetStateAction, useRef} from 'react';
+import {Dispatch, EffectCallback, SetStateAction, useRef} from 'react';
 import {useEffectOnce} from '../effect';
 import {isFunction} from '../utils';
-import {useRerender} from '../rerender';
+import {useRerender} from '../render';
 
 export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: Dispatch<SetStateAction<S>>];
 
@@ -64,7 +64,7 @@ function createDebouncedStateManager<S>(ms: number, rerender: () => void, initia
 
   const protocol: DebouncedStateProtocol<S | undefined> = [currState, nextState, setState];
 
-  const __effect = () => () => {
+  const __effect: EffectCallback = () => () => {
     clearTimeout(timeout);
   };
 

@@ -1,6 +1,6 @@
 import {TimeContext} from './TimeContext';
 import {useContext, useEffect} from 'react';
-import {useRerender} from '../rerender';
+import {useRerender} from '../render';
 import {Time} from './Time';
 
 /**

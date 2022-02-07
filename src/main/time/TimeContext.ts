@@ -3,8 +3,6 @@ import {Time} from './Time';
 
 /**
  * The context used by {@link useTime}.
- *
- * @see {@link time}
  */
 export const TimeContext = createContext(new Time());
 

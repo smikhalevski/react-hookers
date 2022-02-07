@@ -2,9 +2,8 @@ import {createExecutionHook} from './createExecutionHook';
 import {ExecutorProviderContext} from './ExecutorProviderContext';
 
 /**
- * Executes a callback when dependencies are changed and returns an {@link Executor}.
+ * Executes a callback when dependencies are changed and returns an `Executor`.
  *
- * @see {@link Executor}
  * @see {@link ExecutorProviderContext}
  * @see {@link createExecutionHook}
  * @see {@link useExecutor}

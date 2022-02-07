@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {EffectCallback, useRef} from 'react';
 import {useEffectOnce} from '../effect';
 import {SetTimeout} from '../shared-types';
 
@@ -28,7 +28,7 @@ function createDebounceManager() {
     clearTimeout(timeout);
   };
 
-  const __effect = () => cancel;
+  const __effect: EffectCallback = () => cancel;
 
   return {
     __effect,

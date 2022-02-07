@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {EffectCallback, useRef} from 'react';
 import {useEffectOnce} from '../effect';
 
 export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void, stop: () => void];
@@ -35,7 +35,7 @@ function createAnimationFrameManager() {
     cancelAnimationFrame(handle);
   };
 
-  const __effect = () => stop;
+  const __effect: EffectCallback = () => stop;
 
   return {
     __effect,

@@ -2,10 +2,10 @@ import {EventBus} from '@smikhalevski/event-bus';
 
 export class Time {
 
-  private _eventBus = new EventBus();
+  private readonly _eventBus = new EventBus();
 
   /**
-   * The offset in milliseconds between `Date.now()` and timestamp returned by {@link Time.now}.
+   * The offset in milliseconds between `Date.now()` and timestamp returned by {@link now}.
    */
   public offset = 0;
 
@@ -21,7 +21,7 @@ export class Time {
   /**
    * Sets current timestamp.
    *
-   * @param timestamp The timestamp that would be used as an offset for calculating {@link Time.now}.
+   * @param timestamp The timestamp that would be used as an offset for calculating {@link now}.
    */
   public setTimestamp(timestamp: number): void {
     const prevOffset = this.offset;
