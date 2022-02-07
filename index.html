@@ -1,616 +1,302 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>react-hooks - v4.0.1</title>
-	<meta name="description" content="Documentation for react-hooks - v4.0.1">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="assets/css/main.css">
-	<script async src="assets/js/search.js" id="search-script"></script>
-</head>
-<body>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="index.html" class="title">react-hooks - v4.0.1</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-externals" checked />
-							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<h1>react-hooks - v4.0.1</h1>
-		</div>
-	</div>
-</header>
-<div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<a href="#react-hooks-🪝-" id="react-hooks-🪝-" style="color: inherit; text-decoration: none;">
-					<h1>react-hooks 🪝 <a href="https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml"><img src="https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml/badge.svg?branch=master&event=push" alt="build"></a></h1>
-				</a>
-				<p>The set of general-purpose React hooks.</p>
-				<pre><code class="language-sh"><span style="color: #000000">npm install --save-prod @smikhalevski/react-hooks</span>
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>react-hookers - v5.0.0</title><meta name="description" content="Documentation for react-hookers - v5.0.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">react-hookers - v5.0.0</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>react-hookers - v5.0.0</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#react-hookers-" id="react-hookers-" style="color: inherit; text-decoration: none;">
+  <h1>react-hookers <a href="https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml"><img src="https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml/badge.svg?branch=master&event=push" alt="build"></a></h1>
+</a>
+<img alt="Bender" width="250" src="https://raw.githubusercontent.com/smikhalevski/react-hookers/master/bender.png">
+
+<pre><code class="language-sh"><span class="hl-0">npm install --save-prod react-hookers</span>
 </code></pre>
-				<p>📚 <a href="https://smikhalevski.github.io/react-hooks/">API documentation is available here.</a></p>
-				<p><strong>State</strong></p>
-				<ul>
-					<li><a href="#useprevstate"><code>usePrevState</code></a></li>
-					<li><a href="#userefcallback"><code>useRefCallback</code></a></li>
-					<li><a href="#userenderedvalueref"><code>useRenderedValueRef</code></a></li>
-					<li><a href="#usesemanticcallback"><code>useSemanticCallback</code></a></li>
-					<li><a href="#usesemanticmemo"><code>useSemanticMemo</code></a></li>
-					<li><a href="#useexecution"><code>useExecution</code></a></li>
-					<li><a href="#useexecutor"><code>useExecutor</code></a></li>
-					<li><a href="#usetoggle"><code>useToggle</code></a></li>
-				</ul>
-				<p><strong>Rendering</strong></p>
-				<ul>
-					<li><a href="#usererender"><code>useRerender</code></a></li>
-					<li><a href="#usemountsignal"><code>useMountSignal</code></a></li>
-					<li><a href="#userendereffect"><code>useRenderEffect</code></a></li>
-					<li><a href="#useeffectonce"><code>useEffectOnce</code></a></li>
-					<li><a href="#userendereffectonce"><code>useRenderEffectOnce</code></a></li>
-					<li><a href="#usererenderschedule"><code>useRerenderSchedule</code></a></li>
-				</ul>
-				<p><strong>Time</strong></p>
-				<ul>
-					<li><a href="#usetime"><code>useTime</code></a></li>
-					<li><a href="#useanimationframe"><code>useAnimationFrame</code></a></li>
-					<li><a href="#usemetronome"><code>useMetronome</code></a></li>
-					<li><a href="#useschedule"><code>useSchedule</code></a></li>
-					<li><a href="#usedebounce"><code>useDebounce</code></a></li>
-					<li><a href="#usedebouncedstate"><code>useDebouncedState</code></a></li>
-				</ul>
-				<p><strong>User flow</strong></p>
-				<ul>
-					<li><a href="#useblocker"><code>useBlocker</code></a></li>
-					<li><a href="#useguard"><code>useGuard</code></a></li>
-				</ul>
-				<a href="#state" id="state" style="color: inherit; text-decoration: none;">
-					<h1>State</h1>
-				</a>
-				<a href="#useprevstate" id="useprevstate" style="color: inherit; text-decoration: none;">
-					<h3><code>usePrevState</code></h3>
-				</a>
-				<p>Compares the state passed during the previous render with the newly given state, and if they differ based on equality
-				checker, then the new state is returned.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">nextValue</span><span style="color: #000000"> = </span><span style="color: #795E26">usePrevState</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #001080">value</span><span style="color: #000000">,</span>
-<span style="color: #000000">    (</span><span style="color: #001080">prevValue</span><span style="color: #000000">, </span><span style="color: #001080">value</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">prevValue</span><span style="color: #000000"> !== </span><span style="color: #001080">value</span><span style="color: #000000">,</span>
-<span style="color: #000000">);</span>
+<p>🤖 <a href="https://smikhalevski.github.io/react-hookers/">API documentation is available here.</a></p>
+<p><a href="#state"><strong>State</strong></a></p>
+<ul>
+<li><a href="#usesemanticcallback"><code>useSemanticCallback</code></a></li>
+<li><a href="#usesemanticmemo"><code>useSemanticMemo</code></a></li>
+<li><a href="#useexecution"><code>useExecution</code></a></li>
+<li><a href="#useexecutor"><code>useExecutor</code></a></li>
+<li><a href="#usepolling"><code>usePolling</code></a></li>
+<li><a href="#usetoggle"><code>useToggle</code></a></li>
+<li><a href="#userefcallback"><code>useRefCallback</code></a></li>
+<li><a href="#usevalueref"><code>useValueRef</code></a></li>
+</ul>
+<p><a href="#side-effects"><strong>Side effects</strong></a></p>
+<ul>
+<li><a href="#useasynceffect"><code>useAsyncEffect</code></a></li>
+<li><a href="#useasynceffectonce"><code>useAsyncEffectOnce</code></a></li>
+<li><a href="#useeffectonce"><code>useEffectOnce</code></a></li>
+<li><a href="#useisomorphiclayouteffect"><code>useIsomorphicLayoutEffect</code></a></li>
+<li><a href="#userendereffect"><code>useRenderEffect</code></a></li>
+<li><a href="#userendereffectonce"><code>useRenderEffectOnce</code></a></li>
+</ul>
+<p><a href="#rendering"><strong>Rendering</strong></a></p>
+<ul>
+<li><a href="#usererender"><code>useRerender</code></a></li>
+<li><a href="#usemountsignal"><code>useMountSignal</code></a></li>
+<li><a href="#usererenderschedule"><code>useRerenderSchedule</code></a></li>
+</ul>
+<p><a href="#time"><strong>Time</strong></a></p>
+<ul>
+<li><a href="#usetime"><code>useTime</code></a></li>
+<li><a href="#useanimationframe"><code>useAnimationFrame</code></a></li>
+<li><a href="#usemetronome"><code>useMetronome</code></a></li>
+<li><a href="#useschedule"><code>useSchedule</code></a></li>
+<li><a href="#usedebounce"><code>useDebounce</code></a></li>
+<li><a href="#usedebouncedstate"><code>useDebouncedState</code></a></li>
+</ul>
+<p><a href="#user-flow"><strong>User flow</strong></a></p>
+<ul>
+<li><a href="#useblocker"><code>useBlocker</code></a></li>
+<li><a href="#uselock"><code>useLock</code></a></li>
+<li><a href="#useguard"><code>useGuard</code></a></li>
+</ul>
+
+<a href="#state" id="state" style="color: inherit; text-decoration: none;">
+  <h1>State</h1>
+</a>
+
+<a href="#usesemanticcallback" id="usesemanticcallback" style="color: inherit; text-decoration: none;">
+  <h3><code>useSemanticCallback</code></h3>
+</a>
+<p>The drop-in replacement for <a href="https://reactjs.org/docs/hooks-reference.html#usecallback"><code>React.useCallback</code></a> which
+provides the semantic guarantee that the callback won&#39;t be &quot;forgotten&quot; until the hook is unmounted.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">memoizedCallback</span><span class="hl-0"> = </span><span class="hl-3">useSemanticCallback</span><span class="hl-0">(</span><br/><span class="hl-0">    () </span><span class="hl-1">=&gt;</span><span class="hl-0"> </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">),</span><br/><span class="hl-0">    [</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#userefcallback" id="userefcallback" style="color: inherit; text-decoration: none;">
-					<h3><code>useRefCallback</code></h3>
-				</a>
-				<p>Returns a ref object and a callback to update the value of this ref.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> [</span><span style="color: #0070C1">ref</span><span style="color: #000000">, </span><span style="color: #0070C1">updateRef</span><span style="color: #000000">] = </span><span style="color: #795E26">useRefCallback</span><span style="color: #000000">(</span><span style="color: #001080">initialValue</span><span style="color: #000000">);</span>
+
+<a href="#usesemanticmemo" id="usesemanticmemo" style="color: inherit; text-decoration: none;">
+  <h3><code>useSemanticMemo</code></h3>
+</a>
+<p>The drop-in replacement for <a href="https://reactjs.org/docs/hooks-reference.html#usememo"><code>React.useMemo</code></a> which provides the
+semantic guarantee that the value produced by factory won&#39;t be &quot;forgotten&quot; until the hook is unmounted.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">memoizedValue</span><span class="hl-0"> = </span><span class="hl-3">useSemanticMemo</span><span class="hl-0">(</span><br/><span class="hl-0">    () </span><span class="hl-1">=&gt;</span><span class="hl-0"> </span><span class="hl-3">computeExpensiveValue</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">),</span><br/><span class="hl-0">    [</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#userenderedvalueref" id="userenderedvalueref" style="color: inherit; text-decoration: none;">
-					<h3><code>useRenderedValueRef</code></h3>
-				</a>
-				<p>Creates a <code>MutableRefObject</code> that keeps ref to the given value. This hook comes in handy if you want to use the props
-				provided during the most recent render in the async context.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">valueRef</span><span style="color: #000000"> = </span><span style="color: #795E26">useRenderedValueRef</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">);</span>
+
+<a href="#useexecution" id="useexecution" style="color: inherit; text-decoration: none;">
+  <h3><code>useExecution</code></h3>
+</a>
+<p>Executes a callback when dependencies are changed and returns an
+<a href="https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html"><code>Execution</code></a> instance that describes the
+result and status.</p>
+<pre><code class="language-tsx"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">execution</span><span class="hl-0"> = </span><span class="hl-3">useExecution</span><span class="hl-0">(</span><br/><span class="hl-0">    </span><span class="hl-1">async</span><span class="hl-0"> (</span><span class="hl-4">signal</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">),</span><br/><span class="hl-0">    [</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#usesemanticcallback" id="usesemanticcallback" style="color: inherit; text-decoration: none;">
-					<h3><code>useSemanticCallback</code></h3>
-				</a>
-				<p>The drop-in replacement for <code>React.useCallback</code> which provides the semantic guarantee that the callback won&#39;t be &quot;
-				forgotten&quot; until the hook is unmounted.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">memoizedCallback</span><span style="color: #000000"> = </span><span style="color: #795E26">useSemanticCallback</span><span style="color: #000000">(</span>
-<span style="color: #000000">    () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">doSomething</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">),</span>
-<span style="color: #000000">    [</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">],</span>
-<span style="color: #000000">);</span>
+
+<a href="#useexecutor" id="useexecutor" style="color: inherit; text-decoration: none;">
+  <h3><code>useExecutor</code></h3>
+</a>
+<p>Creates a new <a href="https://smikhalevski.github.io/parallel-universe/classes/Executor.html"><code>Executor</code></a> instance that
+provides means to call, abort and monitor async callbacks.</p>
+<pre><code class="language-tsx"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">executor</span><span class="hl-0"> = </span><span class="hl-3">useExecutor</span><span class="hl-0">(</span><span class="hl-4">initialValue</span><span class="hl-0">);</span><br/><br/><span class="hl-5">// Starts a new execution; if there&#39;s pending execution, it is aborted via signal</span><br/><span class="hl-4">executor</span><span class="hl-0">.</span><span class="hl-3">execute</span><span class="hl-0">(</span><span class="hl-1">async</span><span class="hl-0"> (</span><span class="hl-4">signal</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> </span><span class="hl-3">doSomething</span><span class="hl-0">());</span>
 </code></pre>
-				<a href="#usesemanticmemo" id="usesemanticmemo" style="color: inherit; text-decoration: none;">
-					<h3><code>useSemanticMemo</code></h3>
-				</a>
-				<p>The drop-in replacement for <code>React.useMemo</code> which provides thee semantic guarantee that the value produced by factory
-				won&#39;t be &quot;forgotten&quot; until the hook is unmounted.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">memoizedValue</span><span style="color: #000000"> = </span><span style="color: #795E26">useSemanticMemo</span><span style="color: #000000">(</span>
-<span style="color: #000000">    () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">computeExpensiveValue</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">),</span>
-<span style="color: #000000">    [</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">],</span>
-<span style="color: #000000">);</span>
+<p>You can manage how executors are created with
+<a href="https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html"><code>ExecutorProvider</code></a> and
+<a href="https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html"><code>SsrExecutorProvider</code></a>.</p>
+<pre><code class="language-tsx"><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">renderToString</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react-dom&#39;</span><span class="hl-0">;</span><br/><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">SsrExecutorProvider</span><span class="hl-0">, </span><span class="hl-4">ExecutorProviderContext</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react-hookers&#39;</span><span class="hl-0">;</span><br/><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">mySsrExecutorProvider</span><span class="hl-0"> = </span><span class="hl-1">new</span><span class="hl-0"> </span><span class="hl-3">SsrExecutorProvider</span><span class="hl-0">();</span><br/><br/><span class="hl-3">renderToString</span><span class="hl-0">(</span><br/><span class="hl-0">    </span><span class="hl-8">&lt;</span><span class="hl-9">ExecutorProviderContext.Provider</span><span class="hl-0"> </span><span class="hl-10">value</span><span class="hl-0">=</span><span class="hl-1">{</span><span class="hl-4">mySsrExecutorProvider</span><span class="hl-1">}</span><span class="hl-8">&gt;</span><br/><span class="hl-0">      </span><span class="hl-1">{</span><span class="hl-5">/* */</span><span class="hl-1">}</span><br/><span class="hl-0">    </span><span class="hl-8">&lt;/</span><span class="hl-9">ExecutorProviderContext.Provider</span><span class="hl-8">&gt;</span><br/><span class="hl-0">);</span><br/><br/><span class="hl-5">// Waits for all executors to complete pending executions</span><br/><span class="hl-6">await</span><span class="hl-0"> </span><span class="hl-4">mySsrExecutorProvider</span><span class="hl-0">.</span><span class="hl-3">waitForExecutorsToComplete</span><span class="hl-0">();</span>
 </code></pre>
-				<a href="#useexecution" id="useexecution" style="color: inherit; text-decoration: none;">
-					<h3><code>useExecution</code></h3>
-				</a>
-				<p>Executes a callback when dependencies are changed and returns an
-					<a href="https://smikhalevski.github.io/react-hooks/classes/executor.html"><code>Executor</code></a> instance that describes the result
-				and status.</p>
-				<pre><code class="language-tsx"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">executor</span><span style="color: #000000"> = </span><span style="color: #795E26">useExecution</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">signal</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">doSomething</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">),</span>
-<span style="color: #000000">    [</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">],</span>
-<span style="color: #000000">);</span>
+<p>You can create a custom <code>useExecutor</code> hook that is bound to a custom context.</p>
+<pre><code class="language-ts"><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">createContext</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react&#39;</span><span class="hl-0">;</span><br/><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">createExecutorHook</span><span class="hl-0">, </span><span class="hl-4">ExecutorProvider</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react-hookers&#39;</span><span class="hl-0">;</span><br/><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">MyExecutorProviderContext</span><span class="hl-0"> = </span><span class="hl-3">createContext</span><span class="hl-0">(</span><span class="hl-1">new</span><span class="hl-0"> </span><span class="hl-3">ExecutorProvider</span><span class="hl-0">());</span><br/><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">useMyExecutor</span><span class="hl-0"> = </span><span class="hl-3">createExecutorHook</span><span class="hl-0">(</span><span class="hl-4">MyExecutorProviderContext</span><span class="hl-0">);</span>
 </code></pre>
-				<a href="#useexecutor" id="useexecutor" style="color: inherit; text-decoration: none;">
-					<h3><code>useExecutor</code></h3>
-				</a>
-				<p>Creates a new <a href="https://smikhalevski.github.io/react-hooks/interfaces/executor.html"><code>Executor</code></a> instance that provides
-				means to call, abort and monitor async callbacks.</p>
-				<pre><code class="language-tsx"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">executor</span><span style="color: #000000"> = </span><span style="color: #795E26">useExecutor</span><span style="color: #000000">(</span><span style="color: #001080">initialValue</span><span style="color: #000000">);</span>
 
-<span style="color: #008000">// Starts a new execution.</span>
-<span style="color: #008000">// If there&#039;s pending execution, it is aborted via signal.</span>
-<span style="color: #001080">executor</span><span style="color: #000000">.</span><span style="color: #795E26">execute</span><span style="color: #000000">(</span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">signal</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">doSomething</span><span style="color: #000000">());</span>
+<a href="#usepolling" id="usepolling" style="color: inherit; text-decoration: none;">
+  <h3><code>usePolling</code></h3>
+</a>
+<p>Returns an <a href="https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html"><code>Execution</code></a> instance that is
+periodically updated.</p>
+<pre><code class="language-tsx"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">execution</span><span class="hl-0"> = </span><span class="hl-3">usePolling</span><span class="hl-0">(</span><br/><span class="hl-0">    </span><span class="hl-1">async</span><span class="hl-0"> (</span><span class="hl-4">signal</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">),</span><br/><span class="hl-0">    </span><span class="hl-11">100</span><span class="hl-0">, </span><span class="hl-5">// Interval delay</span><br/><span class="hl-0">    [</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<p>You can manage how executors are created with <code>ExecutorProvider</code> and
-				<a href="https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html"><code>SsrExecutorProvider</code></a>.</p>
-				<pre><code class="language-tsx"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">renderToString</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;react-dom&#039;</span><span style="color: #000000">;</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">SsrExecutorProvider</span><span style="color: #000000">, </span><span style="color: #001080">ExecutorProviderContext</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@smikhalevski/react-hooks&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">mySsrExecutorProvider</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">SsrExecutorProvider</span><span style="color: #000000">();</span>
-
-<span style="color: #795E26">renderToString</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #800000">&lt;</span><span style="color: #267F99">ExecutorProviderContext.Provider</span><span style="color: #000000"> </span><span style="color: #FF0000">value</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">mySsrExecutorProvider</span><span style="color: #0000FF">}</span><span style="color: #800000">&gt;</span>
-<span style="color: #000000">      </span><span style="color: #0000FF">{</span><span style="color: #008000">/* */</span><span style="color: #0000FF">}</span>
-<span style="color: #000000">    </span><span style="color: #800000">&lt;/</span><span style="color: #267F99">ExecutorProviderContext.Provider</span><span style="color: #800000">&gt;</span>
-<span style="color: #000000">);</span>
-
-<span style="color: #008000">// Waits for all executors to complete pending executions</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">mySsrExecutorProvider</span><span style="color: #000000">.</span><span style="color: #795E26">waitForExecutorsToComplete</span><span style="color: #000000">();</span>
+<a href="#usetoggle" id="usetoggle" style="color: inherit; text-decoration: none;">
+  <h3><code>useToggle</code></h3>
+</a>
+<p>Returns a boolean flag and functions to toggle its value.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> [</span><span class="hl-2">enabled</span><span class="hl-0">, </span><span class="hl-2">enable</span><span class="hl-0">, </span><span class="hl-2">disable</span><span class="hl-0">] = </span><span class="hl-3">useToggle</span><span class="hl-0">(</span><span class="hl-4">initialValue</span><span class="hl-0">);</span>
 </code></pre>
-				<p>You can create a custom <code>useExecutor</code> hook that is bound to a custom context.</p>
-				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">createContext</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;react&#039;</span><span style="color: #000000">;</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">createExecutorHook</span><span style="color: #000000">, </span><span style="color: #001080">ExecutorProvider</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@smikhalevski/react-hooks&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">MyExecutorProviderContext</span><span style="color: #000000"> = </span><span style="color: #795E26">createContext</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ExecutorProvider</span><span style="color: #000000">());</span>
-
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">useMyExecutor</span><span style="color: #000000"> = </span><span style="color: #795E26">createExecutorHook</span><span style="color: #000000">(</span><span style="color: #001080">MyExecutorProviderContext</span><span style="color: #000000">);</span>
+<a href="#userefcallback" id="userefcallback" style="color: inherit; text-decoration: none;">
+  <h3><code>useRefCallback</code></h3>
+</a>
+<p>Returns a ref object and a callback to update the value of this ref.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> [</span><span class="hl-2">ref</span><span class="hl-0">, </span><span class="hl-2">updateRef</span><span class="hl-0">] = </span><span class="hl-3">useRefCallback</span><span class="hl-0">(</span><span class="hl-4">initialValue</span><span class="hl-0">);</span>
 </code></pre>
-				<a href="#usetoggle" id="usetoggle" style="color: inherit; text-decoration: none;">
-					<h3><code>useToggle</code></h3>
-				</a>
-				<p>Returns a boolean flag and functions to toggle its value.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> [</span><span style="color: #0070C1">enabled</span><span style="color: #000000">, </span><span style="color: #0070C1">enable</span><span style="color: #000000">, </span><span style="color: #0070C1">disable</span><span style="color: #000000">] = </span><span style="color: #795E26">useToggle</span><span style="color: #000000">(</span><span style="color: #001080">initialValue</span><span style="color: #000000">);</span>
+
+<a href="#usevalueref" id="usevalueref" style="color: inherit; text-decoration: none;">
+  <h3><code>useValueRef</code></h3>
+</a>
+<p>Creates a <code>RefObject</code> that is updated on every render with the given value.</p>
+<p>For example, this hook comes in handy when a value is used in the effect, and you don&#39;t want the effect to be triggered
+every time the value changes. Then you pass the value to <code>useValueRef</code> and use the returned ref in the effect.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">valueRef</span><span class="hl-0"> = </span><span class="hl-3">useValueRef</span><span class="hl-0">(</span><span class="hl-4">value</span><span class="hl-0">);</span><br/><br/><span class="hl-5">// The latest rendered value</span><br/><span class="hl-4">valueRef</span><span class="hl-0">.</span><span class="hl-4">current</span><span class="hl-0">;</span>
 </code></pre>
-				<a href="#rendering" id="rendering" style="color: inherit; text-decoration: none;">
-					<h1>Rendering</h1>
-				</a>
-				<a href="#usererender" id="usererender" style="color: inherit; text-decoration: none;">
-					<h3><code>useRerender</code></h3>
-				</a>
-				<p>Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
-				component life cycle. Returned callback doesn&#39;t change between hook invocations.</p>
-				<p><strong>Note:</strong> Using this hook makes your code imperative, which is generally considered a bad practice.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">rerender</span><span style="color: #000000"> = </span><span style="color: #795E26">useRerender</span><span style="color: #000000">();</span>
 
-<span style="color: #795E26">rerender</span><span style="color: #000000">();</span>
+<a href="#side-effects" id="side-effects" style="color: inherit; text-decoration: none;">
+  <h1>Side effects</h1>
+</a>
+
+<a href="#useasynceffect" id="useasynceffect" style="color: inherit; text-decoration: none;">
+  <h3><code>useAsyncEffect</code></h3>
+</a>
+<p>Analogue of <a href="https://reactjs.org/docs/hooks-reference.html#useeffect"><code>React.useEffect</code></a> that can handle a <code>Promise</code>
+returned from the effect callback. Returned <code>Promise</code> may resolve with a destructor / cleanup callback. An effect
+callback receives an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController"><code>AbortSignal</code></a> that is aborted
+if effect is called again before the previously returned <code>Promise</code> is resolved. Cleanup callbacks returned from the
+aborted effects are ignored.</p>
+<pre><code class="language-ts"><span class="hl-3">useAsyncEffect</span><span class="hl-0">(</span><br/><span class="hl-0">    </span><span class="hl-1">async</span><span class="hl-0"> (</span><span class="hl-4">signal</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><br/><span class="hl-0">      </span><span class="hl-6">return</span><span class="hl-0"> () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">        </span><span class="hl-3">cleanup</span><span class="hl-0">();</span><br/><span class="hl-0">      };</span><br/><span class="hl-0">    },</span><br/><span class="hl-0">    [</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#usemountsignal" id="usemountsignal" style="color: inherit; text-decoration: none;">
-					<h3><code>useMountSignal</code></h3>
-				</a>
-				<p>Returns <code>AbortSignal</code> that is aborted when the component is unmounted.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">signal</span><span style="color: #000000"> = </span><span style="color: #795E26">useMountSignal</span><span style="color: #000000">();</span>
 
-<span style="color: #008000">// Returns true if componenet was unmounted</span>
-<span style="color: #001080">signal</span><span style="color: #000000">.</span><span style="color: #001080">aborted</span><span style="color: #000000">;</span>
+<a href="#useasynceffectonce" id="useasynceffectonce" style="color: inherit; text-decoration: none;">
+  <h3><code>useAsyncEffectOnce</code></h3>
+</a>
+<p>Same as <a href="#useasynceffect"><code>useAsyncEffect</code></a> but calls effect only once after the component is mounted.</p>
+<p>The optional cleanup callback is called when the component is unmounted.</p>
+<pre><code class="language-ts"><span class="hl-3">useAsyncEffectOnce</span><span class="hl-0">(</span><span class="hl-1">async</span><span class="hl-0"> (</span><span class="hl-4">signal</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><br/><span class="hl-0">  </span><span class="hl-6">return</span><span class="hl-0"> () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">    </span><span class="hl-3">cleanup</span><span class="hl-0">();</span><br/><span class="hl-0">  };</span><br/><span class="hl-0">});</span>
 </code></pre>
-				<a href="#userendereffect" id="userendereffect" style="color: inherit; text-decoration: none;">
-					<h3><code>useRenderEffect</code></h3>
-				</a>
-				<p>Analogue of <code>React.useEffect</code> that invokes an <code>effect</code> synchronously during rendering if <code>deps</code> aren&#39;t defined or don&#39;t
-				equal to deps provided during the previous render. This hook comes in handy when calling an effect during SSR.</p>
-				<p>The optional cleanup callback is called synchronously during rendering.</p>
-				<pre><code class="language-ts"><span style="color: #795E26">useRenderEffect</span><span style="color: #000000">(</span>
-<span style="color: #000000">    () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #795E26">doSomething</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">);</span>
 
-<span style="color: #000000">      </span><span style="color: #AF00DB">return</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">        </span><span style="color: #795E26">cleanup</span><span style="color: #000000">();</span>
-<span style="color: #000000">      };</span>
-<span style="color: #000000">    },</span>
-<span style="color: #000000">    [</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">],</span>
-<span style="color: #000000">);</span>
+<a href="#useeffectonce" id="useeffectonce" style="color: inherit; text-decoration: none;">
+  <h3><code>useEffectOnce</code></h3>
+</a>
+<p>Same as <a href="https://reactjs.org/docs/hooks-reference.html#useeffect"><code>React.useEffect</code></a> but calls effect only once after
+the component is mounted.</p>
+<p>The optional cleanup callback is called when the component is unmounted.</p>
+<pre><code class="language-ts"><span class="hl-3">useEffectOnce</span><span class="hl-0">(() </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><br/><span class="hl-0">  </span><span class="hl-6">return</span><span class="hl-0"> () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">    </span><span class="hl-3">cleanup</span><span class="hl-0">();</span><br/><span class="hl-0">  };</span><br/><span class="hl-0">});</span>
 </code></pre>
-				<a href="#useeffectonce" id="useeffectonce" style="color: inherit; text-decoration: none;">
-					<h3><code>useEffectOnce</code></h3>
-				</a>
-				<p>Same as <code>React.useEffect</code> but calls effect only once after the component is mounted.</p>
-				<p>The optional cleanup callback is called when the component is unmounted.</p>
-				<pre><code class="language-ts"><span style="color: #795E26">useEffectOnce</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">  </span><span style="color: #795E26">doSomething</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">);</span>
 
-<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #795E26">cleanup</span><span style="color: #000000">();</span>
-<span style="color: #000000">  };</span>
-<span style="color: #000000">});</span>
+<a href="#useisomorphiclayouteffect" id="useisomorphiclayouteffect" style="color: inherit; text-decoration: none;">
+  <h3><code>useIsomorphicLayoutEffect</code></h3>
+</a>
+<p>Same as <a href="https://reactjs.org/docs/hooks-reference.html#uselayouteffect"><code>React.useLayoutEffect</code></a> but doesn&#39;t produce
+warnings during SSR.</p>
+<pre><code class="language-ts"><span class="hl-3">useIsomorphicLayoutEffect</span><span class="hl-0">(</span><br/><span class="hl-0">    () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><br/><span class="hl-0">      </span><span class="hl-6">return</span><span class="hl-0"> () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">        </span><span class="hl-3">cleanup</span><span class="hl-0">();</span><br/><span class="hl-0">      };</span><br/><span class="hl-0">    },</span><br/><span class="hl-0">    [</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#userendereffectonce" id="userendereffectonce" style="color: inherit; text-decoration: none;">
-					<h3><code>useRenderEffectOnce</code></h3>
-				</a>
-				<p>Same as <a href="#userendereffect"><code>useRenderEffect</code></a> but calls effect only once after the component is mounted.</p>
-				<p>The optional cleanup callback is called when the component is unmounted.</p>
-				<pre><code class="language-ts"><span style="color: #795E26">useRenderEffectOnce</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">  </span><span style="color: #795E26">doSomething</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">);</span>
 
-<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">    </span><span style="color: #795E26">cleanup</span><span style="color: #000000">();</span>
-<span style="color: #000000">  };</span>
-<span style="color: #000000">});</span>
+<a href="#userendereffect" id="userendereffect" style="color: inherit; text-decoration: none;">
+  <h3><code>useRenderEffect</code></h3>
+</a>
+<p>Analogue of <a href="https://reactjs.org/docs/hooks-reference.html#useffect"><code>React.useEffect</code></a> that invokes an <code>effect</code>
+synchronously during rendering if <code>deps</code> aren&#39;t defined or don&#39;t equal to deps provided during the previous render. This
+hook comes in handy when calling an effect during SSR.</p>
+<p>The optional cleanup callback is called synchronously during rendering.</p>
+<pre><code class="language-ts"><span class="hl-3">useRenderEffect</span><span class="hl-0">(</span><br/><span class="hl-0">    () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><br/><span class="hl-0">      </span><span class="hl-6">return</span><span class="hl-0"> () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">        </span><span class="hl-3">cleanup</span><span class="hl-0">();</span><br/><span class="hl-0">      };</span><br/><span class="hl-0">    },</span><br/><span class="hl-0">    [</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#usererenderschedule" id="usererenderschedule" style="color: inherit; text-decoration: none;">
-					<h3><code>useRerenderSchedule</code></h3>
-				</a>
-				<p>Re-renders the component on periodic interval.</p>
-				<pre><code class="language-ts"><span style="color: #795E26">useRerenderSchedule</span><span style="color: #000000">(</span><span style="color: #098658">500</span><span style="color: #000000">);</span>
+
+<a href="#userendereffectonce" id="userendereffectonce" style="color: inherit; text-decoration: none;">
+  <h3><code>useRenderEffectOnce</code></h3>
+</a>
+<p>Same as <a href="#userendereffect"><code>useRenderEffect</code></a> but calls effect only once after the component is mounted.</p>
+<p>The optional cleanup callback is called when the component is unmounted.</p>
+<pre><code class="language-ts"><span class="hl-3">useRenderEffectOnce</span><span class="hl-0">(() </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><br/><span class="hl-0">  </span><span class="hl-6">return</span><span class="hl-0"> () </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">    </span><span class="hl-3">cleanup</span><span class="hl-0">();</span><br/><span class="hl-0">  };</span><br/><span class="hl-0">});</span>
 </code></pre>
-				<a href="#time" id="time" style="color: inherit; text-decoration: none;">
-					<h1>Time</h1>
-				</a>
-				<a href="#usetime" id="usetime" style="color: inherit; text-decoration: none;">
-					<h3><code>useTime</code></h3>
-				</a>
-				<p>Returns the <a href="https://smikhalevski.github.io/react-hooks/classes/Time.html"><code>Time</code></a> instance that provides the current
-				timestamp.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">time</span><span style="color: #000000"> = </span><span style="color: #795E26">useTime</span><span style="color: #000000">();</span>
 
-<span style="color: #008000">// Use this instead of Date.now()</span>
-<span style="color: #001080">time</span><span style="color: #000000">.</span><span style="color: #795E26">now</span><span style="color: #000000">();</span>
+<a href="#rendering" id="rendering" style="color: inherit; text-decoration: none;">
+  <h1>Rendering</h1>
+</a>
+
+<a href="#usererender" id="usererender" style="color: inherit; text-decoration: none;">
+  <h3><code>useRerender</code></h3>
+</a>
+<p>Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
+component life cycle. Returned callback doesn&#39;t change between hook invocations.</p>
+<p><strong>Note:</strong> Using this hook makes your code imperative, which is generally considered a bad practice.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">rerender</span><span class="hl-0"> = </span><span class="hl-3">useRerender</span><span class="hl-0">();</span><br/><br/><span class="hl-3">rerender</span><span class="hl-0">();</span>
 </code></pre>
-				<p>You can alter the timestamp by providing the custom
-				<a href="https://smikhalevski.github.io/react-hooks/classes/Time.html"><code>Time</code></a> implementation.</p>
-				<pre><code class="language-tsx"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">renderToString</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;react-dom&#039;</span><span style="color: #000000">;</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">Time</span><span style="color: #000000">, </span><span style="color: #001080">TimeContext</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@smikhalevski/react-hooks&#039;</span><span style="color: #000000">;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">myTime</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Time</span><span style="color: #000000">();</span>
-
-<span style="color: #008000">// After this, myTime.now() would return the timestamp</span>
-<span style="color: #008000">// that is 1 munute ahead of the Date.now()</span>
-<span style="color: #001080">myTime</span><span style="color: #000000">.</span><span style="color: #795E26">setTimestamp</span><span style="color: #000000">(</span><span style="color: #267F99">Date</span><span style="color: #000000">.</span><span style="color: #795E26">now</span><span style="color: #000000">() + </span><span style="color: #098658">60_000</span><span style="color: #000000">);</span>
-
-<span style="color: #795E26">renderToString</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #800000">&lt;</span><span style="color: #267F99">TimeContext.Provider</span><span style="color: #000000"> </span><span style="color: #FF0000">value</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">myTime</span><span style="color: #0000FF">}</span><span style="color: #800000">&gt;</span>
-<span style="color: #000000">      </span><span style="color: #0000FF">{</span><span style="color: #008000">/* */</span><span style="color: #0000FF">}</span>
-<span style="color: #000000">    </span><span style="color: #800000">&lt;/</span><span style="color: #267F99">TimeContext.Provider</span><span style="color: #800000">&gt;</span>
-<span style="color: #000000">);</span>
+<a href="#usemountsignal" id="usemountsignal" style="color: inherit; text-decoration: none;">
+  <h3><code>useMountSignal</code></h3>
+</a>
+<p>Returns <code>AbortSignal</code> that is aborted when the component is unmounted.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">signal</span><span class="hl-0"> = </span><span class="hl-3">useMountSignal</span><span class="hl-0">();</span><br/><br/><span class="hl-5">// Returns true if componenet was unmounted</span><br/><span class="hl-4">signal</span><span class="hl-0">.</span><span class="hl-4">aborted</span><span class="hl-0">;</span>
 </code></pre>
-				<a href="#useanimationframe" id="useanimationframe" style="color: inherit; text-decoration: none;">
-					<h3><code>useAnimationFrame</code></h3>
-				</a>
-				<p>Returns protocol to start and stop an animation loop.</p>
-				<p>When <code>start</code> is called the animation loop starts invoking the provided callback using <code>requestAnimationFrame</code>. If the
-				animation was already pending then it is stopped and started with the new callback.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> [</span><span style="color: #0070C1">start</span><span style="color: #000000">, </span><span style="color: #0070C1">stop</span><span style="color: #000000">] = </span><span style="color: #795E26">useAnimationFrame</span><span style="color: #000000">();</span>
 
-<span style="color: #008000">// Cancels pending animation loop and schedules the new animation loop</span>
-<span style="color: #795E26">start</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">  </span><span style="color: #008000">// Apply animation changes</span>
-<span style="color: #000000">});</span>
-
-<span style="color: #008000">// Stop the animation</span>
-<span style="color: #795E26">stop</span><span style="color: #000000">();</span>
+<a href="#usererenderschedule" id="usererenderschedule" style="color: inherit; text-decoration: none;">
+  <h3><code>useRerenderSchedule</code></h3>
+</a>
+<p>Re-renders the component on periodic interval.</p>
+<pre><code class="language-ts"><span class="hl-3">useRerenderSchedule</span><span class="hl-0">(</span><span class="hl-11">500</span><span class="hl-0">);</span>
 </code></pre>
-				<a href="#usemetronome" id="usemetronome" style="color: inherit; text-decoration: none;">
-					<h3><code>useMetronome</code></h3>
-				</a>
-				<p>Returns a <a href="https://smikhalevski.github.io/react-hooks/classes/Metronome.html"><code>Metronome</code></a> instance. Use this to
-				schedule callback invocation.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">metronome</span><span style="color: #000000"> = </span><span style="color: #795E26">useMetronome</span><span style="color: #000000">(</span><span style="color: #098658">500</span><span style="color: #000000">);</span>
 
-<span style="color: #795E26">useEffect</span><span style="color: #000000">(</span>
-<span style="color: #000000">    () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">metronome</span><span style="color: #000000">.</span><span style="color: #795E26">schedule</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #008000">// Invoked every 500 ms</span>
-<span style="color: #000000">      </span><span style="color: #795E26">doSomething</span><span style="color: #000000">();</span>
-<span style="color: #000000">    }),</span>
-<span style="color: #000000">    [</span><span style="color: #001080">metronome</span><span style="color: #000000">],</span>
-<span style="color: #000000">);</span>
+<a href="#time" id="time" style="color: inherit; text-decoration: none;">
+  <h1>Time</h1>
+</a>
+
+<a href="#usetime" id="usetime" style="color: inherit; text-decoration: none;">
+  <h3><code>useTime</code></h3>
+</a>
+<p>Returns the <a href="https://smikhalevski.github.io/react-hookers/classes/Time.html"><code>Time</code></a> instance that provides the current
+timestamp.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">time</span><span class="hl-0"> = </span><span class="hl-3">useTime</span><span class="hl-0">();</span><br/><br/><span class="hl-5">// Use this instead of Date.now()</span><br/><span class="hl-4">time</span><span class="hl-0">.</span><span class="hl-3">now</span><span class="hl-0">();</span>
 </code></pre>
-				<p>You can alter how metronomes are created by providing the custom
-				<a href="https://smikhalevski.github.io/react-hooks/classes/MetronomeProvider.html"><code>MetronomeProvider</code></a> implementation.</p>
-				<pre><code class="language-tsx"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">renderToString</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;react-dom&#039;</span><span style="color: #000000">;</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">MetronomeProvider</span><span style="color: #000000">, </span><span style="color: #001080">MetronomeProviderContext</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@smikhalevski/react-hooks&#039;</span><span style="color: #000000">;</span>
-
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">myMetronomeProvider</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MetronomeProvider</span><span style="color: #000000">();</span>
-
-<span style="color: #795E26">renderToString</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #800000">&lt;</span><span style="color: #267F99">MetronomeProviderContext.Provider</span><span style="color: #000000"> </span><span style="color: #FF0000">value</span><span style="color: #000000">=</span><span style="color: #0000FF">{</span><span style="color: #001080">myMetronomeProvider</span><span style="color: #0000FF">}</span><span style="color: #800000">&gt;</span>
-<span style="color: #000000">      </span><span style="color: #0000FF">{</span><span style="color: #008000">/* */</span><span style="color: #0000FF">}</span>
-<span style="color: #000000">    </span><span style="color: #800000">&lt;/</span><span style="color: #267F99">MetronomeProviderContext.Provider</span><span style="color: #800000">&gt;</span>
-<span style="color: #000000">);</span>
+<p>You can alter the timestamp by providing the custom
+<a href="https://smikhalevski.github.io/react-hookers/classes/Time.html"><code>Time</code></a> implementation.</p>
+<pre><code class="language-tsx"><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">renderToString</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react-dom&#39;</span><span class="hl-0">;</span><br/><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">Time</span><span class="hl-0">, </span><span class="hl-4">TimeContext</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react-hookers&#39;</span><span class="hl-0">;</span><br/><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">myTime</span><span class="hl-0"> = </span><span class="hl-1">new</span><span class="hl-0"> </span><span class="hl-3">Time</span><span class="hl-0">();</span><br/><br/><span class="hl-5">// After this, myTime.now() would return the timestamp</span><br/><span class="hl-5">// that is 1 munute ahead of the Date.now()</span><br/><span class="hl-4">myTime</span><span class="hl-0">.</span><span class="hl-3">setTimestamp</span><span class="hl-0">(</span><span class="hl-9">Date</span><span class="hl-0">.</span><span class="hl-3">now</span><span class="hl-0">() + </span><span class="hl-11">60_000</span><span class="hl-0">);</span><br/><br/><span class="hl-3">renderToString</span><span class="hl-0">(</span><br/><span class="hl-0">    </span><span class="hl-8">&lt;</span><span class="hl-9">TimeContext.Provider</span><span class="hl-0"> </span><span class="hl-10">value</span><span class="hl-0">=</span><span class="hl-1">{</span><span class="hl-4">myTime</span><span class="hl-1">}</span><span class="hl-8">&gt;</span><br/><span class="hl-0">      </span><span class="hl-1">{</span><span class="hl-5">/* */</span><span class="hl-1">}</span><br/><span class="hl-0">    </span><span class="hl-8">&lt;/</span><span class="hl-9">TimeContext.Provider</span><span class="hl-8">&gt;</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#useschedule" id="useschedule" style="color: inherit; text-decoration: none;">
-					<h3><code>useSchedule</code></h3>
-				</a>
-				<p>The replacement for <code>setInterval</code> that is cancelled when component is unmounted. Schedules a function to be repeatedly
-				called with a fixed time delay between each call.</p>
-				<p>All functions that were scheduled with the same delay are invoked synchronously.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> [</span><span style="color: #0070C1">schedule</span><span style="color: #000000">, </span><span style="color: #0070C1">cancel</span><span style="color: #000000">] = </span><span style="color: #795E26">useSchedule</span><span style="color: #000000">();</span>
 
-<span style="color: #008000">// Cancels currently scheduled callback and schedules the new one</span>
-<span style="color: #795E26">schedule</span><span style="color: #000000">(</span>
-<span style="color: #000000">    (</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #795E26">doSomething</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">);</span>
-<span style="color: #000000">    },</span>
-<span style="color: #000000">    </span><span style="color: #098658">500</span><span style="color: #000000">, </span><span style="color: #008000">// Interval delay</span>
-<span style="color: #000000">    </span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">, </span><span style="color: #008000">// Varargs that are passed to the callback</span>
-<span style="color: #000000">);</span>
-
-<span style="color: #008000">// Stops invoking the callback that was last provided to schedule()</span>
-<span style="color: #795E26">cancel</span><span style="color: #000000">();</span>
+<a href="#useanimationframe" id="useanimationframe" style="color: inherit; text-decoration: none;">
+  <h3><code>useAnimationFrame</code></h3>
+</a>
+<p>Returns protocol to start and stop an animation loop.</p>
+<p>When <code>start</code> is called the animation loop starts invoking the provided callback using <code>requestAnimationFrame</code>. If the
+animation was already pending then it is stopped and started with the new callback.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> [</span><span class="hl-2">start</span><span class="hl-0">, </span><span class="hl-2">stop</span><span class="hl-0">] = </span><span class="hl-3">useAnimationFrame</span><span class="hl-0">();</span><br/><br/><span class="hl-5">// Cancels pending animation loop and schedules the new animation loop</span><br/><span class="hl-3">start</span><span class="hl-0">(() </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-5">// Apply animation changes</span><br/><span class="hl-0">});</span><br/><br/><span class="hl-5">// Stop the animation</span><br/><span class="hl-3">stop</span><span class="hl-0">();</span>
 </code></pre>
-				<a href="#usedebounce" id="usedebounce" style="color: inherit; text-decoration: none;">
-					<h3><code>useDebounce</code></h3>
-				</a>
-				<p>The replacement for <code>setTimeout</code> that is cancelled when component is unmounted.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> [</span><span style="color: #0070C1">debounce</span><span style="color: #000000">, </span><span style="color: #0070C1">cancel</span><span style="color: #000000">] = </span><span style="color: #795E26">useDebounce</span><span style="color: #000000">();</span>
 
-<span style="color: #008000">// Cancels pending debounce and schedules the new call</span>
-<span style="color: #795E26">debounce</span><span style="color: #000000">(</span>
-<span style="color: #000000">    (</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #795E26">doSomething</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">);</span>
-<span style="color: #000000">    },</span>
-<span style="color: #000000">    </span><span style="color: #098658">500</span><span style="color: #000000">, </span><span style="color: #008000">// Timeout after which the callback is called</span>
-<span style="color: #000000">    </span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">, </span><span style="color: #008000">// Varargs that are passed to the callback</span>
-<span style="color: #000000">);</span>
-
-<span style="color: #008000">// Cancels the last debounce call</span>
-<span style="color: #795E26">cancel</span><span style="color: #000000">();</span>
+<a href="#usemetronome" id="usemetronome" style="color: inherit; text-decoration: none;">
+  <h3><code>useMetronome</code></h3>
+</a>
+<p>Returns a <a href="https://smikhalevski.github.io/react-hookers/classes/Metronome.html"><code>Metronome</code></a> instance. Use this to
+schedule callback invocation.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">metronome</span><span class="hl-0"> = </span><span class="hl-3">useMetronome</span><span class="hl-0">(</span><span class="hl-11">500</span><span class="hl-0">);</span><br/><br/><span class="hl-3">useEffect</span><span class="hl-0">(</span><br/><span class="hl-0">    () </span><span class="hl-1">=&gt;</span><span class="hl-0"> </span><span class="hl-4">metronome</span><span class="hl-0">.</span><span class="hl-3">schedule</span><span class="hl-0">(() </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-5">// Invoked every 500 ms</span><br/><span class="hl-0">      </span><span class="hl-3">doSomething</span><span class="hl-0">();</span><br/><span class="hl-0">    }),</span><br/><span class="hl-0">    [</span><span class="hl-4">metronome</span><span class="hl-0">],</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#usedebouncedstate" id="usedebouncedstate" style="color: inherit; text-decoration: none;">
-					<h3><code>useDebouncedState</code></h3>
-				</a>
-				<p>Returns stateful values and a function to update them. Upon invocation of <code>setState</code>, the <code>nextState</code> is assigned
-					synchronously, and the component is re-rendered. After the <code>delay</code> the <code>currState</code> is set to <code>nextState</code> and component
-				is re-rendered again.</p>
-				<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> [</span><span style="color: #0070C1">currState</span><span style="color: #000000">, </span><span style="color: #0070C1">nextState</span><span style="color: #000000">, </span><span style="color: #0070C1">setState</span><span style="color: #000000">] = </span><span style="color: #795E26">useDebouncedState</span><span style="color: #000000">(</span><span style="color: #098658">500</span><span style="color: #000000">);</span>
+<p>You can alter how metronomes are created by providing the custom
+<a href="https://smikhalevski.github.io/react-hookers/classes/MetronomeProvider.html"><code>MetronomeProvider</code></a> implementation.</p>
+<pre><code class="language-tsx"><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">renderToString</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react-dom&#39;</span><span class="hl-0">;</span><br/><span class="hl-6">import</span><span class="hl-0"> {</span><span class="hl-4">MetronomeProvider</span><span class="hl-0">, </span><span class="hl-4">MetronomeProviderContext</span><span class="hl-0">} </span><span class="hl-6">from</span><span class="hl-0"> </span><span class="hl-7">&#39;react-hookers&#39;</span><span class="hl-0">;</span><br/><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">myMetronomeProvider</span><span class="hl-0"> = </span><span class="hl-1">new</span><span class="hl-0"> </span><span class="hl-3">MetronomeProvider</span><span class="hl-0">();</span><br/><br/><span class="hl-3">renderToString</span><span class="hl-0">(</span><br/><span class="hl-0">    </span><span class="hl-8">&lt;</span><span class="hl-9">MetronomeProviderContext.Provider</span><span class="hl-0"> </span><span class="hl-10">value</span><span class="hl-0">=</span><span class="hl-1">{</span><span class="hl-4">myMetronomeProvider</span><span class="hl-1">}</span><span class="hl-8">&gt;</span><br/><span class="hl-0">      </span><span class="hl-1">{</span><span class="hl-5">/* */</span><span class="hl-1">}</span><br/><span class="hl-0">    </span><span class="hl-8">&lt;/</span><span class="hl-9">MetronomeProviderContext.Provider</span><span class="hl-8">&gt;</span><br/><span class="hl-0">);</span>
 </code></pre>
-				<a href="#user-flow" id="user-flow" style="color: inherit; text-decoration: none;">
-					<h1>User flow</h1>
-				</a>
-				<a href="#useblocker" id="useblocker" style="color: inherit; text-decoration: none;">
-					<h3><code>useBlocker</code></h3>
-				</a>
-				<p>Provides mechanism for blocking async processes and unblocking them from an external context.</p>
-				<pre><code class="language-tsx"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">blocker</span><span style="color: #000000"> = </span><span style="color: #795E26">useBlocker</span><span style="color: #000000">&lt;</span><span style="color: #267F99">boolean</span><span style="color: #000000">&gt;();</span>
 
-<span style="color: #008000">// Returns Promise that is resolved with the value passed to blocker.unblock(value)</span>
-<span style="color: #001080">blocker</span><span style="color: #000000">.</span><span style="color: #795E26">block</span><span style="color: #000000">(); </span><span style="color: #008000">// → Promise&lt;boolean&gt;</span>
-
-<span style="color: #008000">// Unblocks the blocker with given value.</span>
-<span style="color: #001080">blocker</span><span style="color: #000000">.</span><span style="color: #795E26">unblock</span><span style="color: #000000">(</span><span style="color: #0000FF">true</span><span style="color: #000000">);</span>
+<a href="#useschedule" id="useschedule" style="color: inherit; text-decoration: none;">
+  <h3><code>useSchedule</code></h3>
+</a>
+<p>The replacement for <code>setInterval</code> that is cancelled when component is unmounted. Schedules a function to be repeatedly
+called with a fixed time delay between each call.</p>
+<p>All functions that were scheduled with the same delay are invoked synchronously.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> [</span><span class="hl-2">schedule</span><span class="hl-0">, </span><span class="hl-2">cancel</span><span class="hl-0">] = </span><span class="hl-3">useSchedule</span><span class="hl-0">();</span><br/><br/><span class="hl-5">// Cancels currently scheduled callback and schedules the new one</span><br/><span class="hl-3">schedule</span><span class="hl-0">(</span><br/><span class="hl-0">    (</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><span class="hl-0">    },</span><br/><span class="hl-0">    </span><span class="hl-11">500</span><span class="hl-0">, </span><span class="hl-5">// Interval delay</span><br/><span class="hl-0">    </span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">, </span><span class="hl-5">// Varargs that are passed to the callback</span><br/><span class="hl-0">);</span><br/><br/><span class="hl-5">// Stops invoking the callback that was last provided to schedule()</span><br/><span class="hl-3">cancel</span><span class="hl-0">();</span>
 </code></pre>
-				<a href="#useguard" id="useguard" style="color: inherit; text-decoration: none;">
-					<h3><code>useGuard</code></h3>
-				</a>
-				<p>Extract shared conditional logic from event handlers and callbacks.</p>
-				<pre><code class="language-tsx"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">guard</span><span style="color: #000000"> = </span><span style="color: #795E26">useGuard</span><span style="color: #000000">(</span>
-<span style="color: #000000">    </span><span style="color: #0000FF">async</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">checkCondition</span><span style="color: #000000">(),</span>
 
-<span style="color: #000000">    </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">replay</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #008000">// Invoked if the guarded callback was called when condition wasn&#039;t met.</span>
-<span style="color: #000000">      </span><span style="color: #795E26">doFallback</span><span style="color: #000000">();</span>
-
-<span style="color: #000000">      </span><span style="color: #008000">// Invoke the guarded callback with the same arguments.</span>
-<span style="color: #000000">      </span><span style="color: #795E26">replay</span><span style="color: #000000">();</span>
-<span style="color: #000000">    },</span>
-<span style="color: #000000">);</span>
-
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">myGuardedCallback</span><span style="color: #000000"> = </span><span style="color: #001080">guard</span><span style="color: #000000">.</span><span style="color: #795E26">guardCallback</span><span style="color: #000000">((</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">  </span><span style="color: #795E26">myCallback</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">);</span>
-<span style="color: #000000">});</span>
-
-<span style="color: #795E26">myGuardedCallback</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">);</span>
+<a href="#usedebounce" id="usedebounce" style="color: inherit; text-decoration: none;">
+  <h3><code>useDebounce</code></h3>
+</a>
+<p>The replacement for <code>setTimeout</code> that is cancelled when component is unmounted.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> [</span><span class="hl-2">debounce</span><span class="hl-0">, </span><span class="hl-2">cancel</span><span class="hl-0">] = </span><span class="hl-3">useDebounce</span><span class="hl-0">();</span><br/><br/><span class="hl-5">// Cancels pending debounce and schedules the new call</span><br/><span class="hl-3">debounce</span><span class="hl-0">(</span><br/><span class="hl-0">    (</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-3">doSomething</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><span class="hl-0">    },</span><br/><span class="hl-0">    </span><span class="hl-11">500</span><span class="hl-0">, </span><span class="hl-5">// Timeout after which the callback is called</span><br/><span class="hl-0">    </span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">, </span><span class="hl-5">// Varargs that are passed to the callback</span><br/><span class="hl-0">);</span><br/><br/><span class="hl-5">// Cancels the last debounce call</span><br/><span class="hl-3">cancel</span><span class="hl-0">();</span>
 </code></pre>
-			</div>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class=" ">
-						<a href="modules.html">Exports</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/Blocker.html" class="tsd-kind-icon">Blocker</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/Executor.html" class="tsd-kind-icon">Executor</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/ExecutorProvider.html" class="tsd-kind-icon">Executor<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Guard.html" class="tsd-kind-icon">Guard</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Metronome.html" class="tsd-kind-icon">Metronome</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/MetronomeProvider.html" class="tsd-kind-icon">Metronome<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/SsrExecutorProvider.html" class="tsd-kind-icon">Ssr<wbr>Executor<wbr>Provider</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Time.html" class="tsd-kind-icon">Time</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#AnimationFrameProtocol" class="tsd-kind-icon">Animation<wbr>Frame<wbr>Protocol</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#DebounceProtocol" class="tsd-kind-icon">Debounce<wbr>Protocol</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="modules.html#DebouncedStateProtocol" class="tsd-kind-icon">Debounced<wbr>State<wbr>Protocol</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="modules.html#ExactRefCallback" class="tsd-kind-icon">Exact<wbr>Ref<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#ExecutionHook" class="tsd-kind-icon">Execution<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="modules.html#ExecutorCallback" class="tsd-kind-icon">Executor<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#ExecutorHook" class="tsd-kind-icon">Executor<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#GuardCondition" class="tsd-kind-icon">Guard<wbr>Condition</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#GuardFallback" class="tsd-kind-icon">Guard<wbr>Fallback</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#ScheduleProtocol" class="tsd-kind-icon">Schedule<wbr>Protocol</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#SemanticMemoHook" class="tsd-kind-icon">Semantic<wbr>Memo<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#SetTimeout" class="tsd-kind-icon">Set<wbr>Timeout</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="modules.html#ToggleProtocol" class="tsd-kind-icon">Toggle<wbr>Protocol</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#ExecutorProviderContext" class="tsd-kind-icon">Executor<wbr>Provider<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#MetronomeProviderContext" class="tsd-kind-icon">Metronome<wbr>Provider<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="modules.html#TimeContext" class="tsd-kind-icon">Time<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#areHookInputsEqual" class="tsd-kind-icon">are<wbr>Hook<wbr>Inputs<wbr>Equal</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#createExecutionHook" class="tsd-kind-icon">create<wbr>Execution<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#createExecutorHook" class="tsd-kind-icon">create<wbr>Executor<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#createSemanticMemoHook" class="tsd-kind-icon">create<wbr>Semantic<wbr>Memo<wbr>Hook</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useAnimationFrame" class="tsd-kind-icon">use<wbr>Animation<wbr>Frame</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useBlocker" class="tsd-kind-icon">use<wbr>Blocker</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useDebounce" class="tsd-kind-icon">use<wbr>Debounce</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useDebouncedState" class="tsd-kind-icon">use<wbr>Debounced<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useEffectOnce" class="tsd-kind-icon">use<wbr>Effect<wbr>Once</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useExecution" class="tsd-kind-icon">use<wbr>Execution</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useExecutor" class="tsd-kind-icon">use<wbr>Executor</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useGuard" class="tsd-kind-icon">use<wbr>Guard</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useIsomorphicLayoutEffect" class="tsd-kind-icon">use<wbr>Isomorphic<wbr>Layout<wbr>Effect</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useMetronome" class="tsd-kind-icon">use<wbr>Metronome</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useMountSignal" class="tsd-kind-icon">use<wbr>Mount<wbr>Signal</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#usePrevState" class="tsd-kind-icon">use<wbr>Prev<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useRefCallback" class="tsd-kind-icon">use<wbr>Ref<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useRenderEffect" class="tsd-kind-icon">use<wbr>Render<wbr>Effect</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useRenderEffectOnce" class="tsd-kind-icon">use<wbr>Render<wbr>Effect<wbr>Once</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useRenderedValueRef" class="tsd-kind-icon">use<wbr>Rendered<wbr>Value<wbr>Ref</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useRerender" class="tsd-kind-icon">use<wbr>Rerender</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useRerenderSchedule" class="tsd-kind-icon">use<wbr>Rerender<wbr>Schedule</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useSchedule" class="tsd-kind-icon">use<wbr>Schedule</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useSemanticCallback" class="tsd-kind-icon">use<wbr>Semantic<wbr>Callback</a>
-					</li>
-					<li class=" tsd-kind-function tsd-has-type-parameter">
-						<a href="modules.html#useSemanticMemo" class="tsd-kind-icon">use<wbr>Semantic<wbr>Memo</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useTime" class="tsd-kind-icon">use<wbr>Time</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#useToggle" class="tsd-kind-icon">use<wbr>Toggle</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
-</div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
-<div class="overlay"></div>
-<script src="assets/js/main.js"></script>
-</body>
-</html>
+
+<a href="#usedebouncedstate" id="usedebouncedstate" style="color: inherit; text-decoration: none;">
+  <h3><code>useDebouncedState</code></h3>
+</a>
+<p>Returns stateful values and a function to update them. Upon invocation of <code>setState</code>, the <code>nextState</code> is assigned
+synchronously, and the component is re-rendered. After the <code>delay</code> the <code>currState</code> is set to <code>nextState</code> and component
+is re-rendered again.</p>
+<pre><code class="language-ts"><span class="hl-1">const</span><span class="hl-0"> [</span><span class="hl-2">currState</span><span class="hl-0">, </span><span class="hl-2">nextState</span><span class="hl-0">, </span><span class="hl-2">setState</span><span class="hl-0">] = </span><span class="hl-3">useDebouncedState</span><span class="hl-0">(</span><span class="hl-11">500</span><span class="hl-0">);</span>
+</code></pre>
+
+<a href="#user-flow" id="user-flow" style="color: inherit; text-decoration: none;">
+  <h1>User flow</h1>
+</a>
+
+<a href="#useblocker" id="useblocker" style="color: inherit; text-decoration: none;">
+  <h3><code>useBlocker</code></h3>
+</a>
+<p>Returns the <a href="https://smikhalevski.github.io/parallel-universe/classes/Blocker.html"><code>Blocker</code></a> instance that provides
+mechanism for blocking async processes and unblocking them from an external context.</p>
+<pre><code class="language-tsx"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">blocker</span><span class="hl-0"> = </span><span class="hl-3">useBlocker</span><span class="hl-0">&lt;</span><span class="hl-9">boolean</span><span class="hl-0">&gt;();</span><br/><br/><span class="hl-5">// Returns Promise that is resolved with the value passed to blocker.unblock(value)</span><br/><span class="hl-4">blocker</span><span class="hl-0">.</span><span class="hl-3">block</span><span class="hl-0">(); </span><span class="hl-5">// → Promise&lt;boolean&gt;</span><br/><br/><span class="hl-5">// Unblocks the blocker with given value</span><br/><span class="hl-4">blocker</span><span class="hl-0">.</span><span class="hl-3">unblock</span><span class="hl-0">(</span><span class="hl-1">true</span><span class="hl-0">);</span>
+</code></pre>
+
+<a href="#uselock" id="uselock" style="color: inherit; text-decoration: none;">
+  <h3><code>useLock</code></h3>
+</a>
+<p>Returns the <a href="https://smikhalevski.github.io/parallel-universe/classes/Lock.html"><code>Lock</code></a> instance that can be used to
+synchronize async processes.</p>
+<pre><code class="language-tsx"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">lock</span><span class="hl-0"> = </span><span class="hl-3">useLock</span><span class="hl-0">();</span><br/><br/><span class="hl-1">async</span><span class="hl-0"> </span><span class="hl-1">function</span><span class="hl-0"> </span><span class="hl-3">doSomething</span><span class="hl-0">() {</span><br/><span class="hl-0">  </span><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">release</span><span class="hl-0"> = </span><span class="hl-6">await</span><span class="hl-0"> </span><span class="hl-4">lock</span><span class="hl-0">.</span><span class="hl-3">acquire</span><span class="hl-0">();</span><br/><span class="hl-0">  </span><span class="hl-6">try</span><span class="hl-0"> {</span><br/><span class="hl-0">    </span><span class="hl-5">// Long process starts here</span><br/><span class="hl-0">  } </span><span class="hl-6">finally</span><span class="hl-0"> {</span><br/><span class="hl-0">    </span><span class="hl-3">release</span><span class="hl-0">();</span><br/><span class="hl-0">  }</span><br/><span class="hl-0">}</span><br/><br/><span class="hl-5">// Long process would be executed three times sequentially</span><br/><span class="hl-3">doSomething</span><span class="hl-0">();</span><br/><span class="hl-3">doSomething</span><span class="hl-0">();</span><br/><span class="hl-3">doSomething</span><span class="hl-0">();</span>
+</code></pre>
+
+<a href="#useguard" id="useguard" style="color: inherit; text-decoration: none;">
+  <h3><code>useGuard</code></h3>
+</a>
+<p>Returns the <a href="https://smikhalevski.github.io/react-hookers/classes/Guard.html"><code>Guard</code></a> instance that extracts shared
+conditional logic from event handlers and callbacks.</p>
+<pre><code class="language-tsx"><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">guard</span><span class="hl-0"> = </span><span class="hl-3">useGuard</span><span class="hl-0">(</span><br/><span class="hl-0">    </span><span class="hl-1">async</span><span class="hl-0"> () </span><span class="hl-1">=&gt;</span><span class="hl-0"> </span><span class="hl-3">checkCondition</span><span class="hl-0">(),</span><br/><br/><span class="hl-0">    </span><span class="hl-1">async</span><span class="hl-0"> (</span><span class="hl-4">replay</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">      </span><span class="hl-5">// Invoked if the guarded callback was called when condition wasn&#39;t met</span><br/><span class="hl-0">      </span><span class="hl-3">doFallback</span><span class="hl-0">();</span><br/><br/><span class="hl-0">      </span><span class="hl-5">// Replay the guarded callback invokation</span><br/><span class="hl-0">      </span><span class="hl-5">// (original arguments are bound to the replay callback)</span><br/><span class="hl-0">      </span><span class="hl-3">replay</span><span class="hl-0">();</span><br/><span class="hl-0">    },</span><br/><span class="hl-0">);</span><br/><br/><span class="hl-1">const</span><span class="hl-0"> </span><span class="hl-2">myGuardedCallback</span><span class="hl-0"> = </span><span class="hl-4">guard</span><span class="hl-0">.</span><span class="hl-3">guardCallback</span><span class="hl-0">((</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">) </span><span class="hl-1">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-3">myCallback</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span><br/><span class="hl-0">});</span><br/><br/><span class="hl-3">myGuardedCallback</span><span class="hl-0">(</span><span class="hl-4">a</span><span class="hl-0">, </span><span class="hl-4">b</span><span class="hl-0">);</span>
+</code></pre>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-class"><a href="classes/ExecutorProvider.html" class="tsd-kind-icon">Executor<wbr/>Provider</a></li><li class="tsd-kind-class"><a href="classes/Guard.html" class="tsd-kind-icon">Guard</a></li><li class="tsd-kind-class"><a href="classes/Metronome.html" class="tsd-kind-icon">Metronome</a></li><li class="tsd-kind-class"><a href="classes/MetronomeProvider.html" class="tsd-kind-icon">Metronome<wbr/>Provider</a></li><li class="tsd-kind-class"><a href="classes/SsrExecutorProvider.html" class="tsd-kind-icon">Ssr<wbr/>Executor<wbr/>Provider</a></li><li class="tsd-kind-class"><a href="classes/Time.html" class="tsd-kind-icon">Time</a></li><li class="tsd-kind-type-alias"><a href="modules.html#AnimationFrameProtocol" class="tsd-kind-icon">Animation<wbr/>Frame<wbr/>Protocol</a></li><li class="tsd-kind-type-alias"><a href="modules.html#AsyncEffectCallback" class="tsd-kind-icon">Async<wbr/>Effect<wbr/>Callback</a></li><li class="tsd-kind-type-alias"><a href="modules.html#DebounceProtocol" class="tsd-kind-icon">Debounce<wbr/>Protocol</a></li><li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#DebouncedStateProtocol" class="tsd-kind-icon">Debounced<wbr/>State<wbr/>Protocol</a></li><li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#ExactRefCallback" class="tsd-kind-icon">Exact<wbr/>Ref<wbr/>Callback</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ExecutionHook" class="tsd-kind-icon">Execution<wbr/>Hook</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ExecutorHook" class="tsd-kind-icon">Executor<wbr/>Hook</a></li><li class="tsd-kind-type-alias"><a href="modules.html#GuardCondition" class="tsd-kind-icon">Guard<wbr/>Condition</a></li><li class="tsd-kind-type-alias"><a href="modules.html#GuardFallback" class="tsd-kind-icon">Guard<wbr/>Fallback</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ScheduleProtocol" class="tsd-kind-icon">Schedule<wbr/>Protocol</a></li><li class="tsd-kind-type-alias"><a href="modules.html#SemanticMemoHook" class="tsd-kind-icon">Semantic<wbr/>Memo<wbr/>Hook</a></li><li class="tsd-kind-type-alias"><a href="modules.html#SetTimeout" class="tsd-kind-icon">Set<wbr/>Timeout</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ToggleProtocol" class="tsd-kind-icon">Toggle<wbr/>Protocol</a></li><li class="tsd-kind-variable"><a href="modules.html#ExecutorProviderContext" class="tsd-kind-icon">Executor<wbr/>Provider<wbr/>Context</a></li><li class="tsd-kind-variable"><a href="modules.html#MetronomeProviderContext" class="tsd-kind-icon">Metronome<wbr/>Provider<wbr/>Context</a></li><li class="tsd-kind-variable"><a href="modules.html#TimeContext" class="tsd-kind-icon">Time<wbr/>Context</a></li><li class="tsd-kind-function"><a href="modules.html#areHookInputsEqual" class="tsd-kind-icon">are<wbr/>Hook<wbr/>Inputs<wbr/>Equal</a></li><li class="tsd-kind-function"><a href="modules.html#createExecutionHook" class="tsd-kind-icon">create<wbr/>Execution<wbr/>Hook</a></li><li class="tsd-kind-function"><a href="modules.html#createExecutorHook" class="tsd-kind-icon">create<wbr/>Executor<wbr/>Hook</a></li><li class="tsd-kind-function"><a href="modules.html#createSemanticMemoHook" class="tsd-kind-icon">create<wbr/>Semantic<wbr/>Memo<wbr/>Hook</a></li><li class="tsd-kind-function"><a href="modules.html#useAnimationFrame" class="tsd-kind-icon">use<wbr/>Animation<wbr/>Frame</a></li><li class="tsd-kind-function"><a href="modules.html#useAsyncEffect" class="tsd-kind-icon">use<wbr/>Async<wbr/>Effect</a></li><li class="tsd-kind-function"><a href="modules.html#useAsyncEffectOnce" class="tsd-kind-icon">use<wbr/>Async<wbr/>Effect<wbr/>Once</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useBlocker" class="tsd-kind-icon">use<wbr/>Blocker</a></li><li class="tsd-kind-function"><a href="modules.html#useDebounce" class="tsd-kind-icon">use<wbr/>Debounce</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useDebouncedState" class="tsd-kind-icon">use<wbr/>Debounced<wbr/>State</a></li><li class="tsd-kind-function"><a href="modules.html#useEffectOnce" class="tsd-kind-icon">use<wbr/>Effect<wbr/>Once</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useExecution" class="tsd-kind-icon">use<wbr/>Execution</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useExecutor" class="tsd-kind-icon">use<wbr/>Executor</a></li><li class="tsd-kind-function"><a href="modules.html#useGuard" class="tsd-kind-icon">use<wbr/>Guard</a></li><li class="tsd-kind-function"><a href="modules.html#useIsomorphicLayoutEffect" class="tsd-kind-icon">use<wbr/>Isomorphic<wbr/>Layout<wbr/>Effect</a></li><li class="tsd-kind-function"><a href="modules.html#useLock" class="tsd-kind-icon">use<wbr/>Lock</a></li><li class="tsd-kind-function"><a href="modules.html#useMetronome" class="tsd-kind-icon">use<wbr/>Metronome</a></li><li class="tsd-kind-function"><a href="modules.html#useMountSignal" class="tsd-kind-icon">use<wbr/>Mount<wbr/>Signal</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#usePolling" class="tsd-kind-icon">use<wbr/>Polling</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useRefCallback" class="tsd-kind-icon">use<wbr/>Ref<wbr/>Callback</a></li><li class="tsd-kind-function"><a href="modules.html#useRenderEffect" class="tsd-kind-icon">use<wbr/>Render<wbr/>Effect</a></li><li class="tsd-kind-function"><a href="modules.html#useRenderEffectOnce" class="tsd-kind-icon">use<wbr/>Render<wbr/>Effect<wbr/>Once</a></li><li class="tsd-kind-function"><a href="modules.html#useRerender" class="tsd-kind-icon">use<wbr/>Rerender</a></li><li class="tsd-kind-function"><a href="modules.html#useRerenderSchedule" class="tsd-kind-icon">use<wbr/>Rerender<wbr/>Schedule</a></li><li class="tsd-kind-function"><a href="modules.html#useSchedule" class="tsd-kind-icon">use<wbr/>Schedule</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useSemanticCallback" class="tsd-kind-icon">use<wbr/>Semantic<wbr/>Callback</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useSemanticMemo" class="tsd-kind-icon">use<wbr/>Semantic<wbr/>Memo</a></li><li class="tsd-kind-function"><a href="modules.html#useTime" class="tsd-kind-icon">use<wbr/>Time</a></li><li class="tsd-kind-function"><a href="modules.html#useToggle" class="tsd-kind-icon">use<wbr/>Toggle</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#useValueRef" class="tsd-kind-icon">use<wbr/>Value<wbr/>Ref</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li><li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
