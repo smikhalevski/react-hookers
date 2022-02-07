@@ -1,12 +1,12 @@
-# react-hooks 🪝 [![build](https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml/badge.svg?branch=master&event=push)](https://github.com/smikhalevski/react-hooks/actions/workflows/master.yml)
+# react-hookers [![build](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml/badge.svg?branch=master&event=push)](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml)
 
-The set of general-purpose React hooks.
+<img alt="Bender" width="250" src="https://github.com/smikhalevski/react-hookers/raw/next/bender.png">
 
 ```sh
-npm install --save-prod @smikhalevski/react-hooks
+npm install --save-prod react-hookers
 ```
 
-📚 [API documentation is available here.](https://smikhalevski.github.io/react-hooks/)
+🤖 [API documentation is available here.](https://smikhalevski.github.io/react-hookers/)
 
 **State**
 
@@ -102,11 +102,11 @@ executor.execute(async (signal) => doSomething());
 ```
 
 You can manage how executors are created with `ExecutorProvider` and
-[`SsrExecutorProvider`](https://smikhalevski.github.io/react-hooks/classes/SsrExecutorManager.html).
+[`SsrExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {SsrExecutorProvider, ExecutorProviderContext} from '@smikhalevski/react-hooks';
+import {SsrExecutorProvider, ExecutorProviderContext} from 'react-hookers';
 
 const mySsrExecutorProvider = new SsrExecutorProvider();
 
@@ -124,7 +124,7 @@ You can create a custom `useExecutor` hook that is bound to a custom context.
 
 ```ts
 import {createContext} from 'react';
-import {createExecutorHook, ExecutorProvider} from '@smikhalevski/react-hooks';
+import {createExecutorHook, ExecutorProvider} from 'react-hookers';
 
 const MyExecutorProviderContext = createContext(new ExecutorProvider());
 
@@ -320,7 +320,7 @@ useRerenderSchedule(500);
 
 ### `useTime`
 
-Returns the [`Time`](https://smikhalevski.github.io/react-hooks/classes/Time.html) instance that provides the current
+Returns the [`Time`](https://smikhalevski.github.io/react-hookers/classes/Time.html) instance that provides the current
 timestamp.
 
 ```ts
@@ -331,11 +331,11 @@ time.now();
 ```
 
 You can alter the timestamp by providing the custom
-[`Time`](https://smikhalevski.github.io/react-hooks/classes/Time.html) implementation.
+[`Time`](https://smikhalevski.github.io/react-hookers/classes/Time.html) implementation.
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {Time, TimeContext} from '@smikhalevski/react-hooks';
+import {Time, TimeContext} from 'react-hookers';
 
 const myTime = new Time();
 
@@ -371,7 +371,7 @@ stop();
 
 ### `useMetronome`
 
-Returns a [`Metronome`](https://smikhalevski.github.io/react-hooks/classes/Metronome.html) instance. Use this to
+Returns a [`Metronome`](https://smikhalevski.github.io/react-hookers/classes/Metronome.html) instance. Use this to
 schedule callback invocation.
 
 ```ts
@@ -387,11 +387,11 @@ useEffect(
 ```
 
 You can alter how metronomes are created by providing the custom
-[`MetronomeProvider`](https://smikhalevski.github.io/react-hooks/classes/MetronomeProvider.html) implementation.
+[`MetronomeProvider`](https://smikhalevski.github.io/react-hookers/classes/MetronomeProvider.html) implementation.
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {MetronomeProvider, MetronomeProviderContext} from '@smikhalevski/react-hooks';
+import {MetronomeProvider, MetronomeProviderContext} from 'react-hookers';
 
 const myMetronomeProvider = new MetronomeProvider();
 
