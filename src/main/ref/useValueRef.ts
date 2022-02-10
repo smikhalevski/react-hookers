@@ -1,9 +1,9 @@
-import {RefObject, useRef} from 'react';
+import {MutableRefObject, useRef} from 'react';
 
 /**
- * Creates a `RefObject` that is updated on every render with the given value.
+ * Creates a `MutableRefObject` that is updated on every render with the given value.
  */
-export function useValueRef<T>(value: T): RefObject<T> {
+export function useValueRef<T>(value: T): MutableRefObject<T> {
   const ref = useRef(value);
   ref.current = value;
   return ref;
