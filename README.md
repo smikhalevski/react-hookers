@@ -17,7 +17,6 @@ npm install --save-prod react-hookers
 - [`usePolling`](#usepolling)
 - [`useToggle`](#usetoggle)
 - [`useRefCallback`](#userefcallback)
-- [`useValueRef`](#usevalueref)
 
 [**Side effects**](#side-effects)
 
@@ -158,20 +157,6 @@ Returns a ref object and a callback to update the value of this ref.
 
 ```ts
 const [ref, updateRef] = useRefCallback(initialValue);
-```
-
-### `useValueRef`
-
-Creates a `MutableRefObject` that is updated on every render with the given value.
-
-For example, this hook comes in handy when a value is used in the effect, and you don't want the effect to be triggered
-every time the value changes. Then you pass the value to `useValueRef` and use the returned ref in the effect.
-
-```ts
-const valueRef = useValueRef(value);
-
-// The latest rendered value
-valueRef.current;
 ```
 
 # Side effects
