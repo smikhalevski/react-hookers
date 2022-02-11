@@ -7,8 +7,8 @@ export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: D
 
 /**
  * Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
- * synchronously, and the component is re-rendered. After the `delay` the `currState` is set to `nextState` and
- * component is re-rendered again.
+ * synchronously, and the component is re-rendered. After the `ms` the `currState` is set to `nextState` and component
+ * is re-rendered again.
  *
  * @param ms The delay after which `currState` is synchronized with `nextState`.
  * @param initialState Thee initial state or a callback that returns an initial state.
@@ -18,8 +18,8 @@ export function useDebouncedState<S>(ms: number, initialState: S | (() => S)): R
 
 /**
  * Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
- * synchronously, and the component is re-rendered. After the `delay` the `currState` is set to `nextState` and
- * component is re-rendered again.
+ * synchronously, and the component is re-rendered. After the `ms` the `currState` is set to `nextState` and component
+ * is re-rendered again.
  *
  * @param ms The delay after which `currState` is synchronized with `nextState`.
  * @template S The type of stateful value.
