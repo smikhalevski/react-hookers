@@ -1,6 +1,8 @@
 # react-hookers [![build](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml/badge.svg?branch=master&event=push)](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml)
 
-<img alt="Bender" width="250" src="https://raw.githubusercontent.com/smikhalevski/react-hookers/master/bender.png">
+<a href="#readme">
+  <img alt="Bender" width="250" src="https://raw.githubusercontent.com/smikhalevski/react-hookers/master/bender.png">
+</a>
 
 ```sh
 npm install --save-prod react-hookers
