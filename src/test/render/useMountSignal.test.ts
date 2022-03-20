@@ -6,7 +6,7 @@ describe('useMountSignal', () => {
   test('returns a tuple', () => {
     const hook = renderHook(() => useMountSignal());
 
-    expect(hook.result.current).toEqual(new AbortController().signal);
+    expect(hook.result.current).toBeInstanceOf(AbortSignal);
     expect(hook.result.current.aborted).toBe(false);
   });
 
