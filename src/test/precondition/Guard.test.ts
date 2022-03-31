@@ -1,11 +1,11 @@
-import {Guard} from '../../main';
+import {PreconditionApply} from '../../main';
 import {Executor, sleep} from 'parallel-universe';
 
 describe('Guard', () => {
 
   test('returns a function', () => {
     const executor = new Executor();
-    const guard = new Guard(executor, () => undefined);
+    const guard = new PreconditionApply(executor, () => undefined);
 
     expect(guard.guardCallback(() => undefined)).toBeInstanceOf(Function);
   });
@@ -19,16 +19,16 @@ describe('Guard', () => {
     const executor = new Executor();
     executor.subscribe(listenerMock);
 
-    const guard = new Guard(executor, conditionMock, fallbackMock);
+    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
     const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
 
-    expect(guard.pending).toBe(true);
+    expect(guard.executor.pending).toBe(true);
 
     await sleep(50);
 
-    expect(guard.pending).toBe(false);
+    expect(guard.executor.pending).toBe(false);
 
     expect(conditionMock).toHaveBeenCalledTimes(1);
     expect(conditionMock).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
@@ -46,7 +46,7 @@ describe('Guard', () => {
     const captureArgsMock = jest.fn((): [number, string] => [456, 'def']);
 
     const executor = new Executor();
-    const guard = new Guard(executor, () => true);
+    const guard = new PreconditionApply(executor, () => true);
     const guardedCb = guard.guardCallback(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
@@ -69,16 +69,16 @@ describe('Guard', () => {
     const executor = new Executor();
     executor.subscribe(listenerMock);
 
-    const guard = new Guard(executor, conditionMock, fallbackMock);
+    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
     const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
 
-    expect(guard.pending).toBe(true);
+    expect(guard.executor.pending).toBe(true);
 
     await sleep(50);
 
-    expect(guard.pending).toBe(false);
+    expect(guard.executor.pending).toBe(false);
 
     expect(conditionMock).toHaveBeenCalledTimes(1);
     expect(conditionMock).toHaveBeenNthCalledWith(1, expect.any(AbortSignal));
@@ -102,7 +102,7 @@ describe('Guard', () => {
     const executor = new Executor();
     executor.subscribe(listenerMock);
 
-    const guard = new Guard(executor, conditionMock, fallbackMock);
+    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
     const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
@@ -135,7 +135,7 @@ describe('Guard', () => {
     const captureArgsMock = jest.fn((): [number, string] => [456, 'def']);
 
     const executor = new Executor();
-    const guard = new Guard(executor, conditionMock, (replay) => lastReplay = replay);
+    const guard = new PreconditionApply(executor, conditionMock, (replay) => lastReplay = replay);
     const guardedCb = guard.guardCallback(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
@@ -169,7 +169,7 @@ describe('Guard', () => {
     const cbMock = jest.fn();
 
     const executor = new Executor();
-    const guard = new Guard(executor, conditionMock, fallbackMock);
+    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
 
     const guardedCb = guard.guardCallback(cbMock);
 
@@ -177,7 +177,7 @@ describe('Guard', () => {
 
     expect(conditionSignal?.aborted).toBe(false);
 
-    guard.abort();
+    guard.executor.abort();
 
     expect(conditionSignal?.aborted).toBe(true);
 

@@ -505,12 +505,12 @@ Returns the [`Guard`](https://smikhalevski.github.io/react-hookers/classes/Guard
 conditional logic from event handlers and callbacks.
 
 ```tsx
-const guard = useGuard(
-    async () => checkCondition(),
+const [afterLoggedIn] = usePreconditon(
+    async () => checkUserIsLoggedIn(),
 
     async (replay) => {
       // Invoked if the guarded callback was called when condition wasn't met
-      doFallback();
+      requestUserToLogIn();
 
       // Replay the guarded callback invokation
       // (original arguments are bound to the replay callback)
@@ -518,9 +518,9 @@ const guard = useGuard(
     },
 );
 
-const myGuardedCallback = guard.guardCallback((a, b) => {
+const myCallbackWithPrecondition = afterLoggedIn((a, b) => {
   myCallback(a, b);
 });
 
-myGuardedCallback(a, b);
+myCallbackWithPrecondition(a, b);
 ```
