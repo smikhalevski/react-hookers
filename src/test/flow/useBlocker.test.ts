@@ -6,17 +6,17 @@ describe('useBlocker', () => {
   test('unblocked by default', () => {
     const hook = renderHook(() => useBlocker());
 
-    expect(hook.result.current.blocked).toBe(false);
+    expect(hook.result.current[0]).toBe(false);
   });
 
   test('blocks', () => {
     const hook = renderHook(() => useBlocker());
 
     act(() => {
-      hook.result.current.block();
+      hook.result.current[1]();
     });
 
-    expect(hook.result.current.blocked).toBe(true);
+    expect(hook.result.current[0]).toBe(true);
   });
 
   test('unblocks with result', async () => {
@@ -24,13 +24,13 @@ describe('useBlocker', () => {
     let promise;
 
     act(() => {
-      promise = hook.result.current.block();
+      promise = hook.result.current[1]();
     });
 
-    act(() => hook.result.current.unblock('test'));
+    act(() => hook.result.current[2]('test'));
 
     await expect(promise).resolves.toBe('test');
-    expect(hook.result.current.blocked).toBe(false);
+    expect(hook.result.current[0]).toBe(false);
   });
 
   test('unblocks without result', async () => {
@@ -38,12 +38,12 @@ describe('useBlocker', () => {
     let promise;
 
     act(() => {
-      promise = hook.result.current.block();
+      promise = hook.result.current[1]();
     });
 
-    act(() => hook.result.current.unblock());
+    act(() => hook.result.current[2]());
 
     await expect(promise).resolves.toBe(undefined);
-    expect(hook.result.current.blocked).toBe(false);
+    expect(hook.result.current[0]).toBe(false);
   });
 });
