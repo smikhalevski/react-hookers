@@ -25,7 +25,7 @@ export function usePrecondition(check: PreconditionCheck, fallback?: Preconditio
   return manager.__protocol;
 }
 
-export function createPreconditionManager() {
+function createPreconditionManager() {
 
   let executor: Executor;
   let condition: PreconditionCheck;

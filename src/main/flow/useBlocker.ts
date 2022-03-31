@@ -19,7 +19,7 @@ export function useBlocker<T = void>(): Readonly<BlockerProtocol<T>> {
   return manager.__protocol;
 }
 
-export function createBlockerManager(rerender: () => void) {
+function createBlockerManager(rerender: () => void) {
 
   const blocker = new Blocker();
 

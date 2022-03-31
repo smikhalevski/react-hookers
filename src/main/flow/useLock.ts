@@ -17,7 +17,7 @@ export function useLock(): Readonly<LockProtocol> {
   return manager.__protocol;
 }
 
-export function createLockManager(rerender: () => void) {
+function createLockManager(rerender: () => void) {
 
   const lock = new Lock();
 
