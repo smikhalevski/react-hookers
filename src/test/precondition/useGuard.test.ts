@@ -1,32 +1,32 @@
 import {act, renderHook} from '@testing-library/react-hooks/native';
 import {sleep} from 'parallel-universe';
-import {Guard, useGuard} from '../../main';
+import {PreconditionApply, usePrecondition} from '../../main';
 
 describe('useGuard', () => {
 
   test('returns a Guard instance', () => {
-    const hook = renderHook(() => useGuard(() => true));
+    const hook = renderHook(() => usePrecondition(() => true));
 
-    expect(hook.result.current).toBeInstanceOf(Guard);
-    expect(hook.result.current.pending).toBe(false);
+    expect(hook.result.current).toBeInstanceOf(PreconditionApply);
+    expect(hook.result.current[0]).toBe(false);
   });
 
   test('re-renders after condition check', async () => {
     const setPendingMock = jest.fn();
 
     const hook = renderHook(() => {
-      const guard = useGuard(async () => {
+      const guard = usePrecondition(async () => {
         await sleep(50);
         return true;
       });
-      setPendingMock(guard.pending);
+      setPendingMock(guard[0]);
       return guard;
     });
 
     expect(setPendingMock).toHaveBeenCalledTimes(1);
     expect(setPendingMock).toHaveBeenNthCalledWith(1, false);
 
-    const guardedCb = hook.result.current.guardCallback(() => undefined);
+    const guardedCb = hook.result.current[1](() => undefined);
 
     act(() => guardedCb());
 
@@ -46,10 +46,10 @@ describe('useGuard', () => {
       await sleep(50);
       return false;
     });
-    const hookMock = jest.fn(() => useGuard(conditionMock, (replay) => lastReplay = replay));
+    const hookMock = jest.fn(() => usePrecondition(conditionMock, (replay) => lastReplay = replay));
     const hook = renderHook(hookMock);
 
-    const guardedCb = hook.result.current.guardCallback(() => undefined);
+    const guardedCb = hook.result.current[1](() => undefined);
 
     act(() => guardedCb());
 
@@ -75,9 +75,9 @@ describe('useGuard', () => {
     let condition = conditionMock1;
     let fallback = fallbackMock1;
 
-    const hook = renderHook(() => useGuard(condition, fallback));
+    const hook = renderHook(() => usePrecondition(condition, fallback));
 
-    const guardedCb = hook.result.current.guardCallback(() => undefined);
+    const guardedCb = hook.result.current[1](() => undefined);
     act(() => guardedCb());
     await hook.waitForNextUpdate();
 
