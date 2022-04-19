@@ -8,6 +8,8 @@ import {useSemanticMemo} from '../memo';
  *
  * @param ms The metronome interval duration in milliseconds.
  * @returns The {@link Metronome} instance.
+ *
+ * @see {@link useSchedule}
  */
 export function useMetronome(ms: number): Metronome {
   const provider = useContext(MetronomeProviderContext);

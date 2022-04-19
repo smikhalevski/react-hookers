@@ -21,7 +21,7 @@ function createAnimationFrameManager() {
 
   let handle: number;
 
-  const start = (cb: FrameRequestCallback) => {
+  const start = (cb: FrameRequestCallback): void => {
     stop();
 
     const loop: FrameRequestCallback = (time) => {
@@ -31,7 +31,7 @@ function createAnimationFrameManager() {
     handle = requestAnimationFrame(loop);
   };
 
-  const stop = () => {
+  const stop = (): void => {
     cancelAnimationFrame(handle);
   };
 

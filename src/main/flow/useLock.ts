@@ -6,7 +6,7 @@ import {useRerender} from '../render';
 export type LockProtocol = [locked: boolean, acquire: () => Promise<() => void>];
 
 /**
- * Returns the `Lock` instance that can be used to synchronize async processes.
+ * Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
  */
 export function useLock(): Readonly<LockProtocol> {
   const rerender = useRerender();

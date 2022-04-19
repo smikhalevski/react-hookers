@@ -30,7 +30,7 @@ function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
   let ac: AbortController | undefined;
   let destructor: (() => void) | void;
 
-  const cleanup = () => {
+  const cleanup = (): void => {
     ac?.abort();
     ac = undefined;
 
