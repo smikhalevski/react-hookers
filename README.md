@@ -52,7 +52,7 @@ npm install --save-prod react-hookers
 
 - [`useBlocker`](#useblocker)
 - [`useLock`](#uselock)
-- [`useGuard`](#useguard)
+- [`usePrecondition`](#useprecondition)
 
 # State
 
@@ -469,7 +469,7 @@ internally.
 ```tsx
 const [blocked, block, unblock] = useBlocker<boolean>();
 
-// Returns Promise that is resolved with the value passed to blocker.unblock(value)
+// Returns Promise that is resolved with the value passed to unblock(value)
 block(); // → Promise<boolean>
 
 // Unblocks the blocker with given value
@@ -498,26 +498,24 @@ doSomething();
 doSomething();
 ```
 
-### `useGuard`
-
-Returns the [`Guard`](https://smikhalevski.github.io/react-hookers/classes/Guard.html) instance that extracts shared
-conditional logic from event handlers and callbacks.
+### `usePrecondition`
 
 ```tsx
-const [afterLoggedIn] = usePreconditon(
+const [ifLoggedIn] = usePreconditon(
     async () => checkUserIsLoggedIn(),
 
+    // Invoked if the protected callback was called when
+    // user wasn't logged in
     async (replay) => {
-      // Invoked if the guarded callback was called when condition wasn't met
-      requestUserToLogIn();
+      await requestUserToLogIn();
 
-      // Replay the guarded callback invokation
-      // (original arguments are bound to the replay callback)
+      // After user logged in, you can replay the last invokation of
+      // the protected callback 
       replay();
     },
 );
 
-const myCallbackWithPrecondition = afterLoggedIn((a, b) => {
+const myCallbackWithPrecondition = ifLoggedIn((a, b) => {
   myCallback(a, b);
 });
 

@@ -1,11 +1,11 @@
-import {PreconditionApply} from '../../main';
+import {WithPrecondition} from '../../main';
 import {Executor, sleep} from 'parallel-universe';
 
 describe('Guard', () => {
 
   test('returns a function', () => {
     const executor = new Executor();
-    const guard = new PreconditionApply(executor, () => undefined);
+    const guard = new WithPrecondition(executor, () => undefined);
 
     expect(guard.guardCallback(() => undefined)).toBeInstanceOf(Function);
   });
@@ -19,7 +19,7 @@ describe('Guard', () => {
     const executor = new Executor();
     executor.subscribe(listenerMock);
 
-    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
+    const guard = new WithPrecondition(executor, conditionMock, fallbackMock);
     const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
@@ -46,7 +46,7 @@ describe('Guard', () => {
     const captureArgsMock = jest.fn((): [number, string] => [456, 'def']);
 
     const executor = new Executor();
-    const guard = new PreconditionApply(executor, () => true);
+    const guard = new WithPrecondition(executor, () => true);
     const guardedCb = guard.guardCallback(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
@@ -69,7 +69,7 @@ describe('Guard', () => {
     const executor = new Executor();
     executor.subscribe(listenerMock);
 
-    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
+    const guard = new WithPrecondition(executor, conditionMock, fallbackMock);
     const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
@@ -102,7 +102,7 @@ describe('Guard', () => {
     const executor = new Executor();
     executor.subscribe(listenerMock);
 
-    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
+    const guard = new WithPrecondition(executor, conditionMock, fallbackMock);
     const guardedCb = guard.guardCallback(cbMock);
 
     guardedCb(123, 'abc');
@@ -135,7 +135,7 @@ describe('Guard', () => {
     const captureArgsMock = jest.fn((): [number, string] => [456, 'def']);
 
     const executor = new Executor();
-    const guard = new PreconditionApply(executor, conditionMock, (replay) => lastReplay = replay);
+    const guard = new WithPrecondition(executor, conditionMock, (replay) => lastReplay = replay);
     const guardedCb = guard.guardCallback(cbMock, captureArgsMock);
 
     guardedCb(123, 'abc');
@@ -169,7 +169,7 @@ describe('Guard', () => {
     const cbMock = jest.fn();
 
     const executor = new Executor();
-    const guard = new PreconditionApply(executor, conditionMock, fallbackMock);
+    const guard = new WithPrecondition(executor, conditionMock, fallbackMock);
 
     const guardedCb = guard.guardCallback(cbMock);
 
