@@ -35,7 +35,7 @@ function createScheduleManager(provider: MetronomeProvider) {
     });
   };
 
-  const cancel = () => {
+  const cancel = (): void => {
     cleanup?.();
     cleanup = undefined;
   };

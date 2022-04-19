@@ -19,12 +19,12 @@ function createDebounceManager() {
 
   let timeout: ReturnType<typeof setTimeout>;
 
-  const debounce: SetTimeout = (...args) => {
+  const debounce: SetTimeout = (...args): void => {
     cancel();
     timeout = setTimeout(...args);
   };
 
-  const cancel = () => {
+  const cancel = (): void => {
     clearTimeout(timeout);
   };
 

@@ -28,7 +28,7 @@ function createRenderEffectManager() {
   let prevDeps: DependencyList | undefined;
   let destructor: (() => void) | void;
 
-  const __applyEffect = (effect: EffectCallback, deps: DependencyList | undefined) => {
+  const __applyEffect = (effect: EffectCallback, deps: DependencyList | undefined): void => {
     if (areHookInputsEqual(deps, prevDeps)) {
       return;
     }

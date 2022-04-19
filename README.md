@@ -463,29 +463,28 @@ const [currState, nextState, setState] = useDebouncedState(500);
 
 ### `useBlocker`
 
-Returns the [`Blocker`](https://smikhalevski.github.io/parallel-universe/classes/Blocker.html) instance that provides
-mechanism for blocking async processes and unblocking them from an external context.
+Blocks UI from the async context. Uses [`Blocker`](https://github.com/smikhalevski/parallel-universe#blocker)
+internally.
 
 ```tsx
-const blocker = useBlocker<boolean>();
+const [blocked, block, unblock] = useBlocker<boolean>();
 
 // Returns Promise that is resolved with the value passed to blocker.unblock(value)
-blocker.block(); // → Promise<boolean>
+block(); // → Promise<boolean>
 
 // Unblocks the blocker with given value
-blocker.unblock(true);
+unblock(true);
 ```
 
 ### `useLock`
 
-Returns the [`Lock`](https://smikhalevski.github.io/parallel-universe/classes/Lock.html) instance that can be used to
-synchronize async processes.
+Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
 
 ```tsx
-const lock = useLock();
+const [locked, acquire] = useLock();
 
 async function doSomething() {
-  const release = await lock.acquire();
+  const release = await acquire();
   try {
     // Long process starts here
   } finally {
