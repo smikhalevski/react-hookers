@@ -3,9 +3,7 @@ import {ExecutorProvider, ExecutorProviderContext} from '../executor';
 import {useSemanticMemo} from '../memo';
 import {useRerender} from '../render';
 
-export type WithPrecondition = <A extends any[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void) => (...args: A) => void
-
-export type PreconditionProtocol = [withPrecondition: WithPrecondition, pending: boolean, abort: () => void];
+export type PreconditionProtocol = [afterCheck: <A extends any[]>(cb: (...args: A) => unknown, captureArgs?: (...args: A) => A | void) => (...args: A) => void, pending: boolean, abort: () => void];
 
 type Check = (signal: AbortSignal) => unknown;
 
@@ -18,7 +16,7 @@ type Fallback = (replay: () => void) => void;
  * returned, then it is first awaited and the resolved value is used as an indication that the precondition is met.
  * @param fallback The callback that is invoked if condition wasn't met.
  */
-export function usePrecondition(check: (signal: AbortSignal) => unknown, fallback?: (replay: () => void) => void): PreconditionProtocol {
+export function usePrecondition(check: (signal: AbortSignal) => unknown, fallback?: (replay: () => void) => void): Readonly<PreconditionProtocol> {
   const provider = useContext(ExecutorProviderContext);
   const rerender = useRerender();
 
@@ -38,7 +36,7 @@ function createPreconditionManager(provider: ExecutorProvider, rerender: () => v
   let check: Check;
   let fallback: Fallback | undefined;
 
-  const withPrecondition: WithPrecondition = (cb, captureArgs) => (...args) => {
+  const afterCheck: PreconditionProtocol[0] = (cb, captureArgs) => (...args) => {
     const capturedArgs = captureArgs?.(...args) || args;
 
     executor.execute((signal) => Promise.resolve(check(signal)).then((ok) => {
@@ -49,7 +47,7 @@ function createPreconditionManager(provider: ExecutorProvider, rerender: () => v
         cb(...capturedArgs);
         return;
       }
-      fallback?.(withPrecondition(() => {
+      fallback?.(afterCheck(() => {
         cb(...capturedArgs);
       }));
     }));
@@ -73,7 +71,7 @@ function createPreconditionManager(provider: ExecutorProvider, rerender: () => v
     };
   };
 
-  const __protocol: PreconditionProtocol = [withPrecondition, false, executor.abort.bind(executor)];
+  const __protocol: PreconditionProtocol = [afterCheck, false, executor.abort.bind(executor)];
 
   return {
     __applyOptions,

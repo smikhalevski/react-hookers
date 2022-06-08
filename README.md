@@ -466,7 +466,7 @@ const [currState, nextState, setState] = useDebouncedState(500);
 Blocks UI from the async context. Uses [`Blocker`](https://github.com/smikhalevski/parallel-universe#blocker)
 internally.
 
-```tsx
+```ts
 const [blocked, block, unblock] = useBlocker<boolean>();
 
 // Returns Promise that is resolved with the value passed to unblock(value)
@@ -480,7 +480,7 @@ unblock(true);
 
 Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
 
-```tsx
+```ts
 const [locked, acquire] = useLock();
 
 async function doSomething() {
@@ -500,24 +500,38 @@ doSomething();
 
 ### `usePrecondition`
 
-```tsx
-const [ifLoggedIn] = usePreconditon(
-    async () => checkUserIsLoggedIn(),
+Extracts shared conditional logic from event handlers and callbacks.
 
-    // Invoked if the protected callback was called when
-    // user wasn't logged in
+```tsx
+const [afterLogin] = usePreconditon(() => alert('You must be logged in to precced'));
+
+<button onClick={afterLogin(() => withdrawFunds())}>
+  {'Withdraw funds'}
+</button>
+```
+
+You can use async checks and a fallback that would be invoked if the check failed:
+
+```ts
+const [afterLogin, loginPending] = usePreconditon(
+    
+    async (signal) => checkUserIsLoggedIn(signal),
+
+    // This callback is invoked if the guarded callback was called
+    // when user wasn't logged in
     async (replay) => {
       await requestUserToLogIn();
 
-      // After user logged in, you can replay the last invokation of
-      // the protected callback 
+      // After user logged in, you can replay the last invokation
+      // of the guarded callback 
       replay();
     },
 );
 
-const myCallbackWithPrecondition = ifLoggedIn((a, b) => {
+// Protect the callback with the precondition
+const myCallbackAfterLogin = afterLogin((a, b) => {
   myCallback(a, b);
 });
 
-myCallbackWithPrecondition(a, b);
+myCallbackAfterLogin(a, b);
 ```
