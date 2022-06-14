@@ -15,5 +15,5 @@ export function useHandler<A extends any[], T>(handler: ((...args: A) => T) | un
 
   handlerRef.current = handler;
 
-  return useRef<(...args: A) => any>().current ||= ((...args) => handlerRef.current?.(...args));
+  return useRef<(...args: A) => any>().current ||= ((...args) => handlerRef.current?.apply(undefined, args));
 }
