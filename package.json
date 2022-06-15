@@ -1,6 +1,6 @@
 {
   "name": "react-hookers",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "The set of general-purpose React hooks.",
   "main": "./lib/index-cjs.js",
   "module": "./lib/index.js",
