@@ -18,6 +18,10 @@ npm install --save-prod react-hookers
 - [`useExecutor`](#useexecutor)
 - [`usePolling`](#usepolling)
 - [`useToggle`](#usetoggle)
+
+[**Ref**](#ref)
+
+- [`useHandler`](#usehandler)
 - [`useRefCallback`](#userefcallback)
 
 [**Side effects**](#side-effects)
@@ -151,6 +155,16 @@ Returns a boolean flag and functions to toggle its value.
 
 ```ts
 const [enabled, enable, disable] = useToggle(initialValue);
+```
+
+# Ref
+
+### `useHandler`
+
+Returns an always-stable function identity.
+
+```ts
+const handleChange = useHandler(props.onChange);
 ```
 
 ### `useRefCallback`
