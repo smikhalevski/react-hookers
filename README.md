@@ -161,7 +161,7 @@ const [enabled, enable, disable] = useToggle(initialValue);
 
 ### `useHandler`
 
-Defines an always-stable function identity.
+Returns an always-stable function identity.
 
 ```ts
 const handleChange = useHandler(props.onChange);
