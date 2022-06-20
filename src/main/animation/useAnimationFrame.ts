@@ -1,7 +1,7 @@
 import {EffectCallback, useRef} from 'react';
 import {useEffectOnce} from '../effect';
 
-export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void, stop: () => void];
+export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void, stop: () => void, playing: boolean];
 
 /**
  * Returns protocol to start and stop an animation loop.
@@ -22,23 +22,28 @@ function createAnimationFrameManager() {
   let handle: number;
 
   const start = (cb: FrameRequestCallback) => {
-    stop();
+    cancelAnimationFrame(handle);
 
     const loop: FrameRequestCallback = (time) => {
       cb(time);
       handle = requestAnimationFrame(loop);
     };
+
+    __protocol[2] = true;
     handle = requestAnimationFrame(loop);
   };
 
   const stop = () => {
+    __protocol[2] = false;
     cancelAnimationFrame(handle);
   };
 
   const __effect: EffectCallback = () => stop;
 
+  const __protocol: AnimationFrameProtocol = [start, stop, false];
+
   return {
     __effect,
-    __protocol: [start, stop] as const,
+    __protocol,
   };
 }
