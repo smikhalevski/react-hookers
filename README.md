@@ -42,11 +42,15 @@ npm install --save-prod react-hookers
 [**Time**](#time)
 
 - [`useTime`](#usetime)
-- [`useAnimationFrame`](#useanimationframe)
 - [`useMetronome`](#usemetronome)
 - [`useSchedule`](#useschedule)
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
+
+[**Animation**](#animation)
+
+- [`useAnimationCallback`](#useanimationcallback)
+- [`useAnimationFrame`](#useanimationframe)
 
 [**User flow**](#user-flow)
 
@@ -354,25 +358,6 @@ renderToString(
 );
 ```
 
-### `useAnimationFrame`
-
-Returns protocol to start and stop an animation loop.
-
-When `start` is called the animation loop starts invoking the provided callback using `requestAnimationFrame`. If the
-animation was already pending then it is stopped and started with the new callback.
-
-```ts
-const [start, stop] = useAnimationFrame();
-
-// Cancels pending animation loop and schedules the new animation loop
-start(() => {
-  // Apply animation changes
-});
-
-// Stop the animation
-stop();
-```
-
 ### `useMetronome`
 
 Returns a [`Metronome`](https://smikhalevski.github.io/react-hookers/classes/Metronome.html) instance. Use this to
@@ -457,6 +442,37 @@ is re-rendered again.
 
 ```ts
 const [currState, nextState, setState] = useDebouncedState(500);
+```
+
+# Animation
+
+### `useAnimationCallback`
+
+Calls a function on every `requestAnimationFrame`. With controls of pausing and resuming.
+
+```ts
+const [pause, resume, playing] = useAnimationCallback(() => {
+  // Apply animation changes
+});
+```
+
+### `useAnimationFrame`
+
+Returns protocol to start and stop an animation loop.
+
+When `start` is called the animation loop starts invoking the provided callback using `requestAnimationFrame`. If the
+animation was already pending then it is stopped and started with the new callback.
+
+```ts
+const [start, stop, playing] = useAnimationFrame();
+
+// Cancels pending animation loop and schedules the new animation loop
+start(() => {
+  // Apply animation changes
+});
+
+// Stop the animation
+stop();
 ```
 
 # User flow
