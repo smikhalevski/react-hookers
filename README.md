@@ -52,7 +52,7 @@ npm install --save-prod react-hookers
 
 - [`useBlocker`](#useblocker)
 - [`useLock`](#uselock)
-- [`useGuard`](#useguard)
+- [`usePrecondition`](#useprecondition)
 
 # State
 
@@ -463,29 +463,28 @@ const [currState, nextState, setState] = useDebouncedState(500);
 
 ### `useBlocker`
 
-Returns the [`Blocker`](https://smikhalevski.github.io/parallel-universe/classes/Blocker.html) instance that provides
-mechanism for blocking async processes and unblocking them from an external context.
+Blocks UI from the async context. Uses [`Blocker`](https://github.com/smikhalevski/parallel-universe#blocker)
+internally.
 
-```tsx
-const blocker = useBlocker<boolean>();
+```ts
+const [blocked, block, unblock] = useBlocker<boolean>();
 
-// Returns Promise that is resolved with the value passed to blocker.unblock(value)
-blocker.block(); // → Promise<boolean>
+// Returns Promise that is resolved with the value passed to unblock(value)
+block(); // → Promise<boolean>
 
 // Unblocks the blocker with given value
-blocker.unblock(true);
+unblock(true);
 ```
 
 ### `useLock`
 
-Returns the [`Lock`](https://smikhalevski.github.io/parallel-universe/classes/Lock.html) instance that can be used to
-synchronize async processes.
+Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
 
-```tsx
-const lock = useLock();
+```ts
+const [locked, acquire] = useLock();
 
 async function doSomething() {
-  const release = await lock.acquire();
+  const release = await acquire();
   try {
     // Long process starts here
   } finally {
@@ -499,28 +498,40 @@ doSomething();
 doSomething();
 ```
 
-### `useGuard`
+### `usePrecondition`
 
-Returns the [`Guard`](https://smikhalevski.github.io/react-hookers/classes/Guard.html) instance that extracts shared
-conditional logic from event handlers and callbacks.
+Extracts shared conditional logic from event handlers and callbacks.
 
 ```tsx
-const guard = useGuard(
-    async () => checkCondition(),
+const [afterLogin] = usePreconditon(() => alert('You must be logged in to precced'));
 
+<button onClick={afterLogin(() => withdrawFunds())}>
+  {'Withdraw funds'}
+</button>
+```
+
+You can use async checks and a fallback that would be invoked if the check failed:
+
+```ts
+const [afterLogin, loginPending] = usePreconditon(
+    
+    async (signal) => checkUserIsLoggedIn(signal),
+
+    // This callback is invoked if the guarded callback was called
+    // when user wasn't logged in
     async (replay) => {
-      // Invoked if the guarded callback was called when condition wasn't met
-      doFallback();
+      await requestUserToLogIn();
 
-      // Replay the guarded callback invokation
-      // (original arguments are bound to the replay callback)
+      // After user logged in, you can replay the last invokation
+      // of the guarded callback 
       replay();
     },
 );
 
-const myGuardedCallback = guard.guardCallback((a, b) => {
+// Protect the callback with the precondition
+const myCallbackAfterLogin = afterLogin((a, b) => {
   myCallback(a, b);
 });
 
-myGuardedCallback(a, b);
+myCallbackAfterLogin(a, b);
 ```

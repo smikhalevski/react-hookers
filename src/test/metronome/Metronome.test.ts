@@ -1,8 +1,7 @@
-import {sleep} from 'parallel-universe';
-import {Metronome} from '../../main';
+import { sleep } from 'parallel-universe';
+import { Metronome } from '../../main';
 
 describe('Metronome', () => {
-
   test('pauses the metronome', async () => {
     const metronome = new Metronome(20);
 

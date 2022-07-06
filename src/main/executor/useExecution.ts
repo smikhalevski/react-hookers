@@ -1,8 +1,9 @@
-import {createExecutionHook} from './createExecutionHook';
-import {ExecutorProviderContext} from './ExecutorProviderContext';
+import { createExecutionHook } from './createExecutionHook';
+import { ExecutorProviderContext } from './ExecutorProviderContext';
 
 /**
- * Executes a callback when dependencies are changed and returns an `Executor`.
+ * Executes a callback when dependencies are changed and returns an
+ * [`Execution`](https://github.com/smikhalevski/parallel-universe#executor).
  *
  * @see {@link ExecutorProviderContext}
  * @see {@link createExecutionHook}

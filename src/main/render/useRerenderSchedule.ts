@@ -1,9 +1,9 @@
-import {useRerender} from './useRerender';
-import {useEffect} from 'react';
-import {useMetronome} from '../metronome';
+import { useRerender } from './useRerender';
+import { useEffect } from 'react';
+import { useMetronome } from '../metronome';
 
 /**
- * Re-renders the component on periodic interval.
+ * Re-renders the component on a periodic interval.
  *
  * @param ms The interval duration in milliseconds.
  *

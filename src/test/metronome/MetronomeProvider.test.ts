@@ -1,7 +1,6 @@
-import {MetronomeProvider} from '../../main';
+import { MetronomeProvider } from '../../main';
 
 describe('MetronomeProvider', () => {
-
   test('returns cached metronome', () => {
     const provider = new MetronomeProvider();
 
