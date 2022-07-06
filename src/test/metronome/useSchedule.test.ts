@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks/native';
+import { act, renderHook } from '@testing-library/react';
 import { sleep } from 'parallel-universe';
 import { useSchedule } from '../../main';
 

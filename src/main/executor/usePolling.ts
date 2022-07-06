@@ -25,7 +25,7 @@ export function usePolling<T>(cb: ExecutorCallback<T>, ms: number, deps?: Depend
         executor.abort();
       };
     },
-    deps ? [executor, ms].concat(deps) : [executor, ms]
+    deps ? deps.concat(executor, ms) : [executor, ms]
   );
 
   return executor;

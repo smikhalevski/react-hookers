@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks/native';
+import { renderHook } from '@testing-library/react';
 import { useSemanticMemo } from '../../main';
 
 describe('useSemanticMemo', () => {
