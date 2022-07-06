@@ -2,7 +2,6 @@
  * Metronome repeatedly calls functions with a fixed time delay between each call.
  */
 export class Metronome {
-
   public paused = false;
 
   private _ms: number;
@@ -51,7 +50,7 @@ export class Metronome {
         this._stopLoop();
       }
     };
-  };
+  }
 
   private _loop = (): void => {
     this._timeout = setTimeout(this._loop, this._ms);

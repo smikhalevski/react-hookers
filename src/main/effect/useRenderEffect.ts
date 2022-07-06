@@ -1,7 +1,7 @@
-import {DependencyList, EffectCallback, useRef} from 'react';
-import {areHookInputsEqual} from '../areHookInputsEqual';
-import {useEffectOnce} from './useEffectOnce';
-import {isFunction} from '../utils';
+import { DependencyList, EffectCallback, useRef } from 'react';
+import { areHookInputsEqual } from '../areHookInputsEqual';
+import { useEffectOnce } from './useEffectOnce';
+import { isFunction } from '../utils';
 
 /**
  * Analogue of `React.useEffect` that invokes an `effect` synchronously during rendering if `deps` aren't defined or
@@ -16,7 +16,7 @@ import {isFunction} from '../utils';
  * @see {@link https://reactjs.org/docs/hooks-reference.html#useeffect React.useEffect}
  */
 export function useRenderEffect(effect: EffectCallback, deps?: DependencyList): void {
-  const manager = useRef<ReturnType<typeof createRenderEffectManager>>().current ||= createRenderEffectManager();
+  const manager = (useRef<ReturnType<typeof createRenderEffectManager>>().current ||= createRenderEffectManager());
 
   manager.__applyEffect(effect, deps);
 
@@ -24,7 +24,6 @@ export function useRenderEffect(effect: EffectCallback, deps?: DependencyList): 
 }
 
 function createRenderEffectManager() {
-
   let prevDeps: DependencyList | undefined;
   let destructor: (() => void) | void;
 

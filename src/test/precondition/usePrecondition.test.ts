@@ -1,9 +1,8 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {sleep} from 'parallel-universe';
-import {usePrecondition} from '../../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { sleep } from 'parallel-universe';
+import { usePrecondition } from '../../main';
 
 describe('usePrecondition', () => {
-
   test('returns a protocol', () => {
     const hook = renderHook(() => usePrecondition(() => true));
 
@@ -47,7 +46,7 @@ describe('usePrecondition', () => {
       await sleep(50);
       return false;
     });
-    const hookMock = jest.fn(() => usePrecondition(checkMock, (replay) => lastReplay = replay));
+    const hookMock = jest.fn(() => usePrecondition(checkMock, replay => (lastReplay = replay)));
     const hook = renderHook(hookMock);
 
     const protectedCb = hook.result.current[0](() => undefined);

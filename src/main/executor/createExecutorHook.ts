@@ -1,10 +1,10 @@
-import {Context, useContext} from 'react';
-import {Executor, ExecutorCallback} from 'parallel-universe';
-import {useRerender} from '../render';
-import {useSemanticMemo} from '../memo';
-import {useRenderEffect} from '../effect';
-import {isFunction} from '../utils';
-import {ExecutorProvider} from './ExecutorProvider';
+import { Context, useContext } from 'react';
+import { Executor, ExecutorCallback } from 'parallel-universe';
+import { useRerender } from '../render';
+import { useSemanticMemo } from '../memo';
+import { useRenderEffect } from '../effect';
+import { isFunction } from '../utils';
+import { ExecutorProvider } from './ExecutorProvider';
 
 export type ExecutorHook = <T>(initialValue?: ExecutorCallback<T> | T) => Executor<T>;
 
@@ -18,8 +18,7 @@ export type ExecutorHook = <T>(initialValue?: ExecutorCallback<T> | T) => Execut
  * @see {@link ExecutorProviderContext}
  */
 export function createExecutorHook(providerContext: Context<ExecutorProvider>): ExecutorHook {
-  return (initialValue) => {
-
+  return initialValue => {
     const provider = useContext(providerContext);
     const rerender = useRerender();
     const executor = useSemanticMemo(() => provider.createExecutor(), [provider]);

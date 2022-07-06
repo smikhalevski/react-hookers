@@ -1,7 +1,6 @@
-import {Metronome} from './Metronome';
+import { Metronome } from './Metronome';
 
 export class MetronomeProvider {
-
   public metronomes = new Map<number, Metronome>();
 
   /**

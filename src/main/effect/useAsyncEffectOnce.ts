@@ -1,5 +1,5 @@
-import {emptyDeps} from '../utils';
-import {AsyncEffectCallback, useAsyncEffect} from './useAsyncEffect';
+import { emptyDeps } from '../utils';
+import { AsyncEffectCallback, useAsyncEffect } from './useAsyncEffect';
 
 /**
  * Same as {@link useAsyncEffect} but calls effect only once after the component is mounted.

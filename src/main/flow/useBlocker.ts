@@ -1,7 +1,7 @@
-import {Blocker} from 'parallel-universe';
-import {EffectCallback, useRef} from 'react';
-import {useEffectOnce} from '../effect';
-import {useRerender} from '../render';
+import { Blocker } from 'parallel-universe';
+import { EffectCallback, useRef } from 'react';
+import { useEffectOnce } from '../effect';
+import { useRerender } from '../render';
 
 export type BlockerProtocol<T> = [blocked: boolean, block: () => Promise<T>, unblock: (result: T) => void];
 
@@ -12,7 +12,7 @@ export type BlockerProtocol<T> = [blocked: boolean, block: () => Promise<T>, unb
  */
 export function useBlocker<T = void>(): Readonly<BlockerProtocol<T>> {
   const rerender = useRerender();
-  const manager = useRef<ReturnType<typeof createBlockerManager>>().current ||= createBlockerManager(rerender);
+  const manager = (useRef<ReturnType<typeof createBlockerManager>>().current ||= createBlockerManager(rerender));
 
   useEffectOnce(manager.__effect);
 
@@ -20,13 +20,13 @@ export function useBlocker<T = void>(): Readonly<BlockerProtocol<T>> {
 }
 
 function createBlockerManager(rerender: () => void) {
-
   const blocker = new Blocker();
 
-  const __effect: EffectCallback = () => blocker.subscribe(() => {
-    __protocol[0] = blocker.blocked;
-    rerender();
-  });
+  const __effect: EffectCallback = () =>
+    blocker.subscribe(() => {
+      __protocol[0] = blocker.blocked;
+      rerender();
+    });
 
   const __protocol: BlockerProtocol<any> = [false, blocker.block.bind(blocker), blocker.unblock.bind(blocker)];
 

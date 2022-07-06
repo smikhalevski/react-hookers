@@ -1,7 +1,7 @@
-import {Dispatch, EffectCallback, SetStateAction, useRef} from 'react';
-import {useEffectOnce} from '../effect';
-import {isFunction} from '../utils';
-import {useRerender} from '../render';
+import { Dispatch, EffectCallback, SetStateAction, useRef } from 'react';
+import { useEffectOnce } from '../effect';
+import { isFunction } from '../utils';
+import { useRerender } from '../render';
 
 export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: Dispatch<SetStateAction<S>>];
 
@@ -28,7 +28,8 @@ export function useDebouncedState<S = undefined>(ms: number): Readonly<Debounced
 
 export function useDebouncedState<S>(ms: number, initialState?: S | (() => S)) {
   const rerender = useRerender();
-  const manager = useRef<ReturnType<typeof createDebouncedStateManager>>().current ||= createDebouncedStateManager<unknown>(ms, rerender, initialState);
+  const manager = (useRef<ReturnType<typeof createDebouncedStateManager>>().current ||=
+    createDebouncedStateManager<unknown>(ms, rerender, initialState));
 
   useEffectOnce(manager.__effect);
 
@@ -36,12 +37,11 @@ export function useDebouncedState<S>(ms: number, initialState?: S | (() => S)) {
 }
 
 function createDebouncedStateManager<S>(ms: number, rerender: () => void, initialState: S | (() => S) | undefined) {
-
   let timeout: ReturnType<typeof setTimeout>;
   let currState = isFunction(initialState) ? initialState() : initialState;
   let nextState = currState;
 
-  const setState: Dispatch<SetStateAction<S | undefined>> = (state) => {
+  const setState: Dispatch<SetStateAction<S | undefined>> = state => {
     clearTimeout(timeout);
 
     if (isFunction(state)) {

@@ -1,5 +1,5 @@
-import {EffectCallback, useEffect} from 'react';
-import {emptyDeps} from '../utils';
+import { EffectCallback, useEffect } from 'react';
+import { emptyDeps } from '../utils';
 
 /**
  * Same as `React.useEffect` but calls effect only once after the component is mounted.

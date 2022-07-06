@@ -1,8 +1,7 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {useSemanticMemo} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { useSemanticMemo } from '../../main';
 
 describe('useSemanticMemo', () => {
-
   test('runs factory invocation result', () => {
     const hook = renderHook(() => useSemanticMemo(() => 123, undefined));
 

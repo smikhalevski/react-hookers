@@ -1,11 +1,10 @@
-import {Executor} from 'parallel-universe';
-import {disposeExecutor} from './disposeExecutor';
+import { Executor } from 'parallel-universe';
+import { disposeExecutor } from './disposeExecutor';
 
 /**
  * The stateless provider that creates and disposes executors.
  */
 export class ExecutorProvider {
-
   /**
    * Creates a new `Executor` instance.
    */

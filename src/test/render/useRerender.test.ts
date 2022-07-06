@@ -1,9 +1,8 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {useEffect} from 'react';
-import {useRerender} from '../../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { useEffect } from 'react';
+import { useRerender } from '../../main';
 
 describe('useRerender', () => {
-
   test('returns function', () => {
     const hook = renderHook(() => useRerender());
 

@@ -1,8 +1,8 @@
-import {Context, DependencyList, useEffect} from 'react';
-import {Execution, ExecutorCallback} from 'parallel-universe';
-import {emptyDeps} from '../utils';
-import {createExecutorHook} from './createExecutorHook';
-import {ExecutorProvider} from './ExecutorProvider';
+import { Context, DependencyList, useEffect } from 'react';
+import { Execution, ExecutorCallback } from 'parallel-universe';
+import { emptyDeps } from '../utils';
+import { createExecutorHook } from './createExecutorHook';
+import { ExecutorProvider } from './ExecutorProvider';
 
 export type ExecutionHook = <T>(cb: ExecutorCallback<T>, deps?: DependencyList) => Execution<T>;
 

@@ -1,8 +1,7 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {useBlocker} from '../../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { useBlocker } from '../../main';
 
 describe('useBlocker', () => {
-
   test('unblocked by default', () => {
     const hook = renderHook(() => useBlocker());
 

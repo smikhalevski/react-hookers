@@ -1,9 +1,8 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {sleep} from 'parallel-universe';
-import {useAsyncEffect} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { sleep } from 'parallel-universe';
+import { useAsyncEffect } from '../../main';
 
 describe('useAsyncEffect', () => {
-
   test('calls the effect after mount', () => {
     const fn = jest.fn();
 
@@ -100,10 +99,12 @@ describe('useAsyncEffect', () => {
   test('aborts the signal if the previous effect is pending', () => {
     const signals: AbortSignal[] = [];
 
-    const hook = renderHook(() => useAsyncEffect((signal) => {
-      signals.push(signal);
-      return Promise.resolve();
-    }, undefined));
+    const hook = renderHook(() =>
+      useAsyncEffect(signal => {
+        signals.push(signal);
+        return Promise.resolve();
+      }, undefined)
+    );
 
     hook.rerender();
 
@@ -114,10 +115,12 @@ describe('useAsyncEffect', () => {
   test('does not abort the signal if the previous effect is fulfilled', async () => {
     const signals: AbortSignal[] = [];
 
-    const hook = renderHook(() => useAsyncEffect((signal) => {
-      signals.push(signal);
-      return Promise.resolve();
-    }, undefined));
+    const hook = renderHook(() =>
+      useAsyncEffect(signal => {
+        signals.push(signal);
+        return Promise.resolve();
+      }, undefined)
+    );
 
     await sleep(50);
     hook.rerender();
@@ -125,5 +128,4 @@ describe('useAsyncEffect', () => {
     expect(signals[0].aborted).toBe(false);
     expect(signals[1].aborted).toBe(false);
   });
-
 });

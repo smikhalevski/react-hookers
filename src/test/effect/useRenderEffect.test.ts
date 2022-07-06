@@ -1,8 +1,7 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {useRenderEffect} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { useRenderEffect } from '../../main';
 
 describe('useRenderEffect', () => {
-
   test('calls the effect synchronously', () => {
     const fn = jest.fn();
 
@@ -84,5 +83,4 @@ describe('useRenderEffect', () => {
     expect(disposeMock1).toHaveBeenCalledTimes(1);
     expect(disposeMock2).toHaveBeenCalledTimes(1);
   });
-
 });

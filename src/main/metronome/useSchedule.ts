@@ -1,9 +1,9 @@
-import {EffectCallback, useContext} from 'react';
-import {useSemanticMemo} from '../memo';
-import {MetronomeProvider} from './MetronomeProvider';
-import {MetronomeProviderContext} from './MetronomeProviderContext';
-import {SetTimeout} from '../shared-types';
-import {useEffectOnce} from '../effect';
+import { EffectCallback, useContext } from 'react';
+import { useSemanticMemo } from '../memo';
+import { MetronomeProvider } from './MetronomeProvider';
+import { MetronomeProviderContext } from './MetronomeProviderContext';
+import { SetTimeout } from '../shared-types';
+import { useEffectOnce } from '../effect';
 
 export type ScheduleProtocol = [schedule: SetTimeout, cancel: () => void];
 
@@ -25,14 +25,17 @@ export function useSchedule(): Readonly<ScheduleProtocol> {
 }
 
 function createScheduleManager(provider: MetronomeProvider) {
-
   let cleanup: (() => void) | undefined;
 
   const schedule: SetTimeout = (cb, ms = 0, ...args) => {
     cancel();
-    cleanup = provider.createMetronome(ms).schedule(args.length === 0 ? cb : () => {
-      cb(...args);
-    });
+    cleanup = provider.createMetronome(ms).schedule(
+      args.length === 0
+        ? cb
+        : () => {
+            cb(...args);
+          }
+    );
   };
 
   const cancel = (): void => {

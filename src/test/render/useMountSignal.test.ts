@@ -1,8 +1,7 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {useMountSignal} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { useMountSignal } from '../../main';
 
 describe('useMountSignal', () => {
-
   test('returns a tuple', () => {
     const hook = renderHook(() => useMountSignal());
 

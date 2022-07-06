@@ -1,5 +1,5 @@
-import {createExecutorHook} from './createExecutorHook';
-import {ExecutorProviderContext} from './ExecutorProviderContext';
+import { createExecutorHook } from './createExecutorHook';
+import { ExecutorProviderContext } from './ExecutorProviderContext';
 
 /**
  * Creates a new [`Executor`](https://github.com/smikhalevski/parallel-universe#executor) an re-renders a component when

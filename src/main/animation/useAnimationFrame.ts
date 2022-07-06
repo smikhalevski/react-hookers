@@ -1,5 +1,5 @@
-import {EffectCallback, useRef} from 'react';
-import {useEffectOnce} from '../effect';
+import { EffectCallback, useRef } from 'react';
+import { useEffectOnce } from '../effect';
 
 export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void, stop: () => void];
 
@@ -10,7 +10,7 @@ export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void,
  * animation was already pending then it is stopped and started with the new callback.
  */
 export function useAnimationFrame(): Readonly<AnimationFrameProtocol> {
-  const manager = useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager();
+  const manager = (useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager());
 
   useEffectOnce(manager.__effect);
 
@@ -18,13 +18,12 @@ export function useAnimationFrame(): Readonly<AnimationFrameProtocol> {
 }
 
 function createAnimationFrameManager() {
-
   let handle: number;
 
   const start = (cb: FrameRequestCallback): void => {
     stop();
 
-    const loop: FrameRequestCallback = (time) => {
+    const loop: FrameRequestCallback = time => {
       cb(time);
       handle = requestAnimationFrame(loop);
     };

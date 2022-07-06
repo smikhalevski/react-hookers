@@ -1,8 +1,7 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {useSemanticCallback} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { useSemanticCallback } from '../../main';
 
 describe('useSemanticCallback', () => {
-
   test('runs cb', () => {
     const cb = () => undefined;
     const hook = renderHook(() => useSemanticCallback(cb, undefined));

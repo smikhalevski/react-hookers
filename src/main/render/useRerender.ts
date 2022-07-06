@@ -1,5 +1,5 @@
-import {EffectCallback, useReducer, useRef} from 'react';
-import {useEffectOnce} from '../effect';
+import { EffectCallback, useReducer, useRef } from 'react';
+import { useEffectOnce } from '../effect';
 
 /**
  * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
@@ -10,7 +10,7 @@ import {useEffectOnce} from '../effect';
 export function useRerender(): () => void {
   const [, dispatch] = useReducer(reduceCount, 0);
 
-  const manager = useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(dispatch);
+  const manager = (useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(dispatch));
 
   useEffectOnce(manager.__effect);
 
@@ -22,7 +22,6 @@ function reduceCount(count: number) {
 }
 
 function createRerenderManager(dispatch: () => void) {
-
   let mounted = true;
 
   const __rerender = (): void => {

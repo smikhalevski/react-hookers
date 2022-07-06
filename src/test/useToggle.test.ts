@@ -1,8 +1,7 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {useToggle} from '../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { useToggle } from '../main';
 
 describe('useToggle', () => {
-
   test('returns a tuple', () => {
     const hook = renderHook(() => useToggle());
 

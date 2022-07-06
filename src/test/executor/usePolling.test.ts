@@ -1,9 +1,8 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {sleep} from 'parallel-universe';
-import {usePolling} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { sleep } from 'parallel-universe';
+import { usePolling } from '../../main';
 
 describe('usePolling', () => {
-
   test('returns the same execution on every render', () => {
     const hook = renderHook(() => usePolling(() => 'abc', 10));
     const execution1 = hook.result.current;
@@ -43,5 +42,4 @@ describe('usePolling', () => {
 
     expect(cbMock.mock.calls.length).toBe(cbMockCallsCount);
   });
-
 });

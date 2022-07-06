@@ -1,9 +1,8 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {sleep} from 'parallel-universe';
-import {useDebouncedState} from '../../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { sleep } from 'parallel-universe';
+import { useDebouncedState } from '../../main';
 
 describe('useDebouncedState', () => {
-
   test('returns the same tuple and callback on every call', () => {
     const hook = renderHook(() => useDebouncedState(10));
 

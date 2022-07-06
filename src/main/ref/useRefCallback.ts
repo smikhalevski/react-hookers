@@ -1,4 +1,4 @@
-import {MutableRefObject, RefCallback, RefObject, useRef} from 'react';
+import { MutableRefObject, RefCallback, RefObject, useRef } from 'react';
 
 export type ExactRefCallback<T> = { bivarianceHack(value: T): void }['bivarianceHack'];
 
@@ -19,16 +19,18 @@ export function useRefCallback<T>(initialValue: T | null): readonly [ref: RefObj
 /**
  * Returns a ref object and a callback to update the value of this ref.
  */
-export function useRefCallback<T = undefined>(): readonly [ref: MutableRefObject<T | undefined>, updateRef: ExactRefCallback<T | undefined>];
+export function useRefCallback<T = undefined>(): readonly [
+  ref: MutableRefObject<T | undefined>,
+  updateRef: ExactRefCallback<T | undefined>
+];
 
 export function useRefCallback(initialValue?: unknown) {
   const ref = useRef(initialValue);
-  return useRef<ReturnType<typeof createRefCallbackProtocol>>().current ||= createRefCallbackProtocol(ref);
+  return (useRef<ReturnType<typeof createRefCallbackProtocol>>().current ||= createRefCallbackProtocol(ref));
 }
 
 function createRefCallbackProtocol(ref: MutableRefObject<unknown>) {
-
-  const updateRef: RefCallback<unknown> = (value) => {
+  const updateRef: RefCallback<unknown> = value => {
     ref.current = value;
   };
 

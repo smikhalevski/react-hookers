@@ -1,10 +1,9 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {ExecutorProvider, ExecutorProviderContext, useExecutor} from '../../main';
-import {Executor} from 'parallel-universe';
-import {createElement, FunctionComponent} from 'react';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { ExecutorProvider, ExecutorProviderContext, useExecutor } from '../../main';
+import { Executor } from 'parallel-universe';
+import { createElement, FunctionComponent } from 'react';
 
 describe('useExecutor', () => {
-
   test('returns the same Executor on every render', () => {
     const hook = renderHook(() => useExecutor());
     const executor1 = hook.result.current;
@@ -117,12 +116,13 @@ describe('useExecutor', () => {
     const executorManager = new ExecutorProvider();
     executorManager.createExecutor = jest.fn();
 
-    const Context: FunctionComponent = (props) => createElement(ExecutorProviderContext.Provider, {
-      value: executorManager,
-      children: props.children,
-    });
+    const Context: FunctionComponent = props =>
+      createElement(ExecutorProviderContext.Provider, {
+        value: executorManager,
+        children: props.children,
+      });
 
-    renderHook(() => useExecutor(), {wrapper: Context});
+    renderHook(() => useExecutor(), { wrapper: Context });
 
     expect(executorManager.createExecutor).toHaveBeenCalledTimes(1);
   });
@@ -131,12 +131,13 @@ describe('useExecutor', () => {
     const executorManager = new ExecutorProvider();
     executorManager.disposeExecutor = jest.fn();
 
-    const Context: FunctionComponent = ({children}) => createElement(ExecutorProviderContext.Provider, {
-      value: executorManager,
-      children,
-    });
+    const Context: FunctionComponent = ({ children }) =>
+      createElement(ExecutorProviderContext.Provider, {
+        value: executorManager,
+        children,
+      });
 
-    const hook = renderHook(() => useExecutor(), {wrapper: Context});
+    const hook = renderHook(() => useExecutor(), { wrapper: Context });
     const executor = hook.result.current;
 
     expect(executor).toBeInstanceOf(Object);
