@@ -1,5 +1,5 @@
-import {createExecutionHook} from './createExecutionHook';
-import {ExecutorProviderContext} from './ExecutorProviderContext';
+import { createExecutionHook } from './createExecutionHook';
+import { ExecutorProviderContext } from './ExecutorProviderContext';
 
 /**
  * Executes a callback when dependencies are changed and returns an

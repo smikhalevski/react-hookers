@@ -1,9 +1,8 @@
-import {DependencyList} from 'react';
+import { DependencyList } from 'react';
 
 export const emptyDeps: DependencyList = [];
 
-export function noop() {
-}
+export function noop() {}
 
 export function returnFalse() {
   return false;

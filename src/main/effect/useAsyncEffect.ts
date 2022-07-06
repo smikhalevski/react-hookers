@@ -1,6 +1,6 @@
-import {DependencyList, EffectCallback, useEffect, useRef} from 'react';
-import {Awaitable, isPromiseLike} from 'parallel-universe';
-import {isFunction} from '../utils';
+import { DependencyList, EffectCallback, useEffect, useRef } from 'react';
+import { Awaitable, isPromiseLike } from 'parallel-universe';
+import { isFunction } from '../utils';
 
 export type AsyncEffectCallback = (signal: AbortSignal) => Awaitable<(() => void) | void>;
 
@@ -18,7 +18,7 @@ export type AsyncEffectCallback = (signal: AbortSignal) => Awaitable<(() => void
  * @see {@link useExecutor}
  */
 export function useAsyncEffect(effect: AsyncEffectCallback, deps: DependencyList | undefined): void {
-  const manager = useRef<ReturnType<typeof createAsyncEffectManager>>().current = createAsyncEffectManager(effect);
+  const manager = (useRef<ReturnType<typeof createAsyncEffectManager>>().current = createAsyncEffectManager(effect));
 
   manager.__asyncEffect = effect;
 
@@ -26,7 +26,6 @@ export function useAsyncEffect(effect: AsyncEffectCallback, deps: DependencyList
 }
 
 function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
-
   let ac: AbortController | undefined;
   let destructor: (() => void) | void;
 
@@ -45,7 +44,7 @@ function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
     if (isPromiseLike(result)) {
       ac = currAc;
 
-      result.then((result) => {
+      result.then(result => {
         if (ac !== currAc) {
           return;
         }

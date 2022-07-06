@@ -1,7 +1,6 @@
-import {EventBus} from '@smikhalevski/event-bus';
+import { EventBus } from '@smikhalevski/event-bus';
 
 export class Time {
-
   private readonly _eventBus = new EventBus();
 
   /**
@@ -25,7 +24,7 @@ export class Time {
    */
   public setTimestamp(timestamp: number): void {
     const prevOffset = this.offset;
-    const currOffset = this.offset = timestamp - Date.now();
+    const currOffset = (this.offset = timestamp - Date.now());
 
     if (prevOffset !== currOffset) {
       this._eventBus.publish();

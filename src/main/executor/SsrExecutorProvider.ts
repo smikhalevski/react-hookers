@@ -1,13 +1,12 @@
-import {Executor} from 'parallel-universe';
-import {noop} from '../utils';
-import {disposeExecutor} from './disposeExecutor';
-import {ExecutorProvider} from './ExecutorProvider';
+import { Executor } from 'parallel-universe';
+import { noop } from '../utils';
+import { disposeExecutor } from './disposeExecutor';
+import { ExecutorProvider } from './ExecutorProvider';
 
 /**
  * The executor provider that keeps references to all created executors and provides batch operation for them.
  */
 export class SsrExecutorProvider implements ExecutorProvider {
-
   public executors = new Set<Executor>();
 
   public createExecutor(): Executor {
@@ -26,7 +25,7 @@ export class SsrExecutorProvider implements ExecutorProvider {
    */
   public hasPendingExecutors(): boolean {
     let pending = false;
-    this.executors.forEach((executor) => pending ||= executor.pending);
+    this.executors.forEach(executor => (pending ||= executor.pending));
     return pending;
   }
 
@@ -34,7 +33,7 @@ export class SsrExecutorProvider implements ExecutorProvider {
    * Aborts all pending executors.
    */
   public abortExecutors(): void {
-    this.executors.forEach((executor) => {
+    this.executors.forEach(executor => {
       executor.abort();
     });
   }
@@ -46,7 +45,7 @@ export class SsrExecutorProvider implements ExecutorProvider {
   public waitForExecutorsToComplete(): Promise<void> {
     const promises: Promise<void>[] = [];
 
-    this.executors.forEach((executor) => {
+    this.executors.forEach(executor => {
       if (executor.promise) {
         promises.push(executor.promise.then(noop, noop));
       }

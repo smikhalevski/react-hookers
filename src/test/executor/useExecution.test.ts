@@ -1,8 +1,7 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {useExecution} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { useExecution } from '../../main';
 
 describe('useExecution', () => {
-
   test('returns the same execution on every render', () => {
     const hook = renderHook(() => useExecution(() => 'abc'));
     const execution1 = hook.result.current;
@@ -69,5 +68,4 @@ describe('useExecution', () => {
     expect(hookMock).toHaveBeenCalledTimes(5);
     expect(hook.result.current.result).toBe('bar');
   });
-
 });

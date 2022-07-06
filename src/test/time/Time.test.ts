@@ -1,4 +1,4 @@
-import {Time} from '../../main';
+import { Time } from '../../main';
 
 const dateSpy = jest.spyOn(Date, 'now');
 
@@ -7,7 +7,6 @@ beforeEach(() => {
 });
 
 describe('Time', () => {
-
   test('returns current timestamp without an offset', () => {
     const time = new Time();
 

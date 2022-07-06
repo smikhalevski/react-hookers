@@ -1,9 +1,8 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {sleep} from 'parallel-universe';
-import {useDebounce} from '../../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { sleep } from 'parallel-universe';
+import { useDebounce } from '../../main';
 
 describe('useDebounce', () => {
-
   test('returns same callbacks on every call', () => {
     const hook = renderHook(() => useDebounce());
 

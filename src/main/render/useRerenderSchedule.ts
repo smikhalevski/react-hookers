@@ -1,6 +1,6 @@
-import {useRerender} from './useRerender';
-import {useEffect} from 'react';
-import {useMetronome} from '../metronome';
+import { useRerender } from './useRerender';
+import { useEffect } from 'react';
+import { useMetronome } from '../metronome';
 
 /**
  * Re-renders the component on a periodic interval.

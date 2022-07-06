@@ -1,7 +1,7 @@
-import {useContext} from 'react';
-import {MetronomeProviderContext} from './MetronomeProviderContext';
-import {Metronome} from './Metronome';
-import {useSemanticMemo} from '../memo';
+import { useContext } from 'react';
+import { MetronomeProviderContext } from './MetronomeProviderContext';
+import { Metronome } from './Metronome';
+import { useSemanticMemo } from '../memo';
 
 /**
  * Returns a {@link Metronome} instance. Use this to schedule callback invocation.

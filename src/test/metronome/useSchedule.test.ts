@@ -1,9 +1,8 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {sleep} from 'parallel-universe';
-import {useSchedule} from '../../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { sleep } from 'parallel-universe';
+import { useSchedule } from '../../main';
 
 describe('useSchedule', () => {
-
   test('returns same callbacks on every call', () => {
     const hook = renderHook(() => useSchedule());
 

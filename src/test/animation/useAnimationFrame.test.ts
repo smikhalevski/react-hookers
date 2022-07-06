@@ -1,13 +1,12 @@
-import {act, renderHook} from '@testing-library/react-hooks/native';
-import {sleep} from 'parallel-universe';
-import {useAnimationFrame} from '../../main';
+import { act, renderHook } from '@testing-library/react-hooks/native';
+import { sleep } from 'parallel-universe';
+import { useAnimationFrame } from '../../main';
 
-global.requestAnimationFrame = (cb) => setTimeout(cb, 0);
+global.requestAnimationFrame = cb => setTimeout(cb, 0);
 
-global.cancelAnimationFrame = (handle) => clearTimeout(handle);
+global.cancelAnimationFrame = handle => clearTimeout(handle);
 
 describe('useAnimationFrame', () => {
-
   test('returns same callbacks on every call', () => {
     const hook = renderHook(() => useAnimationFrame());
 

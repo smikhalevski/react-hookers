@@ -1,7 +1,7 @@
-import {TimeContext} from './TimeContext';
-import {useContext, useEffect} from 'react';
-import {useRerender} from '../render';
-import {Time} from './Time';
+import { TimeContext } from './TimeContext';
+import { useContext, useEffect } from 'react';
+import { useRerender } from '../render';
+import { Time } from './Time';
 
 /**
  * Returns the {@link Time} instance.

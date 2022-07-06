@@ -1,7 +1,7 @@
-import {Execution, ExecutorCallback, repeatUntil} from 'parallel-universe';
-import {useExecutor} from './useExecutor';
-import {DependencyList, useEffect} from 'react';
-import {noop, returnFalse} from '../utils';
+import { Execution, ExecutorCallback, repeatUntil } from 'parallel-universe';
+import { useExecutor } from './useExecutor';
+import { DependencyList, useEffect } from 'react';
+import { noop, returnFalse } from '../utils';
 
 /**
  * Returns an execution that is periodically updated.
@@ -14,16 +14,19 @@ import {noop, returnFalse} from '../utils';
 export function usePolling<T>(cb: ExecutorCallback<T>, ms: number, deps?: DependencyList): Execution<T> {
   const executor = useExecutor<T>();
 
-  useEffect(() => {
-    const ac = new AbortController();
+  useEffect(
+    () => {
+      const ac = new AbortController();
 
-    repeatUntil(() => executor.execute(cb), returnFalse, ms, ac.signal).catch(noop);
+      repeatUntil(() => executor.execute(cb), returnFalse, ms, ac.signal).catch(noop);
 
-    return () => {
-      ac.abort();
-      executor.abort();
-    };
-  }, deps ? [executor, ms].concat(deps) : [executor, ms]);
+      return () => {
+        ac.abort();
+        executor.abort();
+      };
+    },
+    deps ? [executor, ms].concat(deps) : [executor, ms]
+  );
 
   return executor;
 }

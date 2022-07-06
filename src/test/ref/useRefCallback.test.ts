@@ -1,15 +1,11 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {useRefCallback} from '../../main';
+import { renderHook } from '@testing-library/react-hooks/native';
+import { useRefCallback } from '../../main';
 
 describe('useRefCallback', () => {
-
   test('returns a tuple', () => {
     const hook = renderHook(() => useRefCallback(123));
 
-    expect(hook.result.current).toEqual([
-      {current: 123},
-      expect.any(Function),
-    ]);
+    expect(hook.result.current).toEqual([{ current: 123 }, expect.any(Function)]);
   });
 
   test('returns the same accessor on every render', () => {
