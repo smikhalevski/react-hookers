@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks/native';
+import { act, renderHook } from '@testing-library/react';
 import { useToggle } from '../main';
 
 describe('useToggle', () => {

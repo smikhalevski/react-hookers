@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks/native';
+import { act, renderHook } from '@testing-library/react';
 import { ExecutorProvider, ExecutorProviderContext, useExecutor } from '../../main';
 import { Executor } from 'parallel-universe';
 import { createElement, FunctionComponent } from 'react';
