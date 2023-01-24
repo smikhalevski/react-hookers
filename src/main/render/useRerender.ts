@@ -1,5 +1,6 @@
 import { EffectCallback, useReducer, useRef } from 'react';
 import { useEffectOnce } from '../effect';
+import { noop } from '../utils';
 
 /**
  * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
@@ -22,20 +23,20 @@ function reduceCount(count: number) {
 }
 
 function createRerenderManager(dispatch: () => void) {
-  let mounted = true;
+  let rerender = dispatch;
 
-  const __rerender = (): void => {
-    if (mounted) {
-      dispatch();
-    }
-  };
+  const __effect: EffectCallback = () => {
+    rerender = dispatch;
 
-  const __effect: EffectCallback = () => () => {
-    mounted = false;
+    return () => {
+      rerender = noop;
+    };
   };
 
   return {
-    __rerender,
     __effect,
+    __rerender() {
+      rerender();
+    },
   };
 }
