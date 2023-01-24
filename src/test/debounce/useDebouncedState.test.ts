@@ -1,109 +1,118 @@
 import { act, renderHook } from '@testing-library/react';
-import { sleep } from 'parallel-universe';
 import { useDebouncedState } from '../../main';
+import { StrictMode } from 'react';
+
+jest.useFakeTimers();
 
 describe('useDebouncedState', () => {
-  test('returns the same tuple and callback on every call', () => {
-    const hook = renderHook(() => useDebouncedState(10));
+  test('returns a new array instance on each render', () => {
+    const hook = renderHook(() => useDebouncedState(10), { wrapper: StrictMode });
+    const protocol = hook.result.current;
 
-    const protocol1 = hook.result.current;
-    const [, , setState1] = protocol1;
     hook.rerender();
 
-    const protocol2 = hook.result.current;
-    const [, , setState2] = protocol1;
+    expect(hook.result.current).not.toBe(protocol);
+  });
 
-    expect(protocol1).toBe(protocol2);
+  test('returns the same callback on every call', () => {
+    const hook = renderHook(() => useDebouncedState(10), { wrapper: StrictMode });
+
+    const setState1 = hook.result.current[2];
+    hook.rerender();
+
+    const setState2 = hook.result.current[2];
+
     expect(setState1).toBe(setState2);
   });
 
   test('updates current state after the delay', async () => {
-    const hookMock = jest.fn(() => useDebouncedState(10, 'AAA'));
-    const hook = renderHook(hookMock);
+    const hookMock = jest.fn(() => useDebouncedState(10, 'aaa'));
+
+    const hook = renderHook(hookMock, { wrapper: StrictMode });
 
     const [currState1, nextState1, setState] = hook.result.current;
 
-    expect(hookMock).toHaveBeenCalledTimes(1);
-    expect(currState1).toBe('AAA');
-    expect(nextState1).toBe('AAA');
+    expect(hookMock).toHaveBeenCalledTimes(2);
+    expect(currState1).toBe('aaa');
+    expect(nextState1).toBe('aaa');
 
-    act(() => setState('BBB'));
+    act(() => setState('bbb'));
 
     const [currState2, nextState2] = hook.result.current;
 
-    expect(hookMock).toHaveBeenCalledTimes(2);
-    expect(currState2).toBe('AAA');
-    expect(nextState2).toBe('BBB');
+    expect(hookMock).toHaveBeenCalledTimes(4);
+    expect(currState2).toBe('aaa');
+    expect(nextState2).toBe('bbb');
 
-    await hook.waitForNextUpdate();
+    act(() => jest.runOnlyPendingTimers());
 
     const [currState3, nextState3] = hook.result.current;
 
-    expect(hookMock).toHaveBeenCalledTimes(3);
-    expect(currState3).toBe('BBB');
-    expect(nextState3).toBe('BBB');
+    expect(hookMock).toHaveBeenCalledTimes(6);
+    expect(currState3).toBe('bbb');
+    expect(nextState3).toBe('bbb');
   });
 
   test('does not re-render if next state is unchanged', async () => {
-    const hookMock = jest.fn(() => useDebouncedState(10, 'AAA'));
-    const hook = renderHook(hookMock);
+    const hookMock = jest.fn(() => useDebouncedState(10, 'aaa'));
+    const hook = renderHook(hookMock, { wrapper: StrictMode });
 
     const [, , setState] = hook.result.current;
 
-    act(() => setState('AAA'));
+    act(() => setState('aaa'));
 
-    expect(hookMock).toHaveBeenCalledTimes(1);
+    expect(hookMock).toHaveBeenCalledTimes(2);
 
-    await sleep(100);
+    act(() => jest.runOnlyPendingTimers());
 
-    expect(hookMock).toHaveBeenCalledTimes(1);
+    expect(hookMock).toHaveBeenCalledTimes(2);
   });
 
   test('does not re-render if current state is unchanged', async () => {
-    const hookMock = jest.fn(() => useDebouncedState(10, 'AAA'));
-    const hook = renderHook(hookMock);
+    const hookMock = jest.fn(() => useDebouncedState(10, 'aaa'));
+    const hook = renderHook(hookMock, { wrapper: StrictMode });
 
     const [, , setState] = hook.result.current;
 
-    act(() => setState('BBB'));
-    act(() => setState('AAA'));
+    act(() => setState('bbb'));
+    act(() => setState('aaa'));
 
-    await sleep(100);
+    act(() => jest.runOnlyPendingTimers());
 
-    expect(hookMock).toHaveBeenCalledTimes(3);
+    expect(hookMock).toHaveBeenCalledTimes(8);
   });
 
   test('consequent sets cause the current state to be updated only once', async () => {
-    const hookMock = jest.fn(() => useDebouncedState(10, 'AAA'));
-    const hook = renderHook(hookMock);
+    const hookMock = jest.fn(() => useDebouncedState(10, 'aaa'));
+    const hook = renderHook(hookMock, { wrapper: StrictMode });
 
     const [, , setState] = hook.result.current;
 
-    act(() => setState('BBB'));
-    act(() => setState('CCC'));
+    act(() => setState('bbb'));
+    act(() => setState('ccc'));
 
-    await hook.waitForNextUpdate();
+    act(() => jest.runOnlyPendingTimers());
 
     const [currState] = hook.result.current;
 
-    expect(currState).toBe('CCC');
-    expect(hookMock).toHaveBeenCalledTimes(4);
+    expect(currState).toBe('ccc');
+    expect(hookMock).toHaveBeenCalledTimes(8);
   });
 
   test('does not invoke the callback after unmount', async () => {
-    const hook = renderHook(() => useDebouncedState(50, 'AAA'));
+    const hook = renderHook(() => useDebouncedState(50, 'aaa'), { wrapper: StrictMode });
 
     const [, , setState] = hook.result.current;
 
-    act(() => setState('BBB'));
+    act(() => setState('bbb'));
 
     hook.unmount();
 
-    await sleep(100);
+    act(() => jest.runOnlyPendingTimers());
 
     const [currState, nextState] = hook.result.current;
 
-    expect(currState).toBe('AAA');
-    expect(nextState).toBe('BBB');
+    expect(currState).toBe('aaa');
+    expect(nextState).toBe('bbb');
   });
 });

@@ -1,7 +1,6 @@
-import { Dispatch, EffectCallback, SetStateAction, useRef } from 'react';
+import { Dispatch, EffectCallback, SetStateAction, useRef, useState } from 'react';
+import { isFunction, noop } from '../utils';
 import { useEffectOnce } from '../effect';
-import { isFunction } from '../utils';
-import { useRerender } from '../render';
 
 export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: Dispatch<SetStateAction<S>>];
 
@@ -14,7 +13,7 @@ export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: D
  * @param initialState Thee initial state or a callback that returns an initial state.
  * @template S The type of stateful value.
  */
-export function useDebouncedState<S>(ms: number, initialState: S | (() => S)): Readonly<DebouncedStateProtocol<S>>;
+export function useDebouncedState<S>(ms: number, initialState: S | (() => S)): DebouncedStateProtocol<S>;
 
 /**
  * Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
@@ -24,52 +23,59 @@ export function useDebouncedState<S>(ms: number, initialState: S | (() => S)): R
  * @param ms The delay after which `currState` is synchronized with `nextState`.
  * @template S The type of stateful value.
  */
-export function useDebouncedState<S = undefined>(ms: number): Readonly<DebouncedStateProtocol<S | undefined>>;
+export function useDebouncedState<S = undefined>(ms: number): DebouncedStateProtocol<S | undefined>;
 
 export function useDebouncedState<S>(ms: number, initialState?: S | (() => S)) {
-  const rerender = useRerender();
-  const manager = (useRef<ReturnType<typeof createDebouncedStateManager>>().current ||=
-    createDebouncedStateManager<unknown>(ms, rerender, initialState));
+  const [currState, setCurrState] = useState(initialState);
+  const [nextState, setNextState] = useState(() => currState);
+
+  const manager = (useRef<ReturnType<typeof createDebouncedStateManager>>().current ||= createDebouncedStateManager(
+    ms,
+    setCurrState,
+    setNextState
+  ));
 
   useEffectOnce(manager.__effect);
 
-  return manager.__protocol;
+  return [currState, nextState, manager.__setState];
 }
 
-function createDebouncedStateManager<S>(ms: number, rerender: () => void, initialState: S | (() => S) | undefined) {
-  let timeout: ReturnType<typeof setTimeout>;
-  let currState = isFunction(initialState) ? initialState() : initialState;
-  let nextState = currState;
+function createDebouncedStateManager<S>(
+  ms: number,
+  setCurrState: Dispatch<SetStateAction<S>>,
+  setNextState: Dispatch<SetStateAction<S>>
+) {
+  let setState = setNextState;
 
-  const setState: Dispatch<SetStateAction<S | undefined>> = state => {
-    clearTimeout(timeout);
+  const __effect: EffectCallback = () => {
+    let timeout: NodeJS.Timeout | number;
 
-    if (isFunction(state)) {
-      state = state(nextState);
-    }
-    if (Object.is(nextState, state)) {
-      return;
-    }
-    protocol[1] = nextState = state;
-    rerender();
+    setNextState(nextState => {
+      timeout = setTimeout(setCurrState, ms, () => nextState);
+      return nextState;
+    });
 
-    if (Object.is(currState, nextState)) {
-      return;
-    }
-    timeout = setTimeout(() => {
-      protocol[0] = currState = nextState;
-      rerender();
-    }, ms);
-  };
+    setState = state => {
+      setNextState(nextState => {
+        if (isFunction(state)) {
+          state = state(nextState);
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(setCurrState, ms, () => state);
+        return state;
+      });
+    };
 
-  const protocol: DebouncedStateProtocol<S | undefined> = [currState, nextState, setState];
-
-  const __effect: EffectCallback = () => () => {
-    clearTimeout(timeout);
+    return () => {
+      setState = noop;
+      clearTimeout(timeout);
+    };
   };
 
   return {
     __effect,
-    __protocol: protocol,
+    __setState(state: SetStateAction<S>): void {
+      setState(state);
+    },
   };
 }
