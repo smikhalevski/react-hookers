@@ -5,7 +5,7 @@ export type SemanticMemoHook = (cb: () => unknown, deps: DependencyList | undefi
 
 export function createSemanticMemoHook(callable: boolean): SemanticMemoHook {
   let prevDeps: DependencyList | undefined;
-  let value: any;
+  let value: unknown;
 
   return (cb, deps) => {
     if (areHookInputsEqual(deps, prevDeps)) {
