@@ -1,43 +1,59 @@
 import { EffectCallback, useRef } from 'react';
+import { noop } from '../utils';
 import { useEffectOnce } from '../effect';
 
-export type AnimationFrameProtocol = [start: (cb: FrameRequestCallback) => void, stop: () => void];
-
 /**
- * Returns protocol to start and stop an animation loop.
+ * Returns the protocol that starts and stops an animation loop.
  *
- * When `start` is called the animation loop starts invoking the provided callback using `requestAnimationFrame`. If
- * animation was already pending then it is stopped and started with the new callback.
+ * When `start` is called the animation loop starts invoking the provided callback using `requestAnimationFrame`. If an
+ * animation is already started then it is stopped and started with the new callback.
+ *
+ * An animation is automatically stopped on unmount.
+ *
+ * An animation should be started/stopped after the component is mounted. Before that, it is a no-op.
  */
-export function useAnimationFrame(): Readonly<AnimationFrameProtocol> {
+export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void, stop: () => void] {
   const manager = (useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager());
 
   useEffectOnce(manager.__effect);
 
-  return manager.__protocol;
+  return [manager.__start, manager.__stop];
 }
 
 function createAnimationFrameManager() {
-  let handle: number;
+  let start: (cb: FrameRequestCallback) => void = noop;
+  let stop: () => void = noop;
 
-  const start = (cb: FrameRequestCallback): void => {
-    stop();
+  const __effect: EffectCallback = () => {
+    let handle: number;
 
-    const loop: FrameRequestCallback = time => {
-      cb(time);
+    start = cb => {
+      stop();
+
+      const loop: FrameRequestCallback = time => {
+        cb(time);
+        handle = requestAnimationFrame(loop);
+      };
       handle = requestAnimationFrame(loop);
     };
-    handle = requestAnimationFrame(loop);
-  };
 
-  const stop = (): void => {
-    cancelAnimationFrame(handle);
-  };
+    stop = () => {
+      cancelAnimationFrame(handle);
+    };
 
-  const __effect: EffectCallback = () => stop;
+    return () => {
+      stop();
+      start = stop = noop;
+    };
+  };
 
   return {
     __effect,
-    __protocol: [start, stop] as const,
+    __start(cb: FrameRequestCallback): void {
+      start(cb);
+    },
+    __stop(): void {
+      stop();
+    },
   };
 }
