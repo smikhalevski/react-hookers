@@ -1,35 +1,29 @@
 import { Lock } from 'parallel-universe';
-import { EffectCallback, useRef } from 'react';
+import { EffectCallback, useRef, useState } from 'react';
 import { useEffectOnce } from '../effect';
-import { useRerender } from '../render';
-
-export type LockProtocol = [locked: boolean, acquire: () => Promise<() => void>];
 
 /**
  * Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
  */
-export function useLock(): Readonly<LockProtocol> {
-  const rerender = useRerender();
-  const manager = (useRef<ReturnType<typeof createLockManager>>().current ||= createLockManager(rerender));
+export function useLock(): [locked: boolean, acquire: () => Promise<() => void>] {
+  const [locked, setLocked] = useState(false);
+  const manager = (useRef<ReturnType<typeof createLockManager>>().current ||= createLockManager(setLocked));
 
   useEffectOnce(manager.__effect);
 
-  return manager.__protocol;
+  return [locked, manager.__acquire];
 }
 
-function createLockManager(rerender: () => void) {
+function createLockManager(setLocked: (locked: boolean) => void) {
   const lock = new Lock();
 
   const __effect: EffectCallback = () =>
     lock.subscribe(() => {
-      __protocol[0] = lock.locked;
-      rerender();
+      setLocked(lock.locked);
     });
-
-  const __protocol: LockProtocol = [false, lock.acquire.bind(lock)];
 
   return {
     __effect,
-    __protocol,
+    __acquire: lock.acquire.bind(lock),
   };
 }
