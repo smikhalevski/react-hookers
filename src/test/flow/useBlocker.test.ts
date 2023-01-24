@@ -1,15 +1,37 @@
 import { act, renderHook } from '@testing-library/react';
 import { useBlocker } from '../../main';
+import { StrictMode } from 'react';
 
 describe('useBlocker', () => {
+  test('returns a new array instance on each render', () => {
+    const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
+    const protocol = hook.result.current;
+
+    hook.rerender();
+
+    expect(hook.result.current).not.toBe(protocol);
+  });
+
+  test('returns the same callbacks on each render', () => {
+    const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
+    const [, block1, unblock1] = hook.result.current;
+
+    hook.rerender();
+
+    const [, block2, unblock2] = hook.result.current;
+
+    expect(block1).toBe(block2);
+    expect(unblock1).toBe(unblock2);
+  });
+
   test('unblocked by default', () => {
-    const hook = renderHook(() => useBlocker());
+    const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
 
     expect(hook.result.current[0]).toBe(false);
   });
 
   test('blocks', () => {
-    const hook = renderHook(() => useBlocker());
+    const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
 
     act(() => {
       hook.result.current[1]();
@@ -19,7 +41,7 @@ describe('useBlocker', () => {
   });
 
   test('unblocks with result', async () => {
-    const hook = renderHook(() => useBlocker<string>());
+    const hook = renderHook(() => useBlocker<string>(), { wrapper: StrictMode });
     let promise;
 
     act(() => {
@@ -33,7 +55,7 @@ describe('useBlocker', () => {
   });
 
   test('unblocks without result', async () => {
-    const hook = renderHook(() => useBlocker());
+    const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
     let promise;
 
     act(() => {
