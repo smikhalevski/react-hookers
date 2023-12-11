@@ -60,7 +60,7 @@ describe('useAsyncEffect', () => {
       wrapper: StrictMode,
     });
 
-    await sleep(50);
+    await sleep(0);
     hook.rerender();
 
     expect(disposeMock).toHaveBeenCalledTimes(1);
@@ -95,7 +95,7 @@ describe('useAsyncEffect', () => {
 
     dep = 2;
 
-    await sleep(50);
+    await sleep(0);
     hook.rerender();
 
     expect(disposeMock).toHaveBeenCalledTimes(1);
@@ -149,7 +149,7 @@ describe('useAsyncEffect', () => {
       { wrapper: StrictMode }
     );
 
-    await sleep(50);
+    await sleep(0);
     hook.rerender();
 
     expect(signals.length).toBe(3);

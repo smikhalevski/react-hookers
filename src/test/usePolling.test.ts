@@ -1,23 +1,27 @@
 import { renderHook } from '@testing-library/react';
-import { sleep } from 'parallel-universe';
 import { usePolling } from '../main';
+import { StrictMode } from 'react';
+
+jest.useFakeTimers();
 
 describe('usePolling', () => {
-  test('returns the same execution on every render', () => {
-    const hook = renderHook(() => usePolling(() => 'aaa', 10));
+  test('returns the new execution on every render', () => {
+    const hook = renderHook(() => usePolling(() => 'aaa', 10), { wrapper: StrictMode });
     const execution1 = hook.result.current;
 
     hook.rerender();
+
     const execution2 = hook.result.current;
 
-    expect(execution1).toBe(execution2);
+    expect(execution1).not.toBe(execution2);
   });
 
-  test('creates a resolved execution', async () => {
+  test('creates a resolved execution', () => {
     const cbMock = jest.fn(() => 'aaa');
-    const hook = renderHook(() => usePolling(cbMock, 10));
+    const hook = renderHook(() => usePolling(cbMock, 10), { wrapper: StrictMode });
 
-    await sleep(100);
+    jest.advanceTimersToNextTimer(20);
+    jest.runOnlyPendingTimers();
 
     const execution = hook.result.current;
 
@@ -28,17 +32,19 @@ describe('usePolling', () => {
     expect(cbMock.mock.calls.length).toBeGreaterThanOrEqual(3);
   });
 
-  test('stops polling after unmount', async () => {
+  test('stops polling after unmount', () => {
     const cbMock = jest.fn(() => 'aaa');
-    const hook = renderHook(() => usePolling(cbMock, 10));
+    const hook = renderHook(() => usePolling(cbMock, 10), { wrapper: StrictMode });
 
-    await sleep(100);
+    jest.advanceTimersToNextTimer(20);
+    jest.runOnlyPendingTimers();
 
     hook.unmount();
 
     const cbMockCallsCount = cbMock.mock.calls.length;
 
-    await sleep(100);
+    jest.advanceTimersToNextTimer(20);
+    jest.runOnlyPendingTimers();
 
     expect(cbMock.mock.calls.length).toBe(cbMockCallsCount);
   });

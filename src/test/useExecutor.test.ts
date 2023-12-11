@@ -12,6 +12,7 @@ describe('useExecutor', () => {
 
     const executor2 = hook.result.current;
 
+    expect(executor1).not.toBe(executor2);
     expect(executor1.getOrDefault).toBe(executor2.getOrDefault);
     expect(executor1.execute).toBe(executor2.execute);
     expect(executor1.clear).toBe(executor2.clear);
@@ -56,28 +57,30 @@ describe('useExecutor', () => {
     expect(executor.promise).toBe(null);
   });
 
-  // test('creates an executor with asynchronous function initial result', async () => {
-  //   const hookMock = jest.fn(() => useExecutor(() => Promise.resolve(111)));
-  //   const hook = renderHook(hookMock, { wrapper: StrictMode });
-  //   const executor = hook.result.current;
-  //
-  //   expect(executor.isPending).toBe(true);
-  //   expect(executor.isFulfilled).toBe(false);
-  //   expect(executor.isRejected).toBe(false);
-  //   expect(executor.result).toBe(undefined);
-  //   expect(executor.reason).toBe(undefined);
-  //   expect(executor.promise).toBeInstanceOf(Promise);
-  //
-  //   await act(() => hook.result.current.promise);
-  //
-  //   expect(hookMock).toHaveBeenCalledTimes(4);
-  //   expect(executor.isPending).toBe(false);
-  //   expect(executor.isFulfilled).toBe(true);
-  //   expect(executor.isRejected).toBe(false);
-  //   expect(executor.result).toBe(111);
-  //   expect(executor.reason).toBe(undefined);
-  //   expect(executor.promise).toBe(null);
-  // });
+  test('creates an executor with asynchronous function initial result', async () => {
+    const hookMock = jest.fn(() => useExecutor(() => Promise.resolve(111)));
+    const hook = renderHook(hookMock, { wrapper: StrictMode });
+    const executor1 = hook.result.current;
+
+    expect(executor1.isPending).toBe(true);
+    expect(executor1.isFulfilled).toBe(false);
+    expect(executor1.isRejected).toBe(false);
+    expect(executor1.result).toBe(undefined);
+    expect(executor1.reason).toBe(undefined);
+    expect(executor1.promise).toBeInstanceOf(Promise);
+
+    await act(() => hook.result.current.promise);
+
+    const executor2 = hook.result.current;
+
+    expect(hookMock).toHaveBeenCalledTimes(4);
+    expect(executor2.isPending).toBe(false);
+    expect(executor2.isFulfilled).toBe(true);
+    expect(executor2.isRejected).toBe(false);
+    expect(executor2.result).toBe(111);
+    expect(executor2.reason).toBe(undefined);
+    expect(executor2.promise).toBe(null);
+  });
 
   test('re-renders after resolve', () => {
     const hookMock = jest.fn(() => useExecutor());

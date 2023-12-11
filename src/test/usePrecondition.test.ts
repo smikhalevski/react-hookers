@@ -1,10 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
-import { sleep } from 'parallel-universe';
 import { usePrecondition } from '../main';
+import { StrictMode } from 'react';
 
 describe('usePrecondition', () => {
   test('returns a protocol', () => {
-    const hook = renderHook(() => usePrecondition(() => true));
+    const hook = renderHook(() => usePrecondition(() => true), { wrapper: StrictMode });
 
     expect(hook.result.current[0]).toBeInstanceOf(Function);
     expect(hook.result.current[1]).toBe(false);
@@ -14,53 +14,54 @@ describe('usePrecondition', () => {
   test('re-renders after condition check', async () => {
     const setPendingSpy = jest.fn();
 
-    const hook = renderHook(() => {
-      const precondition = usePrecondition(async () => {
-        await sleep(50);
-        return true;
-      });
-      setPendingSpy(precondition[1]);
-      return precondition;
-    });
+    const hook = renderHook(
+      () => {
+        const precondition = usePrecondition(() => Promise.resolve(true));
+        setPendingSpy(precondition[1]);
+        return precondition;
+      },
+      { wrapper: StrictMode }
+    );
 
-    expect(setPendingSpy).toHaveBeenCalledTimes(1);
+    expect(setPendingSpy).toHaveBeenCalledTimes(2);
     expect(setPendingSpy).toHaveBeenNthCalledWith(1, false);
+    expect(setPendingSpy).toHaveBeenNthCalledWith(2, false);
 
     const protectedCb = hook.result.current[0](() => undefined);
 
     const promise = act(() => protectedCb());
 
-    expect(setPendingSpy).toHaveBeenCalledTimes(2);
-    expect(setPendingSpy).toHaveBeenNthCalledWith(2, true);
+    expect(setPendingSpy).toHaveBeenCalledTimes(4);
+    expect(setPendingSpy).toHaveBeenNthCalledWith(3, true);
+    expect(setPendingSpy).toHaveBeenNthCalledWith(4, true);
 
     await promise;
 
-    expect(setPendingSpy).toHaveBeenCalledTimes(3);
-    expect(setPendingSpy).toHaveBeenNthCalledWith(3, false);
+    expect(setPendingSpy).toHaveBeenCalledTimes(6);
+    expect(setPendingSpy).toHaveBeenNthCalledWith(5, false);
+    expect(setPendingSpy).toHaveBeenNthCalledWith(6, false);
   });
 
   test('re-renders after replay', async () => {
     let lastReplay: (() => void) | undefined;
 
-    const checkMock = jest.fn(async () => {
-      await sleep(50);
-      return false;
-    });
-    const hookMock = jest.fn(() => usePrecondition(checkMock, replay => (lastReplay = replay)));
-    const hook = renderHook(hookMock);
+    const checkMock = jest.fn(() => Promise.resolve(false));
+    const hookMock = jest.fn(() =>
+      usePrecondition(checkMock, replay => {
+        lastReplay = replay;
+      })
+    );
+    const hook = renderHook(hookMock, { wrapper: StrictMode });
 
     const protectedCb = hook.result.current[0](() => undefined);
 
     await act(() => protectedCb());
 
-    checkMock.mockImplementation(async () => {
-      await sleep(50);
-      return true;
-    });
+    checkMock.mockImplementation(() => Promise.resolve(true));
 
-    await act(() => lastReplay?.());
+    await act(() => lastReplay!());
 
-    expect(hookMock).toHaveBeenCalledTimes(5);
+    expect(hookMock).toHaveBeenCalledTimes(10);
   });
 
   test('updates check and fallback', async () => {
@@ -72,7 +73,7 @@ describe('usePrecondition', () => {
     let check = checkMock1;
     let fallback = fallbackMock1;
 
-    const hook = renderHook(() => usePrecondition(check, fallback));
+    const hook = renderHook(() => usePrecondition(check, fallback), { wrapper: StrictMode });
 
     const protectedCb = hook.result.current[0](() => undefined);
     await act(() => protectedCb());
@@ -246,14 +247,13 @@ describe('usePrecondition', () => {
   //   expect(cbMock).toHaveBeenCalledTimes(1);
   //   expect(cbMock).toHaveBeenNthCalledWith(1, 222, 'bbb');
   // });
-  //
+
   // test('aborts the pending condition check', async () => {
   //   let conditionSignal: AbortSignal | undefined;
   //
-  //   const conditionMock = jest.fn(async (signal) => {
+  //   const conditionMock = jest.fn(signal => {
   //     conditionSignal = signal;
-  //     await sleep(50);
-  //     return true;
+  //     return Promise.resolve(true);
   //   });
   //   const fallbackMock = jest.fn();
   //   const cbMock = jest.fn();

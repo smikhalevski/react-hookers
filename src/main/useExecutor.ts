@@ -1,10 +1,11 @@
 import { ExecutorProviderContext } from './ExecutorProviderContext';
-import { AbortableCallback, AsyncResult, Awaitable, Executor } from 'parallel-universe';
+import { AbortableCallback, AsyncResult, Awaitable } from 'parallel-universe';
 import { EffectCallback, useContext } from 'react';
 import { useInsertionEffect } from './useInsertionEffect';
 import { useSemanticMemo } from './useSemanticMemo';
 import { useRerender } from './useRerender';
 import { isFunction, noop } from './utils';
+import { ExecutorProvider } from './ExecutorProvider';
 
 export interface ExecutorProtocol<T = any> {
   readonly isFulfilled: boolean;
@@ -35,7 +36,7 @@ export interface ExecutorProtocol<T = any> {
  * @see {@link ExecutorProviderContext}
  * @see {@link useExecution}
  */
-export function useExecutor<T>(initialValue?: (() => PromiseLike<T> | T) | PromiseLike<T> | T): ExecutorProtocol<T> {
+export function useExecutor<T>(initialValue?: AbortableCallback<T> | PromiseLike<T> | T): ExecutorProtocol<T> {
   const provider = useContext(ExecutorProviderContext);
   const rerender = useRerender();
   const manager = useSemanticMemo(() => createExecutorManager(provider, initialValue, rerender), [provider]);
@@ -60,11 +61,11 @@ export function useExecutor<T>(initialValue?: (() => PromiseLike<T> | T) | Promi
   };
 }
 
-function createExecutorManager(provider: { createExecutor(): Executor }, initialValue: unknown, rerender: () => void) {
+function createExecutorManager(provider: ExecutorProvider, initialValue: unknown, rerender: () => void) {
   const executor = provider.createExecutor();
 
   if (isFunction(initialValue)) {
-    executor.resolve(initialValue());
+    executor.execute(initialValue as AbortableCallback<unknown>);
   } else if (initialValue !== undefined) {
     executor.resolve(initialValue);
   }

@@ -2,17 +2,13 @@ import { EffectCallback, useContext, useEffect } from 'react';
 import { ExecutorProvider, ExecutorProviderContext, useRerender, useSemanticMemo } from './index';
 
 export type PreconditionProtocol = [
-  afterCheck: <A extends any[]>(
+  protect: <A extends any[]>(
     cb: (...args: A) => unknown,
     captureArgs?: (...args: A) => A | void
   ) => (...args: A) => void,
   pending: boolean,
   abort: () => void,
 ];
-
-type Check = (signal: AbortSignal) => unknown;
-
-type Fallback = (replay: () => void) => void;
 
 /**
  * Extract shared conditional logic from event handlers and callbacks.
@@ -30,26 +26,25 @@ export function usePrecondition(
 
   const manager = useSemanticMemo(() => createPreconditionManager(provider, rerender), [provider]);
 
-  manager.applyOptions(check, fallback);
+  manager.check = check;
+  manager.fallback = fallback;
 
   useEffect(manager.effect, [manager]);
 
-  return manager.protocol;
+  return [manager.protect, manager.isPending, manager.abort];
 }
 
 function createPreconditionManager(provider: ExecutorProvider, rerender: () => void) {
   const executor = provider.createExecutor();
 
-  let check: Check;
-  let fallback: Fallback | undefined;
-
-  const afterCheck: PreconditionProtocol[0] =
+  const protect: PreconditionProtocol[0] =
     (cb, captureArgs) =>
     (...args) => {
+      const { check, fallback } = manager;
       const capturedArgs = captureArgs?.(...args) || args;
 
-      executor.execute(signal =>
-        Promise.resolve(check(signal)).then(ok => {
+      executor.execute(signal => {
+        return Promise.resolve(check ? check(signal) : true).then(ok => {
           if (signal.aborted) {
             return;
           }
@@ -58,31 +53,34 @@ function createPreconditionManager(provider: ExecutorProvider, rerender: () => v
             return;
           }
           fallback?.(
-            afterCheck(() => {
+            protect(() => {
               cb(...capturedArgs);
             })
           );
-        })
-      );
+        });
+      });
     };
 
-  const applyOptions = (nextCheck: Check, nextFallback: Fallback | undefined): void => {
-    check = nextCheck;
-    fallback = nextFallback;
-  };
-
   const effect: EffectCallback = () => {
-    return executor.subscribe(() => {
-      protocol[1] = executor.isPending;
+    const unsubscribe = executor.subscribe(() => {
+      manager.isPending = executor.isPending;
       rerender();
     });
+
+    return () => {
+      unsubscribe();
+      executor.abort();
+    };
   };
 
-  const protocol: PreconditionProtocol = [afterCheck, false, executor.abort.bind(executor)];
-
-  return {
-    applyOptions,
+  const manager = {
+    check: undefined as Parameters<typeof usePrecondition>[0] | undefined,
+    fallback: undefined as Parameters<typeof usePrecondition>[1],
     effect,
-    protocol,
+    protect,
+    isPending: false,
+    abort: executor.abort.bind(executor),
   };
+
+  return manager;
 }

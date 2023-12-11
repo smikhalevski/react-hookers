@@ -3,7 +3,7 @@ export { ExecutorProvider } from './ExecutorProvider';
 export { ExecutorProviderContext } from './ExecutorProviderContext';
 export { MetronomeProvider } from './MetronomeProvider';
 export { MetronomeProviderContext } from './MetronomeProviderContext';
-export { ExecutorProvider } from './ExecutorProvider';
+export { SSRExecutorProvider } from './SSRExecutorProvider';
 export { Time } from './Time';
 export { TimeContext } from './TimeContext';
 export { useAnimationFrame } from './useAnimationFrame';

@@ -1,8 +1,7 @@
 import { AbortableCallback, AsyncResult } from 'parallel-universe';
-import { DependencyList } from 'react';
+import { DependencyList, useEffect } from 'react';
 import { emptyDeps } from './utils';
 import { useExecutor } from './useExecutor';
-import { useInsertionEffect } from './useInsertionEffect';
 
 export interface ExecutionProtocol<T = any> {
   readonly isFulfilled: boolean;
@@ -24,7 +23,7 @@ export interface ExecutionProtocol<T = any> {
 export function useExecution<T>(cb: AbortableCallback<T>, deps?: DependencyList): ExecutionProtocol<T> {
   const executor = useExecutor<T>();
 
-  useInsertionEffect(() => {
+  useEffect(() => {
     executor.execute(cb);
   }, deps || emptyDeps);
 
