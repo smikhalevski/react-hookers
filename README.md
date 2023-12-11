@@ -29,14 +29,13 @@ npm install --save-prod react-hookers
 - [`useAsyncEffect`](#useasynceffect)
 - [`useAsyncEffectOnce`](#useasynceffectonce)
 - [`useEffectOnce`](#useeffectonce)
-- [`useIsomorphicLayoutEffect`](#useisomorphiclayouteffect)
 - [`useRenderEffect`](#userendereffect)
 - [`useRenderEffectOnce`](#userendereffectonce)
 
 [**Rendering**](#rendering)
 
 - [`useRerender`](#usererender)
-- [`useMountSignal`](#usemountsignal)
+- [`useMountSignalRef`](#usemountsignal)
 - [`useRerenderSchedule`](#usererenderschedule)
 
 [**Time**](#time)
@@ -107,13 +106,13 @@ executor.execute(async (signal) => doSomething());
 
 You can manage how executors are created with
 [`ExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html) and
-[`SsrExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
+[`ExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {SsrExecutorProvider, ExecutorProviderContext} from 'react-hookers';
+import {ExecutorProvider, ExecutorProviderContext} from 'react-hookers';
 
-const mySsrExecutorProvider = new SsrExecutorProvider();
+const mySsrExecutorProvider = new ExecutorProvider();
 
 renderToString(
     <ExecutorProviderContext.Provider value={mySsrExecutorProvider}>
@@ -123,17 +122,6 @@ renderToString(
 
 // Waits for all executors to complete pending executions
 await mySsrExecutorProvider.waitForExecutorsToComplete();
-```
-
-You can create a custom `useExecutor` hook that is bound to a custom context.
-
-```ts
-import {createContext} from 'react';
-import {createExecutorHook, ExecutorProvider} from 'react-hookers';
-
-const MyExecutorProviderContext = createContext(new ExecutorProvider());
-
-const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
 ```
 
 ### `usePolling`
@@ -231,24 +219,6 @@ useEffectOnce(() => {
 });
 ```
 
-### `useIsomorphicLayoutEffect`
-
-Same as [`React.useLayoutEffect`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect) but doesn't produce
-warnings during SSR.
-
-```ts
-useIsomorphicLayoutEffect(
-    () => {
-      doSomething(a, b);
-
-      return () => {
-        cleanup();
-      };
-    },
-    [a, b],
-);
-```
-
 ### `useRenderEffect`
 
 Analogue of [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useffect) that invokes an `effect`
@@ -301,12 +271,12 @@ const rerender = useRerender();
 rerender();
 ```
 
-### `useMountSignal`
+### `useMountSignalRef`
 
 Returns `AbortSignal` that is aborted when the component is unmounted.
 
 ```ts
-const signal = useMountSignal();
+const signal = useMountSignalRef();
 
 // Returns true if component was unmounted
 signal.aborted;

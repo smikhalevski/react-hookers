@@ -1,37 +1,33 @@
 import { Dispatch, SetStateAction, useRef, useState } from 'react';
 
 export type ToggleProtocol = [
-  value: boolean,
+  enabled: boolean,
   enable: () => void,
   disable: () => void,
-  toggle: (nextValue?: boolean) => void
+  toggle: (enabled?: boolean) => void,
 ];
 
 /**
  * Returns a boolean flag and functions to toggle its value.
  */
-export function useToggle(initialValue = false): Readonly<ToggleProtocol> {
-  const [value, setValue] = useState(initialValue);
+export function useToggle(initialEnabled = false): Readonly<ToggleProtocol> {
+  const [enabled, setEnabled] = useState(initialEnabled);
 
-  const protocol = (useRef<ToggleProtocol>().current ||= createToggleProtocol(setValue));
+  const manager = (useRef<ReturnType<typeof createToggleManager>>().current ||= createToggleManager(setEnabled));
 
-  protocol[0] = value;
-
-  return protocol;
+  return [enabled, manager.enable, manager.disable, manager.toggle];
 }
 
-function createToggleProtocol(setValue: Dispatch<SetStateAction<boolean>>): ToggleProtocol {
-  const enable = (): void => {
-    setValue(true);
+function createToggleManager(setEnabled: Dispatch<SetStateAction<boolean>>) {
+  return {
+    enable(): void {
+      setEnabled(true);
+    },
+    disable(): void {
+      setEnabled(false);
+    },
+    toggle(enabled?: boolean): void {
+      setEnabled(enabled != null ? enabled : value => !value);
+    },
   };
-
-  const disable = (): void => {
-    setValue(false);
-  };
-
-  const toggle = (value?: boolean): void => {
-    setValue(value != null ? value : value => !value);
-  };
-
-  return [false, enable, disable, toggle];
 }

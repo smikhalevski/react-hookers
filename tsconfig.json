@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
     "strict": true,
     "target": "ES5",
     "module": "ES6",
-    "rootDir": "./src/main",
     "outDir": "./lib"
   },
   "include": [
-    "./src/main/**/*"
+    "./src/**/*"
   ]
 }

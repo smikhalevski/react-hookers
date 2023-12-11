@@ -2,22 +2,25 @@
   "name": "react-hookers",
   "version": "5.1.0",
   "description": "The set of general-purpose React hooks.",
-  "main": "./lib/index-cjs.js",
-  "module": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs",
+      "require": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "sideEffects": false,
-  "files": [
-    "lib"
-  ],
   "scripts": {
-    "build": "tsc && npm run build:rollup && npm run build:terser",
-    "build:rollup": "rollup --external @smikhalevski/event-bus,react --input ./lib/index.js --file ./lib/index-cjs.js --format cjs --plugin @rollup/plugin-node-resolve",
-    "build:terser": "TEMP=$(mktemp) && rm $TEMP && for FILE in $(find ./lib -name '*.js'); do terser --name-cache $TEMP --mangle-props reserved=[__esModule],regex=/^__/ --output $FILE -- $FILE; done && rm $TEMP || exit 1",
-    "prettier": "prettier --write './src/**/*.{ts,tsx}' --loglevel error",
-    "clean": "rimraf './lib' './docs'",
+    "build": "cp -R src/main lib && rollup --config && cp package.json README.md LICENSE.txt lib/ && cd lib && npm pkg delete scripts devDependencies",
+    "clean": "rimraf lib docs coverage",
     "test": "jest",
-    "docs:build": "typedoc './src/main/index.ts'",
-    "docs:release": "npm run docs:build && SHA=$(git rev-parse --short HEAD) && ORIGIN=$(git config --get remote.origin.url) && TEMP=$(mktemp -d) && git clone -b ghpages --single-branch $ORIGIN $TEMP && ls -A $TEMP | grep -wv .git | xargs rm -rf && cp -R ./docs/ $TEMP && cd $TEMP && git add . && git commit -m \"Updated docs ($SHA)\" && git push && rm -rf $TEMP"
+    "test:definitions": "tsd --typings lib/index.d.ts --files 'src/test/**/*.test-d.ts'",
+    "perf": "toofast",
+    "docs": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -25,8 +28,7 @@
   },
   "keywords": [
     "react",
-    "hooks",
-    "render"
+    "hooks"
   ],
   "author": "Savva Mikhalevski <smikhalevski@gmail.com>",
   "license": "MIT",
@@ -35,25 +37,25 @@
   },
   "homepage": "https://github.com/smikhalevski/react-hookers#readme",
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@testing-library/react": "^13.0.0",
-    "@types/jest": "^28.1.3",
-    "@types/react": "^18.0.14",
-    "jest": "^28.1.1",
-    "jest-environment-jsdom": "^28.1.1",
-    "prettier": "^2.7.1",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.75.7",
-    "terser": "^5.14.1",
-    "ts-jest": "^28.0.5",
-    "typedoc": "^0.23.5",
-    "typescript": "^4.7.4"
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^29.5.11",
+    "@types/react": "^18.2.42",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.1.0",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.7.0",
+    "ts-jest": "^29.1.1",
+    "tslib": "^2.6.2",
+    "typedoc": "^0.25.4",
+    "typedoc-custom-css": "github:smikhalevski/typedoc-custom-css#master",
+    "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "@smikhalevski/event-bus": "^1.0.0",
-    "parallel-universe": "^1.1.2"
+    "parallel-universe": "^3.1.0"
   }
 }

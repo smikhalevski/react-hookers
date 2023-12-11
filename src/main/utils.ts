@@ -2,10 +2,13 @@ import { DependencyList } from 'react';
 
 export const emptyDeps: DependencyList = [];
 
-export function noop() {}
+export function noop(): void {}
 
-export function returnFalse() {
-  return false;
+/**
+ * [SameValueZero](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero) comparison.
+ */
+export function isEqual(a: unknown, b: unknown): boolean {
+  return a === b || (a !== a && b !== b);
 }
 
 export function isFunction(value: unknown): value is Function {

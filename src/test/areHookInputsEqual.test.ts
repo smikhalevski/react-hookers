@@ -1,12 +1,12 @@
-import { areHookInputsEqual } from '../main';
+import { areHookInputsEqual } from '../main/areHookInputsEqual';
 
 describe('areHookInputsEqual', () => {
   test('returns true for equal arrays', () => {
-    expect(areHookInputsEqual(['abc'], ['abc'])).toBe(true);
+    expect(areHookInputsEqual(['aaa'], ['aaa'])).toBe(true);
   });
 
   test('does not do type coercion', () => {
-    expect(areHookInputsEqual([{ toString: () => 'abc' }], ['abc'])).toBe(false);
+    expect(areHookInputsEqual([{ toString: () => 'aaa' }], ['aaa'])).toBe(false);
   });
 
   test('considers NaN to be equal to NaN', () => {
@@ -25,6 +25,6 @@ describe('areHookInputsEqual', () => {
   });
 
   test('deps can be an array-like object', () => {
-    expect(areHookInputsEqual(['abc'], { length: 1, 0: 'abc' } as any)).toBe(true);
+    expect(areHookInputsEqual(['aaa'], { length: 1, 0: 'aaa' } as any)).toBe(true);
   });
 });
