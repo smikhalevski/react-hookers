@@ -1,5 +1,8 @@
 import { EffectCallback, useContext, useEffect } from 'react';
-import { ExecutorProvider, ExecutorProviderContext, useRerender, useSemanticMemo } from './index';
+import { ExecutorProviderContext } from './ExecutorProviderContext';
+import { useRerender } from './useRerender';
+import { useSemanticMemo } from './useSemanticMemo';
+import { ExecutorProvider } from './ExecutorProvider';
 
 export type PreconditionProtocol = [
   protect: <A extends any[]>(
