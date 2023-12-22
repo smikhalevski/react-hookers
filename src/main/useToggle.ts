@@ -27,7 +27,7 @@ function createToggleManager(setEnabled: Dispatch<SetStateAction<boolean>>) {
       setEnabled(false);
     },
     toggle(enabled?: boolean): void {
-      setEnabled(enabled != null ? enabled : value => !value);
+      setEnabled(enabled !== undefined ? Boolean(enabled) : value => !value);
     },
   };
 }

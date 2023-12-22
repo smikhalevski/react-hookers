@@ -121,7 +121,7 @@ renderToString(
 );
 
 // Waits for all executors to complete pending executions
-await mySsrExecutorProvider.waitForExecutorsToComplete();
+await mySsrExecutorProvider.waitForExecutorsToSettle();
 ```
 
 ### `usePolling`

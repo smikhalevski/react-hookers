@@ -4,7 +4,7 @@ import { useInsertionEffect } from './useInsertionEffect';
 import { emptyDeps, noop } from './utils';
 
 /**
- * Blocks UI from the async context.
+ * Blocks UI from an async context.
  *
  * @template T The type of value that can be passed to `unblock` to resolve the `Promise` returned by `block`.
  */
@@ -46,7 +46,9 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void) {
 
   return {
     effect,
-    block: () => _block(),
+    block() {
+      return _block();
+    },
     unblock(result: unknown) {
       _unblock(result);
     },

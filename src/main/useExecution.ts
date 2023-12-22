@@ -1,15 +1,48 @@
 import { AbortableCallback, AsyncResult } from 'parallel-universe';
 import { DependencyList, useEffect } from 'react';
+import { EXECUTOR, useExecutor } from './useExecutor';
+import { useIsChanged } from './useIsChanged';
 import { emptyDeps } from './utils';
-import { useExecutor } from './useExecutor';
 
+/**
+ * Manages async callback execution process and provides ways to access execution results.
+ *
+ * @template T The result stored by the executor.
+ */
 export interface ExecutionProtocol<T = any> {
-  readonly isFulfilled: boolean;
-  readonly isRejected: boolean;
+  /**
+   * `true` if result was fulfilled or rejected, or `false` otherwise.
+   */
   readonly isSettled: boolean;
+
+  /**
+   * `true` if the result was fulfilled with a value, or `false` otherwise.
+   */
+  readonly isFulfilled: boolean;
+
+  /**
+   * `true` if the result was rejected with a reason, or `false` otherwise.
+   */
+  readonly isRejected: boolean;
+
+  /**
+   * `true` if an execution is currently pending, or `false` otherwise.
+   */
   readonly isPending: boolean;
+
+  /**
+   * The result value or `undefined` if failed.
+   */
   readonly result: T | undefined;
+
+  /**
+   * The reason of failure.
+   */
   readonly reason: any;
+
+  /**
+   * The promise of the execution result, or `null` if execution isn't pending.
+   */
   readonly promise: Promise<AsyncResult<T>> | null;
 }
 
@@ -21,10 +54,13 @@ export interface ExecutionProtocol<T = any> {
  * @see {@link useExecutor}
  */
 export function useExecution<T>(cb: AbortableCallback<T>, deps?: DependencyList): ExecutionProtocol<T> {
-  const executor = useExecutor<T>();
+  const executor = useExecutor<T>(cb);
+  const isChanged = useIsChanged([executor[EXECUTOR]]);
 
   useEffect(() => {
-    executor.execute(cb);
+    if (!isChanged) {
+      executor.execute(cb);
+    }
   }, deps || emptyDeps);
 
   return {

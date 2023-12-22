@@ -14,7 +14,6 @@ export type AsyncEffectCallback = (signal: AbortSignal) => Awaitable<(() => void
  * callback. The previous effect is cleaned up before executing the next effect.
  * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.
  *
- * @see {@link https://reactjs.org/docs/hooks-reference.html#useeffect React.useEffect}
  * @see {@link useExecutor}
  */
 export function useAsyncEffect(effect: AsyncEffectCallback, deps: DependencyList | undefined): void {

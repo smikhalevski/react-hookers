@@ -1,10 +1,14 @@
 import { Executor } from 'parallel-universe';
+import { type ExecutorProvider } from './ExecutorProvider';
 import { noop } from './utils';
 
 /**
  * The executor provider that keeps references to all created executors and provides batch operation for them.
  */
-export class SSRExecutorProvider {
+export class SSRExecutorProvider implements ExecutorProvider {
+  /**
+   * The array of all created executors.
+   */
   executors: Array<Executor> = [];
 
   createExecutor(): Executor {
@@ -13,8 +17,14 @@ export class SSRExecutorProvider {
     return executor;
   }
 
+  destroyExecutor(executor: Executor): void {
+    if (this.executors.splice(this.executors.indexOf(executor), 1).length === 1) {
+      executor.abort();
+    }
+  }
+
   /**
-   * Returns `true` is any of the executors are pending.
+   * Returns `true` if any of created and not-disposed executors are still pending, or `false` otherwise.
    */
   hasPendingExecutors(): boolean {
     let pending = false;
@@ -35,14 +45,9 @@ export class SSRExecutorProvider {
 
   /**
    * Creates a new promise that is resolved as soon as all pending executors are resolved. All executions that started
-   * after the {@link waitForExecutorsToComplete} call won't be considered and won't affect the returned promise.
+   * after the {@link waitForExecutorsToSettle} call aren't be considered and don't affect the returned promise.
    */
-  waitForExecutorsToComplete(): Promise<void> {
-    const promises: Array<Promise<unknown> | null> = [];
-
-    for (const executor of this.executors) {
-      promises.push(executor.promise);
-    }
-    return Promise.all(promises).then(noop);
+  waitForExecutorsToSettle(): Promise<void> {
+    return Promise.all(this.executors.map(executor => executor.promise)).then(noop);
   }
 }

@@ -29,29 +29,49 @@ describe('useExecution', () => {
     await act(() => hook.result.current.promise);
   });
 
+  test('invokes callback once during initial render', () => {
+    const cbMock = jest.fn(() => 'aaa');
+
+    renderHook(() => useExecution(cbMock), { wrapper: StrictMode });
+
+    expect(cbMock).toHaveBeenCalledTimes(2);
+  });
+
+  test('invokes async callback once during initial render', async () => {
+    const cbMock = jest.fn(() => Promise.resolve('aaa'));
+    const hook = renderHook(() => useExecution(cbMock), { wrapper: StrictMode });
+    const execution = hook.result.current;
+
+    expect(execution.isPending).toBe(true);
+    expect(cbMock).toHaveBeenCalledTimes(2);
+
+    await act(() => execution.promise);
+
+    expect(hook.result.current.isPending).toBe(false);
+    expect(cbMock).toHaveBeenCalledTimes(2);
+  });
+
   test('repeats the execution if deps were changed', () => {
-    let dep = 'foo';
+    const cbMock = jest.fn(() => 'foo');
+    const hookMock = jest.fn(deps => useExecution(cbMock, deps));
 
-    const cbMock = jest.fn(() => dep);
-    const hookMock = jest.fn(() => useExecution(cbMock, [dep]));
+    const hook = renderHook(hookMock, { wrapper: StrictMode, initialProps: [111] });
 
-    const hook = renderHook(hookMock, { wrapper: StrictMode });
+    expect(cbMock).toHaveBeenCalledTimes(2);
+    expect(hookMock).toHaveBeenCalledTimes(2);
+    expect(hook.result.current.result).toBe('foo');
+
+    hook.rerender([111]);
 
     expect(cbMock).toHaveBeenCalledTimes(2);
     expect(hookMock).toHaveBeenCalledTimes(4);
     expect(hook.result.current.result).toBe('foo');
 
-    hook.rerender();
-
-    expect(cbMock).toHaveBeenCalledTimes(2);
-    expect(hookMock).toHaveBeenCalledTimes(6);
-    expect(hook.result.current.result).toBe('foo');
-
-    dep = 'bar';
-    hook.rerender();
+    cbMock.mockImplementation(() => 'bar');
+    hook.rerender([222]);
 
     expect(cbMock).toHaveBeenCalledTimes(3);
-    expect(hookMock).toHaveBeenCalledTimes(10);
+    expect(hookMock).toHaveBeenCalledTimes(8);
     expect(hook.result.current.result).toBe('bar');
   });
 });
