@@ -1,7 +1,12 @@
 import { Dispatch, EffectCallback, SetStateAction, useRef, useState } from 'react';
-import { emptyDeps, isFunction, noop } from './utils';
 import { useInsertionEffect } from './useInsertionEffect';
+import { emptyDeps, isFunction, noop } from './utils';
 
+/**
+ * The protocol returned by the {@link useDebouncedState} hook.
+ *
+ * @template S The type of stateful value.
+ */
 export type DebouncedStateProtocol<S> = [currState: S, nextState: S, setState: Dispatch<SetStateAction<S>>];
 
 /**
@@ -45,7 +50,7 @@ function createDebouncedStateManager<S>(
   setCurrState: Dispatch<SetStateAction<S>>,
   setNextState: Dispatch<SetStateAction<S>>
 ) {
-  let _setState = setNextState;
+  let doSetState = setNextState;
 
   const effect: EffectCallback = () => {
     let timeout: NodeJS.Timeout | number;
@@ -55,7 +60,7 @@ function createDebouncedStateManager<S>(
       return nextState;
     });
 
-    _setState = state => {
+    doSetState = state => {
       setNextState(nextState => {
         if (isFunction(state)) {
           state = state(nextState);
@@ -67,7 +72,7 @@ function createDebouncedStateManager<S>(
     };
 
     return () => {
-      _setState = noop;
+      doSetState = noop;
       clearTimeout(timeout);
     };
   };
@@ -75,7 +80,7 @@ function createDebouncedStateManager<S>(
   return {
     effect,
     setState(state: SetStateAction<S>): void {
-      _setState(state);
+      doSetState(state);
     },
   };
 }

@@ -2,7 +2,7 @@ import { Metronome } from '../main';
 
 jest.useFakeTimers();
 
-describe('Metronome', () => {
+describe('Interval', () => {
   test('pauses the metronome', () => {
     const metronome = new Metronome(20);
 

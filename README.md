@@ -36,14 +36,14 @@ npm install --save-prod react-hookers
 
 - [`useRerender`](#usererender)
 - [`useMountSignalRef`](#usemountsignal)
-- [`useRerenderSchedule`](#usererenderschedule)
+- [`useRerenderInterval`](#usererenderschedule)
 
 [**Time**](#time)
 
 - [`useTime`](#usetime)
 - [`useAnimationFrame`](#useanimationframe)
 - [`useMetronome`](#usemetronome)
-- [`useSchedule`](#useschedule)
+- [`useInterval`](#useschedule)
 - [`useDebounce`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 
@@ -282,12 +282,12 @@ const signal = useMountSignalRef();
 signal.aborted;
 ```
 
-### `useRerenderSchedule`
+### `useRerenderInterval`
 
 Re-renders the component on periodic interval.
 
 ```ts
-useRerenderSchedule(500);
+useRerenderInterval(500);
 ```
 
 # Time
@@ -345,7 +345,7 @@ stop();
 
 ### `useMetronome`
 
-Returns a [`Metronome`](https://smikhalevski.github.io/react-hookers/classes/Metronome.html) instance. Use this to
+Returns a [`Interval`](https://smikhalevski.github.io/react-hookers/classes/Metronome.html) instance. Use this to
 schedule callback invocation.
 
 ```ts
@@ -376,7 +376,7 @@ renderToString(
 );
 ```
 
-### `useSchedule`
+### `useInterval`
 
 The replacement for `setInterval` that is cancelled when component is unmounted. Schedules a function to be repeatedly
 called with a fixed time delay between each call.
@@ -384,7 +384,7 @@ called with a fixed time delay between each call.
 All functions that were scheduled with the same delay are invoked synchronously.
 
 ```ts
-const [schedule, cancel] = useSchedule();
+const [schedule, cancel] = useInterval();
 
 // Cancels currently scheduled callback and schedules the new one
 schedule(

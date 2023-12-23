@@ -7,10 +7,13 @@ import { ExecutionProtocol } from './useExecution';
 /**
  * Returns an execution that is periodically updated.
  *
+ * Polling starts after the component is mounted and is aborted when component is unmounted.
+ *
  * @param cb The callback that produces the result.
  * @param ms The delay between the callback invocations.
  * @param deps The optional list of dependencies that trigger the polling restart if changed.
  * @returns The execution that is periodically updated.
+ * @template T The result of polling execution.
  */
 export function usePolling<T>(cb: AbortableCallback<T>, ms: number, deps?: DependencyList): ExecutionProtocol<T> {
   const executor = useExecutor<T>();

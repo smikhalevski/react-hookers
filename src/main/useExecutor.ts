@@ -1,12 +1,17 @@
-import { ExecutorProviderContext } from './ExecutorProviderContext';
 import { AbortableCallback, AsyncResult, Awaitable, Executor } from 'parallel-universe';
 import { EffectCallback, useContext } from 'react';
-import { useInsertionEffect } from './useInsertionEffect';
-import { useSemanticMemo } from './useSemanticMemo';
-import { useRerender } from './useRerender';
-import { isFunction, noop } from './utils';
 import { ExecutorProvider } from './ExecutorProvider';
+import { ExecutorProviderContext } from './ExecutorProviderContext';
+import { useInsertionEffect } from './useInsertionEffect';
+import { useRerender } from './useRerender';
+import { useSemanticMemo } from './useSemanticMemo';
+import { isFunction, noop } from './utils';
 
+/**
+ * The symbol that holds the executor associated with the {@link ExecutorProtocol}.
+ *
+ * @internal
+ */
 export const EXECUTOR = Symbol('executor');
 
 /**
@@ -16,7 +21,10 @@ export const EXECUTOR = Symbol('executor');
  * @template T The result stored by the executor.
  */
 export interface ExecutorProtocol<T = any> {
-  [EXECUTOR]: Executor<T>;
+  /**
+   * @internal
+   */
+  readonly [EXECUTOR]: Executor<T>;
 
   /**
    * `true` if result was fulfilled or rejected, or `false` otherwise.
@@ -101,6 +109,9 @@ export interface ExecutorProtocol<T = any> {
  * Creates a new {@link https://github.com/smikhalevski/parallel-universe#executor Executor} and re-renders a
  * component when its state is changed.
  *
+ * @param initialValue The initial value, a promise that resolves with the initial value, or a callback that returns an
+ * initial value.
+ * @template T The result stored by the executor.
  * @see {@link ExecutorProviderContext}
  * @see {@link useExecution}
  */
@@ -139,33 +150,33 @@ function createExecutorManager(provider: ExecutorProvider, initialValue: unknown
     executor.resolve(initialValue);
   }
 
-  let _execute: ExecutorProtocol['execute'] = () => new Promise(noop);
-  let _clear: ExecutorProtocol['clear'] = noop;
-  let _abort: ExecutorProtocol['abort'] = noop;
-  let _resolve: ExecutorProtocol['resolve'] = noop;
-  let _reject: ExecutorProtocol['reject'] = noop;
+  let doExecute: ExecutorProtocol['execute'] = () => new Promise(noop);
+  let doClear: ExecutorProtocol['clear'] = noop;
+  let doAbort: ExecutorProtocol['abort'] = noop;
+  let doResolve: ExecutorProtocol['resolve'] = noop;
+  let doReject: ExecutorProtocol['reject'] = noop;
 
   const effect: EffectCallback = () => {
     const unsubscribe = executor.subscribe(rerender);
 
-    _execute = cb => executor.execute(cb);
+    doExecute = cb => executor.execute(cb);
 
-    _clear = () => {
+    doClear = () => {
       executor.clear();
     };
-    _abort = () => {
+    doAbort = () => {
       executor.abort();
     };
-    _resolve = result => {
+    doResolve = result => {
       executor.resolve(result);
     };
-    _reject = reason => {
+    doReject = reason => {
       executor.reject(reason);
     };
 
     return () => {
-      _execute = () => new Promise(noop);
-      _clear = _abort = _resolve = _reject = noop;
+      doExecute = () => new Promise(noop);
+      doClear = doAbort = doResolve = doReject = noop;
       unsubscribe();
       provider.destroyExecutor(executor);
     };
@@ -179,19 +190,19 @@ function createExecutorManager(provider: ExecutorProvider, initialValue: unknown
       return executor.getOrDefault(defaultValue);
     },
     execute(cb: AbortableCallback<any>) {
-      return _execute(cb);
+      return doExecute(cb);
     },
     clear() {
-      _clear();
+      doClear();
     },
     abort() {
-      _abort();
+      doAbort();
     },
     resolve(result: Awaitable<unknown> | undefined) {
-      _resolve(result);
+      doResolve(result);
     },
     reject(reason: unknown) {
-      _reject(reason);
+      doReject(reason);
     },
   };
 }

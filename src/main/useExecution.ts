@@ -1,7 +1,7 @@
 import { AbortableCallback, AsyncResult } from 'parallel-universe';
 import { DependencyList, useEffect } from 'react';
+import { useChanged } from './useChanged';
 import { EXECUTOR, useExecutor } from './useExecutor';
-import { useIsChanged } from './useIsChanged';
 import { emptyDeps } from './utils';
 
 /**
@@ -47,15 +47,16 @@ export interface ExecutionProtocol<T = any> {
 }
 
 /**
- * Executes a callback when dependencies are changed and returns an
- * {@link https://github.com/smikhalevski/parallel-universe#executor Execution}.
+ * Executes a callback when dependencies are changed and returns an execution.
  *
+ * @param cb The callback that in invoked during the first render and if dependencies are changed.
+ * @param deps The dependencies that cause the callback to be invoked again when changed.
  * @see {@link ExecutorProviderContext}
  * @see {@link useExecutor}
  */
 export function useExecution<T>(cb: AbortableCallback<T>, deps?: DependencyList): ExecutionProtocol<T> {
   const executor = useExecutor<T>(cb);
-  const isChanged = useIsChanged([executor[EXECUTOR]]);
+  const isChanged = useChanged([executor[EXECUTOR]]);
 
   useEffect(() => {
     if (!isChanged) {

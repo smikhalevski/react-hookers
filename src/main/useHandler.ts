@@ -3,11 +3,19 @@ import { useInsertionEffect } from './useInsertionEffect';
 
 /**
  * Returns an always-stable function identity that becomes no-op after unmount.
+ *
+ * @param cb The callback that the handler callback.
+ * @template A The arguments of the handler.
+ * @template T The return value of the handler.
  */
 export function useHandler<A extends any[], T>(cb: (...args: A) => T): (...args: A) => T;
 
 /**
  * Returns an always-stable function identity that becomes no-op after unmount.
+ *
+ * @param cb The callback that the handler callback.
+ * @template A The arguments of the handler.
+ * @template T The return value of the handler.
  */
 export function useHandler<A extends any[], T>(
   cb: ((...args: A) => T) | null | undefined

@@ -1,5 +1,5 @@
 import { EffectCallback, useRef } from 'react';
-import { SetTimeout } from './types';
+import { Schedule } from './types';
 import { emptyDeps, noop } from './utils';
 import { useInsertionEffect } from './useInsertionEffect';
 
@@ -10,43 +10,43 @@ import { useInsertionEffect } from './useInsertionEffect';
  *
  * The delay should be started/stopped after the component is mounted. Before that, it is a no-op.
  */
-export function useDebounce(): [debounce: SetTimeout, cancel: () => void] {
+export function useDebounce(): [debounce: Schedule, cancel: () => void] {
   const manager = (useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager());
 
   useInsertionEffect(manager.effect, emptyDeps);
 
-  return [manager.debounce as SetTimeout, manager.cancel];
+  return [manager.debounce as Schedule, manager.cancel];
 }
 
 function createDebounceManager() {
-  let _debounce: (args: Parameters<SetTimeout>) => void = noop;
-  let _cancel = noop;
+  let doDebounce: (args: Parameters<Schedule>) => void = noop;
+  let doCancel = noop;
 
   const effect: EffectCallback = () => {
     let timeout: NodeJS.Timeout;
 
-    _debounce = args => {
-      _cancel();
+    doDebounce = args => {
+      doCancel();
       timeout = setTimeout(...args);
     };
 
-    _cancel = () => {
+    doCancel = () => {
       clearTimeout(timeout);
     };
 
     return () => {
-      _cancel();
-      _debounce = _cancel = noop;
+      doCancel();
+      doDebounce = doCancel = noop;
     };
   };
 
   return {
     effect,
-    debounce(...args: Parameters<SetTimeout>): void {
-      _debounce(args);
+    debounce(...args: Parameters<Schedule>): void {
+      doDebounce(args);
     },
     cancel(): void {
-      _cancel();
+      doCancel();
     },
   };
 }

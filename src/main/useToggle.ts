@@ -1,33 +1,38 @@
 import { Dispatch, SetStateAction, useRef, useState } from 'react';
 
+/**
+ * The protocol returned by the {@link useToggle} hook.
+ */
 export type ToggleProtocol = [
-  enabled: boolean,
+  isEnabled: boolean,
   enable: () => void,
   disable: () => void,
-  toggle: (enabled?: boolean) => void,
+  toggle: (isEnabled?: boolean) => void,
 ];
 
 /**
  * Returns a boolean flag and functions to toggle its value.
+ *
+ * @param initialEnabled `true` if teh toggle is initially enabled, or `false` otherwise.
  */
-export function useToggle(initialEnabled = false): Readonly<ToggleProtocol> {
-  const [enabled, setEnabled] = useState(initialEnabled);
+export function useToggle(initialEnabled = false): ToggleProtocol {
+  const [isEnabled, setEnabled] = useState(initialEnabled);
 
   const manager = (useRef<ReturnType<typeof createToggleManager>>().current ||= createToggleManager(setEnabled));
 
-  return [enabled, manager.enable, manager.disable, manager.toggle];
+  return [isEnabled, manager.enable, manager.disable, manager.toggle];
 }
 
 function createToggleManager(setEnabled: Dispatch<SetStateAction<boolean>>) {
   return {
-    enable(): void {
+    enable() {
       setEnabled(true);
     },
-    disable(): void {
+    disable() {
       setEnabled(false);
     },
-    toggle(enabled?: boolean): void {
-      setEnabled(enabled !== undefined ? Boolean(enabled) : value => !value);
+    toggle(isEnabled?: boolean) {
+      setEnabled(typeof isEnabled === 'boolean' ? isEnabled : isEnabled => !isEnabled);
     },
   };
 }

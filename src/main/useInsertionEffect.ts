@@ -1,12 +1,12 @@
-import { useInsertionEffect as useInsertionEffect_, useLayoutEffect } from 'react';
+import { DependencyList, EffectCallback, useInsertionEffect as useInsertionEffect_, useLayoutEffect } from 'react';
 import { noop } from './utils';
 
 /**
- * Same as `React.useLayoutEffect` but calls effect only once after the component is mounted.
+ * Drop-in replacement for `React.useInsertionEffect` that works in older React versions and doesn't emit warnings
+ * during SSR.
  *
- * The optional cleanup callback is called when the component is unmounted.
- *
- * @see https://reactjs.org/docs/hooks-reference.html#useeffect React.useEffect
+ * @param effect Imperative function that can return a cleanup function
+ * @param deps If present, effect will only activate if the values in the list change.
  */
-export const useInsertionEffect =
+export const useInsertionEffect: (effect: EffectCallback, deps?: DependencyList) => void =
   typeof window === 'undefined' ? noop : useInsertionEffect_ === undefined ? useLayoutEffect : useInsertionEffect_;

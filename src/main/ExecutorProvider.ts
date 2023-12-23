@@ -1,11 +1,11 @@
 import { Executor } from 'parallel-universe';
 
 /**
- * The executor provider that keeps references to all created executors and provides batch operation for them.
+ * The provider that creates and destroys executors.
  */
 export class ExecutorProvider {
   /**
-   * Creates the new executor.
+   * Returns the executor.
    */
   createExecutor(): Executor {
     return new Executor();
@@ -13,6 +13,8 @@ export class ExecutorProvider {
 
   /**
    * Destroys previously created executor.
+   *
+   * @param executor The executor to destroy.
    */
   destroyExecutor(executor: Executor): void {
     executor.abort();

@@ -17,7 +17,7 @@ describe('useAsyncEffect', () => {
     expect(fn).toHaveBeenNthCalledWith(2, 1);
   });
 
-  test('calls the effect after mount', () => {
+  test('calls the effect after mount in strict mode', () => {
     const fn = jest.fn();
 
     renderHook(
@@ -76,37 +76,25 @@ describe('useAsyncEffect', () => {
   });
 
   test('invokes the effect when deps change', () => {
-    let dep = 1;
-
     const effectMock = jest.fn();
-    const hook = renderHook(() => useAsyncEffect(effectMock, [dep]), { wrapper: StrictMode });
+    const hook = renderHook(deps => useAsyncEffect(effectMock, deps), { wrapper: StrictMode, initialProps: [111] });
 
-    dep = 2;
-    hook.rerender();
+    hook.rerender([222]);
 
     expect(effectMock).toHaveBeenCalledTimes(3);
   });
 
   test('invokes the async dispose function when deps change', async () => {
-    let dep = 1;
-
     const disposeMock = jest.fn();
-    const hook = renderHook(() => useAsyncEffect(() => Promise.resolve(disposeMock), [dep]), { wrapper: StrictMode });
-
-    dep = 2;
+    const hook = renderHook(deps => useAsyncEffect(() => Promise.resolve(disposeMock), deps), {
+      wrapper: StrictMode,
+      initialProps: [111],
+    });
 
     await sleep(0);
-    hook.rerender();
+    hook.rerender([222]);
 
     expect(disposeMock).toHaveBeenCalledTimes(1);
-  });
-
-  test('passes a signal to the effect callback', () => {
-    const effectMock = jest.fn();
-    renderHook(() => useAsyncEffect(effectMock, undefined), { wrapper: StrictMode });
-
-    expect(effectMock).toHaveBeenCalledTimes(2);
-    expect(effectMock).toHaveBeenCalledWith(expect.any(AbortSignal));
   });
 
   test('passes a signal to the effect callback', () => {

@@ -2,8 +2,14 @@ import { DependencyList, useRef } from 'react';
 import { areHookInputsEqual } from './areHookInputsEqual';
 
 /**
+ * Recompute the memoized value when one of the deps has changed.
+ *
  * The drop-in replacement for `React.useMemo` which provides the semantic guarantee that the value produced by factory
  * won't be "forgotten" until the hook is unmounted.
+ *
+ * @param factory The callback that returns the memoized value.
+ * @param deps The array of dependencies or `undefined` if memoized value should never be updated.
+ * @template T The memoized value.
  */
 export function useSemanticMemo<T>(factory: () => T, deps?: DependencyList): T {
   return (useRef<ReturnType<typeof createSemanticMemoHook<T>>>().current ||= createSemanticMemoHook())(factory, deps);

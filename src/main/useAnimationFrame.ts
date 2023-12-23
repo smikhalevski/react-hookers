@@ -21,14 +21,14 @@ export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void,
 }
 
 function createAnimationFrameManager() {
-  let _start: (cb: FrameRequestCallback) => void = noop;
-  let _stop: () => void = noop;
+  let doStart: (cb: FrameRequestCallback) => void = noop;
+  let doStop: () => void = noop;
 
   const effect: EffectCallback = () => {
     let handle: number;
 
-    _start = cb => {
-      _stop();
+    doStart = cb => {
+      doStop();
 
       const loop: FrameRequestCallback = time => {
         cb(time);
@@ -37,23 +37,23 @@ function createAnimationFrameManager() {
       handle = requestAnimationFrame(loop);
     };
 
-    _stop = () => {
+    doStop = () => {
       cancelAnimationFrame(handle);
     };
 
     return () => {
-      _stop();
-      _start = _stop = noop;
+      doStop();
+      doStart = doStop = noop;
     };
   };
 
   return {
     effect,
     start(cb: FrameRequestCallback): void {
-      _start(cb);
+      doStart(cb);
     },
     stop(): void {
-      _stop();
+      doStop();
     },
   };
 }

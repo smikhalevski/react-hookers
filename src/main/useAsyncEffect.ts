@@ -1,6 +1,5 @@
+import { Awaitable } from 'parallel-universe';
 import { DependencyList, EffectCallback, useEffect, useRef } from 'react';
-import { Awaitable, isPromiseLike } from 'parallel-universe';
-import { isFunction } from './utils';
 
 export type AsyncEffectCallback = (signal: AbortSignal) => Awaitable<(() => void) | void>;
 
@@ -16,7 +15,7 @@ export type AsyncEffectCallback = (signal: AbortSignal) => Awaitable<(() => void
  *
  * @see {@link useExecutor}
  */
-export function useAsyncEffect(effect: AsyncEffectCallback, deps: DependencyList | undefined): void {
+export function useAsyncEffect(effect: AsyncEffectCallback, deps?: DependencyList): void {
   const manager = (useRef<ReturnType<typeof createAsyncEffectManager>>().current = createAsyncEffectManager(effect));
 
   manager.asyncEffect = effect;
@@ -29,31 +28,38 @@ function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
   let destructor: (() => void) | void;
 
   const cleanup = (): void => {
-    abortController?.abort();
-    abortController = undefined;
-
-    destructor?.();
-    destructor = undefined;
+    if (abortController !== undefined) {
+      abortController.abort();
+      abortController = undefined;
+    }
+    if (destructor !== undefined) {
+      destructor();
+      destructor = undefined;
+    }
   };
 
   const effect: EffectCallback = () => {
     const currAbortController = new AbortController();
-    const result = manager.asyncEffect(currAbortController.signal);
 
-    if (isPromiseLike(result)) {
-      abortController = currAbortController;
+    abortController = currAbortController;
 
-      result.then(result => {
-        if (abortController !== currAbortController) {
-          return;
+    new Promise<(() => void) | void>(resolve => resolve(manager.asyncEffect(currAbortController.signal))).then(
+      result => {
+        if (abortController === currAbortController) {
+          abortController = undefined;
+
+          if (typeof result === 'function') {
+            destructor = result;
+          }
         }
-        abortController = undefined;
-        destructor = isFunction(result) ? result : undefined;
-      });
-    } else {
-      abortController = undefined;
-      destructor = isFunction(result) ? result : undefined;
-    }
+      },
+      reason => {
+        if (abortController === currAbortController) {
+          abortController = undefined;
+        }
+        throw reason;
+      }
+    );
 
     return cleanup;
   };

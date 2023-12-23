@@ -1,5 +1,6 @@
 import { MutableRefObject, RefCallback, RefObject, useRef } from 'react';
 import { useSemanticCallback } from './useSemanticCallback';
+import { emptyDeps } from './utils';
 
 /**
  * Returns a ref object and a callback to update the value of this ref.
@@ -20,14 +21,14 @@ export function useRefCallback<T>(initialValue: T | null): [ref: RefObject<T>, r
  */
 export function useRefCallback<T = undefined>(): [
   ref: MutableRefObject<T | undefined>,
-  setRef: (value: T | undefined) => void,
+  refCallback: (value: T | undefined) => void,
 ];
 
 export function useRefCallback(initialValue?: unknown) {
   const ref = useRef(initialValue);
   const refCallback = useSemanticCallback<RefCallback<unknown>>(value => {
     ref.current = value;
-  }, []);
+  }, emptyDeps);
 
   return [ref, refCallback] as const;
 }

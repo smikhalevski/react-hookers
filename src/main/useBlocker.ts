@@ -4,17 +4,24 @@ import { useInsertionEffect } from './useInsertionEffect';
 import { emptyDeps, noop } from './utils';
 
 /**
- * Blocks UI from an async context.
+ * Block an async flow and unblock it from an external context.
+ */
+export function useBlocker(): [isBlocked: boolean, block: () => Promise<void>, unblock: () => void];
+
+/**
+ * Block an async flow and unblock it from an external context.
  *
  * @template T The type of value that can be passed to `unblock` to resolve the `Promise` returned by `block`.
  */
-export function useBlocker<T = void>(): [blocked: boolean, block: () => Promise<T>, unblock: (result: T) => void] {
-  const [blocked, setBlocked] = useState(false);
+export function useBlocker<T>(): [isBlocked: boolean, block: () => Promise<T>, unblock: (result: T) => void];
+
+export function useBlocker() {
+  const [isBlocked, setBlocked] = useState(false);
   const manager = (useRef<ReturnType<typeof createBlockerManager>>().current ||= createBlockerManager(setBlocked));
 
   useInsertionEffect(manager.effect, emptyDeps);
 
-  return [blocked, manager.block, manager.unblock];
+  return [isBlocked, manager.block, manager.unblock];
 }
 
 function createBlockerManager(setBlocked: (blocked: boolean) => void) {
@@ -23,22 +30,20 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void) {
   const block = blocker.block.bind(blocker);
   const unblock = blocker.unblock.bind(blocker);
 
-  let _block = block;
-  let _unblock = unblock;
+  let doBlock = block;
+  let doUnblock = unblock;
 
   const effect: EffectCallback = () => {
-    _block = block;
-    _unblock = unblock;
+    doBlock = block;
+    doUnblock = unblock;
 
     const unsubscribe = blocker.subscribe(() => {
       setBlocked(blocker.isBlocked);
     });
 
     return () => {
-      const promise = new Promise(noop);
-
-      _block = () => promise;
-      _unblock = noop;
+      doBlock = () => new Promise(noop);
+      doUnblock = noop;
 
       unsubscribe();
     };
@@ -47,10 +52,10 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void) {
   return {
     effect,
     block() {
-      return _block();
+      return doBlock();
     },
     unblock(result: unknown) {
-      _unblock(result);
+      doUnblock(result);
     },
   };
 }

@@ -23,20 +23,20 @@ function reduceCount(count: number) {
 }
 
 function createRerenderManager(dispatch: () => void) {
-  let _rerender = dispatch;
+  let doRerender = dispatch;
 
   const effect: EffectCallback = () => {
-    _rerender = dispatch;
+    doRerender = dispatch;
 
     return () => {
-      _rerender = noop;
+      doRerender = noop;
     };
   };
 
   return {
     effect,
     rerender(): void {
-      _rerender();
+      doRerender();
     },
   };
 }

@@ -1,12 +1,12 @@
 import { act, renderHook } from '@testing-library/react';
-import { useSchedule } from '../main';
+import { useInterval } from '../main';
 import { StrictMode } from 'react';
 
 jest.useFakeTimers();
 
-describe('useSchedule', () => {
+describe('useInterval', () => {
   test('returns a new array instance on each render', () => {
-    const hook = renderHook(() => useSchedule(), { wrapper: StrictMode });
+    const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
     const protocol = hook.result.current;
 
     hook.rerender();
@@ -15,7 +15,7 @@ describe('useSchedule', () => {
   });
 
   test('returns same callbacks on every call', () => {
-    const hook = renderHook(() => useSchedule(), { wrapper: StrictMode });
+    const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
 
     const [schedule1, cancel1] = hook.result.current;
     hook.rerender();
@@ -29,7 +29,7 @@ describe('useSchedule', () => {
 
   test('invokes the callback', () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useSchedule(), { wrapper: StrictMode });
+    const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
 
     const [schedule] = hook.result.current;
 
@@ -45,7 +45,7 @@ describe('useSchedule', () => {
   test('consequent calls override the invoked callback', () => {
     const cbMock1 = jest.fn();
     const cbMock2 = jest.fn();
-    const hook = renderHook(() => useSchedule(), { wrapper: StrictMode });
+    const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
 
     const [schedule] = hook.result.current;
 
@@ -62,7 +62,7 @@ describe('useSchedule', () => {
 
   test('does not invoke the callback after unmount', () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useSchedule(), { wrapper: StrictMode });
+    const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
 
     const [schedule] = hook.result.current;
 
@@ -77,7 +77,7 @@ describe('useSchedule', () => {
 
   test('the callback invocation is canceled', () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useSchedule(), { wrapper: StrictMode });
+    const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
 
     const [schedule, cancel] = hook.result.current;
 
