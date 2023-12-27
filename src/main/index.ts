@@ -1,12 +1,14 @@
-export { ExecutorProvider } from './ExecutorProvider';
-export { ExecutorProviderContext } from './ExecutorProviderContext';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAsyncEffect } from './useAsyncEffect';
 export { useBlocker } from './useBlocker';
 export { useDebounce } from './useDebounce';
 export { useDebouncedState } from './useDebouncedState';
-export { useExecutor } from './useExecutor';
-export { useExecution } from './useExecution';
+export { ExecutorProviderContext } from './executor/ExecutorProviderContext';
+export { JointExecutorProviderContext } from './executor/JointExecutorProviderContext';
+export { useExecutor } from './executor/useExecutor';
+export { useExecution } from './executor/useExecution';
+export { useJointExecutor } from './executor/useJointExecutor';
+export { useJointExecution } from './executor/useJointExecution';
 export { useHandler } from './useHandler';
 export { useLock } from './useLock';
 export { usePolling } from './usePolling';
@@ -20,6 +22,5 @@ export { useToggle } from './useToggle';
 
 export type { AsyncEffectCallback } from './useAsyncEffect';
 export type { DebouncedStateProtocol } from './useDebouncedState';
-export type { ExecutorProtocol } from './useExecutor';
-export type { ExecutionProtocol } from './useExecution';
+export type { ExecutorProtocol, ExecutionProtocol, ExecutorProvider, JointExecutorProvider } from './executor/types';
 export type { ToggleProtocol } from './useToggle';

@@ -1,8 +1,8 @@
 import { AbortableCallback, repeatUntil } from 'parallel-universe';
-import { useExecutor } from './useExecutor';
+import { useExecutor } from './executor/useExecutor';
 import { DependencyList, useEffect } from 'react';
 import { noop } from './utils';
-import { ExecutionProtocol } from './useExecution';
+import { ExecutionProtocol } from './executor/useExecution';
 
 /**
  * Returns an execution that is periodically updated.
@@ -33,7 +33,7 @@ export function usePolling<T>(cb: AbortableCallback<T>, ms: number, deps?: Depen
         executor.abort();
       };
     },
-    deps ? deps.concat(executor, ms) : [executor, ms]
+    deps !== undefined ? deps.concat(executor, ms) : [executor, ms]
   );
 
   return {
