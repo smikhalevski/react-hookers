@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { createElement, PropsWithChildren, StrictMode } from 'react';
-import { ExecutorProvider, ExecutorProviderContext, useExecutor } from '../main';
+import { ExecutorManager, ExecutorManagerContext, useExecutor } from '../main';
 import { Executor } from 'parallel-universe';
 
 describe('useExecutor', () => {
@@ -121,11 +121,11 @@ describe('useExecutor', () => {
   // });
 
   test('uses provider to create an executor', async () => {
-    const executorManager = new ExecutorProvider();
+    const executorManager = new ExecutorManager();
     executorManager.createExecutor = jest.fn(() => new Executor());
 
     const Context = (props: PropsWithChildren) =>
-      createElement(ExecutorProviderContext.Provider, {
+      createElement(ExecutorManagerContext.Provider, {
         value: executorManager,
         children: props.children,
       });

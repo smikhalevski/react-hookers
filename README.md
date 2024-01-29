@@ -105,19 +105,19 @@ executor.execute(async (signal) => doSomething());
 ```
 
 You can manage how executors are created with
-[`ExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html) and
-[`ExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
+[`ExecutorManager`](https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html) and
+[`ExecutorManager`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {ExecutorProvider, ExecutorProviderContext} from 'react-hookers';
+import {ExecutorManager, ExecutorManagerContext} from 'react-hookers';
 
-const mySsrExecutorProvider = new ExecutorProvider();
+const mySsrExecutorProvider = new ExecutorManager();
 
 renderToString(
-    <ExecutorProviderContext.Provider value={mySsrExecutorProvider}>
+    <ExecutorManagerContext.Provider value={mySsrExecutorProvider}>
       {/* */}
-    </ExecutorProviderContext.Provider>
+    </ExecutorManagerContext.Provider>
 );
 
 // Waits for all executors to complete pending executions
