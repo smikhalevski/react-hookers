@@ -1,4 +1,4 @@
-import type { AbortableCallback, Awaitable } from 'parallel-universe';
+import { type AbortableCallback, AbortablePromise, type Awaitable } from 'parallel-universe';
 import { Executor } from 'parallel-universe';
 import type { EffectCallback } from 'react';
 import { useInsertionEffect } from '../useInsertionEffect';
@@ -35,18 +35,18 @@ function createExecutorBindingsManager(
   options: ExecutorOptions | undefined,
   rerender: () => void
 ) {
-  let doExecute: ExecutorProtocol['execute'] = () => new Promise(noop);
+  let doExecute: ExecutorProtocol['execute'] = () => new AbortablePromise(noop);
   let doClear: ExecutorProtocol['clear'] = noop;
   let doAbort: ExecutorProtocol['abort'] = noop;
   let doResolve: ExecutorProtocol['resolve'] = noop;
   let doReject: ExecutorProtocol['reject'] = noop;
 
-  const ssrEnabled = options?.ssrEnabled;
+  const isDeferred = options?.deferred;
 
   const effect: EffectCallback = () => {
     const unsubscribe = executor.subscribe(rerender);
 
-    if (!ssrEnabled) {
+    if (isDeferred) {
       initExecutor(executor, initialValue);
     }
 
@@ -66,13 +66,13 @@ function createExecutorBindingsManager(
     };
 
     return () => {
-      doExecute = () => new Promise(noop);
+      doExecute = () => new AbortablePromise(noop);
       doClear = doAbort = doResolve = doReject = noop;
       unsubscribe();
     };
   };
 
-  if (ssrEnabled) {
+  if (!isDeferred) {
     initExecutor(executor, initialValue);
   }
 

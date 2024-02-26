@@ -16,7 +16,7 @@ npm install --save-prod react-hookers
 - [`useSemanticMemo`](#usesemanticmemo)
 - [`useExecution`](#useexecution)
 - [`useExecutor`](#useexecutor)
-- [`usePolling`](#usepolling)
+- [`usePollingExecution`](#usepolling)
 - [`useToggle`](#usetoggle)
 
 [**Ref**](#ref)
@@ -124,13 +124,13 @@ renderToString(
 await mySsrExecutorProvider.waitForExecutorsToSettle();
 ```
 
-### `usePolling`
+### `usePollingExecution`
 
 Returns an [`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html) instance that is
 periodically updated.
 
 ```tsx
-const execution = usePolling(
+const execution = usePollingExecution(
     async (signal) => doSomething(a, b),
     100, // Interval delay
     [a, b],

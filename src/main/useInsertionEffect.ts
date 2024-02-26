@@ -1,4 +1,4 @@
-import { DependencyList, EffectCallback, useInsertionEffect as useInsertionEffect_, useLayoutEffect } from 'react';
+import { DependencyList, EffectCallback, useInsertionEffect as reactUseInsertionEffect, useLayoutEffect } from 'react';
 import { noop } from './utils';
 
 /**
@@ -8,5 +8,6 @@ import { noop } from './utils';
  * @param effect Imperative function that can return a cleanup function
  * @param deps If present, effect will only activate if the values in the list change.
  */
+// prettier-ignore
 export const useInsertionEffect: (effect: EffectCallback, deps?: DependencyList) => void =
-  typeof window === 'undefined' ? noop : useInsertionEffect_ === undefined ? useLayoutEffect : useInsertionEffect_;
+  typeof window === 'undefined' ? noop : reactUseInsertionEffect === undefined ? useLayoutEffect : reactUseInsertionEffect;

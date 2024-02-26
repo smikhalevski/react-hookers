@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useInsertionEffect } from './useInsertionEffect';
 
 /**
- * Returns an always-stable function identity that becomes no-op after unmount.
+ * Returns an always-stable function identity that becomes a no-op after unmount.
  *
  * @param cb The callback that the handler callback.
  * @template A The arguments of the handler.

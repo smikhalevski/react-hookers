@@ -1,36 +1,35 @@
-import { AbortableCallback, repeatUntil } from 'parallel-universe';
-import { useExecutor } from './executor/useExecutor';
+import { AbortableCallback, repeat } from 'parallel-universe';
+import { useExecutor } from './useExecutor';
 import { DependencyList, useEffect } from 'react';
-import { noop } from './utils';
-import { ExecutionProtocol } from './executor/useExecution';
+import { noop } from '../utils';
+import { ExecutionProtocol } from './types';
 
 /**
  * Returns an execution that is periodically updated.
  *
  * Polling starts after the component is mounted and is aborted when component is unmounted.
  *
+ * @param key The key of the executor to join.
  * @param cb The callback that produces the result.
  * @param ms The delay between the callback invocations.
  * @param deps The optional list of dependencies that trigger the polling restart if changed.
  * @returns The execution that is periodically updated.
  * @template T The result of polling execution.
  */
-export function usePolling<T>(cb: AbortableCallback<T>, ms: number, deps?: DependencyList): ExecutionProtocol<T> {
-  const executor = useExecutor<T>();
+export function usePollingExecution<T>(
+  key: unknown,
+  cb: AbortableCallback<T>,
+  ms: number,
+  deps?: DependencyList
+): ExecutionProtocol<T> {
+  const executor = useExecutor<T>(key, undefined, { deferred: true });
 
   useEffect(
     () => {
-      const abortController = new AbortController();
-
-      repeatUntil(
-        () => executor.execute(cb),
-        () => abortController.signal.aborted,
-        ms
-      ).catch(noop);
-
+      const promise = repeat(() => executor.execute(cb).catch(noop), ms);
+      promise.catch(noop);
       return () => {
-        abortController.abort();
-        executor.abort();
+        promise.abort();
       };
     },
     deps !== undefined ? deps.concat(executor, ms) : [executor, ms]
@@ -41,8 +40,9 @@ export function usePolling<T>(cb: AbortableCallback<T>, ms: number, deps?: Depen
     isRejected: executor.isRejected,
     isSettled: executor.isSettled,
     isPending: executor.isPending,
-    result: executor.result,
+    value: executor.value,
     reason: executor.reason,
     promise: executor.promise,
+    getOrDefault: defaultValue => executor.getOrDefault(defaultValue),
   };
 }

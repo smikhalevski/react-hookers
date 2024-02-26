@@ -1,11 +1,11 @@
-import { type AbortableCallback, type AsyncResult } from 'parallel-universe';
+import { AbortableCallback, AbortablePromise } from 'parallel-universe';
 
 export interface ExecutorOptions {
   /**
-   * If `true` then the executor is initialized during the initial render, otherwise it is initialized in the effect
-   * callback.
+   * If `true` then the executor is initialized in the effect callback, otherwise it is initialized during the initial
+   * render.
    */
-  ssrEnabled?: boolean;
+  deferred?: boolean;
 }
 
 /**
@@ -37,7 +37,7 @@ export interface ExecutionProtocol<T = any> {
   /**
    * The result value or `undefined` if failed.
    */
-  result: T | undefined;
+  value: T | undefined;
 
   /**
    * The reason of failure.
@@ -47,25 +47,14 @@ export interface ExecutionProtocol<T = any> {
   /**
    * The promise of the pending execution result, or `null` if execution isn't pending.
    */
-  promise: Promise<AsyncResult<T>> | null;
+  promise: AbortablePromise<T> | null;
 
   /**
-   * Returns a {@link result}, or the default value if the result isn't available.
+   * Returns a {@link value}, or the default value if the result isn't available.
    *
    * @param defaultValue The default value.
    */
   getOrDefault(defaultValue: T): T;
-
-  /**
-   * Clears available results and doesn't affect the pending execution.
-   */
-  clear(): void;
-
-  /**
-   * Instantly aborts pending execution and preserves available results. Value (or error) returned from pending
-   * callback is ignored. The signal passed to the executed callback is aborted.
-   */
-  abort(): void;
 }
 
 /**
@@ -84,7 +73,7 @@ export interface ExecutorProtocol<T = any> extends ExecutionProtocol<T> {
    * @param cb The callback that returns the new result for the executor to store.
    * @returns The promise that is resolved with the result of the callback execution.
    */
-  execute(cb: AbortableCallback<T>): Promise<AsyncResult<T>>;
+  execute(cb: AbortableCallback<T>): AbortablePromise<T>;
 
   /**
    * Aborts pending execution and fulfills it with the given result.
@@ -99,4 +88,15 @@ export interface ExecutorProtocol<T = any> extends ExecutionProtocol<T> {
    * @param reason The reason of failure that should be stored in an executor.
    */
   reject(reason: unknown): void;
+
+  /**
+   * Clears available results and doesn't affect the pending execution.
+   */
+  clear(): void;
+
+  /**
+   * Instantly aborts pending execution and preserves available results. Value (or error) returned from pending
+   * callback is ignored. The signal passed to the executed callback is aborted.
+   */
+  abort(): void;
 }

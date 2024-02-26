@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, EffectCallback, SetStateAction, useRef, useState } from 'react';
+import { useInsertionEffect } from './useInsertionEffect';
+import { emptyDeps, noop } from './utils';
 
 /**
  * The protocol returned by the {@link useToggle} hook.
@@ -17,22 +19,38 @@ export type ToggleProtocol = [
  */
 export function useToggle(initialEnabled = false): ToggleProtocol {
   const [isEnabled, setEnabled] = useState(initialEnabled);
-
   const manager = (useRef<ReturnType<typeof createToggleManager>>().current ||= createToggleManager(setEnabled));
+
+  useInsertionEffect(manager.effect, emptyDeps);
 
   return [isEnabled, manager.enable, manager.disable, manager.toggle];
 }
 
 function createToggleManager(setEnabled: Dispatch<SetStateAction<boolean>>) {
+  const toggle = (isEnabled: boolean | undefined) => {
+    setEnabled(typeof isEnabled === 'boolean' ? isEnabled : isEnabled => !isEnabled);
+  };
+
+  let doToggle = toggle;
+
+  const effect: EffectCallback = () => {
+    doToggle = toggle;
+
+    return () => {
+      doToggle = noop;
+    };
+  };
+
   return {
+    effect,
     enable() {
-      setEnabled(true);
+      doToggle(true);
     },
     disable() {
-      setEnabled(false);
+      doToggle(false);
     },
     toggle(isEnabled?: boolean) {
-      setEnabled(typeof isEnabled === 'boolean' ? isEnabled : isEnabled => !isEnabled);
+      doToggle(isEnabled);
     },
   };
 }

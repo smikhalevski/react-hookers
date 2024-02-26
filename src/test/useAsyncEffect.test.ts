@@ -1,7 +1,8 @@
-import { renderHook } from '@testing-library/react';
-import { sleep } from 'parallel-universe';
-import { useAsyncEffect } from '../main';
+import { act, renderHook } from '@testing-library/react';
 import { StrictMode } from 'react';
+import { useAsyncEffect } from '../main';
+
+jest.useFakeTimers();
 
 describe('useAsyncEffect', () => {
   test('calls the effect after mount in non-strict mode', () => {
@@ -35,23 +36,32 @@ describe('useAsyncEffect', () => {
     expect(fn).toHaveBeenNthCalledWith(4, 1);
   });
 
-  test('invokes the dispose function on unmount', () => {
+  test('invokes the dispose function on unmount', async () => {
     const disposeMock = jest.fn();
-    const hook = renderHook(() => useAsyncEffect(() => disposeMock, []), { wrapper: StrictMode });
+    const hook = renderHook(() => useAsyncEffect(() => Promise.resolve(disposeMock), []), { wrapper: StrictMode });
+
+    await act(() => jest.runAllTimersAsync());
 
     hook.unmount();
 
-    expect(disposeMock).toHaveBeenCalledTimes(2);
+    expect(disposeMock).toHaveBeenCalledTimes(1);
   });
 
-  test('invokes the synchronous dispose function on re-render', () => {
+  test('invokes the dispose function on re-render', async () => {
     const disposeMock = jest.fn();
-    const hook = renderHook(() => useAsyncEffect(() => disposeMock, undefined), { wrapper: StrictMode });
+    const hook = renderHook(() => useAsyncEffect(() => Promise.resolve(disposeMock), undefined), {
+      wrapper: StrictMode,
+    });
+
+    await act(() => jest.runAllTimersAsync());
 
     hook.rerender();
+
+    await act(() => jest.runAllTimersAsync());
+
     hook.rerender();
 
-    expect(disposeMock).toHaveBeenCalledTimes(3);
+    expect(disposeMock).toHaveBeenCalledTimes(2);
   });
 
   test('invokes the async dispose function on re-render', async () => {
@@ -60,7 +70,7 @@ describe('useAsyncEffect', () => {
       wrapper: StrictMode,
     });
 
-    await sleep(0);
+    await jest.runAllTimersAsync();
     hook.rerender();
 
     expect(disposeMock).toHaveBeenCalledTimes(1);
@@ -91,7 +101,7 @@ describe('useAsyncEffect', () => {
       initialProps: [111],
     });
 
-    await sleep(0);
+    await jest.runAllTimersAsync();
     hook.rerender([222]);
 
     expect(disposeMock).toHaveBeenCalledTimes(1);
@@ -137,7 +147,7 @@ describe('useAsyncEffect', () => {
       { wrapper: StrictMode }
     );
 
-    await sleep(0);
+    await jest.runAllTimersAsync();
     hook.rerender();
 
     expect(signals.length).toBe(3);

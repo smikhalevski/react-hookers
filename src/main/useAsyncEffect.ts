@@ -1,7 +1,6 @@
-import { Awaitable } from 'parallel-universe';
 import { DependencyList, EffectCallback, useEffect, useRef } from 'react';
 
-export type AsyncEffectCallback = (signal: AbortSignal) => Awaitable<(() => void) | void>;
+export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => void) | void>;
 
 /**
  * Analogue of `React.useEffect` that can handle a `Promise` returned from the effect callback. Returned `Promise` may

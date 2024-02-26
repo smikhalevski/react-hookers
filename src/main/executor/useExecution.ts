@@ -2,7 +2,7 @@ import { AbortableCallback } from 'parallel-universe';
 import { useEffect } from 'react';
 import { useSemanticMemo } from '../useSemanticMemo';
 import { emptyDeps } from '../utils';
-import type { ExecutionProtocol, ExecutorOptions } from './types';
+import { ExecutionProtocol, ExecutorOptions } from './types';
 import { useExecutorBindings } from './useExecutorBindings';
 import { useExecutorManager } from './useExecutorManager';
 
@@ -31,12 +31,10 @@ export function useExecution<T>(
     isRejected: executor.isRejected,
     isSettled: executor.isSettled,
     isPending: executor.isPending,
-    result: executor.result,
+    value: executor.value,
     reason: executor.reason,
     promise: executor.promise,
     getOrDefault: bindings.getOrDefault,
-    abort: bindings.abort,
-    clear: bindings.clear,
   };
 }
 

@@ -11,7 +11,7 @@ export { useExecutorBindings } from './executor/useExecutorBindings';
 export { useExecutorManager } from './executor/useExecutorManager';
 export { useHandler } from './useHandler';
 export { useLock } from './useLock';
-export { usePolling } from './usePolling';
+export { usePollingExecution } from './executor/usePollingExecution';
 export { useRefCallback } from './useRefCallback';
 export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';

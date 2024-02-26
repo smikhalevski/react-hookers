@@ -1,5 +1,5 @@
-import { type AbortableCallback } from 'parallel-universe';
-import type { ExecutorOptions, ExecutorProtocol } from './types';
+import { AbortableCallback } from 'parallel-universe';
+import { ExecutorOptions, ExecutorProtocol } from './types';
 import { useExecutorBindings } from './useExecutorBindings';
 import { useExecutorManager } from './useExecutorManager';
 
@@ -29,7 +29,7 @@ export function useExecutor<T>(
     isRejected: executor.isRejected,
     isSettled: executor.isSettled,
     isPending: executor.isPending,
-    result: executor.result,
+    value: executor.value,
     reason: executor.reason,
     promise: executor.promise,
     getOrDefault: bindings.getOrDefault,

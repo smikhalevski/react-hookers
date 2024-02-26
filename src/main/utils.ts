@@ -14,9 +14,3 @@ export function isEqual(a: unknown, b: unknown): boolean {
 export function isFunction(value: unknown): value is Function {
   return typeof value === 'function';
 }
-
-export function assert(condition: unknown, message: string): asserts condition is true {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
