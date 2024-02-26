@@ -56,6 +56,6 @@
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "parallel-universe": "^3.1.0"
+    "parallel-universe": "^5.0.0"
   }
 }
