@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { StrictMode } from 'react';
 import { useExecutor } from '../../main';
 
-describe.skip('useExecutor', () => {
+describe('useExecutor', () => {
   test('returns the same methods on every render', () => {
     const hook = renderHook(() => useExecutor('xxx'), { wrapper: StrictMode });
     const executor1 = hook.result.current;

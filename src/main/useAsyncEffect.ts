@@ -43,12 +43,12 @@ function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
     abortController = currAbortController;
 
     new Promise<(() => void) | void>(resolve => resolve(manager.asyncEffect(currAbortController.signal))).then(
-      result => {
+      value => {
         if (abortController === currAbortController) {
           abortController = undefined;
 
-          if (typeof result === 'function') {
-            destructor = result;
+          if (typeof value === 'function') {
+            destructor = value;
           }
         }
       },

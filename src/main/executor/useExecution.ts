@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { useSemanticMemo } from '../useSemanticMemo';
 import { emptyDeps } from '../utils';
 import { ExecutionProtocol, ExecutorOptions } from './types';
-import { useExecutorBindings } from './useExecutorBindings';
 import { useExecutorManager } from './useExecutorManager';
+import { useExecutorProjection } from './useExecutorProjection';
 
 export function useExecution<T>(
   key: unknown,
@@ -13,7 +13,7 @@ export function useExecution<T>(
   options?: ExecutorOptions
 ): ExecutionProtocol<T> {
   const executor = useExecutorManager().getOrCreateExecutor(key);
-  const bindings = useExecutorBindings(executor, cb, options);
+  const projection = useExecutorProjection(executor, cb, options);
   const manager = useSemanticMemo(createExecutionManager, [executor]);
 
   const { isStale } = manager;
@@ -22,7 +22,7 @@ export function useExecution<T>(
 
   useEffect(() => {
     if (isStale) {
-      void bindings.execute(cb);
+      void projection.execute(cb);
     }
   }, deps);
 
@@ -34,7 +34,7 @@ export function useExecution<T>(
     value: executor.value,
     reason: executor.reason,
     promise: executor.promise,
-    getOrDefault: bindings.getOrDefault,
+    getOrDefault: projection.getOrDefault,
   };
 }
 

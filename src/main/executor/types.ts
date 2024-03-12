@@ -5,7 +5,7 @@ export interface ExecutorOptions {
    * If `true` then the executor is initialized in the effect callback, otherwise it is initialized during the initial
    * render.
    */
-  deferred?: boolean;
+  clientOnly?: boolean;
 }
 
 /**

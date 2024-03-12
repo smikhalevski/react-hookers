@@ -7,7 +7,8 @@ import { emptyDeps, noop } from './utils';
  * Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
  *
  * When someone tries to acquire a lock using `acquire` they receive a promise for a release callback that is fulfilled
- * as soon as previous lock owner invokes their release callback.
+ * as soon as previous lock owner invokes their release callback. If `acquire` is called after unmount then the returned
+ * promise is never fulfilled.
  */
 export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void>] {
   const [isLocked, setLocked] = useState(false);

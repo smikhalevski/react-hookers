@@ -1,35 +1,35 @@
-import { type AbortableCallback, AbortablePromise, type Awaitable } from 'parallel-universe';
+import { AbortableCallback, AbortablePromise, Awaitable } from 'parallel-universe';
 import { Executor } from 'parallel-universe';
-import type { EffectCallback } from 'react';
+import { EffectCallback } from 'react';
 import { useInsertionEffect } from '../useInsertionEffect';
 import { useRerender } from '../useRerender';
 import { useSemanticMemo } from '../useSemanticMemo';
 import { isFunction, noop } from '../utils';
-import type { ExecutorOptions, ExecutorProtocol } from './types';
+import { ExecutorOptions, ExecutorProtocol } from './types';
 
 /**
- * Returns the same bindings instance on every render, except if the executor is changed.
+ * Returns the same projection instance on every render, except if the executor is changed.
  *
  * @internal
- * @param executor The executor for which bindings are maintained.
+ * @param executor The executor for which projection are maintained.
  * @param initialValue The initial value, a callback that returns the initial value, a promise that resolves with the
  * initial value, or `undefined` if executor shouldn't be populated. Initial value is used only if an executor isn't
  * settled already or pending.
  * @param options Executor options.
  */
-export function useExecutorBindings(executor: Executor, initialValue: unknown, options?: ExecutorOptions) {
+export function useExecutorProjection(executor: Executor, initialValue: unknown, options?: ExecutorOptions) {
   const rerender = useRerender();
   const manager = useSemanticMemo(
-    () => createExecutorBindingsManager(executor, initialValue, options, rerender),
+    () => createExecutorProjectionManager(executor, initialValue, options, rerender),
     [executor]
   );
 
   useInsertionEffect(manager.effect, [manager]);
 
-  return manager.bindings;
+  return manager.projection;
 }
 
-function createExecutorBindingsManager(
+function createExecutorProjectionManager(
   executor: Executor,
   initialValue: unknown,
   options: ExecutorOptions | undefined,
@@ -41,12 +41,12 @@ function createExecutorBindingsManager(
   let doResolve: ExecutorProtocol['resolve'] = noop;
   let doReject: ExecutorProtocol['reject'] = noop;
 
-  const isDeferred = options?.deferred;
+  const isClientOnly = options?.clientOnly;
 
   const effect: EffectCallback = () => {
     const unsubscribe = executor.subscribe(rerender);
 
-    if (isDeferred) {
+    if (isClientOnly) {
       initExecutor(executor, initialValue);
     }
 
@@ -72,14 +72,14 @@ function createExecutorBindingsManager(
     };
   };
 
-  if (!isDeferred) {
+  if (!isClientOnly) {
     initExecutor(executor, initialValue);
   }
 
   return {
     effect,
 
-    bindings: {
+    projection: {
       getOrDefault(defaultValue: unknown) {
         return executor.getOrDefault(defaultValue);
       },

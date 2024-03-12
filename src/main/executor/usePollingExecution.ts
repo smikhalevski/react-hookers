@@ -22,12 +22,13 @@ export function usePollingExecution<T>(
   ms: number,
   deps?: DependencyList
 ): ExecutionProtocol<T> {
-  const executor = useExecutor<T>(key, undefined, { deferred: true });
+  const executor = useExecutor<T>(key, undefined, { clientOnly: true });
 
   useEffect(
     () => {
-      const promise = repeat(() => executor.execute(cb).catch(noop), ms);
+      const promise = repeat(signal => executor.execute(cb).withSignal(signal).catch(noop), ms);
       promise.catch(noop);
+
       return () => {
         promise.abort();
       };

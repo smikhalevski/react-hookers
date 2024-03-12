@@ -4,7 +4,7 @@ import { StrictMode } from 'react';
 
 jest.useFakeTimers();
 
-describe.skip('usePollingExecution', () => {
+describe('usePollingExecution', () => {
   test('returns the new execution on every render', () => {
     const hook = renderHook(() => usePollingExecution('xxx', () => 'aaa', 10), { wrapper: StrictMode });
     const execution1 = hook.result.current;

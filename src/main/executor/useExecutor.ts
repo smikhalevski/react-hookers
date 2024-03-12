@@ -1,6 +1,6 @@
 import { AbortableCallback } from 'parallel-universe';
 import { ExecutorOptions, ExecutorProtocol } from './types';
-import { useExecutorBindings } from './useExecutorBindings';
+import { useExecutorProjection } from './useExecutorProjection';
 import { useExecutorManager } from './useExecutorManager';
 
 /**
@@ -22,7 +22,7 @@ export function useExecutor<T>(
   options?: ExecutorOptions
 ): ExecutorProtocol<T> {
   const executor = useExecutorManager().getOrCreateExecutor(key);
-  const bindings = useExecutorBindings(executor, initialValue, options);
+  const projection = useExecutorProjection(executor, initialValue, options);
 
   return {
     isFulfilled: executor.isFulfilled,
@@ -32,11 +32,11 @@ export function useExecutor<T>(
     value: executor.value,
     reason: executor.reason,
     promise: executor.promise,
-    getOrDefault: bindings.getOrDefault,
-    clear: bindings.clear,
-    abort: bindings.abort,
-    execute: bindings.execute,
-    resolve: bindings.resolve,
-    reject: bindings.reject,
+    getOrDefault: projection.getOrDefault,
+    clear: projection.clear,
+    abort: projection.abort,
+    execute: projection.execute,
+    resolve: projection.resolve,
+    reject: projection.reject,
   };
 }
