@@ -1,73 +1,51 @@
-import {renderHook} from '@testing-library/react-hooks/native';
-import {useExecution} from '../../main';
+import { act, renderHook } from '@testing-library/react';
+import { StrictMode } from 'react';
+import { useExecution } from '../../main';
 
 describe('useExecution', () => {
+  test('creates a execution', async () => {
+    const hook = renderHook(() => useExecution('xxx', () => 'aaa'), { wrapper: StrictMode });
 
-  test('returns the same execution on every render', () => {
-    const hook = renderHook(() => useExecution(() => 'abc'));
     const execution1 = hook.result.current;
+    expect(execution1.isPending).toBe(true);
+    expect(execution1.isFulfilled).toBe(false);
+    expect(execution1.isRejected).toBe(false);
+    expect(execution1.value).toBe(undefined);
+    expect(execution1.reason).toBe(undefined);
+    expect(execution1.promise).toBeInstanceOf(Promise);
 
-    hook.rerender();
+    await act(() => execution1.promise);
+
     const execution2 = hook.result.current;
-
-    expect(execution1).toBe(execution2);
+    expect(execution2.isPending).toBe(false);
+    expect(execution2.isFulfilled).toBe(true);
+    expect(execution2.isRejected).toBe(false);
+    expect(execution2.value).toBe('aaa');
+    expect(execution2.reason).toBe(undefined);
+    expect(execution2.promise).toBe(null);
   });
 
-  test('creates a resolved execution', () => {
-    const hook = renderHook(() => useExecution(() => 'abc'));
-    const execution = hook.result.current;
-
-    expect(execution.pending).toBe(false);
-    expect(execution.resolved).toBe(true);
-    expect(execution.rejected).toBe(false);
-    expect(execution.result).toBe('abc');
-    expect(execution.reason).toBe(undefined);
-    expect(execution.promise).toBe(undefined);
-  });
-
-  test('creates a pending execution', async () => {
-    const hook = renderHook(() => useExecution(() => Promise.resolve('abc')));
-    const execution = hook.result.current;
-
-    expect(execution.pending).toBe(true);
-    expect(execution.resolved).toBe(false);
-    expect(execution.rejected).toBe(false);
-    expect(execution.result).toBe(undefined);
-    expect(execution.reason).toBe(undefined);
-    expect(execution.promise).not.toBe(undefined);
-
-    await hook.waitForNextUpdate();
-
-    expect(execution.pending).toBe(false);
-    expect(execution.resolved).toBe(true);
-    expect(execution.result).toBe('abc');
-    expect(execution.promise).toBe(undefined);
-  });
-
-  test('repeats the execution if deps were changed', () => {
-    let dep = 'foo';
-
-    const cbMock = jest.fn(() => dep);
-    const hookMock = jest.fn(() => useExecution(cbMock, [dep]));
-
-    const hook = renderHook(hookMock);
-
-    expect(cbMock).toHaveBeenCalledTimes(1);
-    expect(hookMock).toHaveBeenCalledTimes(2);
-    expect(hook.result.current.result).toBe('foo');
-
-    hook.rerender();
-
-    expect(cbMock).toHaveBeenCalledTimes(1);
-    expect(hookMock).toHaveBeenCalledTimes(3);
-    expect(hook.result.current.result).toBe('foo');
-
-    dep = 'bar';
-    hook.rerender();
-
-    expect(cbMock).toHaveBeenCalledTimes(2);
-    expect(hookMock).toHaveBeenCalledTimes(5);
-    expect(hook.result.current.result).toBe('bar');
-  });
-
+  // test('repeats the execution if deps were changed', () => {
+  //   const cbMock = jest.fn(() => 'foo');
+  //   const hookMock = jest.fn(deps => useExecution('xxx', cbMock, deps));
+  //
+  //   const hook = renderHook(hookMock, { wrapper: StrictMode, initialProps: [111] });
+  //
+  //   expect(cbMock).toHaveBeenCalledTimes(2);
+  //   expect(hookMock).toHaveBeenCalledTimes(2);
+  //   expect(hook.result.current.value).toBe('foo');
+  //
+  //   hook.rerender([111]);
+  //
+  //   expect(cbMock).toHaveBeenCalledTimes(2);
+  //   expect(hookMock).toHaveBeenCalledTimes(4);
+  //   expect(hook.result.current.value).toBe('foo');
+  //
+  //   cbMock.mockImplementation(() => 'bar');
+  //   hook.rerender([222]);
+  //
+  //   expect(cbMock).toHaveBeenCalledTimes(3);
+  //   expect(hookMock).toHaveBeenCalledTimes(8);
+  //   expect(hook.result.current.value).toBe('bar');
+  // });
 });

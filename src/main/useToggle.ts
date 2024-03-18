@@ -1,33 +1,56 @@
-import {Dispatch, SetStateAction, useRef, useState} from 'react';
+import { Dispatch, EffectCallback, SetStateAction, useRef, useState } from 'react';
+import { useInsertionEffect } from './useInsertionEffect';
+import { emptyDeps, noop } from './utils';
 
-export type ToggleProtocol = [value: boolean, enable: () => void, disable: () => void, toggle: (nextValue?: boolean) => void];
+/**
+ * The protocol returned by the {@link useToggle} hook.
+ */
+export type ToggleProtocol = [
+  isEnabled: boolean,
+  enable: () => void,
+  disable: () => void,
+  toggle: (isEnabled?: boolean) => void,
+];
 
 /**
  * Returns a boolean flag and functions to toggle its value.
+ *
+ * @param initialEnabled `true` if then the toggle is initially enabled. Otherwise, toggle is disabled.
  */
-export function useToggle(initialValue = false): Readonly<ToggleProtocol> {
-  const [value, setValue] = useState(initialValue);
+export function useToggle(initialEnabled = false): ToggleProtocol {
+  const [isEnabled, setEnabled] = useState(initialEnabled);
+  const manager = (useRef<ReturnType<typeof createToggleManager>>().current ||= createToggleManager(setEnabled));
 
-  const protocol = useRef<ToggleProtocol>().current ||= createToggleProtocol(setValue);
+  useInsertionEffect(manager.effect, emptyDeps);
 
-  protocol[0] = value;
-
-  return protocol;
+  return [isEnabled, manager.enable, manager.disable, manager.toggle];
 }
 
-function createToggleProtocol(setValue: Dispatch<SetStateAction<boolean>>): ToggleProtocol {
-
-  const enable = () => {
-    setValue(true);
+function createToggleManager(setEnabled: Dispatch<SetStateAction<boolean>>) {
+  const toggle = (isEnabled: boolean | undefined) => {
+    setEnabled(typeof isEnabled === 'boolean' ? isEnabled : isEnabled => !isEnabled);
   };
 
-  const disable = () => {
-    setValue(false);
+  let doToggle = toggle;
+
+  const effect: EffectCallback = () => {
+    doToggle = toggle;
+
+    return () => {
+      doToggle = noop;
+    };
   };
 
-  const toggle = (value?: boolean): void => {
-    setValue(value != null ? value : (value) => !value);
+  return {
+    effect,
+    enable() {
+      doToggle(true);
+    },
+    disable() {
+      doToggle(false);
+    },
+    toggle(isEnabled?: boolean) {
+      doToggle(isEnabled);
+    },
   };
-
-  return [false, enable, disable, toggle];
 }

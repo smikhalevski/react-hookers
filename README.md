@@ -1,8 +1,8 @@
-# react-hookers [![build](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml/badge.svg?branch=master&event=push)](https://github.com/smikhalevski/react-hookers/actions/workflows/master.yml)
-
-<a href="#readme">
-  <img alt="Bender" width="250" src="https://raw.githubusercontent.com/smikhalevski/react-hookers/master/bender.png">
-</a>
+<p align="center">
+    <a href="#readme">
+      <img alt="React Hookers" width="500" src="./bender.png">
+    </a>
+</p>
 
 ```sh
 npm install --save-prod react-hookers
@@ -16,7 +16,7 @@ npm install --save-prod react-hookers
 - [`useSemanticMemo`](#usesemanticmemo)
 - [`useExecution`](#useexecution)
 - [`useExecutor`](#useexecutor)
-- [`usePolling`](#usepolling)
+- [`usePollingExecution`](#usepolling)
 - [`useToggle`](#usetoggle)
 
 [**Ref**](#ref)
@@ -29,30 +29,29 @@ npm install --save-prod react-hookers
 - [`useAsyncEffect`](#useasynceffect)
 - [`useAsyncEffectOnce`](#useasynceffectonce)
 - [`useEffectOnce`](#useeffectonce)
-- [`useIsomorphicLayoutEffect`](#useisomorphiclayouteffect)
 - [`useRenderEffect`](#userendereffect)
 - [`useRenderEffectOnce`](#userendereffectonce)
 
 [**Rendering**](#rendering)
 
 - [`useRerender`](#usererender)
-- [`useMountSignal`](#usemountsignal)
-- [`useRerenderSchedule`](#usererenderschedule)
+- [`useMountSignalRef`](#usemountsignal)
+- [`useRerenderInterval`](#usererenderschedule)
 
 [**Time**](#time)
 
 - [`useTime`](#usetime)
 - [`useAnimationFrame`](#useanimationframe)
 - [`useMetronome`](#usemetronome)
-- [`useSchedule`](#useschedule)
-- [`useDebounce`](#usedebounce)
+- [`useInterval`](#useschedule)
+- [`useTimeout`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 
 [**User flow**](#user-flow)
 
 - [`useBlocker`](#useblocker)
 - [`useLock`](#uselock)
-- [`useGuard`](#useguard)
+- [`usePrecondition`](#useprecondition)
 
 # State
 
@@ -106,43 +105,32 @@ executor.execute(async (signal) => doSomething());
 ```
 
 You can manage how executors are created with
-[`ExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html) and
-[`SsrExecutorProvider`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
+[`ExecutorManager`](https://smikhalevski.github.io/react-hookers/classes/ExecutorManager.html) and
+[`ExecutorManager`](https://smikhalevski.github.io/react-hookers/classes/SsrExecutorManager.html).
 
 ```tsx
 import {renderToString} from 'react-dom';
-import {SsrExecutorProvider, ExecutorProviderContext} from 'react-hookers';
+import {ExecutorManager, ExecutorManagerContext} from 'react-hookers';
 
-const mySsrExecutorProvider = new SsrExecutorProvider();
+const mySsrExecutorProvider = new ExecutorManager();
 
 renderToString(
-    <ExecutorProviderContext.Provider value={mySsrExecutorProvider}>
+    <ExecutorManagerContext.Provider value={mySsrExecutorProvider}>
       {/* */}
-    </ExecutorProviderContext.Provider>
+    </ExecutorManagerContext.Provider>
 );
 
 // Waits for all executors to complete pending executions
-await mySsrExecutorProvider.waitForExecutorsToComplete();
+await mySsrExecutorProvider.waitForExecutorsToSettle();
 ```
 
-You can create a custom `useExecutor` hook that is bound to a custom context.
-
-```ts
-import {createContext} from 'react';
-import {createExecutorHook, ExecutorProvider} from 'react-hookers';
-
-const MyExecutorProviderContext = createContext(new ExecutorProvider());
-
-const useMyExecutor = createExecutorHook(MyExecutorProviderContext);
-```
-
-### `usePolling`
+### `usePollingExecution`
 
 Returns an [`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html) instance that is
 periodically updated.
 
 ```tsx
-const execution = usePolling(
+const execution = usePollingExecution(
     async (signal) => doSomething(a, b),
     100, // Interval delay
     [a, b],
@@ -231,24 +219,6 @@ useEffectOnce(() => {
 });
 ```
 
-### `useIsomorphicLayoutEffect`
-
-Same as [`React.useLayoutEffect`](https://reactjs.org/docs/hooks-reference.html#uselayouteffect) but doesn't produce
-warnings during SSR.
-
-```ts
-useIsomorphicLayoutEffect(
-    () => {
-      doSomething(a, b);
-
-      return () => {
-        cleanup();
-      };
-    },
-    [a, b],
-);
-```
-
 ### `useRenderEffect`
 
 Analogue of [`React.useEffect`](https://reactjs.org/docs/hooks-reference.html#useffect) that invokes an `effect`
@@ -301,23 +271,23 @@ const rerender = useRerender();
 rerender();
 ```
 
-### `useMountSignal`
+### `useMountSignalRef`
 
 Returns `AbortSignal` that is aborted when the component is unmounted.
 
 ```ts
-const signal = useMountSignal();
+const signal = useMountSignalRef();
 
 // Returns true if component was unmounted
 signal.aborted;
 ```
 
-### `useRerenderSchedule`
+### `useRerenderInterval`
 
 Re-renders the component on periodic interval.
 
 ```ts
-useRerenderSchedule(500);
+useRerenderInterval(500);
 ```
 
 # Time
@@ -375,7 +345,7 @@ stop();
 
 ### `useMetronome`
 
-Returns a [`Metronome`](https://smikhalevski.github.io/react-hookers/classes/Metronome.html) instance. Use this to
+Returns a [`Interval`](https://smikhalevski.github.io/react-hookers/classes/Metronome.html) instance. Use this to
 schedule callback invocation.
 
 ```ts
@@ -406,7 +376,7 @@ renderToString(
 );
 ```
 
-### `useSchedule`
+### `useInterval`
 
 The replacement for `setInterval` that is cancelled when component is unmounted. Schedules a function to be repeatedly
 called with a fixed time delay between each call.
@@ -414,7 +384,7 @@ called with a fixed time delay between each call.
 All functions that were scheduled with the same delay are invoked synchronously.
 
 ```ts
-const [schedule, cancel] = useSchedule();
+const [schedule, cancel] = useInterval();
 
 // Cancels currently scheduled callback and schedules the new one
 schedule(
@@ -429,12 +399,12 @@ schedule(
 cancel();
 ```
 
-### `useDebounce`
+### `useTimeout`
 
 The replacement for `setTimeout` that is cancelled when component is unmounted.
 
 ```ts
-const [debounce, cancel] = useDebounce();
+const [debounce, cancel] = useTimeout();
 
 // Cancels pending debounce and schedules the new call
 debounce(
@@ -463,29 +433,28 @@ const [currState, nextState, setState] = useDebouncedState(500);
 
 ### `useBlocker`
 
-Returns the [`Blocker`](https://smikhalevski.github.io/parallel-universe/classes/Blocker.html) instance that provides
-mechanism for blocking async processes and unblocking them from an external context.
+Blocks UI from the async context. Uses [`Blocker`](https://github.com/smikhalevski/parallel-universe#blocker)
+internally.
 
-```tsx
-const blocker = useBlocker<boolean>();
+```ts
+const [blocked, block, unblock] = useBlocker<boolean>();
 
-// Returns Promise that is resolved with the value passed to blocker.unblock(value)
-blocker.block(); // → Promise<boolean>
+// Returns Promise that is resolved with the value passed to unblock(value)
+block(); // → Promise<boolean>
 
 // Unblocks the blocker with given value
-blocker.unblock(true);
+unblock(true);
 ```
 
 ### `useLock`
 
-Returns the [`Lock`](https://smikhalevski.github.io/parallel-universe/classes/Lock.html) instance that can be used to
-synchronize async processes.
+Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
 
-```tsx
-const lock = useLock();
+```ts
+const [locked, acquire] = useLock();
 
 async function doSomething() {
-  const release = await lock.acquire();
+  const release = await acquire();
   try {
     // Long process starts here
   } finally {
@@ -499,28 +468,40 @@ doSomething();
 doSomething();
 ```
 
-### `useGuard`
+### `usePrecondition`
 
-Returns the [`Guard`](https://smikhalevski.github.io/react-hookers/classes/Guard.html) instance that extracts shared
-conditional logic from event handlers and callbacks.
+Extracts shared conditional logic from event handlers and callbacks.
 
 ```tsx
-const guard = useGuard(
-    async () => checkCondition(),
+const [afterLogin] = usePreconditon(() => alert('You must be logged in to precced'));
 
+<button onClick={afterLogin(() => withdrawFunds())}>
+  {'Withdraw funds'}
+</button>
+```
+
+You can use async checks and a fallback that would be invoked if the check failed:
+
+```ts
+const [afterLogin, loginPending] = usePreconditon(
+    
+    async (signal) => checkUserIsLoggedIn(signal),
+
+    // This callback is invoked if the guarded callback was called
+    // when user wasn't logged in
     async (replay) => {
-      // Invoked if the guarded callback was called when condition wasn't met
-      doFallback();
+      await requestUserToLogIn();
 
-      // Replay the guarded callback invokation
-      // (original arguments are bound to the replay callback)
+      // After user logged in, you can replay the last invokation
+      // of the guarded callback 
       replay();
     },
 );
 
-const myGuardedCallback = guard.guardCallback((a, b) => {
+// Protect the callback with the precondition
+const myCallbackAfterLogin = afterLogin((a, b) => {
   myCallback(a, b);
 });
 
-myGuardedCallback(a, b);
+myCallbackAfterLogin(a, b);
 ```
