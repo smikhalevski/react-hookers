@@ -22,7 +22,7 @@ export function usePollingExecution<T>(
   ms: number,
   deps?: DependencyList
 ): ExecutionProtocol<T> {
-  const executor = useExecutor<T>(key, undefined, { clientOnly: true });
+  const executor = useExecutor<T>(key, undefined, { runsOn: 'client' });
 
   useEffect(
     () => {

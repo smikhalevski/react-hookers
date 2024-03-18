@@ -42,12 +42,12 @@ function createExecutorProjectionManager(
   let doResolve: ExecutorProtocol['resolve'] = noop;
   let doReject: ExecutorProtocol['reject'] = noop;
 
-  const isClientOnly = options?.clientOnly;
+  const isClient = options !== undefined && options.runsOn !== 'server';
 
   const effect: EffectCallback = () => {
     const unsubscribe = executor.subscribe(rerender);
 
-    if (isClientOnly) {
+    if (isClient) {
       initExecutor(executor, initialValue);
     }
 
@@ -73,7 +73,7 @@ function createExecutorProjectionManager(
     };
   };
 
-  if (!isClientOnly) {
+  if (!isClient) {
     initExecutor(executor, initialValue);
   }
 
