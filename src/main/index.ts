@@ -1,9 +1,11 @@
 export { ExecutorManager } from './executor/ExecutorManager';
 export { ExecutorManagerContext } from './executor/ExecutorManagerContext';
+export { useDetachedExecution } from './executor/useDetachedExecution';
+export { useDetachedExecutor } from './executor/useDetachedExecutor';
 export { useExecution } from './executor/useExecution';
 export { useExecutor } from './executor/useExecutor';
 export { useExecutorManager } from './executor/useExecutorManager';
-export { useExecutorProjection } from './executor/useExecutorProjection';
+export { useExecutorBinding } from './executor/useExecutorBinding';
 export { usePollingExecution } from './executor/usePollingExecution';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAsyncEffect } from './useAsyncEffect';

@@ -1,6 +1,5 @@
 import { Blocker } from 'parallel-universe';
-import { EffectCallback, useRef, useState } from 'react';
-import { useInsertionEffect } from './useInsertionEffect';
+import { EffectCallback, useEffect, useRef, useState } from 'react';
 import { emptyDeps, noop } from './utils';
 
 /**
@@ -19,7 +18,7 @@ export function useBlocker() {
   const [isBlocked, setBlocked] = useState(false);
   const manager = (useRef<ReturnType<typeof createBlockerManager>>().current ||= createBlockerManager(setBlocked));
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return [isBlocked, manager.block, manager.unblock];
 }

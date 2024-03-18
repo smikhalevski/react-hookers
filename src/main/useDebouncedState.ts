@@ -1,5 +1,4 @@
-import { Dispatch, EffectCallback, SetStateAction, useRef, useState } from 'react';
-import { useInsertionEffect } from './useInsertionEffect';
+import { Dispatch, EffectCallback, SetStateAction, useEffect, useRef, useState } from 'react';
 import { emptyDeps, isFunction, noop } from './utils';
 
 /**
@@ -40,7 +39,7 @@ export function useDebouncedState<S>(ms: number, initialState?: S | (() => S)) {
     setNextState
   ));
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return [currState, nextState, manager.setState];
 }

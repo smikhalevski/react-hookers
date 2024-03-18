@@ -1,5 +1,4 @@
-import { useRef } from 'react';
-import { useInsertionEffect } from './useInsertionEffect';
+import { useEffect, useRef } from 'react';
 
 /**
  * Returns an always-stable function identity that becomes a no-op after unmount.
@@ -24,7 +23,7 @@ export function useHandler<A extends any[], T>(
 export function useHandler<A extends any[], T>(cb: ((...args: A) => T) | null | undefined) {
   const ref = useRef(cb);
 
-  useInsertionEffect(() => {
+  useEffect(() => {
     ref.current = cb;
 
     return () => {

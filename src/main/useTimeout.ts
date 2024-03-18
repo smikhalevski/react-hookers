@@ -1,7 +1,6 @@
-import { EffectCallback, useRef } from 'react';
+import { EffectCallback, useEffect, useRef } from 'react';
 import { Schedule } from './types';
 import { emptyDeps, noop } from './utils';
-import { useInsertionEffect } from './useInsertionEffect';
 
 /**
  * Returns the protocol that delays invoking a callback until after a timeout.
@@ -13,7 +12,7 @@ import { useInsertionEffect } from './useInsertionEffect';
 export function useTimeout(): [schedule: Schedule, cancel: () => void] {
   const manager = (useRef<ReturnType<typeof createTimeoutManager>>().current ||= createTimeoutManager());
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return [manager.schedule as Schedule, manager.cancel];
 }

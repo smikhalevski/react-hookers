@@ -1,6 +1,5 @@
-import { EffectCallback } from 'react';
+import { EffectCallback, useEffect } from 'react';
 import { Schedule } from './types';
-import { useInsertionEffect } from './useInsertionEffect';
 import { useSemanticMemo } from './useSemanticMemo';
 import { emptyDeps, noop } from './utils';
 
@@ -18,7 +17,7 @@ import { emptyDeps, noop } from './utils';
 export function useInterval(): [schedule: Schedule, cancel: () => void] {
   const manager = useSemanticMemo(createIntervalManager);
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return [manager.schedule, manager.cancel];
 }

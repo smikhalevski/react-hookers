@@ -17,27 +17,9 @@ import { useExecutorManager } from './useExecutorManager';
  * @see {@link useExecution}
  */
 export function useExecutor<T>(
-  key: string,
+  key: unknown,
   initialValue?: AbortableCallback<T> | PromiseLike<T> | T,
   options?: ExecutorOptions
 ): ExecutorProtocol<T> {
-  const executor = useExecutorManager().getOrCreate(key);
-  const projection = useExecutorProjection(executor, initialValue, options);
-
-  return {
-    isFulfilled: executor.isFulfilled,
-    isRejected: executor.isRejected,
-    isSettled: executor.isSettled,
-    isPending: executor.isPending,
-    isInvalidated: executor.isInvalidated,
-    value: executor.value,
-    reason: executor.reason,
-    promise: executor.promise,
-    getOrDefault: projection.getOrDefault,
-    clear: projection.clear,
-    abort: projection.abort,
-    execute: projection.execute,
-    resolve: projection.resolve,
-    reject: projection.reject,
-  };
+  return useExecutorProjection(useExecutorManager().getOrCreate(key), initialValue, options);
 }

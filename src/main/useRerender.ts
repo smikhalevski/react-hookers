@@ -1,6 +1,5 @@
-import { EffectCallback, useReducer, useRef } from 'react';
+import { EffectCallback, useEffect, useReducer, useRef } from 'react';
 import { emptyDeps, noop } from './utils';
-import { useInsertionEffect } from './useInsertionEffect';
 
 /**
  * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
@@ -13,7 +12,7 @@ export function useRerender(): () => void {
 
   const manager = (useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(dispatch));
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return manager.rerender;
 }

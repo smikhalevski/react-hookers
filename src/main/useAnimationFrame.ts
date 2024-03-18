@@ -1,6 +1,5 @@
-import { EffectCallback, useRef } from 'react';
+import { EffectCallback, useEffect, useRef } from 'react';
 import { emptyDeps, noop } from './utils';
-import { useInsertionEffect } from './useInsertionEffect';
 
 /**
  * Returns the protocol that starts and stops an animation loop.
@@ -15,7 +14,7 @@ import { useInsertionEffect } from './useInsertionEffect';
 export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void, stop: () => void] {
   const manager = (useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager());
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return [manager.start, manager.stop];
 }

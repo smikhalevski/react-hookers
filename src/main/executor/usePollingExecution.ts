@@ -17,7 +17,7 @@ import { ExecutionProtocol } from './types';
  * @template T The result of polling execution.
  */
 export function usePollingExecution<T>(
-  key: string,
+  key: unknown,
   cb: AbortableCallback<T>,
   ms: number,
   deps?: DependencyList

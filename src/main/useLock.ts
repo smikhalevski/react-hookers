@@ -1,6 +1,5 @@
 import { Lock } from 'parallel-universe';
-import { EffectCallback, useRef, useState } from 'react';
-import { useInsertionEffect } from './useInsertionEffect';
+import { EffectCallback, useEffect, useRef, useState } from 'react';
 import { emptyDeps, noop } from './utils';
 
 /**
@@ -14,7 +13,7 @@ export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void
   const [isLocked, setLocked] = useState(false);
   const manager = (useRef<ReturnType<typeof createLockManager>>().current ||= createLockManager(setLocked));
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return [isLocked, manager.acquire];
 }

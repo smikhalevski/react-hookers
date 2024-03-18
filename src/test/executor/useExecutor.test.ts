@@ -45,7 +45,7 @@ describe('useExecutor', () => {
   });
 
   test('creates an executor with synchronous function initial result', () => {
-    const hook = renderHook(() => useExecutor(() => 111), { wrapper: StrictMode });
+    const hook = renderHook(() => useExecutor('xxx', () => 111), { wrapper: StrictMode });
     const executor = hook.result.current;
 
     expect(executor.isPending).toBe(false);
@@ -57,7 +57,7 @@ describe('useExecutor', () => {
   });
 
   test('creates an executor with asynchronous function initial result', async () => {
-    const hookMock = jest.fn(() => useExecutor(() => Promise.resolve(111)));
+    const hookMock = jest.fn(() => useExecutor('xxx', () => Promise.resolve(111)));
     const hook = renderHook(hookMock, { wrapper: StrictMode });
     const executor1 = hook.result.current;
 

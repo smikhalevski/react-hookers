@@ -1,5 +1,4 @@
-import { Dispatch, EffectCallback, SetStateAction, useRef, useState } from 'react';
-import { useInsertionEffect } from './useInsertionEffect';
+import { Dispatch, EffectCallback, SetStateAction, useEffect, useRef, useState } from 'react';
 import { emptyDeps, noop } from './utils';
 
 /**
@@ -21,7 +20,7 @@ export function useToggle(initialEnabled = false): ToggleProtocol {
   const [isEnabled, setEnabled] = useState(initialEnabled);
   const manager = (useRef<ReturnType<typeof createToggleManager>>().current ||= createToggleManager(setEnabled));
 
-  useInsertionEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyDeps);
 
   return [isEnabled, manager.enable, manager.disable, manager.toggle];
 }
