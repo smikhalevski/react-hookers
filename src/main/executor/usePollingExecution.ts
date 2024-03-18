@@ -17,7 +17,7 @@ import { ExecutionProtocol } from './types';
  * @template T The result of polling execution.
  */
 export function usePollingExecution<T>(
-  key: unknown,
+  key: string,
   cb: AbortableCallback<T>,
   ms: number,
   deps?: DependencyList
@@ -41,6 +41,7 @@ export function usePollingExecution<T>(
     isRejected: executor.isRejected,
     isSettled: executor.isSettled,
     isPending: executor.isPending,
+    isInvalidated: executor.isInvalidated,
     value: executor.value,
     reason: executor.reason,
     promise: executor.promise,

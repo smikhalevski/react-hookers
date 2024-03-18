@@ -33,7 +33,7 @@ function createIntervalManager() {
     doSchedule = (cb, ms, args) => {
       doCancel();
 
-      abort = getOrCreateScheduler(Math.max(ms | 0, 0))(() => {
+      abort = getOrCreateScheduler(ms)(() => {
         cb(...args);
       });
     };
@@ -77,7 +77,7 @@ function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
 
   const callbacks: Array<() => void> = [];
 
-  const invokeCallbacks = () => {
+  const next = () => {
     for (const cb of callbacks) {
       try {
         cb();
@@ -88,12 +88,12 @@ function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
       }
     }
 
-    timeout = setTimeout(invokeCallbacks, ms);
+    timeout = setTimeout(next, ms);
   };
 
   scheduler = cb => {
     if (callbacks.indexOf(cb) === -1 && callbacks.push(cb) === 1) {
-      timeout = setTimeout(invokeCallbacks, ms);
+      timeout = setTimeout(next, ms);
     }
 
     return () => {

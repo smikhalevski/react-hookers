@@ -8,7 +8,8 @@ import { isFunction, noop } from '../utils';
 import { ExecutorOptions, ExecutorProtocol } from './types';
 
 /**
- * Returns the same projection instance on every render, except if the executor is changed.
+ * Returns the same projection instance on every render, except if the executor is changed. All projection methods
+ * become no-op after the hook is unmounted.
  *
  * @internal
  * @param executor The executor for which projection are maintained.

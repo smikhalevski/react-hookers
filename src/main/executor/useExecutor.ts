@@ -17,11 +17,11 @@ import { useExecutorManager } from './useExecutorManager';
  * @see {@link useExecution}
  */
 export function useExecutor<T>(
-  key: unknown,
+  key: string,
   initialValue?: AbortableCallback<T> | PromiseLike<T> | T,
   options?: ExecutorOptions
 ): ExecutorProtocol<T> {
-  const executor = useExecutorManager().getOrCreateExecutor(key);
+  const executor = useExecutorManager().getOrCreate(key);
   const projection = useExecutorProjection(executor, initialValue, options);
 
   return {
@@ -29,6 +29,7 @@ export function useExecutor<T>(
     isRejected: executor.isRejected,
     isSettled: executor.isSettled,
     isPending: executor.isPending,
+    isInvalidated: executor.isInvalidated,
     value: executor.value,
     reason: executor.reason,
     promise: executor.promise,

@@ -1,6 +1,5 @@
 export { ExecutorManager } from './executor/ExecutorManager';
 export { ExecutorManagerContext } from './executor/ExecutorManagerContext';
-export { ManagedExecutor } from './executor/ManagedExecutor';
 export { useExecution } from './executor/useExecution';
 export { useExecutor } from './executor/useExecutor';
 export { useExecutorManager } from './executor/useExecutorManager';

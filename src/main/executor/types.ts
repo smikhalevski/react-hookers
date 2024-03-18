@@ -35,6 +35,11 @@ export interface ExecutionProtocol<T = any> {
   isPending: boolean;
 
   /**
+   * `true` if {@link invalidate} was called on a settled executor and a new settlement hasn't occurred yet.
+   */
+  isInvalidated: boolean;
+
+  /**
    * The result value or `undefined` if failed.
    */
   value: T | undefined;
@@ -97,6 +102,8 @@ export interface ExecutorProtocol<T = any> extends ExecutionProtocol<T> {
   /**
    * Instantly aborts pending execution and preserves available results. Value (or error) returned from pending
    * callback is ignored. The signal passed to the executed callback is aborted.
+   *
+   * @param reason The abort reason passed to the pending promise.
    */
-  abort(): void;
+  abort(reason?: unknown): void;
 }

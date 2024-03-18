@@ -7,22 +7,22 @@ import { useExecutorManager } from './useExecutorManager';
 import { useExecutorProjection } from './useExecutorProjection';
 
 export function useExecution<T>(
-  key: unknown,
+  key: string,
   cb: AbortableCallback<T>,
   deps = emptyDeps,
   options?: ExecutorOptions
 ): ExecutionProtocol<T> {
-  const executor = useExecutorManager().getOrCreateExecutor(key);
+  const executor = useExecutorManager().getOrCreate(key);
   const projection = useExecutorProjection(executor, cb, options);
   const manager = useSemanticMemo(createExecutionManager, [executor]);
 
-  const { isStale } = manager;
+  const { isInitialRender } = manager;
 
-  manager.isStale = true;
+  manager.isInitialRender = false;
 
   useEffect(() => {
-    if (isStale) {
-      void projection.execute(cb);
+    if (!isInitialRender) {
+      projection.execute(cb);
     }
   }, deps);
 
@@ -31,6 +31,7 @@ export function useExecution<T>(
     isRejected: executor.isRejected,
     isSettled: executor.isSettled,
     isPending: executor.isPending,
+    isInvalidated: executor.isInvalidated,
     value: executor.value,
     reason: executor.reason,
     promise: executor.promise,
@@ -39,5 +40,5 @@ export function useExecution<T>(
 }
 
 function createExecutionManager() {
-  return { isStale: false };
+  return { isInitialRender: true };
 }
