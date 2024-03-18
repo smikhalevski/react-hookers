@@ -44,7 +44,7 @@ npm install --save-prod react-hookers
 - [`useAnimationFrame`](#useanimationframe)
 - [`useMetronome`](#usemetronome)
 - [`useInterval`](#useschedule)
-- [`useDebounce`](#usedebounce)
+- [`useTimeout`](#usedebounce)
 - [`useDebouncedState`](#usedebouncedstate)
 
 [**User flow**](#user-flow)
@@ -399,12 +399,12 @@ schedule(
 cancel();
 ```
 
-### `useDebounce`
+### `useTimeout`
 
 The replacement for `setTimeout` that is cancelled when component is unmounted.
 
 ```ts
-const [debounce, cancel] = useDebounce();
+const [debounce, cancel] = useTimeout();
 
 // Cancels pending debounce and schedules the new call
 debounce(

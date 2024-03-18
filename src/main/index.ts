@@ -9,7 +9,6 @@ export { usePollingExecution } from './executor/usePollingExecution';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAsyncEffect } from './useAsyncEffect';
 export { useBlocker } from './useBlocker';
-export { useDebounce } from './useDebounce';
 export { useDebouncedState } from './useDebouncedState';
 export { useHandler } from './useHandler';
 export { useLock } from './useLock';
@@ -19,6 +18,7 @@ export { useRerenderInterval } from './useRerenderInterval';
 export { useInterval } from './useInterval';
 export { useSemanticCallback } from './useSemanticCallback';
 export { useSemanticMemo } from './useSemanticMemo';
+export { useTimeout } from './useTimeout';
 export { useToggle } from './useToggle';
 
 export type { ExecutorOptions, ExecutorProtocol, ExecutionProtocol } from './executor/types';

@@ -15,7 +15,7 @@ export type ToggleProtocol = [
 /**
  * Returns a boolean flag and functions to toggle its value.
  *
- * @param initialEnabled `true` if teh toggle is initially enabled, or `false` otherwise.
+ * @param initialEnabled `true` if then the toggle is initially enabled. Otherwise, toggle is disabled.
  */
 export function useToggle(initialEnabled = false): ToggleProtocol {
   const [isEnabled, setEnabled] = useState(initialEnabled);

@@ -1,12 +1,12 @@
 import { act, renderHook } from '@testing-library/react';
-import { useDebounce } from '../main';
+import { useTimeout } from '../main';
 import { StrictMode } from 'react';
 
 jest.useFakeTimers();
 
-describe('useDebounce', () => {
+describe('useTimeout', () => {
   test('returns a new array instance on each render', () => {
-    const hook = renderHook(() => useDebounce(), { wrapper: StrictMode });
+    const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
     const protocol = hook.result.current;
 
     hook.rerender();
@@ -15,7 +15,7 @@ describe('useDebounce', () => {
   });
 
   test('returns the same callbacks on every call', () => {
-    const hook = renderHook(() => useDebounce(), { wrapper: StrictMode });
+    const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
 
     const [debounce1, cancel1] = hook.result.current;
     hook.rerender();
@@ -27,7 +27,7 @@ describe('useDebounce', () => {
 
   test('invokes the callback', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useDebounce(), { wrapper: StrictMode });
+    const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
 
     const [debounce] = hook.result.current;
 
@@ -41,7 +41,7 @@ describe('useDebounce', () => {
   test('consequent calls override the invoked callback', async () => {
     const cbMock1 = jest.fn();
     const cbMock2 = jest.fn();
-    const hook = renderHook(() => useDebounce(), { wrapper: StrictMode });
+    const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
 
     const [debounce] = hook.result.current;
 
@@ -56,7 +56,7 @@ describe('useDebounce', () => {
 
   test('does not invoke the callback after unmount', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useDebounce(), { wrapper: StrictMode });
+    const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
 
     const [debounce] = hook.result.current;
 
@@ -71,7 +71,7 @@ describe('useDebounce', () => {
 
   test('the callback invocation is canceled', async () => {
     const cbMock = jest.fn();
-    const hook = renderHook(() => useDebounce(), { wrapper: StrictMode });
+    const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
 
     const [debounce, cancel] = hook.result.current;
 

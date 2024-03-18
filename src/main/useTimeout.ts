@@ -10,22 +10,22 @@ import { useInsertionEffect } from './useInsertionEffect';
  *
  * The delay should be started/stopped after the component is mounted. Before that, it is a no-op.
  */
-export function useDebounce(): [debounce: Schedule, cancel: () => void] {
-  const manager = (useRef<ReturnType<typeof createDebounceManager>>().current ||= createDebounceManager());
+export function useTimeout(): [schedule: Schedule, cancel: () => void] {
+  const manager = (useRef<ReturnType<typeof createTimeoutManager>>().current ||= createTimeoutManager());
 
   useInsertionEffect(manager.effect, emptyDeps);
 
-  return [manager.debounce as Schedule, manager.cancel];
+  return [manager.schedule as Schedule, manager.cancel];
 }
 
-function createDebounceManager() {
-  let doDebounce: (args: Parameters<Schedule>) => void = noop;
+function createTimeoutManager() {
+  let doSchedule: (args: Parameters<Schedule>) => void = noop;
   let doCancel = noop;
 
   const effect: EffectCallback = () => {
     let timeout: NodeJS.Timeout;
 
-    doDebounce = args => {
+    doSchedule = args => {
       doCancel();
       timeout = setTimeout(...args);
     };
@@ -36,14 +36,14 @@ function createDebounceManager() {
 
     return () => {
       doCancel();
-      doDebounce = doCancel = noop;
+      doSchedule = doCancel = noop;
     };
   };
 
   return {
     effect,
-    debounce(...args: Parameters<Schedule>): void {
-      doDebounce(args);
+    schedule(...args: Parameters<Schedule>): void {
+      doSchedule(args);
     },
     cancel(): void {
       doCancel();

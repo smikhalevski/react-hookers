@@ -33,7 +33,7 @@ function createIntervalManager() {
     doSchedule = (cb, ms, args) => {
       doCancel();
 
-      abort = getGlobalInterval(Math.max(ms | 0, 0))(() => {
+      abort = getOrCreateScheduler(Math.max(ms | 0, 0))(() => {
         cb(...args);
       });
     };
@@ -64,22 +64,20 @@ function createIntervalManager() {
   };
 }
 
-type Interval = (cb: () => void) => () => void;
+const schedulers = new Map<number, ReturnType<typeof getOrCreateScheduler>>();
 
-const globalIntervals = new Map<number, Interval>();
+function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
+  let scheduler = schedulers.get(ms);
 
-function getGlobalInterval(ms: number): Interval {
-  let interval = globalIntervals.get(ms);
-
-  if (interval !== undefined) {
-    return interval;
+  if (scheduler !== undefined) {
+    return scheduler;
   }
+
+  let timeout: NodeJS.Timeout;
 
   const callbacks: Array<() => void> = [];
 
-  let timeout: NodeJS.Timeout | number;
-
-  const tick = () => {
+  const invokeCallbacks = () => {
     for (const cb of callbacks) {
       try {
         cb();
@@ -90,25 +88,25 @@ function getGlobalInterval(ms: number): Interval {
       }
     }
 
-    timeout = setTimeout(tick, ms);
+    timeout = setTimeout(invokeCallbacks, ms);
   };
 
-  interval = cb => {
+  scheduler = cb => {
     if (callbacks.indexOf(cb) === -1 && callbacks.push(cb) === 1) {
-      timeout = setTimeout(tick, ms);
+      timeout = setTimeout(invokeCallbacks, ms);
     }
 
     return () => {
       const index = callbacks.indexOf(cb);
 
       if (index !== -1 && (callbacks.splice(index, 1), callbacks.length === 0)) {
-        globalIntervals.delete(ms);
+        schedulers.delete(ms);
         clearTimeout(timeout);
       }
     };
   };
 
-  globalIntervals.set(ms, interval);
+  schedulers.set(ms, scheduler);
 
-  return interval;
+  return scheduler;
 }
