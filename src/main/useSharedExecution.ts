@@ -12,7 +12,7 @@ export function useSharedExecution<T>(
 ): Executor<T> {
   const executor = useSharedExecutor(key, cb, options);
 
-  useExecutionEffect(executor, deps);
+  useExecutionEffect(executor, cb, deps);
 
   return executor;
 }

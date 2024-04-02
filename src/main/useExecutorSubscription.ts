@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import type { ExecutorOptions } from './types';
 import { useRerender } from './useRerender';
 import { useSemanticMemo } from './useSemanticMemo';
-import { isFunction } from './utils';
+import { isFunction, noop } from './utils';
 
 export function useExecutorSubscription<T>(
   executor: Executor<T>,
@@ -32,7 +32,7 @@ function initExecutor(executor: Executor, initialValue: any): void {
     return;
   }
   if (isFunction(initialValue)) {
-    void executor.execute(initialValue);
+    executor.execute(initialValue).catch(noop);
     return;
   }
   if (initialValue !== undefined) {

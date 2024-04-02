@@ -15,7 +15,7 @@ export function useExecution<T>(
   const executor = useSemanticMemo(() => manager.createExecutor(), [manager]);
 
   useExecutorSubscription(executor, cb, options);
-  useExecutionEffect(executor, deps);
+  useExecutionEffect(executor, cb, deps);
 
   useEffect(
     () => () => {
