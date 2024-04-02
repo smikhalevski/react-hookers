@@ -28,7 +28,7 @@ export function useExecutorSubscription<T>(
 }
 
 function initExecutor(executor: Executor, initialValue: any): void {
-  if (executor.isSettled || executor.isPending) {
+  if ((executor.isSettled && !executor.isStale) || executor.isPending) {
     return;
   }
   if (isFunction(initialValue)) {
