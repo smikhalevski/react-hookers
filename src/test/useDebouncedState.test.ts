@@ -40,7 +40,7 @@ describe('useDebouncedState', () => {
 
     const [currState2, nextState2] = hook.result.current;
 
-    expect(hookMock).toHaveBeenCalledTimes(6);
+    expect(hookMock).toHaveBeenCalledTimes(4);
     expect(currState2).toBe('aaa');
     expect(nextState2).toBe('bbb');
 
@@ -48,7 +48,7 @@ describe('useDebouncedState', () => {
 
     const [currState3, nextState3] = hook.result.current;
 
-    expect(hookMock).toHaveBeenCalledTimes(8);
+    expect(hookMock).toHaveBeenCalledTimes(6);
     expect(currState3).toBe('bbb');
     expect(nextState3).toBe('bbb');
   });
@@ -79,7 +79,7 @@ describe('useDebouncedState', () => {
 
     act(() => jest.runOnlyPendingTimers());
 
-    expect(hookMock).toHaveBeenCalledTimes(10);
+    expect(hookMock).toHaveBeenCalledTimes(8);
   });
 
   test('consequent sets cause the current state to be updated only once', async () => {
@@ -96,7 +96,7 @@ describe('useDebouncedState', () => {
     const [currState] = hook.result.current;
 
     expect(currState).toBe('ccc');
-    expect(hookMock).toHaveBeenCalledTimes(10);
+    expect(hookMock).toHaveBeenCalledTimes(8);
   });
 
   test('does not invoke the callback after unmount', async () => {
