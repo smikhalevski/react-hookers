@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { usePollingExecution } from '../../main';
+import { usePollingExecution } from '../main';
 import { StrictMode } from 'react';
 
 jest.useFakeTimers();

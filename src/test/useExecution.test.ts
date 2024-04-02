@@ -1,10 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { StrictMode } from 'react';
-import { useExecution } from '../../main';
+import { useSharedExecution } from '../main';
 
-describe('useExecution', () => {
+describe('useSharedExecution', () => {
   test('creates a execution', async () => {
-    const hook = renderHook(() => useExecution('xxx', () => 'aaa'), { wrapper: StrictMode });
+    const hook = renderHook(() => useSharedExecution('xxx', () => 'aaa'), { wrapper: StrictMode });
 
     const execution1 = hook.result.current;
     expect(execution1.isPending).toBe(true);
@@ -27,7 +27,7 @@ describe('useExecution', () => {
 
   // test('repeats the execution if deps were changed', () => {
   //   const cbMock = jest.fn(() => 'foo');
-  //   const hookMock = jest.fn(deps => useExecution('xxx', cbMock, deps));
+  //   const hookMock = jest.fn(deps => useSharedExecution('xxx', cbMock, deps));
   //
   //   const hook = renderHook(hookMock, { wrapper: StrictMode, initialProps: [111] });
   //

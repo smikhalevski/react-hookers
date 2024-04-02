@@ -14,8 +14,8 @@ npm install --save-prod react-hookers
 
 - [`useSemanticCallback`](#usesemanticcallback)
 - [`useSemanticMemo`](#usesemanticmemo)
-- [`useExecution`](#useexecution)
-- [`useExecutor`](#useexecutor)
+- [`useSharedExecution`](#useexecution)
+- [`useSharedExecutor`](#useexecutor)
 - [`usePollingExecution`](#usepolling)
 - [`useToggle`](#usetoggle)
 
@@ -79,26 +79,26 @@ const memoizedValue = useSemanticMemo(
 );
 ```
 
-### `useExecution`
+### `useSharedExecution`
 
 Executes a callback when dependencies are changed and returns an
 [`Execution`](https://smikhalevski.github.io/parallel-universe/interfaces/Execution.html) instance that describes the
 result and status.
 
 ```tsx
-const execution = useExecution(
+const execution = useSharedExecution(
     async (signal) => doSomething(a, b),
     [a, b],
 );
 ```
 
-### `useExecutor`
+### `useSharedExecutor`
 
 Creates a new [`Executor`](https://smikhalevski.github.io/parallel-universe/classes/Executor.html) instance that
 provides means to call, abort and monitor async callbacks.
 
 ```tsx
-const executor = useExecutor(initialValue);
+const executor = useSharedExecutor(initialValue);
 
 // Starts a new execution; if there's pending execution, it is aborted via signal
 executor.execute(async (signal) => doSomething());

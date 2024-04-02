@@ -1,10 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { StrictMode } from 'react';
-import { useExecutor } from '../../main';
+import { useSharedExecutor } from '../main';
 
-describe('useExecutor', () => {
+describe('useSharedExecutor', () => {
   test('returns the same methods on every render', () => {
-    const hook = renderHook(() => useExecutor('xxx'), { wrapper: StrictMode });
+    const hook = renderHook(() => useSharedExecutor('xxx'), { wrapper: StrictMode });
     const executor1 = hook.result.current;
 
     hook.rerender();
@@ -21,7 +21,7 @@ describe('useExecutor', () => {
   });
 
   test('creates a blank Executor instance', () => {
-    const hook = renderHook(() => useExecutor('xxx'), { wrapper: StrictMode });
+    const hook = renderHook(() => useSharedExecutor('xxx'), { wrapper: StrictMode });
     const executor = hook.result.current;
 
     expect(executor.isPending).toBe(false);
@@ -33,7 +33,7 @@ describe('useExecutor', () => {
   });
 
   test('creates an executor with non-function initial result', () => {
-    const hook = renderHook(() => useExecutor('xxx', 111), { wrapper: StrictMode });
+    const hook = renderHook(() => useSharedExecutor('xxx', 111), { wrapper: StrictMode });
     const executor = hook.result.current;
 
     expect(executor.isPending).toBe(false);
@@ -45,7 +45,7 @@ describe('useExecutor', () => {
   });
 
   test('creates an executor with synchronous function initial result', () => {
-    const hook = renderHook(() => useExecutor('xxx', () => 111), { wrapper: StrictMode });
+    const hook = renderHook(() => useSharedExecutor('xxx', () => 111), { wrapper: StrictMode });
     const executor = hook.result.current;
 
     expect(executor.isPending).toBe(false);
@@ -57,7 +57,7 @@ describe('useExecutor', () => {
   });
 
   test('creates an executor with asynchronous function initial result', async () => {
-    const hookMock = jest.fn(() => useExecutor('xxx', () => Promise.resolve(111)));
+    const hookMock = jest.fn(() => useSharedExecutor('xxx', () => Promise.resolve(111)));
     const hook = renderHook(hookMock, { wrapper: StrictMode });
     const executor1 = hook.result.current;
 
@@ -82,7 +82,7 @@ describe('useExecutor', () => {
   });
 
   test('re-renders after resolve', () => {
-    const hookMock = jest.fn(() => useExecutor('xxx'));
+    const hookMock = jest.fn(() => useSharedExecutor('xxx'));
     const hook = renderHook(hookMock, { wrapper: StrictMode });
 
     act(() => void hook.result.current.resolve(111));
@@ -91,7 +91,7 @@ describe('useExecutor', () => {
   });
 
   test('re-renders after reject', () => {
-    const hookMock = jest.fn(() => useExecutor('xxx'));
+    const hookMock = jest.fn(() => useSharedExecutor('xxx'));
     const hook = renderHook(hookMock, { wrapper: StrictMode });
 
     act(() => void hook.result.current.reject(111));
@@ -102,7 +102,7 @@ describe('useExecutor', () => {
   // ------------------------------------------------------------------
 
   // test('re-renders after synchronous execute', () => {
-  //   const hookMock = jest.fn(() => useExecutor());
+  //   const hookMock = jest.fn(() => useSharedExecutor());
   //   const hook = renderHook(hookMock, { wrapper: StrictMode });
   //
   //   act(() => void hook.result.current.execute(() => 111));
@@ -111,7 +111,7 @@ describe('useExecutor', () => {
   // });
   //
   // test('re-renders after asynchronous execute', async () => {
-  //   const hookMock = jest.fn(() => useExecutor());
+  //   const hookMock = jest.fn(() => useSharedExecutor());
   //   const hook = renderHook(hookMock, { wrapper: StrictMode });
   //
   //   act(() => void hook.result.current.execute(() => Promise.resolve(111)));
@@ -131,7 +131,7 @@ describe('useExecutor', () => {
   //       children: props.children,
   //     });
   //
-  //   renderHook(() => useExecutor(), { wrapper: Context });
+  //   renderHook(() => useSharedExecutor(), { wrapper: Context });
   //
   //   expect(executorManager.createExecutor).toHaveBeenCalledTimes(1);
   // });

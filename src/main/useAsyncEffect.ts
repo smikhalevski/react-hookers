@@ -12,7 +12,7 @@ export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => vo
  * callback. The previous effect is cleaned up before executing the next effect.
  * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.
  *
- * @see {@link useExecutor}
+ * @see {@link useSharedExecutor}
  */
 export function useAsyncEffect(effect: AsyncEffectCallback, deps?: DependencyList): void {
   const manager = (useRef<ReturnType<typeof createAsyncEffectManager>>().current = createAsyncEffectManager(effect));
