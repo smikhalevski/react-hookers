@@ -1,7 +1,5 @@
-import { EffectCallback, useEffect } from 'react';
-import { Schedule } from './types';
-import { useSemanticMemo } from './useSemanticMemo';
-import { emptyDeps, noop } from './utils';
+import { EffectCallback, useEffect, useMemo } from 'react';
+import { emptyDeps, noop, type Schedule } from './utils';
 
 /**
  * The replacement for `window.setInterval` that schedules a function to be repeatedly called with a fixed time delay
@@ -15,7 +13,7 @@ import { emptyDeps, noop } from './utils';
  * @see {@link useRerenderInterval}
  */
 export function useInterval(): [schedule: Schedule, cancel: () => void] {
-  const manager = useSemanticMemo(createIntervalManager);
+  const manager = useMemo(createIntervalManager, emptyDeps);
 
   useEffect(manager.effect, emptyDeps);
 
@@ -80,10 +78,11 @@ function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
     for (const cb of callbacks) {
       try {
         cb();
-      } catch (e) {
+      } catch (error) {
         setTimeout(() => {
-          throw e;
-        });
+          // Force uncaught exception
+          throw error;
+        }, 0);
       }
     }
 

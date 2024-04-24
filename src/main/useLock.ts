@@ -21,20 +21,22 @@ export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void
 function createLockManager(setLocked: (isLocked: boolean) => void) {
   const lock = new Lock();
 
-  const acquire = lock.acquire.bind(lock);
+  const acquire: Lock['acquire'] = () => {
+    setLocked(true);
+
+    return lock.acquire().then(release => () => {
+      release();
+      setLocked(lock.isLocked);
+    });
+  };
 
   let doAcquire = acquire;
 
   const effect: EffectCallback = () => {
     doAcquire = acquire;
 
-    const unsubscribe = lock.subscribe(() => {
-      setLocked(lock.isLocked);
-    });
-
     return () => {
       doAcquire = () => new Promise(noop);
-      unsubscribe();
     };
   };
 

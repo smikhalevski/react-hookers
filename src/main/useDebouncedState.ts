@@ -1,5 +1,5 @@
 import { Dispatch, EffectCallback, SetStateAction, useEffect, useRef, useState } from 'react';
-import { emptyDeps, isFunction, noop } from './utils';
+import { emptyDeps, noop } from './utils';
 
 /**
  * The protocol returned by the {@link useDebouncedState} hook.
@@ -61,8 +61,8 @@ function createDebouncedStateManager<S>(
 
     doSetState = state => {
       setNextState(nextState => {
-        if (isFunction(state)) {
-          state = state(nextState);
+        if (typeof state === 'function') {
+          state = (state as Function)(nextState) as S;
         }
         clearTimeout(timeout);
         timeout = setTimeout(setCurrState, ms, () => state);

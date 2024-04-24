@@ -1,6 +1,5 @@
 import { EffectCallback, useEffect, useRef } from 'react';
-import { Schedule } from './types';
-import { emptyDeps, noop } from './utils';
+import { emptyDeps, noop, type Schedule } from './utils';
 
 /**
  * Returns the protocol that delays invoking a callback until after a timeout.

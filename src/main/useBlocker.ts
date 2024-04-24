@@ -26,8 +26,15 @@ export function useBlocker() {
 function createBlockerManager(setBlocked: (blocked: boolean) => void) {
   const blocker = new Blocker<any>();
 
-  const block = blocker.block.bind(blocker);
-  const unblock = blocker.unblock.bind(blocker);
+  const block: Blocker<unknown>['block'] = () => {
+    setBlocked(true);
+    return blocker.block();
+  };
+
+  const unblock: Blocker<unknown>['unblock'] = value => {
+    setBlocked(false);
+    blocker.unblock(value);
+  };
 
   let doBlock = block;
   let doUnblock = unblock;
@@ -36,15 +43,9 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void) {
     doBlock = block;
     doUnblock = unblock;
 
-    const unsubscribe = blocker.subscribe(() => {
-      setBlocked(blocker.isBlocked);
-    });
-
     return () => {
       doBlock = () => new Promise(noop);
       doUnblock = noop;
-
-      unsubscribe();
     };
   };
 
@@ -53,8 +54,8 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void) {
     block() {
       return doBlock();
     },
-    unblock(result: unknown) {
-      doUnblock(result);
+    unblock(value: unknown) {
+      doUnblock(value);
     },
   };
 }
