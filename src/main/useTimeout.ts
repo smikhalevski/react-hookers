@@ -6,7 +6,7 @@ import { emptyDeps, noop, type Schedule } from './utils';
  *
  * The delayed invocation is automatically cancelled on unmount.
  *
- * The delay should be started/stopped after the component is mounted. Before that, it is a no-op.
+ * The timeout should be started/stopped after the component is mounted. Before that, it is a no-op.
  */
 export function useTimeout(): [schedule: Schedule, cancel: () => void] {
   const manager = (useRef<ReturnType<typeof createTimeoutManager>>().current ||= createTimeoutManager());
