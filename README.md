@@ -16,6 +16,7 @@ npm install --save-prod react-hookers
 - [`useDebouncedState`](#usedebouncedstate)
 - [`useHandler`](#usehandler)
 - [`useInterval`](#useinterval)
+- [`useIntervalCallback`](#useintervalcallback)
 - [`useLock`](#uselock)
 - [`useRefCallback`](#userefcallback)
 - [`useRerender`](#usererender)
@@ -128,6 +129,19 @@ useEffect(() => {
   // Stops invoking the callback that was last provided to schedule()
   cancel();
 }, []);
+```
+
+# `useIntervalCallback`
+
+Invokes a callback periodically while the component is mounted.
+
+All functions that were scheduled with the same delay are invoked synchronously across all components that use this
+hook.
+
+```ts
+useIntervalCallback(() => {
+  // Runs every 500 ms
+}, 500);
 ```
 
 # `useLock`
