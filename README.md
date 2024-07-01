@@ -18,6 +18,7 @@ npm install --save-prod react-hookers
 - [`useInterval`](#useinterval)
 - [`useIntervalCallback`](#useintervalcallback)
 - [`useLock`](#uselock)
+- [`useMediaQuery`](#usemediaquery)
 - [`useRefCallback`](#userefcallback)
 - [`useRerender`](#usererender)
 - [`useRerenderInterval`](#usererenderinterval)
@@ -170,6 +171,21 @@ doSomething();
 doSomething();
 ```
 
+# `useMediaQuery`
+
+Returns `true` if the window
+[matches the media query](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia).
+
+```ts
+const isMatched = useMediaQuery('(min-width: 600px)');
+```
+
+Provide an initial value that is returned during SSR and the initial client render:
+
+```ts
+const isMatched = useMediaQuery('(min-width: 600px)', true);
+```
+
 # `useRefCallback`
 
 Returns a ref object and a callback to update the value of this ref.
@@ -194,6 +210,8 @@ rerender();
 # `useRerenderInterval`
 
 Re-renders the component on periodic interval.
+
+All components that use the same interval, are re-rendered synchronously.
 
 ```ts
 useRerenderInterval(500);
