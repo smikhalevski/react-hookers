@@ -6,6 +6,7 @@ export { useHandler } from './useHandler';
 export { useInterval } from './useInterval';
 export { useIntervalCallback } from './useIntervalCallback';
 export { useLock } from './useLock';
+export { useMediaQuery } from './useMediaQuery';
 export { useRefCallback } from './useRefCallback';
 export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
