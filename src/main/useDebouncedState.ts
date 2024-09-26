@@ -1,5 +1,5 @@
 import { Dispatch, EffectCallback, SetStateAction, useEffect, useRef, useState } from 'react';
-import { emptyDeps, noop } from './utils';
+import { emptyArray, noop } from './utils';
 
 /**
  * The protocol returned by the {@link useDebouncedState} hook.
@@ -39,7 +39,7 @@ export function useDebouncedState<S>(ms: number, initialState?: S | (() => S)) {
     setNextState
   ));
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyArray);
 
   return [currState, nextState, manager.setState];
 }
