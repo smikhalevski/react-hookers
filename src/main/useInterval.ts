@@ -1,5 +1,5 @@
 import { EffectCallback, useEffect, useMemo } from 'react';
-import { emptyDeps, noop, type Schedule } from './utils';
+import { emptyArray, noop, type Schedule } from './utils';
 
 /**
  * The replacement for `window.setInterval` that schedules a function to be repeatedly called with a fixed time delay
@@ -13,9 +13,9 @@ import { emptyDeps, noop, type Schedule } from './utils';
  * @see {@link useRerenderInterval}
  */
 export function useInterval(): [schedule: Schedule, cancel: () => void] {
-  const manager = useMemo(createIntervalManager, emptyDeps);
+  const manager = useMemo(createIntervalManager, emptyArray);
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyArray);
 
   return [manager.schedule, manager.cancel];
 }

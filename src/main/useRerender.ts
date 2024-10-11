@@ -1,5 +1,6 @@
-import { EffectCallback, useEffect, useReducer, useRef } from 'react';
-import { emptyDeps, noop } from './utils';
+import { EffectCallback, useEffect, useReducer } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray, noop } from './utils';
 
 /**
  * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
@@ -10,32 +11,37 @@ import { emptyDeps, noop } from './utils';
 export function useRerender(): () => void {
   const [, dispatch] = useReducer(reduceCount, 0);
 
-  const manager = (useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(dispatch));
+  const manager = useFunction(createRerenderManager, dispatch);
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.onComponentMounted, emptyArray);
 
   return manager.rerender;
 }
 
-function reduceCount(count: number) {
+function reduceCount(count: number): number {
   return count + 1;
 }
 
-function createRerenderManager(dispatch: () => void) {
-  let doRerender = dispatch;
+interface RerenderManager {
+  rerender: () => void;
+  onComponentMounted: EffectCallback;
+}
 
-  const effect: EffectCallback = () => {
-    doRerender = dispatch;
+function createRerenderManager(dispatch: () => void): RerenderManager {
+  let handleRerender = dispatch;
+
+  const handleComponentMounted: EffectCallback = () => {
+    handleRerender = dispatch;
 
     return () => {
-      doRerender = noop;
+      handleRerender = noop;
     };
   };
 
   return {
-    effect,
     rerender(): void {
-      doRerender();
+      handleRerender();
     },
+    onComponentMounted: handleComponentMounted,
   };
 }

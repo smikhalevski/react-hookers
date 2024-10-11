@@ -1,5 +1,6 @@
-import { EffectCallback, useEffect, useRef } from 'react';
-import { emptyDeps, noop, type Schedule } from './utils';
+import { EffectCallback, useEffect } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray, noop, type Schedule } from './utils';
 
 /**
  * Returns the protocol that delays invoking a callback until after a timeout.
@@ -9,9 +10,9 @@ import { emptyDeps, noop, type Schedule } from './utils';
  * The timeout should be started/stopped after the component is mounted. Before that, it is a no-op.
  */
 export function useTimeout(): [schedule: Schedule, cancel: () => void] {
-  const manager = (useRef<ReturnType<typeof createTimeoutManager>>().current ||= createTimeoutManager());
+  const manager = useFunction(createTimeoutManager);
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyArray);
 
   return [manager.schedule as Schedule, manager.cancel];
 }

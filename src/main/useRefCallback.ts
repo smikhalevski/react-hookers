@@ -1,5 +1,5 @@
 import { MutableRefObject, RefCallback, RefObject, useCallback, useRef } from 'react';
-import { emptyDeps } from './utils';
+import { emptyArray } from './utils';
 
 /**
  * Returns a ref object and a callback to update the value of this ref.
@@ -27,7 +27,7 @@ export function useRefCallback(initialValue?: unknown) {
   const ref = useRef(initialValue);
   const refCallback = useCallback<RefCallback<unknown>>(value => {
     ref.current = value;
-  }, emptyDeps);
+  }, emptyArray);
 
   return [ref, refCallback] as const;
 }

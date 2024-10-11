@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useFunctionEffect } from './useFunctionEffect';
+import { useHandler } from './useHandler';
 import { useInterval } from './useInterval';
 
 /**
@@ -16,11 +17,6 @@ import { useInterval } from './useInterval';
  */
 export function useIntervalCallback<A extends any[]>(cb: (...args: A) => void, ms: number, ...args: A): void {
   const [schedule] = useInterval();
-  const ref = useRef(cb);
 
-  ref.current = cb;
-
-  useEffect(() => {
-    schedule(ref.current, ms, ...args);
-  }, [ms, ...args]);
+  useFunctionEffect(schedule, useHandler<any, void>(cb), ms, ...args);
 }

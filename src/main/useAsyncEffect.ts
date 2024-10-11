@@ -1,4 +1,5 @@
-import { DependencyList, EffectCallback, useEffect, useRef } from 'react';
+import { DependencyList, EffectCallback, useEffect } from 'react';
+import { useFunction } from './useFunction';
 
 /**
  * The callback provided to {@link useAsyncEffect}.
@@ -21,34 +22,40 @@ export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => vo
  * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.
  */
 export function useAsyncEffect(effect: AsyncEffectCallback, deps?: DependencyList): void {
-  const manager = (useRef<ReturnType<typeof createAsyncEffectManager>>().current = createAsyncEffectManager(effect));
+  const manager = useFunction(createAsyncEffectManager);
 
-  manager.asyncEffect = effect;
+  manager.effect = effect;
 
-  useEffect(manager.effect, deps);
+  useEffect(manager.onDepsChanged, deps);
 }
 
-function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
+interface AsyncEffectManager {
+  effect: AsyncEffectCallback;
+  onDepsChanged: EffectCallback;
+}
+
+function createAsyncEffectManager(): AsyncEffectManager {
   let abortController: AbortController | undefined;
   let destructor: (() => void) | void;
 
-  const cleanup = (): void => {
+  const cleanup = () => {
     if (abortController !== undefined) {
       abortController.abort();
       abortController = undefined;
     }
+
     if (destructor !== undefined) {
       destructor();
       destructor = undefined;
     }
   };
 
-  const effect: EffectCallback = () => {
+  const handleDepsChanged: EffectCallback = () => {
     const currAbortController = new AbortController();
 
     abortController = currAbortController;
 
-    new Promise<(() => void) | void>(resolve => resolve(manager.asyncEffect(currAbortController.signal))).then(
+    new Promise<(() => void) | void>(resolve => resolve((0, manager.effect)(currAbortController.signal))).then(
       value => {
         if (abortController === currAbortController) {
           abortController = undefined;
@@ -69,9 +76,9 @@ function createAsyncEffectManager(asyncEffect: AsyncEffectCallback) {
     return cleanup;
   };
 
-  const manager = {
-    asyncEffect,
-    effect,
+  const manager: AsyncEffectManager = {
+    effect: undefined!,
+    onDepsChanged: handleDepsChanged,
   };
 
   return manager;

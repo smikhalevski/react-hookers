@@ -1,5 +1,6 @@
-import { EffectCallback, useEffect, useReducer, useRef } from 'react';
-import { emptyDeps } from './utils';
+import { EffectCallback, useEffect, useReducer } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray } from './utils';
 
 /**
  * Returns `true` if the window
@@ -11,14 +12,11 @@ import { emptyDeps } from './utils';
 export function useMediaQuery(query: string, initialValue?: boolean): boolean {
   const [, dispatch] = useReducer(reduceCount, 0);
 
-  const manager = (useRef<ReturnType<typeof createMediaQueryManager>>().current ||= createMediaQueryManager(
-    dispatch,
-    initialValue
-  ));
+  const manager = useFunction(createMediaQueryManager, dispatch, initialValue);
 
   manager.setQuery(query);
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyArray);
 
   return manager.checkMatches();
 }

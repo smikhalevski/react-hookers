@@ -1,6 +1,7 @@
 import { Lock } from 'parallel-universe';
-import { EffectCallback, useEffect, useRef, useState } from 'react';
-import { emptyDeps, noop } from './utils';
+import { EffectCallback, useEffect, useState } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray, noop } from './utils';
 
 /**
  * Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
@@ -11,9 +12,9 @@ import { emptyDeps, noop } from './utils';
  */
 export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void>] {
   const [isLocked, setLocked] = useState(false);
-  const manager = (useRef<ReturnType<typeof createLockManager>>().current ||= createLockManager(setLocked));
+  const manager = useFunction(createLockManager, setLocked);
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.effect, emptyArray);
 
   return [isLocked, manager.acquire];
 }
@@ -21,7 +22,7 @@ export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void
 function createLockManager(setLocked: (isLocked: boolean) => void) {
   const lock = new Lock();
 
-  const acquire: Lock['acquire'] = () => {
+  const acquire = () => {
     setLocked(true);
 
     return lock.acquire().then(release => () => {

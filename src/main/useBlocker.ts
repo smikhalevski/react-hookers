@@ -1,6 +1,7 @@
 import { Blocker } from 'parallel-universe';
-import { EffectCallback, useEffect, useRef, useState } from 'react';
-import { emptyDeps, noop } from './utils';
+import { EffectCallback, useEffect, useState } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray, noop } from './utils';
 
 /**
  * Block an async flow and unblock it from an external context.
@@ -16,46 +17,53 @@ export function useBlocker<T>(): [isBlocked: boolean, block: () => Promise<T>, u
 
 export function useBlocker() {
   const [isBlocked, setBlocked] = useState(false);
-  const manager = (useRef<ReturnType<typeof createBlockerManager>>().current ||= createBlockerManager(setBlocked));
+  const manager = useFunction(createBlockerManager, setBlocked);
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.onComponentMounted, emptyArray);
 
   return [isBlocked, manager.block, manager.unblock];
 }
 
-function createBlockerManager(setBlocked: (blocked: boolean) => void) {
-  const blocker = new Blocker<any>();
+interface BlockerManager {
+  block: () => Promise<unknown>;
+  unblock: (result: unknown) => void;
+  onComponentMounted: EffectCallback;
+}
 
-  const block: Blocker<unknown>['block'] = () => {
+function createBlockerManager(setBlocked: (blocked: boolean) => void): BlockerManager {
+  const blocker = new Blocker<unknown>();
+
+  let isMounted = false;
+
+  const block = () => {
+    if (!isMounted) {
+      return new Promise(noop);
+    }
+
     setBlocked(true);
     return blocker.block();
   };
 
-  const unblock: Blocker<unknown>['unblock'] = value => {
+  const unblock = (value: unknown) => {
+    if (!isMounted) {
+      return;
+    }
+
     setBlocked(false);
     blocker.unblock(value);
   };
 
-  let doBlock = block;
-  let doUnblock = unblock;
-
-  const effect: EffectCallback = () => {
-    doBlock = block;
-    doUnblock = unblock;
+  const handleComponentMounted: EffectCallback = () => {
+    isMounted = true;
 
     return () => {
-      doBlock = () => new Promise(noop);
-      doUnblock = noop;
+      isMounted = false;
     };
   };
 
   return {
-    effect,
-    block() {
-      return doBlock();
-    },
-    unblock(value: unknown) {
-      doUnblock(value);
-    },
+    block,
+    unblock,
+    onComponentMounted: handleComponentMounted,
   };
 }
