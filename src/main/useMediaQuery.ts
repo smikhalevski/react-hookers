@@ -1,63 +1,47 @@
-import { EffectCallback, useEffect, useReducer, useRef } from 'react';
-import { emptyDeps } from './utils';
+import { EffectCallback, useEffect, useState } from 'react';
+import { useFunction } from './useFunction';
 
 /**
  * Returns `true` if the window
  * [matches the media query](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia), or `false` otherwise.
  *
  * @param query The media query to match.
- * @param initialValue If non-`undefined` then returned during SSR and the initial client render.
+ * @param initialValue A value returned during the initial render.
  */
-export function useMediaQuery(query: string, initialValue?: boolean): boolean {
-  const [, dispatch] = useReducer(reduceCount, 0);
+export function useMediaQuery(query: string, initialValue = false): boolean {
+  const [isMatched, setMatched] = useState(initialValue);
 
-  const manager = (useRef<ReturnType<typeof createMediaQueryManager>>().current ||= createMediaQueryManager(
-    dispatch,
-    initialValue
-  ));
+  const manager = useFunction(createMediaQueryManager, setMatched);
 
-  manager.setQuery(query);
+  manager.query = query;
 
-  useEffect(manager.effect, emptyDeps);
+  useEffect(manager.onQueryUpdated, [query]);
 
-  return manager.checkMatches();
+  return isMatched;
 }
 
-function reduceCount(count: number) {
-  return count + 1;
+interface MediaQueryManager {
+  query: string;
+  onQueryUpdated: EffectCallback;
 }
 
-function createMediaQueryManager(dispatch: () => void, initialValue: boolean | undefined) {
-  let prevQuery: string;
-  let mediaQueryList: MediaQueryList | undefined;
+function createMediaQueryManager(setMatched: (isMatched: boolean) => void): MediaQueryManager {
+  const handleQueryUpdated: EffectCallback = () => {
+    const mediaQueryList = window.matchMedia(manager.query);
 
-  const setQuery = (query: string) => {
-    if (prevQuery === query || typeof window === 'undefined') {
-      return;
-    }
+    mediaQueryList.addEventListener('change', handleQueryUpdated);
 
-    prevQuery = query;
+    setMatched(mediaQueryList.matches);
 
-    mediaQueryList?.removeEventListener('change', dispatch);
-
-    mediaQueryList = window.matchMedia(query);
-
-    mediaQueryList.addEventListener('change', dispatch);
+    return () => mediaQueryList.removeEventListener('change', handleMediaQueryChange);
   };
 
-  const effect: EffectCallback = () => {
-    initialValue = undefined;
+  const handleMediaQueryChange = (event: MediaQueryListEvent) => setMatched(event.matches);
 
-    return () => {
-      mediaQueryList?.removeEventListener('change', dispatch);
-    };
+  const manager: MediaQueryManager = {
+    query: undefined!,
+    onQueryUpdated: handleQueryUpdated,
   };
 
-  return {
-    effect,
-    setQuery,
-    checkMatches(): boolean {
-      return initialValue !== undefined ? initialValue : mediaQueryList !== undefined && mediaQueryList.matches;
-    },
-  };
+  return manager;
 }

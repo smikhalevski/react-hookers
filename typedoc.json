@@ -9,17 +9,13 @@
   "readme": "none",
   "tsconfig": "./tsconfig.json",
   "customCss": "./node_modules/typedoc-custom-css/custom.css",
-  "entryPoints": [
-    "./src/main/index.ts"
-  ],
-  "externalSymbolLinkMappings": {
-    "global": {
-      "AbortSignal": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController",
-      "Promise": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
-    },
-    "typescript": {
-      "AbortSignal": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController",
-      "Promise": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
-    }
-  }
+  "entryPoints": ["./src/main/index.ts"],
+  "navigation": {
+    "includeCategories": true,
+    "includeFolders": false
+  },
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
+  "plugin": ["typedoc-plugin-mdn-links"]
 }

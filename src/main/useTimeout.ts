@@ -1,5 +1,6 @@
-import { EffectCallback, useEffect, useRef } from 'react';
-import { emptyDeps, noop, type Schedule } from './utils';
+import { EffectCallback, useLayoutEffect } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray, type Schedule } from './utils';
 
 /**
  * Returns the protocol that delays invoking a callback until after a timeout.
@@ -9,42 +10,47 @@ import { emptyDeps, noop, type Schedule } from './utils';
  * The timeout should be started/stopped after the component is mounted. Before that, it is a no-op.
  */
 export function useTimeout(): [schedule: Schedule, cancel: () => void] {
-  const manager = (useRef<ReturnType<typeof createTimeoutManager>>().current ||= createTimeoutManager());
+  const manager = useFunction(createTimeoutManager);
 
-  useEffect(manager.effect, emptyDeps);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
-  return [manager.schedule as Schedule, manager.cancel];
+  return [manager.schedule, manager.cancel];
 }
 
-function createTimeoutManager() {
-  let doSchedule: (args: Parameters<Schedule>) => void = noop;
-  let doCancel = noop;
+interface TimeoutManager {
+  schedule: Schedule;
+  cancel: () => void;
+  onMounted: EffectCallback;
+}
 
-  const effect: EffectCallback = () => {
-    let timeout: NodeJS.Timeout;
+function createTimeoutManager(): TimeoutManager {
+  let isMounted = false;
+  let timer: NodeJS.Timeout;
 
-    doSchedule = args => {
-      doCancel();
-      timeout = setTimeout(...args);
-    };
+  const schedule: Schedule = (cb, ms, ...args) => {
+    if (!isMounted) {
+      return;
+    }
 
-    doCancel = () => {
-      clearTimeout(timeout);
-    };
+    cancel();
+
+    timer = setTimeout(cb, ms, ...args);
+  };
+
+  const cancel = () => clearTimeout(timer);
+
+  const handleMounted: EffectCallback = () => {
+    isMounted = true;
 
     return () => {
-      doCancel();
-      doSchedule = doCancel = noop;
+      isMounted = false;
+      cancel();
     };
   };
 
   return {
-    effect,
-    schedule(...args: Parameters<Schedule>): void {
-      doSchedule(args);
-    },
-    cancel(): void {
-      doCancel();
-    },
+    schedule,
+    cancel,
+    onMounted: handleMounted,
   };
 }

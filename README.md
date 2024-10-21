@@ -19,7 +19,6 @@ npm install --save-prod react-hookers
 - [`useIntervalCallback`](#useintervalcallback)
 - [`useLock`](#uselock)
 - [`useMediaQuery`](#usemediaquery)
-- [`useRefCallback`](#userefcallback)
 - [`useRerender`](#usererender)
 - [`useRerenderInterval`](#usererenderinterval)
 - [`useTimeout`](#usetimeout)
@@ -184,14 +183,6 @@ Provide an initial value that is returned during SSR and the initial client rend
 
 ```ts
 const isMatched = useMediaQuery('(min-width: 600px)', true);
-```
-
-# `useRefCallback`
-
-Returns a ref object and a callback to update the value of this ref.
-
-```ts
-const [ref, updateRef] = useRefCallback(initialValue);
 ```
 
 # `useRerender`

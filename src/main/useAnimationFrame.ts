@@ -1,5 +1,6 @@
-import { EffectCallback, useEffect, useRef } from 'react';
-import { emptyDeps, noop } from './utils';
+import { EffectCallback, useLayoutEffect } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray } from './utils';
 
 /**
  * Returns the protocol that starts and stops an animation loop.
@@ -12,47 +13,52 @@ import { emptyDeps, noop } from './utils';
  * An animation should be started/stopped after the component is mounted. Before that, it is a no-op.
  */
 export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void, stop: () => void] {
-  const manager = (useRef<ReturnType<typeof createAnimationFrameManager>>().current ||= createAnimationFrameManager());
+  const manager = useFunction(createAnimationFrameManager);
 
-  useEffect(manager.effect, emptyDeps);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
   return [manager.start, manager.stop];
 }
 
-function createAnimationFrameManager() {
-  let doStart: (cb: FrameRequestCallback) => void = noop;
-  let doStop: () => void = noop;
+interface AnimationFrameManager {
+  start: (cb: FrameRequestCallback) => void;
+  stop: () => void;
+  onMounted: EffectCallback;
+}
 
-  const effect: EffectCallback = () => {
-    let handle: number;
+function createAnimationFrameManager(): AnimationFrameManager {
+  let isMounted = false;
+  let handle: number;
 
-    doStart = cb => {
-      doStop();
+  const handleStart = (cb: FrameRequestCallback): void => {
+    if (!isMounted) {
+      return;
+    }
 
-      const loop: FrameRequestCallback = time => {
-        cb(time);
-        handle = requestAnimationFrame(loop);
-      };
-      handle = requestAnimationFrame(loop);
+    handleStop();
+
+    const frameRequestCallback: FrameRequestCallback = time => {
+      cb(time);
+      handle = requestAnimationFrame(frameRequestCallback);
     };
 
-    doStop = () => {
-      cancelAnimationFrame(handle);
-    };
+    handle = requestAnimationFrame(frameRequestCallback);
+  };
+
+  const handleStop = (): void => cancelAnimationFrame(handle);
+
+  const handleMounted: EffectCallback = () => {
+    isMounted = true;
 
     return () => {
-      doStop();
-      doStart = doStop = noop;
+      isMounted = false;
+      handleStop();
     };
   };
 
   return {
-    effect,
-    start(cb: FrameRequestCallback): void {
-      doStart(cb);
-    },
-    stop(): void {
-      doStop();
-    },
+    start: handleStart,
+    stop: handleStop,
+    onMounted: handleMounted,
   };
 }

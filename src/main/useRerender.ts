@@ -1,41 +1,14 @@
-import { EffectCallback, useEffect, useReducer, useRef } from 'react';
-import { emptyDeps, noop } from './utils';
+import { useReducer } from 'react';
 
 /**
- * Returns a callback that triggers a component re-render. Re-render callback can be safely invoked at any time of the
- * component lifecycle. Returned callback doesn't change between hook invocations.
+ * Returns a callback that unconditionally re-renders a component.
  *
  * **Note:** Using this hook makes your code imperative, which is generally considered a bad practice.
  */
 export function useRerender(): () => void {
-  const [, dispatch] = useReducer(reduceCount, 0);
-
-  const manager = (useRef<ReturnType<typeof createRerenderManager>>().current ||= createRerenderManager(dispatch));
-
-  useEffect(manager.effect, emptyDeps);
-
-  return manager.rerender;
+  return useReducer(reduceCount, 0)[1];
 }
 
-function reduceCount(count: number) {
+function reduceCount(count: number): number {
   return count + 1;
-}
-
-function createRerenderManager(dispatch: () => void) {
-  let doRerender = dispatch;
-
-  const effect: EffectCallback = () => {
-    doRerender = dispatch;
-
-    return () => {
-      doRerender = noop;
-    };
-  };
-
-  return {
-    effect,
-    rerender(): void {
-      doRerender();
-    },
-  };
 }
