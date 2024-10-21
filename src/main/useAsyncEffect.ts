@@ -17,21 +17,21 @@ export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => vo
  * if effect is called again before the previously returned promise is resolved. Cleanup callbacks returned from
  * the aborted effects are ignored.
  *
- * @param effect The callback that is invoked if `deps` have changed. An effect may return a destructor / cleanup
- * callback. The previous effect is cleaned up before executing the next effect.
+ * @param fn The callback that is invoked if `deps` have changed. An effect may return a destructor/cleanup callback.
+ * The previous effect is cleaned up before executing the next effect.
  * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.
  */
-export function useAsyncEffect(effect: AsyncEffectCallback, deps?: DependencyList): void {
+export function useAsyncEffect(fn: AsyncEffectCallback, deps?: DependencyList): void {
   const manager = useFunction(createAsyncEffectManager);
 
-  manager.effect = effect;
+  manager.fn = fn;
 
-  useEffect(manager.onDepsChanged, deps);
+  useEffect(manager.onDepsUpdated, deps);
 }
 
 interface AsyncEffectManager {
-  effect: AsyncEffectCallback;
-  onDepsChanged: EffectCallback;
+  fn: AsyncEffectCallback;
+  onDepsUpdated: EffectCallback;
 }
 
 function createAsyncEffectManager(): AsyncEffectManager {
@@ -50,14 +50,14 @@ function createAsyncEffectManager(): AsyncEffectManager {
     }
   };
 
-  const handleDepsChanged: EffectCallback = () => {
-    const currAbortController = new AbortController();
+  const handleDepsUpdated: EffectCallback = () => {
+    const lastAbortController = new AbortController();
 
-    abortController = currAbortController;
+    abortController = lastAbortController;
 
-    new Promise<(() => void) | void>(resolve => resolve((0, manager.effect)(currAbortController.signal))).then(
+    new Promise<(() => void) | void>(resolve => resolve((0, manager.fn)(lastAbortController.signal))).then(
       value => {
-        if (abortController === currAbortController) {
+        if (abortController === lastAbortController) {
           abortController = undefined;
 
           if (typeof value === 'function') {
@@ -66,7 +66,7 @@ function createAsyncEffectManager(): AsyncEffectManager {
         }
       },
       reason => {
-        if (abortController === currAbortController) {
+        if (abortController === lastAbortController) {
           abortController = undefined;
         }
         throw reason;
@@ -77,8 +77,8 @@ function createAsyncEffectManager(): AsyncEffectManager {
   };
 
   const manager: AsyncEffectManager = {
-    effect: undefined!,
-    onDepsChanged: handleDepsChanged,
+    fn: undefined!,
+    onDepsUpdated: handleDepsUpdated,
   };
 
   return manager;

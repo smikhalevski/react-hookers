@@ -2,16 +2,15 @@ import { useRef } from 'react';
 import { isEqual } from './utils';
 
 /**
- * Calls {@link fn a function} if any of its {@link args} have changed between renders. If function has no args it is
- * called only once during the first render.
+ * Calls a {@link fn function} during render if any of its {@link args} have changed between renders.
  *
  * @param fn A function to call.
  * @param args Function arguments.
  * @returns A function return value, or a cached return value if {@link args} didn't change.
- * @template T A function return value.
  * @template A Function arguments.
+ * @template R A function return value.
  */
-export function useFunction<T, A extends any[]>(fn: (...args: A) => T, ...args: A): T;
+export function useFunction<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;
 
 export function useFunction(fn: Function) {
   const ref = useRef<unknown[]>();

@@ -1,4 +1,4 @@
-import { EffectCallback, useEffect } from 'react';
+import { EffectCallback, useLayoutEffect } from 'react';
 import { useFunction } from './useFunction';
 import { emptyArray } from './utils';
 
@@ -15,7 +15,7 @@ import { emptyArray } from './utils';
 export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void, stop: () => void] {
   const manager = useFunction(createAnimationFrameManager);
 
-  useEffect(manager.onComponentMounted, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
   return [manager.start, manager.stop];
 }
@@ -23,14 +23,14 @@ export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void,
 interface AnimationFrameManager {
   start: (cb: FrameRequestCallback) => void;
   stop: () => void;
-  onComponentMounted: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createAnimationFrameManager(): AnimationFrameManager {
-  let handle: number;
   let isMounted = false;
+  let handle: number;
 
-  const handleStart = (cb: FrameRequestCallback) => {
+  const handleStart = (cb: FrameRequestCallback): void => {
     if (!isMounted) {
       return;
     }
@@ -45,11 +45,9 @@ function createAnimationFrameManager(): AnimationFrameManager {
     handle = requestAnimationFrame(frameRequestCallback);
   };
 
-  const handleStop = () => {
-    cancelAnimationFrame(handle);
-  };
+  const handleStop = (): void => cancelAnimationFrame(handle);
 
-  const handleComponentMounted: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     isMounted = true;
 
     return () => {
@@ -61,6 +59,6 @@ function createAnimationFrameManager(): AnimationFrameManager {
   return {
     start: handleStart,
     stop: handleStop,
-    onComponentMounted: handleComponentMounted,
+    onMounted: handleMounted,
   };
 }

@@ -1,5 +1,5 @@
 import { Blocker } from 'parallel-universe';
-import { EffectCallback, useEffect, useState } from 'react';
+import { EffectCallback, useLayoutEffect, useState } from 'react';
 import { useFunction } from './useFunction';
 import { emptyArray, noop } from './utils';
 
@@ -19,7 +19,7 @@ export function useBlocker() {
   const [isBlocked, setBlocked] = useState(false);
   const manager = useFunction(createBlockerManager, setBlocked);
 
-  useEffect(manager.onComponentMounted, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
   return [isBlocked, manager.block, manager.unblock];
 }
@@ -27,15 +27,15 @@ export function useBlocker() {
 interface BlockerManager {
   block: () => Promise<unknown>;
   unblock: (result: unknown) => void;
-  onComponentMounted: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createBlockerManager(setBlocked: (blocked: boolean) => void): BlockerManager {
-  const blocker = new Blocker<unknown>();
-
   let isMounted = false;
 
-  const block = () => {
+  const blocker = new Blocker<unknown>();
+
+  const block = (): Promise<unknown> => {
     if (!isMounted) {
       return new Promise(noop);
     }
@@ -44,7 +44,7 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void): BlockerMa
     return blocker.block();
   };
 
-  const unblock = (value: unknown) => {
+  const unblock = (value: unknown): void => {
     if (!isMounted) {
       return;
     }
@@ -53,7 +53,7 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void): BlockerMa
     blocker.unblock(value);
   };
 
-  const handleComponentMounted: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     isMounted = true;
 
     return () => {
@@ -64,6 +64,6 @@ function createBlockerManager(setBlocked: (blocked: boolean) => void): BlockerMa
   return {
     block,
     unblock,
-    onComponentMounted: handleComponentMounted,
+    onMounted: handleMounted,
   };
 }

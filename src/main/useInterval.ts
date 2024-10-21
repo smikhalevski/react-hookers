@@ -1,4 +1,5 @@
-import { EffectCallback, useEffect, useMemo } from 'react';
+import { EffectCallback, useLayoutEffect } from 'react';
+import { useFunction } from './useFunction';
 import { emptyArray, noop, type Schedule } from './utils';
 
 /**
@@ -13,69 +14,72 @@ import { emptyArray, noop, type Schedule } from './utils';
  * @see {@link useRerenderInterval}
  */
 export function useInterval(): [schedule: Schedule, cancel: () => void] {
-  const manager = useMemo(createIntervalManager, emptyArray);
+  const manager = useFunction(createIntervalManager);
 
-  useEffect(manager.effect, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
   return [manager.schedule, manager.cancel];
 }
 
-function createIntervalManager() {
-  let doSchedule: <A extends unknown[]>(cb: (...args: A) => void, ms: number, args: A) => void = noop;
-  let doCancel = noop;
+interface IntervalManager {
+  schedule: Schedule;
+  cancel: () => void;
+  onMounted: EffectCallback;
+}
 
-  const effect: EffectCallback = () => {
-    let abort: (() => void) | undefined;
-
-    doSchedule = (cb, ms, args) => {
-      doCancel();
-
-      abort = getOrCreateScheduler(ms)(() => {
-        cb(...args);
-      });
-    };
-
-    doCancel = () => {
-      if (abort !== undefined) {
-        abort();
-        abort = undefined;
-      }
-    };
-
-    return () => {
-      doCancel();
-      doSchedule = doCancel = noop;
-    };
-  };
+function createIntervalManager(): IntervalManager {
+  let isMounted = false;
+  let abort = noop;
 
   const schedule: Schedule = (cb, ms, ...args) => {
-    doSchedule(cb, ms, args);
+    if (!isMounted) {
+      return;
+    }
+
+    cancel();
+
+    abort = getOrCreateScheduler(ms)(() => {
+      cb(...args);
+    });
+  };
+
+  const cancel = (): void => {
+    abort();
+    abort = noop;
+  };
+
+  const handleMounted: EffectCallback = () => {
+    isMounted = true;
+
+    return () => {
+      isMounted = false;
+      cancel();
+    };
   };
 
   return {
-    effect,
     schedule,
-    cancel() {
-      doCancel();
-    },
+    cancel,
+    onMounted: handleMounted,
   };
 }
 
 const schedulers = new Map<number, ReturnType<typeof getOrCreateScheduler>>();
 
 function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
+  let timer: NodeJS.Timeout;
   let scheduler = schedulers.get(ms);
 
   if (scheduler !== undefined) {
     return scheduler;
   }
 
-  let timeout: NodeJS.Timeout;
-
   const callbacks: Array<() => void> = [];
 
   const next = () => {
-    for (const cb of callbacks) {
+    for (let i = 0; i < callbacks.length; ++i) {
+      const cb = callbacks[i];
+
       try {
         cb();
       } catch (error) {
@@ -86,12 +90,12 @@ function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
       }
     }
 
-    timeout = setTimeout(next, ms);
+    timer = setTimeout(next, ms);
   };
 
   scheduler = cb => {
     if (callbacks.indexOf(cb) === -1 && callbacks.push(cb) === 1) {
-      timeout = setTimeout(next, ms);
+      timer = setTimeout(next, ms);
     }
 
     return () => {
@@ -99,7 +103,7 @@ function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
 
       if (index !== -1 && (callbacks.splice(index, 1), callbacks.length === 0)) {
         schedulers.delete(ms);
-        clearTimeout(timeout);
+        clearTimeout(timer);
       }
     };
   };

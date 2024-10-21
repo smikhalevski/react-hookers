@@ -1,35 +1,72 @@
-import { useEffect, useRef } from 'react';
+import { type EffectCallback, useLayoutEffect } from 'react';
+import { useFunction } from './useFunction';
+import { emptyArray } from './utils';
 
 /**
- * Returns an always-stable function identity that becomes a no-op after unmount.
+ * Returns a stable function identity that is no-op during initial render and after unmount.
  *
- * @param cb The callback that the handler callback.
- * @template A The arguments of the handler.
- * @template T The return value of the handler.
+ * @param fn A callback that is called by the returned handler.
+ * @returns A stable function identity.
+ * @template A Arguments of a handler.
+ * @template R A return value of a handler.
  */
-export function useHandler<A extends any[], T>(cb: (...args: A) => T): (...args: A) => T;
+export function useHandler<A extends any[], R>(
+  fn: ((...args: A) => R) | null | undefined
+): (...args: A) => R | undefined {
+  const manager = useFunction(createHandlerManager<A, R>);
 
-/**
- * Returns an always-stable function identity that becomes no-op after unmount.
- *
- * @param cb The callback that the handler callback.
- * @template A The arguments of the handler.
- * @template T The return value of the handler.
- */
-export function useHandler<A extends any[], T>(
-  cb: ((...args: A) => T) | null | undefined
-): (...args: A) => T | undefined;
+  manager.fn = fn;
 
-export function useHandler<A extends any[], T>(cb: ((...args: A) => T) | null | undefined) {
-  const ref = useRef(cb);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
-  useEffect(() => {
-    ref.current = cb;
+  return manager.handler;
+}
+
+interface HandlerManager<A extends any[], R> {
+  fn: Function | null | undefined;
+  handler: (...args: A) => R | undefined;
+  onMounted: EffectCallback;
+}
+
+function createHandlerManager<A extends any[], R>(): HandlerManager<A, R> {
+  let isMounted = false;
+
+  const handleMounted: EffectCallback = () => {
+    isMounted = true;
 
     return () => {
-      ref.current = undefined;
+      isMounted = false;
     };
-  }, [cb]);
+  };
 
-  return (useRef<(...args: A) => T | undefined>().current ||= (...args) => ref.current?.apply(undefined, args));
+  const handler = function () {
+    const { fn } = manager;
+
+    if (!isMounted || typeof fn !== 'function') {
+      return;
+    }
+
+    if (arguments.length === 0) {
+      return fn();
+    }
+    if (arguments.length === 1) {
+      return fn(arguments[1]);
+    }
+
+    const args = [];
+
+    for (let i = 0; i < arguments.length; ++i) {
+      args.push(arguments[i]);
+    }
+
+    return fn(...args);
+  };
+
+  const manager: HandlerManager<A, R> = {
+    fn: undefined!,
+    handler,
+    onMounted: handleMounted,
+  };
+
+  return manager;
 }

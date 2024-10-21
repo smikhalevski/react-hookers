@@ -5,7 +5,6 @@ import { useRerender } from './useRerender';
  * Re-renders the component on a periodic interval.
  *
  * @param ms The interval duration in milliseconds.
- *
  * @see {@link useIntervalCallback}
  * @see {@link useRerender}
  */
