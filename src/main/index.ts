@@ -37,6 +37,8 @@ export {
 } from './behaviors/useKeyboardShortcut';
 export { usePress, cancelPress, type PressProps, type PressValue } from './behaviors/usePress';
 export { usePressable, type PressableProps, type PressableValue } from './behaviors/usePressable';
+export { usePreventScroll, type PreventScrollProps } from './behaviors/usePreventScroll';
+
 export { useButton, type HeadlessButtonProps, type HeadlessButtonValue } from './components/useButton';
 export { useCheckbox, type HeadlessCheckboxProps, type HeadlessCheckboxValue } from './components/useCheckbox';
 export {
@@ -56,6 +58,7 @@ export {
   type HeadlessTrackHandleProps,
   type HeadlessTrackHandleValue,
 } from './components/useTrackHandle';
+
 export {
   sortByTabOrder,
   sortByVisualOrder,
