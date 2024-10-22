@@ -39,6 +39,14 @@ export { usePress, cancelPress, type PressProps, type PressValue } from './behav
 export { usePressable, type PressableProps, type PressableValue } from './behaviors/usePressable';
 export { useButton, type HeadlessButtonProps, type HeadlessButtonValue } from './components/useButton';
 export { useCheckbox, type HeadlessCheckboxProps, type HeadlessCheckboxValue } from './components/useCheckbox';
+export {
+  useMenu,
+  useMenuItem,
+  type HeadlessMenuProps,
+  type HeadlessMenuValue,
+  type HeadlessMenuItemProps,
+  type HeadlessMenuItemValue,
+} from './components/useMenu';
 export { useScrollbar, type HeadlessScrollbarProps, type HeadlessScrollbarValue } from './components/useScrollbar';
 export { createSelection, useSelection, SelectionProvider, type Selection } from './components/useSelection';
 export { useTextInput, type HeadlessTextInputProps, type HeadlessTextInputValue } from './components/useTextInput';
