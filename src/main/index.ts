@@ -40,6 +40,7 @@ export { usePressable, type PressableProps, type PressableValue } from './behavi
 export { useButton, type HeadlessButtonProps, type HeadlessButtonValue } from './components/useButton';
 export { useCheckbox, type HeadlessCheckboxProps, type HeadlessCheckboxValue } from './components/useCheckbox';
 export { useScrollbar, type HeadlessScrollbarProps, type HeadlessScrollbarValue } from './components/useScrollbar';
+export { createSelection, useSelection, SelectionProvider, type Selection } from './components/useSelection';
 export { useTextInput, type HeadlessTextInputProps, type HeadlessTextInputValue } from './components/useTextInput';
 export { useTooltip, type HeadlessTooltipProps, type HeadlessTooltipValue } from './components/useTooltip';
 export {
