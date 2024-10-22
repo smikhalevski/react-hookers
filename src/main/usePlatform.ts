@@ -1,5 +1,8 @@
 import { createContext, useContext } from 'react';
 
+/**
+ * @group Other
+ */
 export interface Platform {
   browser: string | undefined;
   os: string | undefined;
@@ -14,6 +17,9 @@ export interface Platform {
   isAndroid: boolean;
 }
 
+/**
+ * @group Other
+ */
 export function usePlatform(): Platform {
   return useContext(PlatformContext);
 }
@@ -33,12 +39,16 @@ const PlatformContext = createContext<Platform>(
 
 PlatformContext.displayName = 'PlatformContext';
 
+/**
+ * @group Other
+ */
 export const PlatformProvider = PlatformContext.Provider;
 
 /**
  * Infers the platform from the user agent string.
  *
  * @param userAgent A user agent string.
+ * @group Other
  */
 export function detectPlatform(userAgent: string): Platform {
   userAgent = userAgent.toLowerCase();

@@ -1,9 +1,9 @@
 import { PubSub } from 'parallel-universe';
 import React, { DOMAttributes, EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
 import { focusRing } from './focusRing';
-import { useFunction } from './useFunction';
-import { emptyArray, emptyObject } from './utils';
-import { getFocusedElement, isFocusable, isPortalEvent } from './utils/dom';
+import { useFunction } from '../useFunction';
+import { emptyArray, emptyObject } from '../utils/lang';
+import { getFocusedElement, isFocusable, isPortalEvent } from '../utils/dom';
 
 const REQUEST_FOCUS_EVENT = 'requestfocus';
 
@@ -11,6 +11,9 @@ const cancelFocusPubSub = new PubSub();
 
 /**
  * Blurs the currently focused element.
+ *
+ * @see {@link useFocus}
+ * @group Behaviors
  */
 export function cancelFocus(): void {
   focusRing.conceal();
@@ -20,6 +23,8 @@ export function cancelFocus(): void {
 
 /**
  * Options of the {@link requestFocus} function.
+ *
+ * @group Behaviors
  */
 export interface RequestFocusOptions {
   /**
@@ -32,11 +37,12 @@ export interface RequestFocusOptions {
 }
 
 /**
- * Focuses an {@link element} and dispatches a `"requestfocus"` event on it.
+ * Tries to focus an {@link element}.
  *
  * @param element An element to focus.
  * @param options Focus options.
  * @returns `true` if an element is focused.
+ * @group Behaviors
  */
 export function requestFocus(element: Element | null, options?: RequestFocusOptions): boolean {
   if (element === null || !isFocusable(element)) {
@@ -56,6 +62,8 @@ export function requestFocus(element: Element | null, options?: RequestFocusOpti
 
 /**
  * A value returned from the {@link useFocus} hook.
+ *
+ * @group Behaviors
  */
 export interface FocusValue {
   /**
@@ -78,6 +86,8 @@ export interface FocusValue {
 
 /**
  * Props of the {@link useFocus} hook.
+ *
+ * @group Behaviors
  */
 export interface FocusProps {
   /**
@@ -117,6 +127,7 @@ export interface FocusProps {
  * are attached.
  * @param props Focus props.
  * @returns An object which identity never changes between renders.
+ * @group Behaviors
  */
 export function useFocus(ref: RefObject<Element>, props: FocusProps = emptyObject): FocusValue {
   const [status, setStatus] = useState(STATUS_BLURRED);

@@ -1,10 +1,13 @@
 import { EffectCallback, RefObject, useLayoutEffect } from 'react';
-import { useFunction } from './useFunction';
-import { getViewportRect } from './utils/rects';
+import { useFunction } from '../useFunction';
+import { getViewportRect } from '../utils/rects';
 
 /**
  * An alignment of a {@link AnchorPositionProps.targetRef target} element relative to
  * an {@link AnchorPositionProps.getAnchorRect anchor rect}.
+ *
+ * @see {@link useAnchorPosition}
+ * @group Behaviors
  */
 export type AnchorAlign =
   | 'center'
@@ -23,6 +26,9 @@ export type AnchorAlign =
 
 /**
  * An info about the current target position around an anchor.
+ *
+ * @see {@link AnchorPositionProps.onPositionChange}
+ * @group Behaviors
  */
 export interface AnchorPositionInfo {
   /**
@@ -98,6 +104,9 @@ export interface AnchorPositionInfo {
 
 /**
  * Props of the {@link useAnchorPosition} hook.
+ *
+ * @see {@link useAnchorPosition}
+ * @group Behaviors
  */
 export interface AnchorPositionProps {
   /**
@@ -200,6 +209,7 @@ export interface AnchorPositionProps {
  * Positions a target element around the anchor element.
  *
  * @param props Anchor position props.
+ * @group Behaviors
  */
 export function useAnchorPosition(props: AnchorPositionProps): void {
   const manager = useFunction(createAnchorPositionManager);

@@ -3,7 +3,7 @@ import { ArrowKeysNavigationProps, useArrowKeysNavigation } from './useArrowKeys
 import { useFocusControls } from './useFocusControls';
 
 /**
- * A component alternative of a {@link useArrowKeysNavigation} hook.
+ * The component alternative of the {@link useArrowKeysNavigation} hook.
  *
  * Enables arrow navigation inside an enclosing {@link FocusScope}.
  *
@@ -17,6 +17,8 @@ import { useFocusControls } from './useFocusControls';
  *     </div>
  *   </ArrowKeysNavigation>
  * </FocusScope>
+ *
+ * @group Behaviors
  */
 export function ArrowKeysNavigation(props: PropsWithChildren<ArrowKeysNavigationProps>): ReactNode {
   useArrowKeysNavigation(useFocusControls(), props);
@@ -24,4 +26,7 @@ export function ArrowKeysNavigation(props: PropsWithChildren<ArrowKeysNavigation
   return props.children;
 }
 
+/**
+ * @internal
+ */
 ArrowKeysNavigation.displayName = 'ArrowKeysNavigation';

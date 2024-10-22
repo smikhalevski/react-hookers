@@ -7,6 +7,7 @@ import { useFunction } from './useFunction';
  *
  * @param query The media query to match.
  * @param initialValue A value returned during the initial render.
+ * @group Other
  */
 export function useMediaQuery(query: string, initialValue = false): boolean {
   const [isMatched, setMatched] = useState(initialValue);

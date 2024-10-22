@@ -1,11 +1,13 @@
 import { DOMAttributes, EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
-import { DOMEventHandler } from './types';
-import { useFunction } from './useFunction';
+import { DOMEventHandler } from '../types';
+import { useFunction } from '../useFunction';
 import { HeadlessTrackHandleProps, useTrackHandle } from './useTrackHandle';
-import { emptyArray, noop } from './utils';
+import { emptyArray, noop } from '../utils/lang';
 
 /**
  * A value returned from the {@link useScrollbar} hook.
+ *
+ * @group Components
  */
 export interface HeadlessScrollbarValue {
   /**
@@ -34,6 +36,8 @@ export interface HeadlessScrollbarValue {
 
 /**
  * Props of the {@link useScrollbar} hook.
+ *
+ * @group Components
  */
 export interface HeadlessScrollbarProps {
   /**
@@ -88,6 +92,7 @@ export interface HeadlessScrollbarProps {
  *
  * @param props Scrollbar props.
  * @returns An object which identity never changes between renders.
+ * @group Components
  */
 export function useScrollbar(props: HeadlessScrollbarProps): HeadlessScrollbarValue {
   const [status, setStatus] = useState(STATUS_NOT_SCROLLABLE);

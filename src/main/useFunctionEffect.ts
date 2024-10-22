@@ -6,6 +6,7 @@ import { useEffect } from 'react';
  * @param fn A function to call.
  * @param args Function arguments.
  * @template A Function arguments.
+ * @group Other
  */
 export function useFunctionEffect<A extends any[]>(fn: (...args: A) => (() => void) | void, ...args: A): void {
   useEffect(() => fn(...args), args);

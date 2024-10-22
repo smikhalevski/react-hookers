@@ -1,11 +1,12 @@
 import { Dispatch, EffectCallback, SetStateAction, useEffect, useState } from 'react';
 import { useFunction } from './useFunction';
-import { emptyArray } from './utils';
+import { emptyArray } from './utils/lang';
 
 /**
  * The protocol returned by the {@link useDebouncedState} hook.
  *
  * @template T A stateful value.
+ * @group Other
  */
 export type DebouncedStateProtocol<T> = [value: T, nextValue: T, setValue: Dispatch<SetStateAction<T>>];
 
@@ -17,6 +18,7 @@ export type DebouncedStateProtocol<T> = [value: T, nextValue: T, setValue: Dispa
  * @param ms A delay after which `currState` is synchronized with `nextState`.
  * @param initialValue An initial value or a callback that returns an initial state.
  * @template T A stateful value.
+ * @group Other
  */
 export function useDebouncedState<T>(ms: number, initialValue: T | (() => T)): DebouncedStateProtocol<T>;
 
@@ -27,6 +29,7 @@ export function useDebouncedState<T>(ms: number, initialValue: T | (() => T)): D
  *
  * @param ms A delay after which `currState` is synchronized with `nextState`.
  * @template T A stateful value.
+ * @group Other
  */
 export function useDebouncedState<T = undefined>(ms: number): DebouncedStateProtocol<T | undefined>;
 

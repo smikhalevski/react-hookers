@@ -1,3 +1,5 @@
+// Overrides lib.dom.d.ts to avoid excessive type checks
+
 interface MouseEvent {
   readonly target: HTMLElement | SVGElement;
 }

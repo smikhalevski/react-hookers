@@ -14,6 +14,7 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
  *
  * @param props Props to merge.
  * @template T Props to merge.
+ * @group Other
  */
 export function mergeProps<T extends any[]>(...props: T): UnionToIntersection<NonNullable<T[number]>>;
 
@@ -88,6 +89,8 @@ export function mergeProps() {
 
 /**
  * Merges class names into a single string.
+ *
+ * @group Other
  */
 export function mergeClassNames(...classNames: Array<string | boolean | null | undefined>): string | undefined;
 

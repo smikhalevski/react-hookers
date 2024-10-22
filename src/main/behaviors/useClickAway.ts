@@ -1,9 +1,11 @@
 import { DOMAttributes, EffectCallback, PointerEventHandler, useLayoutEffect } from 'react';
-import { useFunction } from './useFunction';
-import { emptyArray } from './utils';
+import { useFunction } from '../useFunction';
+import { emptyArray } from '../utils/lang';
 
 /**
  * A value returned from the {@link useClickAway} hook.
+ *
+ * @group Behaviors
  */
 export interface ClickAwayValue {
   /**
@@ -16,15 +18,19 @@ export interface ClickAwayValue {
 
 /**
  * Props of the {@link useClickAway} hook.
+ *
+ * @group Behaviors
  */
 export interface ClickAwayProps {
   /**
+   * If `true` then click away listeners are disabled.
+   *
    * @default false
    */
   isDisabled?: boolean;
 
   /**
-   * A callback that is when click away event occur.
+   * A handler that is called when a user clicks outside a {@link ClickAwayValue.containerProps container}.
    */
   onClickAway?: () => void;
 }
@@ -34,6 +40,7 @@ export interface ClickAwayProps {
  *
  * @param props Click-away props.
  * @returns An object which identity never changes between renders.
+ * @group Behaviors
  */
 export function useClickAway(props: ClickAwayProps): ClickAwayValue {
   const manager = useFunction(createClickAwayManager);

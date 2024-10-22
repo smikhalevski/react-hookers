@@ -1,6 +1,6 @@
 import { EffectCallback, useLayoutEffect } from 'react';
 import { useFunction } from './useFunction';
-import { emptyArray } from './utils';
+import { emptyArray } from './utils/lang';
 
 /**
  * Returns the protocol that starts and stops an animation loop.
@@ -11,6 +11,7 @@ import { emptyArray } from './utils';
  * An animation is automatically stopped on unmount.
  *
  * An animation should be started/stopped after the component is mounted. Before that, it is a no-op.
+ * @group Other
  */
 export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void, stop: () => void] {
   const manager = useFunction(createAnimationFrameManager);

@@ -1,6 +1,6 @@
 import { type EffectCallback, useLayoutEffect } from 'react';
 import { useFunction } from './useFunction';
-import { emptyArray } from './utils';
+import { emptyArray } from './utils/lang';
 
 /**
  * Returns a stable function identity that is no-op during initial render and after unmount.
@@ -9,6 +9,7 @@ import { emptyArray } from './utils';
  * @returns A stable function identity.
  * @template A Arguments of a handler.
  * @template R A return value of a handler.
+ * @group Other
  */
 export function useHandler<A extends any[], R>(
   fn: ((...args: A) => R) | null | undefined

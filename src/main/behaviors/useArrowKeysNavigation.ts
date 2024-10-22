@@ -1,13 +1,15 @@
 import React, { EffectCallback, useLayoutEffect } from 'react';
 import { focusRing } from './focusRing';
 import { FocusControls, OrderedFocusOptions } from './useFocusControls';
-import { useFunction } from './useFunction';
+import { useFunction } from '../useFunction';
 import { cancelHover } from './useHover';
 import { cancelPress } from './usePress';
-import { emptyArray, emptyObject } from './utils';
+import { emptyArray, emptyObject } from '../utils/lang';
 
 /**
  * Props of the {@link useArrowKeysNavigation} hook.
+ *
+ * @group Behaviors
  */
 export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
   /**
@@ -47,6 +49,7 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
  * @example
  * const containerRef = useRef(null);
  * const focusControls = useFocusScope(containerRef);
+ *
  * useArrowKeysNavigation(focusControls);
  *
  * <div ref={containerRef}>
@@ -55,8 +58,11 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
  *
  * @param focusControls Focus controls that are used to move focus around. If `null` then arrow keys are disabled.
  * @param props Arrow keys props.
+ * @see {@link FocusScope}
+ * @see {@link ArrowKeysNavigation}
  * @see {@link useFocusScope}
  * @see {@link useFocusControls}
+ * @group Behaviors
  */
 export function useArrowKeysNavigation(
   focusControls: FocusControls | null,

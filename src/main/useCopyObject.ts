@@ -8,6 +8,7 @@ import { useFunction } from './useFunction';
  * @returns A shallow copy of an object, if any of dependencies have changed.
  * @template T An object to copy.
  * @template A Dependencies that trigger the copy if changed.
+ * @group Other
  */
 export const useCopyObject = useFunction.bind(undefined, copyObject) as typeof copyObject;
 

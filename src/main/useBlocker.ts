@@ -1,10 +1,12 @@
 import { Blocker } from 'parallel-universe';
 import { EffectCallback, useLayoutEffect, useState } from 'react';
 import { useFunction } from './useFunction';
-import { emptyArray, noop } from './utils';
+import { emptyArray, noop } from './utils/lang';
 
 /**
  * Block an async flow and unblock it from an external context.
+ *
+ * @group Other
  */
 export function useBlocker(): [isBlocked: boolean, block: () => Promise<void>, unblock: () => void];
 
@@ -12,6 +14,7 @@ export function useBlocker(): [isBlocked: boolean, block: () => Promise<void>, u
  * Block an async flow and unblock it from an external context.
  *
  * @template T The type of value that can be passed to `unblock` to resolve the `Promise` returned by `block`.
+ * @group Other
  */
 export function useBlocker<T>(): [isBlocked: boolean, block: () => Promise<T>, unblock: (result: T) => void];
 

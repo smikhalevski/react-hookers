@@ -1,10 +1,12 @@
 import { DOMAttributes, RefObject } from 'react';
-import { DragInfo, DragProps, useDrag } from './useDrag';
-import { useFunction } from './useFunction';
-import { noop } from './utils';
+import { DragInfo, DragProps, useDrag } from '../behaviors/useDrag';
+import { useFunction } from '../useFunction';
+import { noop } from '../utils/lang';
 
 /**
  * A value returned from the {@link useTrackHandle} hook.
+ *
+ * @group Components
  */
 export interface HeadlessTrackHandleValue {
   /**
@@ -27,6 +29,8 @@ export interface HeadlessTrackHandleValue {
 
 /**
  * Props of the {@link useTrackHandle} hook.
+ *
+ * @group Components
  */
 export interface HeadlessTrackHandleProps extends DragProps {
   /**
@@ -62,6 +66,7 @@ export interface HeadlessTrackHandleProps extends DragProps {
  * @param ref A reference to a handle element.
  * @param props Track handle props.
  * @returns An object which identity never changes between renders.
+ * @group Components
  */
 export function useTrackHandle(ref: RefObject<HTMLElement>, props: HeadlessTrackHandleProps): HeadlessTrackHandleValue {
   const manager = useFunction(createTrackHandleManager);

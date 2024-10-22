@@ -1,7 +1,7 @@
 import { EffectCallback, useLayoutEffect } from 'react';
 import type { Schedule } from './types';
 import { useFunction } from './useFunction';
-import { emptyArray } from './utils';
+import { emptyArray } from './utils/lang';
 
 /**
  * Returns the protocol that delays invoking a callback until after a timeout.
@@ -9,6 +9,8 @@ import { emptyArray } from './utils';
  * The delayed invocation is automatically cancelled on unmount.
  *
  * The timeout should be started/stopped after the component is mounted. Before that, it is a no-op.
+ *
+ * @group Other
  */
 export function useTimeout(): [schedule: Schedule, cancel: () => void] {
   const manager = useFunction(createTimeoutManager);

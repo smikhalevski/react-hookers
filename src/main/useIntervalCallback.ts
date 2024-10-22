@@ -13,6 +13,7 @@ import { useInterval } from './useInterval';
  * @param args Varargs that are passed as arguments to the callback.
  * @template A The callback arguments.
  * @see {@link useInterval}
+ * @group Other
  */
 export function useIntervalCallback<A extends any[]>(cb: (...args: A) => void, ms: number, ...args: A): void {
   const [schedule] = useInterval();

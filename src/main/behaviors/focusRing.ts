@@ -4,6 +4,8 @@ const focusRingPubSub = new PubSub();
 
 /**
  * A focus indication that should be shown around a focused element.
+ *
+ * @group Behaviors
  */
 export const focusRing = {
   /**

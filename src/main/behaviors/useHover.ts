@@ -1,13 +1,16 @@
 import { PubSub } from 'parallel-universe';
 import { DOMAttributes, EffectCallback, PointerEventHandler, useLayoutEffect, useState } from 'react';
-import { useFunction } from './useFunction';
-import { emptyArray, emptyObject } from './utils';
-import { isPortalEvent } from './utils/dom';
+import { useFunction } from '../useFunction';
+import { emptyArray, emptyObject } from '../utils/lang';
+import { isPortalEvent } from '../utils/dom';
 
 const cancelHoverPubSub = new PubSub();
 
 /**
  * Cancels hover of all currently hovered elements.
+ *
+ * @see {@link useHover}
+ * @group Behaviors
  */
 export function cancelHover(): void {
   cancelHoverPubSub.publish();
@@ -15,6 +18,8 @@ export function cancelHover(): void {
 
 /**
  * A value returned from the {@link useHover} hook.
+ *
+ * @group Behaviors
  */
 export interface HoverValue {
   /**
@@ -32,6 +37,8 @@ export interface HoverValue {
 
 /**
  * Props of the {@link useHover} hook.
+ *
+ * @group Behaviors
  */
 export interface HoverProps {
   /**
@@ -64,6 +71,7 @@ export interface HoverProps {
  *
  * @param props Hover props.
  * @returns An object which identity never changes between renders.
+ * @group Behaviors
  */
 export function useHover(props: HoverProps = emptyObject): HoverValue {
   const [isHovered, setHovered] = useState(false);

@@ -1,12 +1,14 @@
 import { InputHTMLAttributes, LabelHTMLAttributes, RefObject } from 'react';
-import { mergeProps } from './mergeProps';
-import { FocusProps, FocusValue, useFocus } from './useFocus';
-import { useFunction } from './useFunction';
-import { HoverProps, HoverValue, useHover } from './useHover';
-import { useUniqueId } from './useUniqueId';
+import { mergeProps } from '../utils/mergeProps';
+import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
+import { useFunction } from '../useFunction';
+import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
+import { useUniqueId } from '../useUniqueId';
 
 /**
  * A value returned from the {@link useTextInput} hook.
+ *
+ * @group Components
  */
 export interface HeadlessTextInputValue {
   /**
@@ -46,6 +48,8 @@ export interface HeadlessTextInputValue {
 
 /**
  * Props of the {@link useTextInput} hook.
+ *
+ * @group Components
  */
 export interface HeadlessTextInputProps extends HoverProps, FocusProps {
   /**
@@ -87,6 +91,7 @@ export interface HeadlessTextInputProps extends HoverProps, FocusProps {
  * {@link HeadlessTextInputValue.inputProps} are attached.
  * @param props Text input props.
  * @returns An object which identity never changes between renders.
+ * @group Components
  */
 export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTextInputProps): HeadlessTextInputValue {
   const hoverValue = useHover(props);

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { isEqual } from './utils';
+import { isEqual } from './utils/lang';
 
 /**
  * Calls a {@link fn function} during render if any of its {@link args} have changed between renders.
@@ -9,6 +9,7 @@ import { isEqual } from './utils';
  * @returns A function return value, or a cached return value if {@link args} didn't change.
  * @template A Function arguments.
  * @template R A function return value.
+ * @group Other
  */
 export function useFunction<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;
 

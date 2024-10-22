@@ -1,10 +1,12 @@
 import { EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
-import { DOMEventHandler } from './types';
-import { useFunction } from './useFunction';
-import { emptyArray, noop } from './utils';
+import { DOMEventHandler } from '../types';
+import { useFunction } from '../useFunction';
+import { emptyArray, noop } from '../utils/lang';
 
 /**
  * A value returned from the {@link useDrag} hook.
+ *
+ * @group Behaviors
  */
 export interface DragValue {
   /**
@@ -20,6 +22,9 @@ export interface DragValue {
 
 /**
  * An info about the current drag frame.
+ *
+ * @see {@link DragProps.onDrag}
+ * @group Behaviors
  */
 export interface DragInfo {
   /**
@@ -55,6 +60,8 @@ export interface DragInfo {
 
 /**
  * Props of the {@link useDrag} hook.
+ *
+ * @group Behaviors
  */
 export interface DragProps {
   /**
@@ -94,11 +101,12 @@ export interface DragProps {
 }
 
 /**
- * Handles drag events and normalizes them across platforms.
+ * Handles the drag behaviour across platforms.
  *
  * @param ref A ref to a draggable element.
  * @param props Drag props.
  * @returns An object which identity never changes between renders.
+ * @group Behaviors
  */
 export function useDrag(ref: RefObject<HTMLElement>, props: DragProps): DragValue {
   const [isDragged, setDragged] = useState(false);

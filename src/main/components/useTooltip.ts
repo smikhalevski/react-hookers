@@ -1,16 +1,18 @@
 import { EffectCallback, HTMLAttributes, RefObject, useLayoutEffect } from 'react';
-import { focusRing } from './focusRing';
-import { mergeProps } from './mergeProps';
-import { FocusProps, useFocus } from './useFocus';
-import { useFunction } from './useFunction';
-import { HoverProps, useHover } from './useHover';
-import { useUniqueId } from './useUniqueId';
-import { DOMEventHandler } from './types';
-import { useCopyObject } from './useCopyObject';
-import { emptyArray } from './utils';
+import { focusRing } from '../behaviors/focusRing';
+import { mergeProps } from '../utils/mergeProps';
+import { FocusProps, useFocus } from '../behaviors/useFocus';
+import { useFunction } from '../useFunction';
+import { HoverProps, useHover } from '../behaviors/useHover';
+import { useUniqueId } from '../useUniqueId';
+import { DOMEventHandler } from '../types';
+import { useCopyObject } from '../useCopyObject';
+import { emptyArray } from '../utils/lang';
 
 /**
  * A value returned from the {@link useTooltip} hook.
+ *
+ * @group Components
  */
 export interface HeadlessTooltipValue {
   /**
@@ -28,6 +30,8 @@ export interface HeadlessTooltipValue {
 
 /**
  * Props of the {@link useTooltip} hook.
+ *
+ * @group Components
  */
 export interface HeadlessTooltipProps {
   /**
@@ -76,6 +80,7 @@ export interface HeadlessTooltipProps {
  * @param ref A reference to an anchor element for which tooltip is displayed.
  * @param props Tooltip props.
  * @returns An object which identity never changes between renders.
+ * @group Components
  */
 export function useTooltip(ref: RefObject<Element>, props: HeadlessTooltipProps): HeadlessTooltipValue {
   const manager = useFunction(createTooltipManager);

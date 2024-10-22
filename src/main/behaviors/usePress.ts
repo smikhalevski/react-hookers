@@ -8,16 +8,19 @@ import React, {
   useState,
 } from 'react';
 import { focusRing } from './focusRing';
-import { DOMEventHandler } from './types';
+import { DOMEventHandler } from '../types';
 import { requestFocus } from './useFocus';
-import { useFunction } from './useFunction';
-import { emptyArray, emptyObject, noop } from './utils';
-import { isPortalEvent } from './utils/dom';
+import { useFunction } from '../useFunction';
+import { emptyArray, emptyObject, noop } from '../utils/lang';
+import { isPortalEvent } from '../utils/dom';
 
 const cancelPressPubSub = new PubSub();
 
 /**
  * Cancels press of the currently pressed element.
+ *
+ * @see {@link usePress}
+ * @group Behaviors
  */
 export function cancelPress(): void {
   cancelPressPubSub.publish();
@@ -25,6 +28,8 @@ export function cancelPress(): void {
 
 /**
  * A value returned from the {@link usePress} hook.
+ *
+ * @group Behaviors
  */
 export interface PressValue {
   /**
@@ -42,6 +47,8 @@ export interface PressValue {
 
 /**
  * Props of the {@link usePress} hook.
+ *
+ * @group Behaviors
  */
 export interface PressProps {
   /**
@@ -79,6 +86,7 @@ export interface PressProps {
  *
  * @param props Press props.
  * @returns An object which identity never changes between renders.
+ * @group Behaviors
  */
 export function usePress(props: PressProps = emptyObject): PressValue {
   const [isPressed, setPressed] = useState(false);
@@ -287,7 +295,7 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
   return manager;
 }
 
-export function isKeyboardPressEvent(pressedTarget: Element, event: React.KeyboardEvent | KeyboardEvent): boolean {
+function isKeyboardPressEvent(pressedTarget: Element, event: React.KeyboardEvent | KeyboardEvent): boolean {
   const { key } = event;
 
   return (

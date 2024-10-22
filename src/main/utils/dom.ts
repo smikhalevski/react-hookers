@@ -3,6 +3,9 @@ import { FocusableElement } from '../types';
 
 /**
  * Returns `true` if event was dispatched from a portal.
+ *
+ * @param event An event to check.
+ * @group Other
  */
 export function isPortalEvent(event: SyntheticEvent): boolean {
   return !event.currentTarget.contains(event.target as Element | null);
@@ -10,6 +13,8 @@ export function isPortalEvent(event: SyntheticEvent): boolean {
 
 /**
  * Returns the currently focused element or `null` if no element is focused.
+ *
+ * @group Other
  */
 export function getFocusedElement(): FocusableElement | null {
   const element = document.activeElement;
@@ -22,6 +27,8 @@ export function getFocusedElement(): FocusableElement | null {
 
 /**
  * Sorts elements in the order <kbd>Tab</kbd> key passes focus from element to element.
+ *
+ * @group Other
  */
 export function sortByTabOrder(a: FocusableElement, b: FocusableElement): number {
   return getTabIndex(a) - getTabIndex(b);
@@ -29,6 +36,8 @@ export function sortByTabOrder(a: FocusableElement, b: FocusableElement): number
 
 /**
  * Sorts elements in an order they appear in a document.
+ *
+ * @group Other
  */
 export function sortByDocumentOrder(a: Element, b: Element): number {
   if (a === b) {
@@ -48,6 +57,8 @@ export function sortByDocumentOrder(a: Element, b: Element): number {
 
 /**
  * Sorts elements in an order they visually appear on the screen.
+ *
+ * @group Other
  */
 export function sortByVisualOrder(a: Element, b: Element): number {
   const rectA = a.getBoundingClientRect();
@@ -58,6 +69,9 @@ export function sortByVisualOrder(a: Element, b: Element): number {
 
 /**
  * Returns `true` if element has focus capability.
+ *
+ * @param element An element to check.
+ * @group Other
  */
 export function isFocusable(element: Element): element is FocusableElement {
   return 'focus' in element;
@@ -65,6 +79,9 @@ export function isFocusable(element: Element): element is FocusableElement {
 
 /**
  * Returns `true` if an element participates in <kbd>Tab</kbd> navigation.
+ *
+ * @param element An element to check.
+ * @group Other
  */
 export function isTabbable(element: FocusableElement): boolean {
   return getTabIndex(element) >= 0;
@@ -72,6 +89,9 @@ export function isTabbable(element: FocusableElement): boolean {
 
 /**
  * Returns the normalized tab index of an {@link element}.
+ *
+ * @param element An element to get tab index of.
+ * @group Other
  */
 export function getTabIndex(element: FocusableElement): number {
   const { tagName, tabIndex } = element;

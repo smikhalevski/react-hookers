@@ -7,6 +7,7 @@ import { useRerender } from './useRerender';
  * @param ms The interval duration in milliseconds.
  * @see {@link useIntervalCallback}
  * @see {@link useRerender}
+ * @group Other
  */
 export function useRerenderInterval(ms: number): void {
   useIntervalCallback(useRerender(), ms);

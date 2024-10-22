@@ -1,7 +1,7 @@
 import { Lock } from 'parallel-universe';
 import { EffectCallback, useLayoutEffect, useState } from 'react';
 import { useFunction } from './useFunction';
-import { emptyArray, noop } from './utils';
+import { emptyArray, noop } from './utils/lang';
 
 /**
  * Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
@@ -9,6 +9,8 @@ import { emptyArray, noop } from './utils';
  * When someone tries to acquire a lock using `acquire` they receive a promise for a release callback that is fulfilled
  * as soon as previous lock owner invokes their release callback. If `acquire` is called after unmount then the returned
  * promise is never fulfilled.
+ *
+ * @group Other
  */
 export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void>] {
   const [isLocked, setLocked] = useState(false);

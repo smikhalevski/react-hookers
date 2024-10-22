@@ -1,14 +1,16 @@
 import { EffectCallback, RefObject, useLayoutEffect } from 'react';
 import { focusRing } from './focusRing';
-import { FocusableElement } from './types';
+import { FocusableElement } from '../types';
 import { cancelFocus, requestFocus } from './useFocus';
 import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusControls } from './useFocusControls';
-import { useFunction } from './useFunction';
-import { emptyArray, emptyObject } from './utils';
-import { getFocusedElement, isTabbable, sortByDocumentOrder, sortByTabOrder } from './utils/dom';
+import { useFunction } from '../useFunction';
+import { emptyArray, emptyObject } from '../utils/lang';
+import { getFocusedElement, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
 
 /**
  * Props of the {@link useFocusScope} hook.
+ *
+ * @group Behaviors
  */
 export interface FocusScopeProps {
   /**
@@ -50,6 +52,7 @@ export interface FocusScopeProps {
  * @param props Focus scope props.
  * @returns Focus controls that allow to move focus around in a container element. An object which identity never
  * changes between renders.
+ * @group Behaviors
  */
 export function useFocusScope(ref: RefObject<Element>, props: FocusScopeProps = emptyObject): FocusControls {
   const manager = useFunction(createFocusScopeManager);

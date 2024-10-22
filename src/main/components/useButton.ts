@@ -1,9 +1,11 @@
 import { ButtonHTMLAttributes, RefObject } from 'react';
-import { useFunction } from './useFunction';
-import { PressableProps, usePressable } from './usePressable';
+import { useFunction } from '../useFunction';
+import { PressableProps, usePressable } from '../behaviors/usePressable';
 
 /**
  * A value returned from the {@link useButton} hook.
+ *
+ * @group Components
  */
 export interface HeadlessButtonValue {
   /**
@@ -36,6 +38,8 @@ export interface HeadlessButtonValue {
 
 /**
  * Props of the {@link useButton} hook.
+ *
+ * @group Components
  */
 export interface HeadlessButtonProps extends PressableProps {}
 
@@ -47,6 +51,7 @@ export interface HeadlessButtonProps extends PressableProps {}
  * {@link HeadlessButtonValue.buttonProps} are attached.
  * @param props Button props.
  * @returns An object which identity never changes between renders.
+ * @group Components
  */
 export function useButton(ref: RefObject<HTMLButtonElement>, props: HeadlessButtonProps): HeadlessButtonValue {
   const pressableValue = usePressable(ref, props);

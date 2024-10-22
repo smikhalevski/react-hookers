@@ -2,6 +2,8 @@ const { min, max } = Math;
 
 /**
  * Reruns a rect that bounds an intersection of two rects.
+ *
+ * @group Other
  */
 export function intersectRects(a: DOMRect, b: DOMRect): DOMRect {
   const ax1 = a.left;
@@ -27,6 +29,8 @@ export function intersectRects(a: DOMRect, b: DOMRect): DOMRect {
 
 /**
  * Returns the percentage of intersection of two rects.
+ *
+ * @group Other
  */
 export function getIntersectionRatio(a: DOMRect, b: DOMRect): number {
   const ax1 = a.left;
@@ -47,6 +51,8 @@ export function getIntersectionRatio(a: DOMRect, b: DOMRect): number {
 
 /**
  * Returns a rect that bounds the window visual viewport.
+ *
+ * @group Other
  */
 export function getWindowViewportRect(): DOMRect {
   const { visualViewport } = window;
@@ -62,6 +68,7 @@ export function getWindowViewportRect(): DOMRect {
  * Returns a bounding rect of an element that fits into a viewport, or a window viewport rect if there's no element.
  *
  * @param element An element that constrains visual viewport bounds.
+ * @group Other
  */
 export function getViewportRect(element: Element | null | undefined): DOMRect {
   const windowRect = getWindowViewportRect();

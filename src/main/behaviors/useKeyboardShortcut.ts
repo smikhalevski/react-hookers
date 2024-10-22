@@ -1,10 +1,12 @@
 import { EffectCallback, RefObject, useEffect } from 'react';
-import { useFunction } from './useFunction';
-import { Platform, usePlatform } from './usePlatform';
-import { emptyArray } from './utils';
+import { useFunction } from '../useFunction';
+import { Platform, usePlatform } from '../usePlatform';
+import { emptyArray } from '../utils/lang';
 
 /**
  * Props of the {@link useKeyboardShortcut} hook.
+ *
+ * @group Behaviors
  */
 export interface KeyboardShortcutProps {
   /**
@@ -44,7 +46,7 @@ export interface KeyboardShortcutProps {
  *   }
  * });
  *
- * @template T A name of a shortcut.
+ * @group Behaviors
  */
 export function useKeyboardShortcut(props: KeyboardShortcutProps): void {
   const manager = useFunction(createKeyboardShortcutManager);
@@ -204,11 +206,15 @@ const stableKeyCodes: Record<string, number> = {
  * <dt>"Ctrl"</dt>
  * <dd>Interpreted as a <kbd>Command</kbd> on Apple devices and <kbd>Control</kbd> everywhere else.</dd>
  * </dl>
+ *
+ * @group Behaviors
  */
 export type SyntheticKeyCode = 'Ctrl';
 
 /**
  * A well-known keyboard key codes.
+ *
+ * @group Behaviors
  */
 export type KeyCode =
   | 'Backspace'

@@ -1,12 +1,14 @@
 import { PubSub } from 'parallel-universe';
 import { cloneElement, FunctionComponent, Key, ReactElement, ReactNode, useEffect } from 'react';
 import { useRerender } from './useRerender';
-import { die, emptyArray } from './utils';
+import { die, emptyArray } from './utils/lang';
 
 const containers = new WeakMap<FunctionComponent, (element: ReactElement) => () => void>();
 
 /**
  * Props injected into an element rendered inside a {@link useRenderContainer render container}.
+ *
+ * @group Other
  */
 export interface DisposableProps {
   /**
@@ -20,6 +22,8 @@ export interface DisposableProps {
 
 /**
  * Props of a {@link createRenderContainer render container}.
+ *
+ * @group Other
  */
 export interface RenderContainerProps {
   /**
@@ -49,6 +53,8 @@ export interface RenderContainerProps {
  * @returns A function that renders/re-renders an element, which returns a callback that unmounts the rendered element.
  * If an element has a key, then the rendered element would update the already rendered element with the same key.
  * If there's no key, then a new element would be rendered on each function call.
+ * @see {@link createRenderContainer}
+ * @group Other
  */
 export function useRenderContainer(
   container: FunctionComponent
@@ -58,6 +64,9 @@ export function useRenderContainer(
 
 /**
  * Creates a component that is used by {@link useRenderContainer} to render elements.
+ *
+ * @see {@link useRenderContainer}
+ * @group Other
  */
 export function createRenderContainer(): FunctionComponent<RenderContainerProps> {
   const pubSub = new PubSub();

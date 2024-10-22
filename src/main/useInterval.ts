@@ -1,7 +1,7 @@
 import { EffectCallback, useLayoutEffect } from 'react';
 import type { Schedule } from './types';
 import { useFunction } from './useFunction';
-import { emptyArray, noop } from './utils';
+import { emptyArray, noop } from './utils/lang';
 
 /**
  * The replacement for `window.setInterval` that schedules a function to be repeatedly called with a fixed time delay
@@ -13,6 +13,7 @@ import { emptyArray, noop } from './utils';
  * Intervals must be scheduled/canceled after the component is mounted. Before that, it is a no-op.
  *
  * @see {@link useRerenderInterval}
+ * @group Other
  */
 export function useInterval(): [schedule: Schedule, cancel: () => void] {
   const manager = useFunction(createIntervalManager);

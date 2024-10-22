@@ -5,6 +5,7 @@ import { MutableRefObject, RefCallback, RefObject } from 'react';
  *
  * @param refs Refs to merge.
  * @template R Refs to merge.
+ * @group Other
  */
 export function mergeRefs<R extends Array<RefObject<any> | RefCallback<any> | null | undefined>>(...refs: R): R[number];
 

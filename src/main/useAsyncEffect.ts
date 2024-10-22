@@ -8,6 +8,7 @@ import { useFunction } from './useFunction';
  *
  * @param signal The signal that is aborted when effect was discarded.
  * @returns The cleanup callback that is invoked when effect unmounted.
+ * @group Other
  */
 export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => void) | void>;
 
@@ -20,6 +21,7 @@ export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => vo
  * @param fn The callback that is invoked if `deps` have changed. An effect may return a destructor/cleanup callback.
  * The previous effect is cleaned up before executing the next effect.
  * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.
+ * @group Other
  */
 export function useAsyncEffect(fn: AsyncEffectCallback, deps?: DependencyList): void {
   const manager = useFunction(createAsyncEffectManager);
