@@ -101,5 +101,6 @@ export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';
 export { useUniqueId } from './useUniqueId';
+export { useViewportRef, ViewportRefProvider } from './useViewportRef';
 export { useWindowViewportResize } from './useWindowViewportResize';
 export { type DOMEventHandler, type FocusableElement, type ValueOrProvider, type Schedule } from './types';
