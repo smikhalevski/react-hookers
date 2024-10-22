@@ -55,6 +55,7 @@ export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';
 export { useUniqueId } from './useUniqueId';
+export { useWindowViewportResize } from './useWindowViewportResize';
 
 // Behaviors
 export type { FocusScopeProviderProps } from './behaviors/FocusScope';
