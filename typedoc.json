@@ -17,5 +17,6 @@
   "compilerOptions": {
     "skipLibCheck": true
   },
-  "plugin": ["typedoc-plugin-mdn-links"]
+  "plugin": ["typedoc-plugin-mdn-links"],
+  "intentionallyNotExported": ["UnionToIntersection"]
 }

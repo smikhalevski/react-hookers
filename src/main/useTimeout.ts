@@ -1,6 +1,7 @@
 import { EffectCallback, useLayoutEffect } from 'react';
+import type { Schedule } from './types';
 import { useFunction } from './useFunction';
-import { emptyArray, type Schedule } from './utils';
+import { emptyArray } from './utils';
 
 /**
  * Returns the protocol that delays invoking a callback until after a timeout.

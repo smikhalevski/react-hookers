@@ -1,6 +1,7 @@
 import { EffectCallback, useLayoutEffect } from 'react';
+import type { Schedule } from './types';
 import { useFunction } from './useFunction';
-import { emptyArray, noop, type Schedule } from './utils';
+import { emptyArray, noop } from './utils';
 
 /**
  * The replacement for `window.setInterval` that schedules a function to be repeatedly called with a fixed time delay

@@ -1,16 +1,47 @@
+import { ValueOrProvider } from './types';
+
+export const emptyObject = Object.freeze({});
+
+export const emptyArray = Object.freeze([]);
+
+export function noop() {}
+
 /**
- * Schedules a timed invocation of the callback with provided arguments.
+ * Unwraps a provided value.
  *
- * @param cb The callback to invoke.
- * @param ms The delay after which the callback must be invoked.
- * @param args Varargs that are passed as arguments to the callback.
- * @template A The callback arguments.
+ * @param value A value or a value provider callback.
+ * @param args Arguments of a value provider callback.
+ * @returns An unwrapped value.
+ * @template T An unwrapped value.
+ * @template A Arguments of a callback that return a value.
  */
-export type Schedule = <A extends any[]>(cb: (...args: A) => void, ms: number, ...args: A) => void;
+export function callOrGet<T, A extends any[]>(value: ValueOrProvider<T, A>, ...args: A): T;
 
-export const emptyArray = [];
+export function callOrGet(value: unknown) {
+  if (typeof value !== 'function') {
+    return value;
+  }
 
-export function noop(): void {}
+  if (arguments.length === 1) {
+    return value();
+  }
+
+  if (arguments.length === 2) {
+    return value(arguments[1]);
+  }
+
+  const args = [];
+
+  for (let i = 1; i < arguments.length; ++i) {
+    args.push(arguments[i]);
+  }
+
+  return value(...args);
+}
+
+export function die(message?: string): never {
+  throw new Error(message);
+}
 
 /**
  * [SameValueZero](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero) comparison.
