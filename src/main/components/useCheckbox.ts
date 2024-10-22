@@ -6,29 +6,24 @@ import { useUniqueId } from '../useUniqueId';
 import { mergeProps } from '../utils/mergeProps';
 
 /**
- * A value returned from the {@link useTextInput} hook.
+ * A value returned from the {@link useCheckbox} hook.
  *
  * @group Components
  */
-export interface HeadlessTextInputValue {
+export interface HeadlessCheckboxValue {
   /**
-   * Props of an element that must have a text input behaviour.
+   * Props of an element that must have a checkbox behaviour.
    *
    * An object which identity never changes between renders.
    */
-  inputProps: InputHTMLAttributes<HTMLElement>;
+  inputProps: InputHTMLAttributes<HTMLInputElement>;
 
   /**
-   * Props of an element that must have a text button label behaviour.
+   * Props of an element that must have a checkbox label behaviour.
    *
    * An object which identity never changes between renders.
    */
-  labelProps: LabelHTMLAttributes<HTMLElement>;
-
-  /**
-   * An input text value.
-   */
-  value: string;
+  labelProps: LabelHTMLAttributes<HTMLLabelElement>;
 
   /**
    * `true` if an element is currently hovered.
@@ -47,63 +42,57 @@ export interface HeadlessTextInputValue {
 }
 
 /**
- * Props of the {@link useTextInput} hook.
+ * Props of the {@link useCheckbox} hook.
  *
  * @group Components
  */
-export interface HeadlessTextInputProps extends HoverProps, FocusProps {
+export interface HeadlessCheckboxProps extends HoverProps, FocusProps {
   /**
-   * An input text value.
-   */
-  value: string | undefined;
-
-  /**
-   * A handler that is called when an input text value is changed.
+   * If `true` then a checkbox is checked.
    *
-   * @param value An input text value.
+   * @default false
    */
-  onChange: (value: string) => void;
+  isChecked?: boolean;
 
   /**
-   * An ID that uniquely identifies a text input.
+   * A handler that is called when a checkbox is checked or unchecked.
+   *
+   * @param isChecked `true` if checkbox is checked.
+   */
+  onChange?: (isChecked: boolean) => void;
+
+  /**
+   * An ID that uniquely identifies a checkbox.
    */
   id?: string;
 
   /**
-   * If `true` then an input is marked as invalid.
+   * If `true` then a checkbox is marked as invalid.
    *
    * @default false
    */
   isInvalid?: boolean;
-
-  /**
-   * If `true` then a text input is treated as a textarea element.
-   *
-   * @default false
-   */
-  isTextArea?: boolean;
 }
 
 /**
- * Provides the behavior and accessibility implementation for a text input.
+ * Provides the behavior and accessibility implementation for a checkbox component. Checkboxes allow users to select
+ * multiple items from a list of individual items, or to mark one individual item as selected.
  *
- * @param ref A reference to a textarea or input element. This must be the same element to which
- * {@link HeadlessTextInputValue.inputProps} are attached.
- * @param props Text input props.
- * @returns An object which identity never changes between renders.
+ * @param ref A reference to an input element. This must be the same element to which
+ * {@link HeadlessCheckboxValue.inputProps} are attached.
+ * @param props Checkbox props.
  * @group Components
  */
-export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTextInputProps): HeadlessTextInputValue {
+export function useCheckbox(ref: RefObject<HTMLInputElement>, props: HeadlessCheckboxProps): HeadlessCheckboxValue {
   const hoverValue = useHover(props);
   const focusValue = useFocus(ref, props);
   const fallbackId = useUniqueId();
 
-  const manager = useFunction(createTextInputManager, hoverValue, focusValue);
+  const manager = useFunction(createCheckboxManager, hoverValue, focusValue);
   const { value } = manager;
 
   value.inputProps.id = value.labelProps.htmlFor = props.id || fallbackId;
-  value.inputProps.type = props.isTextArea ? undefined : 'text';
-  value.inputProps.value = value.value = props.value === undefined ? '' : props.value;
+  value.inputProps.checked = props.isChecked || false;
   value.inputProps['aria-disabled'] = value.inputProps.disabled = props.isDisabled || undefined;
   value.inputProps['aria-invalid'] = props.isInvalid || undefined;
   value.isHovered = hoverValue.isHovered;
@@ -115,13 +104,15 @@ export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTe
   return value;
 }
 
-interface TextInputManager {
-  props: HeadlessTextInputProps;
-  value: HeadlessTextInputValue;
+interface CheckboxManager {
+  props: HeadlessCheckboxProps;
+  value: HeadlessCheckboxValue;
 }
 
-function createTextInputManager(hoverValue: HoverValue, focusValue: FocusValue): TextInputManager {
+function createCheckboxManager(hoverValue: HoverValue, focusValue: FocusValue): CheckboxManager {
   const inputProps: InputHTMLAttributes<HTMLInputElement> = mergeProps(hoverValue.hoverProps, focusValue.focusProps);
+
+  inputProps.type = 'checkbox';
 
   inputProps.onChange = event => {
     const { isDisabled, onChange } = manager.props;
@@ -130,15 +121,14 @@ function createTextInputManager(hoverValue: HoverValue, focusValue: FocusValue):
       return;
     }
 
-    onChange?.(event.currentTarget.value);
+    onChange?.(event.currentTarget.checked);
   };
 
-  const manager: TextInputManager = {
+  const manager: CheckboxManager = {
     props: undefined!,
     value: {
       inputProps,
-      labelProps: {},
-      value: '',
+      labelProps: hoverValue.hoverProps,
       isHovered: false,
       isFocused: false,
       isFocusVisible: false,

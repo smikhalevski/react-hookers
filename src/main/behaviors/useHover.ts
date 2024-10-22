@@ -1,8 +1,8 @@
 import { PubSub } from 'parallel-universe';
 import { DOMAttributes, EffectCallback, PointerEventHandler, useLayoutEffect, useState } from 'react';
 import { useFunction } from '../useFunction';
-import { emptyArray, emptyObject } from '../utils/lang';
 import { isPortalEvent } from '../utils/dom';
+import { emptyArray, emptyObject } from '../utils/lang';
 
 const cancelHoverPubSub = new PubSub();
 
