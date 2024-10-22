@@ -35,8 +35,9 @@ export interface Selection<T = unknown> {
    * Deletes a value from a selection.
    *
    * @param value A value to delete.
+   * @returns `true` if a value was in a selection.
    */
-  delete(value: T): void;
+  delete(value: T): boolean;
 
   /**
    * Subscribes a listener to selection changes.
@@ -78,48 +79,48 @@ export function useSelection<T>(): Selection<T> {
  */
 export function createSelection<T>(maximumSize = Infinity): Selection<T> {
   const pubSub = new PubSub();
-  const values: T[] = [];
+  const values = new Set<T>();
+
+  let lastValue: T;
 
   return {
     get size() {
-      return values.length;
+      return values.size;
     },
 
     has(value) {
-      return values.includes(value);
+      return values.has(value);
     },
 
     clear() {
-      if (values.length === 0) {
+      if (values.size === 0) {
         return;
       }
 
-      values.length = 0;
+      values.clear();
       pubSub.publish();
     },
 
     add(value) {
-      if (values.includes(value)) {
+      if (values.has(value)) {
         return;
       }
 
-      if (values.length + 1 > maximumSize) {
-        values.pop();
+      if (values.size + 1 > maximumSize) {
+        values.delete(lastValue);
       }
 
-      values.push(value);
+      lastValue = value;
+      values.add(value);
       pubSub.publish();
     },
 
     delete(value) {
-      const index = value === value ? values.indexOf(value) : values.findIndex(Number.isNaN);
-
-      if (index === -1) {
-        return;
+      if (values.delete(value)) {
+        pubSub.publish();
+        return true;
       }
-
-      values.splice(index, 1);
-      pubSub.publish();
+      return false;
     },
 
     subscribe(listener) {
