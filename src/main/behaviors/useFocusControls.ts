@@ -12,6 +12,7 @@ export interface UnorderedFocusOptions extends RequestFocusOptions {
    * Returns `true` if an {@link element} is allowed to receive focus. By default, all candidates are approved.
    *
    * @see {@link isTabbable}
+   * @see {@link isAutoFocusable}
    */
   approveFocusCandidate?: (element: FocusableElement) => boolean;
 }

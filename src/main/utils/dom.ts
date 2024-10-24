@@ -2,6 +2,11 @@ import { SyntheticEvent } from 'react';
 import { FocusableElement } from '../types';
 
 /**
+ * An attribute that replaces `autofocus` for a {@link useFocusScope focus scope}. Expects a boolean value.
+ */
+export const DATA_AUTOFOCUS = 'data-autofocus';
+
+/**
  * Returns `true` if event was dispatched from a portal.
  *
  * @param event An event to check.
@@ -85,6 +90,16 @@ export function isFocusable(element: Element): element is FocusableElement {
  */
 export function isTabbable(element: FocusableElement): boolean {
   return getTabIndex(element) >= 0;
+}
+
+/**
+ * Returns `true` if an element is expected to be automatically focused in a {@link useFocusScope focus scope}.
+ *
+ * @param element An element to check.
+ * @group Other
+ */
+export function isAutoFocusable(element: Element): boolean {
+  return element.getAttribute(DATA_AUTOFOCUS) === 'true';
 }
 
 /**

@@ -71,6 +71,7 @@ export {
   sortByDocumentOrder,
   getFocusedElement,
   isTabbable,
+  isAutoFocusable,
   isPortalEvent,
 } from './utils/dom';
 export { callOrGet, isEqual } from './utils/lang';

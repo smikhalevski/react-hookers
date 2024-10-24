@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes, RefObject } from 'react';
 import { useFunction } from '../useFunction';
 import { PressableProps, usePressable } from '../behaviors/usePressable';
+import { DATA_AUTOFOCUS } from '../utils/dom';
 
 /**
  * A value returned from the {@link useButton} hook.
@@ -41,7 +42,14 @@ export interface HeadlessButtonValue {
  *
  * @group Components
  */
-export interface HeadlessButtonProps extends PressableProps {}
+export interface HeadlessButtonProps extends PressableProps {
+  /**
+   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   *
+   * @default false
+   */
+  isAutofocused?: boolean;
+}
 
 /**
  * Provides the behavior and accessibility implementation for a button component. Handles mouse, keyboard, and touch
@@ -61,6 +69,7 @@ export function useButton(ref: RefObject<HTMLButtonElement>, props: HeadlessButt
   value.buttonProps.type = 'button';
   value.buttonProps['aria-disabled'] = value.buttonProps.disabled = props.isDisabled || undefined;
   value.buttonProps.tabIndex = props.isDisabled ? undefined : 0;
+  value.buttonProps[DATA_AUTOFOCUS] = props.isAutofocused;
   value.isPressed = pressableValue.isPressed;
   value.isHovered = pressableValue.isHovered;
   value.isFocused = pressableValue.isFocused;

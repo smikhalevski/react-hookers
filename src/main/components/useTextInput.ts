@@ -3,6 +3,7 @@ import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
 import { useFunction } from '../useFunction';
 import { useUniqueId } from '../useUniqueId';
+import { DATA_AUTOFOCUS } from '../utils/dom';
 import { mergeProps } from '../utils/mergeProps';
 
 /**
@@ -82,6 +83,13 @@ export interface HeadlessTextInputProps extends HoverProps, FocusProps {
    * @default false
    */
   isTextArea?: boolean;
+
+  /**
+   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   *
+   * @default false
+   */
+  isAutofocused?: boolean;
 }
 
 /**
@@ -106,6 +114,7 @@ export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTe
   value.inputProps.value = value.value = props.value === undefined ? '' : props.value;
   value.inputProps['aria-disabled'] = value.inputProps.disabled = props.isDisabled || undefined;
   value.inputProps['aria-invalid'] = props.isInvalid || undefined;
+  value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused;
   value.isHovered = hoverValue.isHovered;
   value.isFocused = focusValue.isFocused;
   value.isFocusVisible = focusValue.isFocusVisible;

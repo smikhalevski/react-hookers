@@ -1,20 +1,21 @@
 import { EffectCallback, RefObject, useLayoutEffect } from 'react';
-import { focusRing } from './focusRing';
 import { FocusableElement } from '../types';
+import { useFunction } from '../useFunction';
+import { getFocusedElement, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
+import { emptyArray, emptyObject } from '../utils/lang';
+import { focusRing } from './focusRing';
 import { cancelFocus, requestFocus } from './useFocus';
 import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusControls } from './useFocusControls';
-import { useFunction } from '../useFunction';
-import { emptyArray, emptyObject } from '../utils/lang';
-import { getFocusedElement, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
 
 /**
  * Props of the {@link useFocusScope} hook.
  *
  * @group Behaviors
  */
-export interface FocusScopeProps {
+export interface FocusScopeProps extends UnorderedFocusOptions {
   /**
-   * If `true` then the first focusable element inside the container is focused when the scope is mounted.
+   * If `true` then focuses the first {@link approveFocusCandidate approved candidate} element inside a container
+   * when a scope is mounted.
    *
    * By default, autofocus is enabled if the {@link focusRing focus ring} is visible.
    */
@@ -82,7 +83,7 @@ function createFocusScopeManager(): FocusScopeManager {
     const unregister = registerFocusScopeManager(manager);
 
     if (isAutofocused) {
-      focusControls.focusFirst();
+      focusControls.focusFirst(manager.props);
     } else if (isFocusTrap) {
       cancelFocus();
     }
