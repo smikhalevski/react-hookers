@@ -159,7 +159,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
       isDisabled ||
       status !== STATUS_NOT_HOVERED ||
       event.pointerType !== 'mouse' ||
-      event.buttons !== 0 ||
+      // event.buttons !== 0 ||
       isPortalEvent(event)
     ) {
       return;
