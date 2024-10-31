@@ -148,7 +148,7 @@ export function useMenuItem(
   value.isActive = pressableValue.isFocused;
   value.isSelected = isSelected;
 
-  useEffect(manager.onSelectionUpdate, [selection, fallbackId]);
+  useEffect(manager.onSelectionUpdated, [selection, id]);
 
   return value;
 }
@@ -163,7 +163,7 @@ interface MenuItemManager {
   selection: Selection;
   props: HeadlessMenuItemProps;
   value: HeadlessMenuItemValue;
-  onSelectionUpdate: EffectCallback;
+  onSelectionUpdated: EffectCallback;
   onClose?: () => void;
 }
 
@@ -232,7 +232,7 @@ function createMenuItemManager(setSelected: (isSelected: boolean) => void): Menu
     select();
   };
 
-  const handleSelectionUpdate: EffectCallback = () =>
+  const handleSelectionUpdated: EffectCallback = () =>
     manager.selection.subscribe(() => setSelected(manager.selection.has(manager.id)));
 
   const manager: MenuItemManager = {
@@ -254,7 +254,7 @@ function createMenuItemManager(setSelected: (isSelected: boolean) => void): Menu
       isPressed: false,
       isSelected: false,
     },
-    onSelectionUpdate: handleSelectionUpdate,
+    onSelectionUpdated: handleSelectionUpdated,
     onClose: undefined,
   };
 

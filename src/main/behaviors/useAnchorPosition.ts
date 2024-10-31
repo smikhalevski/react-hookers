@@ -216,14 +216,14 @@ export function useAnchorPosition(props: AnchorPositionProps): void {
 
   manager.props = props;
 
-  useLayoutEffect(manager.onDisabledUpdate, [props.isDisabled]);
+  useLayoutEffect(manager.onDisabledUpdated, [props.isDisabled]);
 }
 
 const memory = new Int32Array(21);
 
 interface AnchorPositionManager {
   props: AnchorPositionProps;
-  onDisabledUpdate: EffectCallback;
+  onDisabledUpdated: EffectCallback;
 }
 
 function createAnchorPositionManager(): AnchorPositionManager {
@@ -250,7 +250,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
     targetPlacement: 'center',
   };
 
-  const handleDisabledUpdate: EffectCallback = () => {
+  const handleDisabledUpdated: EffectCallback = () => {
     if (!manager.props.isDisabled) {
       frameRequestCallback();
     }
@@ -399,7 +399,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
 
   const manager: AnchorPositionManager = {
     props: undefined!,
-    onDisabledUpdate: handleDisabledUpdate,
+    onDisabledUpdated: handleDisabledUpdated,
   };
 
   return manager;

@@ -100,8 +100,8 @@ export function useTooltip(ref: RefObject<Element>, props: HeadlessTooltipProps)
 
   manager.props = props;
 
-  useLayoutEffect(manager.onMount, emptyArray);
-  useLayoutEffect(manager.onOpenUpdate, [props.isOpened]);
+  useLayoutEffect(manager.onMounted, emptyArray);
+  useLayoutEffect(manager.onOpenedUpdated, [props.isOpened]);
 
   return value;
 }
@@ -112,8 +112,8 @@ interface TooltipManager {
   props: HeadlessTooltipProps;
   value: HeadlessTooltipValue;
   close: () => void;
-  onMount: EffectCallback;
-  onOpenUpdate: EffectCallback;
+  onMounted: EffectCallback;
+  onOpenedUpdated: EffectCallback;
 }
 
 const OPEN_DELAY = 1200;
@@ -143,13 +143,13 @@ function createTooltipManager(): TooltipManager {
     onClose?.();
   };
 
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     window.addEventListener('keydown', handleEscapeKeyDown);
 
     return () => window.removeEventListener('keydown', handleEscapeKeyDown);
   };
 
-  const handleOpenUpdate: EffectCallback = () => {
+  const handleOpenedUpdated: EffectCallback = () => {
     clearTimeout(timer);
 
     if (manager.props.isOpened) {
@@ -220,8 +220,8 @@ function createTooltipManager(): TooltipManager {
       anchorProps: undefined!,
     },
     close,
-    onMount: handleMount,
-    onOpenUpdate: handleOpenUpdate,
+    onMounted: handleMounted,
+    onOpenedUpdated: handleOpenedUpdated,
   };
 
   return manager;

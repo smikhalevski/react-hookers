@@ -20,7 +20,7 @@ export interface HeadlessTextInputValue {
   inputProps: InputHTMLAttributes<HTMLElement>;
 
   /**
-   * Props of an element that must have a text button label behaviour.
+   * Props of an element that must have an input label behaviour.
    *
    * An object which identity never changes between renders.
    */

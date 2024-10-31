@@ -81,8 +81,8 @@ export function useHover(props: HoverProps = emptyObject): HoverValue {
   manager.props = props;
   manager.value.isHovered = isHovered;
 
-  useLayoutEffect(manager.onMount, emptyArray);
-  useLayoutEffect(manager.onUpdate);
+  useLayoutEffect(manager.onMounted, emptyArray);
+  useLayoutEffect(manager.onUpdated);
 
   return manager.value;
 }
@@ -96,8 +96,8 @@ let hoverManagerCount = 0;
 interface HoverManager {
   props: HoverProps;
   value: HoverValue;
-  onMount: EffectCallback;
-  onUpdate: EffectCallback;
+  onMounted: EffectCallback;
+  onUpdated: EffectCallback;
 }
 
 function createHoverManager(setHovered: (isHovered: boolean) => void): HoverManager {
@@ -118,7 +118,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
     onHoverEnd?.();
   };
 
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     const unsubscribeCancelHover = cancelHoverPubSub.subscribe(cancel);
 
     if (++hoverManagerCount === 1) {
@@ -134,7 +134,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
     };
   };
 
-  const handleUpdate: EffectCallback = () => {
+  const handleUpdated: EffectCallback = () => {
     if (manager.props.isDisabled) {
       cancel();
     }
@@ -189,8 +189,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
         onPointerLeave: handlePointerLeave,
       },
     },
-    onMount: handleMount,
-    onUpdate: handleUpdate,
+    onMounted: handleMounted,
+    onUpdated: handleUpdated,
   };
 
   return manager;

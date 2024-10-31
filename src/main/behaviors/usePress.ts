@@ -96,8 +96,8 @@ export function usePress(props: PressProps = emptyObject): PressValue {
   manager.props = props;
   manager.value.isPressed = isPressed;
 
-  useLayoutEffect(manager.onMount, emptyArray);
-  useLayoutEffect(manager.onUpdate);
+  useLayoutEffect(manager.onMounted, emptyArray);
+  useLayoutEffect(manager.onUpdated);
 
   return manager.value;
 }
@@ -109,8 +109,8 @@ const STATUS_PRESSED_BY_KEYBOARD = 2;
 interface PressManager {
   props: PressProps;
   value: PressValue;
-  onMount: EffectCallback;
-  onUpdate: EffectCallback;
+  onMounted: EffectCallback;
+  onUpdated: EffectCallback;
 }
 
 function createPressManager(setPressed: (isPressed: boolean) => void): PressManager {
@@ -140,7 +140,7 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
     onPressEnd?.();
   };
 
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     const unsubscribeCancelPress = cancelPressPubSub.subscribe(cancel);
 
     return () => {
@@ -149,7 +149,7 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
     };
   };
 
-  const handleUpdate: EffectCallback = () => {
+  const handleUpdated: EffectCallback = () => {
     if (manager.props.isDisabled) {
       cancel();
     }
@@ -288,8 +288,8 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
         onKeyDown: handleKeyDown,
       },
     },
-    onMount: handleMount,
-    onUpdate: handleUpdate,
+    onMounted: handleMounted,
+    onUpdated: handleUpdated,
   };
 
   return manager;

@@ -73,22 +73,22 @@ export function useArrowKeysNavigation(
   manager.focusControls = focusControls;
   manager.props = props;
 
-  useLayoutEffect(manager.onMount, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 }
 
 interface ArrowKeysNavigationManager {
   focusControls: FocusControls | null;
   props: ArrowKeysNavigationProps;
-  onMount: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createArrowKeysNavigationManager(): ArrowKeysNavigationManager {
-  const handleMount: EffectCallback = () => registerArrowKeysNavigationManager(manager);
+  const handleMounted: EffectCallback = () => registerArrowKeysNavigationManager(manager);
 
   const manager: ArrowKeysNavigationManager = {
     focusControls: null,
     props: undefined!,
-    onMount: handleMount,
+    onMounted: handleMounted,
   };
 
   return manager;

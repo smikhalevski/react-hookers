@@ -47,7 +47,7 @@ export function useClickAway(props: ClickAwayProps): ClickAwayValue {
 
   manager.props = props;
 
-  useLayoutEffect(manager.onMount, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
   return manager.value;
 }
@@ -56,11 +56,11 @@ interface ClickAwayManager {
   props: ClickAwayProps;
   value: ClickAwayValue;
   containerPointerEvent: PointerEvent | null;
-  onMount: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createClickAwayManager() {
-  const handleMount: EffectCallback = () => registerClickAwayManager(manager);
+  const handleMounted: EffectCallback = () => registerClickAwayManager(manager);
 
   const handlePointerDown: PointerEventHandler = event => {
     manager.containerPointerEvent = event.nativeEvent;
@@ -74,7 +74,7 @@ function createClickAwayManager() {
       },
     },
     containerPointerEvent: null,
-    onMount: handleMount,
+    onMounted: handleMounted,
   };
 
   return manager;

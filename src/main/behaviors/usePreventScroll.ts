@@ -27,16 +27,16 @@ export function usePreventScroll(props: PreventScrollProps = emptyObject): void 
 
   manager.props = props;
 
-  useLayoutEffect(manager.onDisabledUpdate, [props.isDisabled]);
+  useLayoutEffect(manager.onDisabledUpdated, [props.isDisabled]);
 }
 
 interface PreventScrollManager {
   props: PreventScrollProps;
-  onDisabledUpdate: EffectCallback;
+  onDisabledUpdated: EffectCallback;
 }
 
 function createPreventScrollManager(): PreventScrollManager {
-  const handleDisableUpdate: EffectCallback = () => {
+  const handleDisableUpdated: EffectCallback = () => {
     if (!manager.props.isDisabled) {
       return disableScroll();
     }
@@ -44,7 +44,7 @@ function createPreventScrollManager(): PreventScrollManager {
 
   const manager: PreventScrollManager = {
     props: undefined!,
-    onDisabledUpdate: handleDisableUpdate,
+    onDisabledUpdated: handleDisableUpdated,
   };
 
   return manager;

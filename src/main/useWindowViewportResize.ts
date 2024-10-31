@@ -15,16 +15,16 @@ export function useWindowViewportResize(onResize: (rect: DOMRectReadOnly) => voi
 
   manager.onResize = onResize;
 
-  useLayoutEffect(manager.onMount, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 }
 
 interface WindowViewportResizeManager {
   onResize: (rect: DOMRectReadOnly) => void;
-  onMount: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createWindowViewportResizeManager(): WindowViewportResizeManager {
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     (0, manager.onResize)(getWindowViewportRect());
 
     const unsubscribe = windowViewportResizePubSub.subscribe(rect => (0, manager.onResize)(rect));
@@ -45,7 +45,7 @@ function createWindowViewportResizeManager(): WindowViewportResizeManager {
 
   const manager: WindowViewportResizeManager = {
     onResize: undefined!,
-    onMount: handleMount,
+    onMounted: handleMounted,
   };
 
   return manager;

@@ -139,8 +139,8 @@ export function useFocus(ref: RefObject<Element>, props: FocusProps = emptyObjec
   manager.value.isFocused =
     (manager.value.isFocusVisible = status === STATUS_FOCUS_VISIBLE) || status === STATUS_FOCUSED;
 
-  useLayoutEffect(manager.onMount, emptyArray);
-  useLayoutEffect(manager.onUpdate);
+  useLayoutEffect(manager.onMounted, emptyArray);
+  useLayoutEffect(manager.onUpdated);
 
   return manager.value;
 }
@@ -153,14 +153,14 @@ interface FocusManager {
   ref: RefObject<Element>;
   props: FocusProps;
   value: FocusValue;
-  onMount: EffectCallback;
-  onUpdate: EffectCallback;
+  onMounted: EffectCallback;
+  onUpdated: EffectCallback;
 }
 
 function createFocusManager(setStatus: (status: number) => void): FocusManager {
   let status = STATUS_BLURRED;
 
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     const unsubscribeFocusRing = focusRing.subscribe(() => {
       const { onFocusVisible } = manager.props;
 
@@ -190,7 +190,7 @@ function createFocusManager(setStatus: (status: number) => void): FocusManager {
     };
   };
 
-  const handleUpdate: EffectCallback = () => {
+  const handleUpdated: EffectCallback = () => {
     const { isDisabled, onFocusChange, onBlur } = manager.props;
 
     if (isDisabled && status !== STATUS_BLURRED) {
@@ -250,8 +250,8 @@ function createFocusManager(setStatus: (status: number) => void): FocusManager {
         onBlur: cancel,
       },
     },
-    onMount: handleMount,
-    onUpdate: handleUpdate,
+    onMounted: handleMounted,
+    onUpdated: handleUpdated,
   };
 
   return manager;

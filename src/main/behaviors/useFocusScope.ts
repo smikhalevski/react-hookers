@@ -63,7 +63,7 @@ export function useFocusScope(ref: RefObject<Element>, props: FocusScopeProps = 
   manager.ref = ref;
   manager.props = props;
 
-  useLayoutEffect(manager.onMount, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
   return manager.focusControls;
 }
@@ -73,11 +73,11 @@ interface FocusScopeManager {
   ref: RefObject<Element>;
   props: FocusScopeProps;
   focusControls: FocusControls;
-  onMount: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createFocusScopeManager(): FocusScopeManager {
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     const { isAutofocused = focusRing.isVisible, isFocusTrap } = manager.props;
     const lastFocusedElement = getFocusedElement();
     const unregister = registerFocusScopeManager(manager);
@@ -129,7 +129,7 @@ function createFocusScopeManager(): FocusScopeManager {
     ref: undefined!,
     props: undefined!,
     focusControls,
-    onMount: handleMount,
+    onMounted: handleMounted,
   };
 
   return manager;

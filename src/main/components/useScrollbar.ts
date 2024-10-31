@@ -111,7 +111,7 @@ export function useScrollbar(props: HeadlessScrollbarProps): HeadlessScrollbarVa
   manager.value.isActive = status === STATUS_ACTIVE || status === STATUS_DRAGGED;
   manager.value.isDragged = status === STATUS_DRAGGED;
 
-  useLayoutEffect(manager.onMount, emptyArray);
+  useLayoutEffect(manager.onMounted, emptyArray);
 
   return manager.value;
 }
@@ -129,7 +129,7 @@ interface ScrollbarManager {
   props: HeadlessScrollbarProps;
   value: HeadlessScrollbarValue;
   cancelDrag: () => void;
-  onMount: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createScrollbarManager(setStatus: (status: number) => void): ScrollbarManager {
@@ -181,7 +181,7 @@ function createScrollbarManager(setStatus: (status: number) => void): ScrollbarM
     onScroll?.(percentage, orientation === 'horizontal' ? clientWidth / scrollWidth : clientHeight / scrollHeight);
   };
 
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     reposition();
 
     document.addEventListener('scroll', handleContainerScroll, true);
@@ -256,7 +256,7 @@ function createScrollbarManager(setStatus: (status: number) => void): ScrollbarM
       isDragged: false,
     },
     cancelDrag: noop,
-    onMount: handleMount,
+    onMounted: handleMounted,
   };
 
   return manager;

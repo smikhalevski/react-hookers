@@ -117,8 +117,8 @@ export function useDrag(ref: RefObject<HTMLElement>, props: DragProps): DragValu
   manager.props = props;
   manager.value.isDragged = isDragged;
 
-  useLayoutEffect(manager.onMount, emptyArray);
-  useLayoutEffect(manager.onUpdate);
+  useLayoutEffect(manager.onMounted, emptyArray);
+  useLayoutEffect(manager.onUpdated);
 
   return manager.value;
 }
@@ -127,8 +127,8 @@ interface DragManager {
   ref: RefObject<HTMLElement>;
   props: DragProps;
   value: DragValue;
-  onMount: EffectCallback;
-  onUpdate: EffectCallback;
+  onMounted: EffectCallback;
+  onUpdated: EffectCallback;
 }
 
 function createDragManager(setDragged: (isDragged: boolean) => void): DragManager {
@@ -136,7 +136,7 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
   let unsubscribeEventListeners = noop;
   let cancel = noop;
 
-  const handleMount: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     document.addEventListener('touchstart', handleDragStart, { passive: false });
     document.addEventListener('mousedown', handleDragStart);
 
@@ -148,7 +148,7 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
     };
   };
 
-  const handleUpdate: EffectCallback = () => {
+  const handleUpdated: EffectCallback = () => {
     if (manager.props.isDisabled) {
       cancel();
     }
@@ -244,8 +244,8 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
       isDragged: false,
       cancelDrag: () => cancel(),
     },
-    onMount: handleMount,
-    onUpdate: handleUpdate,
+    onMounted: handleMounted,
+    onUpdated: handleUpdated,
   };
 
   return manager;

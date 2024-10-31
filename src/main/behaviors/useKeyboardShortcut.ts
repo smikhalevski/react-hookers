@@ -54,22 +54,22 @@ export function useKeyboardShortcut(props: KeyboardShortcutProps): void {
   manager.platform = usePlatform();
   manager.props = props;
 
-  useEffect(manager.onMount, emptyArray);
+  useEffect(manager.onMounted, emptyArray);
 }
 
 interface KeyboardShortcutManager {
   platform: Platform;
   props: KeyboardShortcutProps;
-  onMount: EffectCallback;
+  onMounted: EffectCallback;
 }
 
 function createKeyboardShortcutManager() {
-  const handleMount: EffectCallback = () => registerKeyboardShortcutManager(manager);
+  const handleMounted: EffectCallback = () => registerKeyboardShortcutManager(manager);
 
   const manager: KeyboardShortcutManager = {
     platform: undefined!,
     props: undefined!,
-    onMount: handleMount,
+    onMounted: handleMounted,
   };
 
   return manager;
