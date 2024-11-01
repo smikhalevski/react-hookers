@@ -130,7 +130,7 @@ export interface AnchorPositionProps {
   /**
    * A reference to an element that is a viewport that constrains the target positioning.
    *
-   * By default, window is the viewport.
+   * If omitted or `current is `null`, then the window is used as a viewport.
    */
   viewportRef?: RefObject<Element>;
 
@@ -486,13 +486,15 @@ function calcAnchorPosition(memory: { [value: number]: number }): void {
   let leftWidth;
   let rightWidth;
 
-  let minCoord = null;
-  let maxCoord = null;
+  let minX;
+  let maxX;
+  let minY;
+  let maxY;
 
   if (
     alignX === ALIGN_START_OUTER ||
-    alignX === ALIGN_END_OUTER ||
     alignX === ALIGN_START_OUTER_PREFER ||
+    alignX === ALIGN_END_OUTER ||
     alignX === ALIGN_END_OUTER_PREFER
   ) {
     // Available width
@@ -534,24 +536,27 @@ function calcAnchorPosition(memory: { [value: number]: number }): void {
     }
 
     // Clamp position to viewport
-    if (alignX === ALIGN_START || alignX === ALIGN_END || alignX === ALIGN_CENTER) {
-      minCoord = min(viewportX1, anchorX2 - anchorMarginX - arrowSpacingX);
-      maxCoord = max(viewportX2 - targetWidth, anchorX1 - targetWidth + anchorMarginX + arrowSpacingX);
-    }
-
-    if (alignX === ALIGN_START_INNER || alignX === ALIGN_END_INNER || alignX === ALIGN_CENTER_INNER) {
-      minCoord = min(viewportX1, anchorX1 + anchorMarginX);
-      maxCoord = max(viewportX2 - targetWidth, anchorX2 - targetWidth - anchorMarginX);
-    }
-
-    if (minCoord !== null && maxCoord !== null) {
-      if (direction === DIRECTION_LTR) {
-        x = max(minCoord, min(x, maxCoord));
+    if (
+      alignX === ALIGN_START ||
+      alignX === ALIGN_START_INNER ||
+      alignX === ALIGN_CENTER ||
+      alignX === ALIGN_CENTER_INNER ||
+      alignX === ALIGN_END ||
+      alignX === ALIGN_END_INNER
+    ) {
+      if (alignX === ALIGN_START || alignX === ALIGN_END || alignX === ALIGN_CENTER) {
+        minX = min(viewportX1, anchorX2 - anchorMarginX - arrowSpacingX);
+        maxX = max(viewportX2 - targetWidth, anchorX1 - targetWidth + anchorMarginX + arrowSpacingX);
       } else {
-        x = min(max(minCoord, x), maxCoord);
+        minX = min(viewportX1, anchorX1 + anchorMarginX);
+        maxX = max(viewportX2 - targetWidth, anchorX2 - targetWidth - anchorMarginX);
       }
 
-      minCoord = maxCoord = null;
+      if (direction === DIRECTION_LTR) {
+        x = max(minX, min(x, maxX));
+      } else {
+        x = min(max(minX, x), maxX);
+      }
     }
 
     arrowOffset = max(0, anchorX1 - x) + (min(x + targetWidth, anchorX2) - max(x, anchorX1) - arrowSize) / 2;
@@ -602,18 +607,23 @@ function calcAnchorPosition(memory: { [value: number]: number }): void {
     }
 
     // Clamp position to viewport
-    if (alignY === ALIGN_START || alignY === ALIGN_END || alignY === ALIGN_CENTER) {
-      minCoord = min(viewportY1, anchorY2 - anchorMarginY - arrowSpacingY);
-      maxCoord = max(viewportY2 - targetHeight, anchorY1 - targetHeight + anchorMarginY + arrowSpacingY);
-    }
+    if (
+      alignY === ALIGN_START ||
+      alignY === ALIGN_START_INNER ||
+      alignY === ALIGN_CENTER ||
+      alignY === ALIGN_CENTER_INNER ||
+      alignY === ALIGN_END ||
+      alignY === ALIGN_END_INNER
+    ) {
+      if (alignY === ALIGN_START || alignY === ALIGN_END || alignY === ALIGN_CENTER) {
+        minY = min(viewportY1, anchorY2 - anchorMarginY - arrowSpacingY);
+        maxY = max(viewportY2 - targetHeight, anchorY1 - targetHeight + anchorMarginY + arrowSpacingY);
+      } else {
+        minY = min(viewportY1, anchorY1 + anchorMarginY);
+        maxY = max(viewportY2 - targetHeight, anchorY2 - targetHeight - anchorMarginY);
+      }
 
-    if (alignY === ALIGN_START_INNER || alignY === ALIGN_END_INNER || alignY === ALIGN_CENTER_INNER) {
-      minCoord = min(viewportY1, anchorY1 + anchorMarginY);
-      maxCoord = max(viewportY2 - targetHeight, anchorY2 - targetHeight - anchorMarginY);
-    }
-
-    if (minCoord !== null && maxCoord !== null) {
-      y = max(minCoord, min(y, maxCoord));
+      y = max(minY, min(y, maxY));
     }
 
     if (arrowOffset === null) {
