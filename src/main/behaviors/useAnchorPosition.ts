@@ -20,9 +20,7 @@ export type AnchorAlign =
   | 'innerStart'
   | 'innerEnd'
   | 'outerStart'
-  | 'outerEnd'
-  | 'preferOuterStart'
-  | 'preferOuterEnd';
+  | 'outerEnd';
 
 /**
  * An info about the current target position around an anchor.
@@ -103,48 +101,23 @@ export interface AnchorPositionInfo {
 }
 
 /**
- * Props of the {@link useAnchorPosition} hook.
+ * A variant of a target position around an anchor.
  *
- * @see {@link useAnchorPosition}
+ * @see {@link AnchorPositionProps.variants}
  * @group Behaviors
  */
-export interface AnchorPositionProps {
+export interface AnchorPositionVariant {
   /**
-   * Returns a bounding box of an anchor relative to a window viewport around which a {@link targetRef target} is
-   * positioned.
-   */
-  getAnchorRect: () => DOMRect;
-
-  /**
-   * A reference to an element that is positioned around an {@link AnchorPositionProps.getAnchorRect anchor rect}.
-   */
-  targetRef: RefObject<Element>;
-
-  /**
-   * If `true` then anchored position of a target element isn't tracked.
-   *
-   * @default false
-   */
-  isDisabled?: boolean;
-
-  /**
-   * A reference to an element that is a viewport that constrains the target positioning.
-   *
-   * If omitted or `current is `null`, then the window is used as a viewport.
-   */
-  viewportRef?: RefObject<Element>;
-
-  /**
-   * A horizontal padding inside a {@link viewportRef viewport} that must be avoided during a {@link targetRef target}
-   * placement.
+   * A horizontal padding inside a {@link AnchorPositionProps.viewportRef viewport} that must be avoided during
+   * a {@link AnchorPositionProps.targetRef target} placement.
    *
    * @default 0
    */
   viewportPaddingX?: number;
 
   /**
-   * A vertical padding inside a {@link viewportRef viewport} that must be avoided during a {@link targetRef target}
-   * placement.
+   * A vertical padding inside a {@link AnchorPositionProps.viewportRef viewport} that must be avoided during
+   * a {@link AnchorPositionProps.targetRef target} placement.
    *
    * @default 0
    */
@@ -174,7 +147,7 @@ export interface AnchorPositionProps {
   arrowSize?: number;
 
   /**
-   * A margin between an arrow and a {@link targetRef target} bonding rect.
+   * A margin between an arrow and a {@link AnchorPositionProps.targetRef target} bonding rect.
    *
    * @default 0
    */
@@ -192,9 +165,59 @@ export interface AnchorPositionProps {
    * A vertical alignment of a {@link targetRef target} relative to
    * an {@link AnchorPositionProps.getAnchorRect anchor rect}.
    *
-   * @default "preferOuterStart"
+   * @default "outerStart"
    */
   alignY?: AnchorAlign;
+
+  /**
+   * The minimum required width that must be available for a target.
+   */
+  minWidth?: number;
+
+  /**
+   * The minimum required height that must be available for a target.
+   */
+  minHeight?: number;
+}
+
+/**
+ * Props of the {@link useAnchorPosition} hook.
+ *
+ * @see {@link useAnchorPosition}
+ * @group Behaviors
+ */
+export interface AnchorPositionProps {
+  /**
+   * Returns a bounding box of an anchor relative to a window viewport around which a {@link targetRef target} is
+   * positioned.
+   */
+  getAnchorRect: () => DOMRect;
+
+  /**
+   * A reference to an element that is positioned around an {@link getAnchorRect anchor rect}.
+   */
+  targetRef: RefObject<Element>;
+
+  /**
+   * If `true` then anchored position of a target element isn't tracked.
+   *
+   * @default false
+   */
+  isDisabled?: boolean;
+
+  /**
+   * A reference to an element that is a viewport that constrains the target positioning.
+   *
+   * If omitted or `current is `null`, then the window is used as a viewport.
+   */
+  viewportRef?: RefObject<Element>;
+
+  /**
+   * An array of target position variants from which the most suitable is picked.
+   *
+   * By default, a single variant is used with {@link AnchorPositionVariant default settings}.
+   */
+  variants?: AnchorPositionVariant[];
 
   /**
    * A handler that is called when the {@link targetRef target} element must be repositioned.
@@ -208,6 +231,30 @@ export interface AnchorPositionProps {
 /**
  * Positions a target element around the anchor element.
  *
+ * @example
+ * const anchorRef = useRef(null);
+ * const targetRef = useRef(null);
+ *
+ * useAnchorPosition({
+ *   getAnchorRect: () => anchorRef.current.getBoundingClientRect(),
+ *   targetRef,
+ *   variants: [
+ *     {
+ *       alignX: 'outerEnd',
+ *       alignY: 'center',
+ *     },
+ *   ],
+ *   onPositionChange: info => {
+ *     info.target.style.transform = `translateX(${info.x}px) translateY(${info.y}px)`;
+ *   },
+ * });
+ *
+ * <div ref={anchorRef} />
+ * <div
+ *   ref={targetRef}
+ *   style={{ position: 'fixed' }}
+ * />
+ *
  * @param props Anchor position props.
  * @group Behaviors
  */
@@ -220,6 +267,8 @@ export function useAnchorPosition(props: AnchorPositionProps): void {
 }
 
 const memory = new Int32Array(21);
+
+const defaultVariants: AnchorPositionVariant[] = [{}];
 
 interface AnchorPositionManager {
   props: AnchorPositionProps;
@@ -259,23 +308,10 @@ function createAnchorPositionManager(): AnchorPositionManager {
   };
 
   const frameRequestCallback = () => {
-    const {
-      getAnchorRect,
-      targetRef,
-      viewportRef,
-      viewportPaddingX = 0,
-      viewportPaddingY = 0,
-      anchorMarginX = 0,
-      anchorMarginY = 0,
-      arrowSize = 0,
-      arrowMargin = 0,
-      alignX = 'center',
-      alignY = 'preferOuterStart',
-      onPositionChange,
-    } = manager.props;
+    const { getAnchorRect, targetRef, viewportRef, variants = defaultVariants, onPositionChange } = manager.props;
 
-    if (targetRef.current === null) {
-      // Nothing to anchor
+    if (targetRef.current === null || variants.length === 0) {
+      // Nothing to anchor, or no position variants
       prevMaxWidth = prevMaxHeight = -1;
 
       handle = requestAnimationFrame(frameRequestCallback);
@@ -290,62 +326,106 @@ function createAnchorPositionManager(): AnchorPositionManager {
     const viewport = viewportRef === undefined ? null : viewportRef.current;
     const viewportRect = getViewportRect(viewport);
 
-    // viewportX1
-    // viewportY1
-    // viewportX2
-    // viewportY2
-    memory[0] = viewportRect.x;
-    memory[1] = viewportRect.y;
-    memory[2] = viewportRect.right;
-    memory[3] = viewportRect.bottom;
+    const documentDir = document.dir;
 
-    // viewportPaddingX
-    // viewportPaddingY
-    memory[4] = viewportPaddingX;
-    memory[5] = viewportPaddingY;
+    let pickedVariantIndex = 0;
+    let pickedVariantArea = 0;
+    let maxWidth = 0;
+    let maxHeight = 0;
 
-    // anchorX1
-    // anchorY1
-    // anchorX2
-    // anchorY2
-    memory[6] = anchorRect.x;
-    memory[7] = anchorRect.y;
-    memory[8] = anchorRect.right;
-    memory[9] = anchorRect.bottom;
+    for (let i = 0, isPicked = false; i < variants.length; ++i) {
+      const {
+        viewportPaddingX = 0,
+        viewportPaddingY = 0,
+        anchorMarginX = 0,
+        anchorMarginY = 0,
+        arrowSize = 0,
+        arrowMargin = 0,
+        alignX = 'center',
+        alignY = 'outerStart',
+        minWidth,
+        minHeight,
+      } = variants[i];
 
-    // anchorMarginX
-    // anchorMarginY
-    memory[10] = anchorMarginX;
-    memory[11] = anchorMarginY;
+      // viewportX1
+      // viewportY1
+      // viewportX2
+      // viewportY2
+      memory[0] = viewportRect.x;
+      memory[1] = viewportRect.y;
+      memory[2] = viewportRect.right;
+      memory[3] = viewportRect.bottom;
 
-    // targetX1
-    // targetY1
-    // targetX2
-    // targetY2
-    memory[12] = targetRect.x;
-    memory[13] = targetRect.y;
-    memory[14] = targetRect.right;
-    memory[15] = targetRect.bottom;
+      // viewportPaddingX
+      // viewportPaddingY
+      memory[4] = viewportPaddingX;
+      memory[5] = viewportPaddingY;
 
-    // arrowSize
-    // arrowMargin
-    memory[16] = arrowSize;
-    memory[17] = arrowMargin;
+      // anchorX1
+      // anchorY1
+      // anchorX2
+      // anchorY2
+      memory[6] = anchorRect.x;
+      memory[7] = anchorRect.y;
+      memory[8] = anchorRect.right;
+      memory[9] = anchorRect.bottom;
 
-    // direction
-    memory[18] = document.dir === 'rtl' ? DIRECTION_RTL : DIRECTION_LTR;
+      // anchorMarginX
+      // anchorMarginY
+      memory[10] = anchorMarginX;
+      memory[11] = anchorMarginY;
 
-    // alignX
-    // alignY
-    memory[19] = encodeAlignTable[alignX];
-    memory[20] = encodeAlignTable[alignY];
+      // targetX1
+      // targetY1
+      // targetX2
+      // targetY2
+      memory[12] = targetRect.x;
+      memory[13] = targetRect.y;
+      memory[14] = targetRect.right;
+      memory[15] = targetRect.bottom;
 
-    calcAnchorPosition(memory);
+      // arrowSize
+      // arrowMargin
+      memory[16] = arrowSize;
+      memory[17] = arrowMargin;
+
+      // direction
+      memory[18] = documentDir === 'rtl' ? DIRECTION_RTL : DIRECTION_LTR;
+
+      // alignX
+      // alignY
+      memory[19] = encodeAlignTable[alignX];
+      memory[20] = encodeAlignTable[alignY];
+
+      calcAnchorPosition(memory);
+
+      maxWidth = memory[2];
+      maxHeight = memory[3];
+
+      if (maxWidth * maxHeight > pickedVariantArea) {
+        pickedVariantIndex = i;
+        pickedVariantArea = maxWidth * maxHeight;
+      }
+
+      if (
+        isPicked ||
+        ((minWidth !== undefined || minHeight !== undefined) &&
+          (minWidth === undefined || maxWidth >= minWidth) &&
+          (minHeight === undefined || maxHeight >= minHeight))
+      ) {
+        // A variant was picked because it provides the largest area,
+        // or because it matches size requirements
+        break;
+      }
+
+      if (i === variants.length - 1 && i !== pickedVariantIndex) {
+        i = pickedVariantIndex - 1;
+        isPicked = true;
+      }
+    }
 
     const x = memory[0];
     const y = memory[1];
-    const maxWidth = memory[2];
-    const maxHeight = memory[3];
     const actualAlignX = memory[4];
     const actualAlignY = memory[5];
     const arrowOffset = memory[6];
@@ -407,27 +487,24 @@ function createAnchorPositionManager(): AnchorPositionManager {
 
 // prettier-ignore
 const
-  ALIGN_MASK               = 0b11,
-  ALIGN_EXACT              = 0b00100,
-  ALIGN_INNER              = 0b01000,
-  ALIGN_OUTER              = 0b10000,
-  ALIGN_OUTER_PREFER       = 0b11000,
+  ALIGN_MASK         = 0b11,
+  ALIGN_EXACT        = 0b00100,
+  ALIGN_INNER        = 0b01000,
+  ALIGN_OUTER        = 0b10000,
 
-  ALIGN_CENTER             = 0b00,
-  ALIGN_CENTER_EXACT       = ALIGN_CENTER | ALIGN_EXACT,
-  ALIGN_CENTER_INNER       = ALIGN_CENTER | ALIGN_INNER,
+  ALIGN_CENTER       = 0b00,
+  ALIGN_CENTER_EXACT = ALIGN_CENTER | ALIGN_EXACT,
+  ALIGN_CENTER_INNER = ALIGN_CENTER | ALIGN_INNER,
 
-  ALIGN_START              = 0b01,
-  ALIGN_START_EXACT        = ALIGN_START | ALIGN_EXACT,
-  ALIGN_START_INNER        = ALIGN_START | ALIGN_INNER,
-  ALIGN_START_OUTER        = ALIGN_START | ALIGN_OUTER,
-  ALIGN_START_OUTER_PREFER = ALIGN_START | ALIGN_OUTER_PREFER,
+  ALIGN_START        = 0b01,
+  ALIGN_START_EXACT  = ALIGN_START | ALIGN_EXACT,
+  ALIGN_START_INNER  = ALIGN_START | ALIGN_INNER,
+  ALIGN_START_OUTER  = ALIGN_START | ALIGN_OUTER,
 
-  ALIGN_END                = 0b10,
-  ALIGN_END_EXACT          = ALIGN_END | ALIGN_EXACT,
-  ALIGN_END_INNER          = ALIGN_END | ALIGN_INNER,
-  ALIGN_END_OUTER          = ALIGN_END | ALIGN_OUTER,
-  ALIGN_END_OUTER_PREFER   = ALIGN_END | ALIGN_OUTER_PREFER;
+  ALIGN_END          = 0b10,
+  ALIGN_END_EXACT    = ALIGN_END | ALIGN_EXACT,
+  ALIGN_END_INNER    = ALIGN_END | ALIGN_INNER,
+  ALIGN_END_OUTER    = ALIGN_END | ALIGN_OUTER;
 
 const DIRECTION_LTR = 0;
 const DIRECTION_RTL = 1;
@@ -491,22 +568,14 @@ function calcAnchorPosition(memory: { [value: number]: number }): void {
   let minY;
   let maxY;
 
-  if (
-    alignX === ALIGN_START_OUTER ||
-    alignX === ALIGN_START_OUTER_PREFER ||
-    alignX === ALIGN_END_OUTER ||
-    alignX === ALIGN_END_OUTER_PREFER
-  ) {
+  if (alignX === ALIGN_START_OUTER || alignX === ALIGN_END_OUTER) {
     // Available width
     leftWidth = anchorX1 - viewportX1;
     rightWidth = viewportX2 - anchorX2;
 
     if (
       alignX === ALIGN_START_OUTER ||
-      (alignX !== ALIGN_END_OUTER &&
-        (alignX === ALIGN_START_OUTER_PREFER
-          ? leftWidth >= rightWidth + 1 || leftWidth >= targetWidth + anchorMarginX + 1
-          : leftWidth >= rightWidth + 1 && rightWidth <= targetWidth + anchorMarginX))
+      (alignX !== ALIGN_END_OUTER && leftWidth >= rightWidth + 1 && rightWidth <= targetWidth + anchorMarginX)
     ) {
       x = anchorX1 - anchorMarginX - targetWidth;
       maxWidth = leftWidth - anchorMarginX;
@@ -562,22 +631,14 @@ function calcAnchorPosition(memory: { [value: number]: number }): void {
     arrowOffset = max(0, anchorX1 - x) + (min(x + targetWidth, anchorX2) - max(x, anchorX1) - arrowSize) / 2;
   }
 
-  if (
-    alignY === ALIGN_START_OUTER ||
-    alignY === ALIGN_START_OUTER_PREFER ||
-    alignY === ALIGN_END_OUTER ||
-    alignY === ALIGN_END_OUTER_PREFER
-  ) {
+  if (alignY === ALIGN_START_OUTER || alignY === ALIGN_END_OUTER) {
     // Available height
     topHeight = anchorY1 - viewportY1;
     bottomHeight = viewportY2 - anchorY2;
 
     if (
       alignY === ALIGN_START_OUTER ||
-      (alignY !== ALIGN_END_OUTER &&
-        (alignY === ALIGN_START_OUTER_PREFER
-          ? topHeight >= bottomHeight + 1 || topHeight >= targetHeight + anchorMarginY + 1
-          : topHeight >= bottomHeight + 1 && bottomHeight <= targetHeight + anchorMarginY))
+      (alignY !== ALIGN_END_OUTER && topHeight >= bottomHeight + 1 && bottomHeight <= targetHeight + anchorMarginY)
     ) {
       y = anchorY1 - anchorMarginY - targetHeight;
       maxHeight = topHeight - anchorMarginY;
@@ -642,17 +703,15 @@ function calcAnchorPosition(memory: { [value: number]: number }): void {
 
 // prettier-ignore
 const encodeAlignTable: Record<AnchorAlign, number> = {
-  center:           ALIGN_CENTER,
-  start:            ALIGN_START,
-  end:              ALIGN_END,
-  exactCenter:      ALIGN_CENTER_EXACT,
-  exactStart:       ALIGN_START_EXACT,
-  exactEnd:         ALIGN_END_EXACT,
-  innerCenter:      ALIGN_CENTER_INNER,
-  innerStart:       ALIGN_START_INNER,
-  innerEnd:         ALIGN_END_INNER,
-  outerStart:       ALIGN_START_OUTER,
-  outerEnd:         ALIGN_END_OUTER,
-  preferOuterStart: ALIGN_START_OUTER_PREFER,
-  preferOuterEnd:   ALIGN_END_OUTER_PREFER,
+  center:      ALIGN_CENTER,
+  start:       ALIGN_START,
+  end:         ALIGN_END,
+  exactCenter: ALIGN_CENTER_EXACT,
+  exactStart:  ALIGN_START_EXACT,
+  exactEnd:    ALIGN_END_EXACT,
+  innerCenter: ALIGN_CENTER_INNER,
+  innerStart:  ALIGN_START_INNER,
+  innerEnd:    ALIGN_END_INNER,
+  outerStart:  ALIGN_START_OUTER,
+  outerEnd:    ALIGN_END_OUTER,
 };
