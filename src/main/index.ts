@@ -6,6 +6,7 @@ export {
   type AnchorAlign,
   type AnchorPositionInfo,
   type AnchorPositionProps,
+  type AnchorPositionVariant,
 } from './behaviors/useAnchorPosition';
 export { useArrowKeysNavigation, type ArrowKeysNavigationProps } from './behaviors/useArrowKeysNavigation';
 export { useClickAway, type ClickAwayProps, type ClickAwayValue } from './behaviors/useClickAway';

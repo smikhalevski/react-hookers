@@ -76,8 +76,10 @@ export interface AnchorPositionInfo {
 
   /**
    * An arrow offset, relative to a {@link target}.
+   *
+   * `undefined` if {@link targetPlacement} isn't top, right, bottom or left.
    */
-  arrowOffset: number;
+  arrowOffset: number | undefined;
 
   /**
    * The position of a target, relative to the anchor.
@@ -266,8 +268,6 @@ export function useAnchorPosition(props: AnchorPositionProps): void {
   useLayoutEffect(manager.onDisabledUpdated, [props.isDisabled]);
 }
 
-const memory = new Int32Array(21);
-
 const defaultVariants: AnchorPositionVariant[] = [{}];
 
 interface AnchorPositionManager {
@@ -282,8 +282,9 @@ function createAnchorPositionManager(): AnchorPositionManager {
   let prevY: number;
   let prevMaxWidth: number;
   let prevMaxHeight: number;
-  let prevArrowOffset: number;
-  let prevTargetPlacement: string | undefined;
+  let prevArrowOffset: number | undefined;
+  let prevActualAlignY: AnchorAlign;
+  let prevActualAlignX: AnchorAlign;
 
   const info: AnchorPositionInfo = {
     viewport: null,
@@ -295,7 +296,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
     y: 0,
     maxWidth: 0,
     maxHeight: 0,
-    arrowOffset: 0,
+    arrowOffset: undefined,
     targetPlacement: 'center',
   };
 
@@ -326,12 +327,18 @@ function createAnchorPositionManager(): AnchorPositionManager {
     const viewport = viewportRef === undefined ? null : viewportRef.current;
     const viewportRect = getViewportRect(viewport);
 
-    const documentDir = document.dir;
+    const direction = document.dir === 'rtl' ? DIRECTION_RTL : DIRECTION_LTR;
 
     let pickedVariantIndex = 0;
-    let pickedVariantArea = 0;
+    let pickedVariantScore = 0;
+
+    let x = 0;
+    let y = 0;
     let maxWidth = 0;
     let maxHeight = 0;
+    let actualAlignX = ALIGN_CENTER;
+    let actualAlignY = ALIGN_CENTER;
+    let arrowOffset: number | undefined;
 
     for (let i = 0, isPicked = false; i < variants.length; ++i) {
       const {
@@ -341,80 +348,70 @@ function createAnchorPositionManager(): AnchorPositionManager {
         anchorMarginY = 0,
         arrowSize = 0,
         arrowMargin = 0,
-        alignX = 'center',
-        alignY = 'outerStart',
+        alignX = ALIGN_CENTER,
+        alignY = ALIGN_OUTER_START,
         minWidth,
         minHeight,
       } = variants[i];
 
-      // viewportX1
-      // viewportY1
-      // viewportX2
-      // viewportY2
-      memory[0] = viewportRect.x;
-      memory[1] = viewportRect.y;
-      memory[2] = viewportRect.right;
-      memory[3] = viewportRect.bottom;
+      // X
+      input.viewportA = viewportRect.x;
+      input.viewportB = viewportRect.right;
+      input.anchorA = anchorRect.x;
+      input.anchorB = anchorRect.right;
+      input.targetA = targetRect.x;
+      input.targetB = targetRect.right;
+      input.direction = direction;
+      input.viewportPadding = viewportPaddingX;
+      input.anchorMargin = anchorMarginX;
+      input.arrowSize = arrowSize;
+      input.arrowMargin = arrowMargin;
+      input.align = alignX;
 
-      // viewportPaddingX
-      // viewportPaddingY
-      memory[4] = viewportPaddingX;
-      memory[5] = viewportPaddingY;
+      calcAnchorPosition(input, output);
 
-      // anchorX1
-      // anchorY1
-      // anchorX2
-      // anchorY2
-      memory[6] = anchorRect.x;
-      memory[7] = anchorRect.y;
-      memory[8] = anchorRect.right;
-      memory[9] = anchorRect.bottom;
+      x = output.position;
+      maxWidth = output.maxSize;
+      actualAlignX = output.actualAlign;
+      arrowOffset = output.arrowOffset;
 
-      // anchorMarginX
-      // anchorMarginY
-      memory[10] = anchorMarginX;
-      memory[11] = anchorMarginY;
+      // Y
+      input.viewportA = viewportRect.y;
+      input.viewportB = viewportRect.bottom;
+      input.anchorA = anchorRect.y;
+      input.anchorB = anchorRect.bottom;
+      input.targetA = targetRect.y;
+      input.targetB = targetRect.bottom;
+      input.direction = DIRECTION_LTR;
+      input.viewportPadding = viewportPaddingY;
+      input.anchorMargin = anchorMarginY;
+      input.arrowSize = arrowSize;
+      input.arrowMargin = arrowMargin;
+      input.align = alignY;
 
-      // targetX1
-      // targetY1
-      // targetX2
-      // targetY2
-      memory[12] = targetRect.x;
-      memory[13] = targetRect.y;
-      memory[14] = targetRect.right;
-      memory[15] = targetRect.bottom;
+      calcAnchorPosition(input, output);
 
-      // arrowSize
-      // arrowMargin
-      memory[16] = arrowSize;
-      memory[17] = arrowMargin;
+      y = output.position;
+      maxHeight = output.maxSize;
+      actualAlignY = output.actualAlign;
+      arrowOffset = arrowOffset === undefined ? output.arrowOffset : arrowOffset;
 
-      // direction
-      memory[18] = documentDir === 'rtl' ? DIRECTION_RTL : DIRECTION_LTR;
+      if (isPicked) {
+        break;
+      }
 
-      // alignX
-      // alignY
-      memory[19] = encodeAlignTable[alignX];
-      memory[20] = encodeAlignTable[alignY];
+      // Check constraints and pick a variant
 
-      calcAnchorPosition(memory);
-
-      maxWidth = memory[2];
-      maxHeight = memory[3];
-
-      if (maxWidth * maxHeight > pickedVariantArea) {
+      if (maxWidth * maxHeight > pickedVariantScore) {
         pickedVariantIndex = i;
-        pickedVariantArea = maxWidth * maxHeight;
+        pickedVariantScore = maxWidth * maxHeight;
       }
 
       if (
-        isPicked ||
-        ((minWidth !== undefined || minHeight !== undefined) &&
-          (minWidth === undefined || maxWidth >= minWidth) &&
-          (minHeight === undefined || maxHeight >= minHeight))
+        (minWidth !== undefined || minHeight !== undefined) &&
+        (minWidth === undefined || maxWidth >= minWidth) &&
+        (minHeight === undefined || maxHeight >= minHeight)
       ) {
-        // A variant was picked because it provides the largest area,
-        // or because it matches size requirements
         break;
       }
 
@@ -424,31 +421,6 @@ function createAnchorPositionManager(): AnchorPositionManager {
       }
     }
 
-    const x = memory[0];
-    const y = memory[1];
-    const actualAlignX = memory[4];
-    const actualAlignY = memory[5];
-    const arrowOffset = memory[6];
-
-    const targetPlacement =
-      actualAlignY === ALIGN_START_OUTER
-        ? actualAlignX === ALIGN_START_OUTER
-          ? 'topLeft'
-          : actualAlignX === ALIGN_END_OUTER
-            ? 'topRight'
-            : 'top'
-        : actualAlignY === ALIGN_END_OUTER
-          ? actualAlignX === ALIGN_START_OUTER
-            ? 'bottomLeft'
-            : actualAlignX === ALIGN_END_OUTER
-              ? 'bottomRight'
-              : 'bottom'
-          : actualAlignX === ALIGN_START_OUTER
-            ? 'left'
-            : actualAlignX === ALIGN_END_OUTER
-              ? 'right'
-              : 'center';
-
     handle = requestAnimationFrame(frameRequestCallback);
 
     if (
@@ -457,10 +429,14 @@ function createAnchorPositionManager(): AnchorPositionManager {
       prevMaxWidth === maxWidth &&
       prevMaxHeight === maxHeight &&
       prevArrowOffset === arrowOffset &&
-      prevTargetPlacement === targetPlacement
+      prevActualAlignX === actualAlignX &&
+      prevActualAlignY === actualAlignY
     ) {
       return;
     }
+
+    prevActualAlignX = actualAlignX;
+    prevActualAlignY = actualAlignY;
 
     info.viewport = viewport;
     info.target = target;
@@ -472,7 +448,24 @@ function createAnchorPositionManager(): AnchorPositionManager {
     info.maxWidth = prevMaxWidth = maxWidth;
     info.maxHeight = prevMaxHeight = maxHeight;
     info.arrowOffset = prevArrowOffset = arrowOffset;
-    info.targetPlacement = prevTargetPlacement = targetPlacement;
+    info.targetPlacement =
+      actualAlignY === ALIGN_OUTER_START
+        ? actualAlignX === ALIGN_OUTER_START
+          ? 'topLeft'
+          : actualAlignX === ALIGN_OUTER_END
+            ? 'topRight'
+            : 'top'
+        : actualAlignY === ALIGN_OUTER_END
+          ? actualAlignX === ALIGN_OUTER_START
+            ? 'bottomLeft'
+            : actualAlignX === ALIGN_OUTER_END
+              ? 'bottomRight'
+              : 'bottom'
+          : actualAlignX === ALIGN_OUTER_START
+            ? 'left'
+            : actualAlignX === ALIGN_OUTER_END
+              ? 'right'
+              : 'center';
 
     onPositionChange(info);
   };
@@ -485,233 +478,168 @@ function createAnchorPositionManager(): AnchorPositionManager {
   return manager;
 }
 
-// prettier-ignore
-const
-  ALIGN_MASK         = 0b11,
-  ALIGN_EXACT        = 0b00100,
-  ALIGN_INNER        = 0b01000,
-  ALIGN_OUTER        = 0b10000,
+const ALIGN_CENTER: AnchorAlign = 'center';
+const ALIGN_START: AnchorAlign = 'start';
+const ALIGN_END: AnchorAlign = 'end';
+const ALIGN_EXACT_CENTER: AnchorAlign = 'exactCenter';
+const ALIGN_EXACT_START: AnchorAlign = 'exactStart';
+const ALIGN_EXACT_END: AnchorAlign = 'exactEnd';
+const ALIGN_INNER_CENTER: AnchorAlign = 'innerCenter';
+const ALIGN_INNER_START: AnchorAlign = 'innerStart';
+const ALIGN_INNER_END: AnchorAlign = 'innerEnd';
+const ALIGN_OUTER_START: AnchorAlign = 'outerStart';
+const ALIGN_OUTER_END: AnchorAlign = 'outerEnd';
 
-  ALIGN_CENTER       = 0b00,
-  ALIGN_CENTER_EXACT = ALIGN_CENTER | ALIGN_EXACT,
-  ALIGN_CENTER_INNER = ALIGN_CENTER | ALIGN_INNER,
+const DIRECTION_LTR = 'ltr';
+const DIRECTION_RTL = 'rtl';
 
-  ALIGN_START        = 0b01,
-  ALIGN_START_EXACT  = ALIGN_START | ALIGN_EXACT,
-  ALIGN_START_INNER  = ALIGN_START | ALIGN_INNER,
-  ALIGN_START_OUTER  = ALIGN_START | ALIGN_OUTER,
+const input: CalcAnchorPositionInput = {
+  viewportA: 0,
+  viewportB: 0,
+  anchorA: 0,
+  anchorB: 0,
+  targetA: 0,
+  targetB: 0,
+  direction: DIRECTION_LTR,
+  viewportPadding: 0,
+  anchorMargin: 0,
+  arrowSize: 0,
+  arrowMargin: 0,
+  align: ALIGN_CENTER,
+};
 
-  ALIGN_END          = 0b10,
-  ALIGN_END_EXACT    = ALIGN_END | ALIGN_EXACT,
-  ALIGN_END_INNER    = ALIGN_END | ALIGN_INNER,
-  ALIGN_END_OUTER    = ALIGN_END | ALIGN_OUTER;
-
-const DIRECTION_LTR = 0;
-const DIRECTION_RTL = 1;
+const output: CalcAnchorPositionOutput = {
+  position: 0,
+  maxSize: 0,
+  actualAlign: ALIGN_CENTER,
+  arrowOffset: undefined,
+};
 
 const { min, max } = Math;
 
-function calcAnchorPosition(memory: { [value: number]: number }): void {
-  const viewportPaddingX = memory[4];
-  const viewportPaddingY = memory[5];
+export interface CalcAnchorPositionInput {
+  viewportA: number;
+  viewportB: number;
+  anchorA: number;
+  anchorB: number;
+  targetA: number;
+  targetB: number;
+  direction: 'rtl' | 'ltr';
+  viewportPadding: number;
+  anchorMargin: number;
+  arrowSize: number;
+  arrowMargin: number;
+  align: AnchorAlign;
+}
 
-  const viewportX1 = memory[0] + viewportPaddingX;
-  const viewportY1 = memory[1] + viewportPaddingY;
-  const viewportX2 = memory[2] - viewportPaddingX;
-  const viewportY2 = memory[3] - viewportPaddingY;
+export interface CalcAnchorPositionOutput {
+  position: number;
+  maxSize: number;
+  actualAlign: AnchorAlign;
+  arrowOffset: number | undefined;
+}
 
-  const anchorX1 = memory[6];
-  const anchorY1 = memory[7];
-  const anchorX2 = memory[8];
-  const anchorY2 = memory[9];
+export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcAnchorPositionOutput): void {
+  const { anchorA, anchorB, targetA, targetB, direction, viewportPadding, anchorMargin, arrowSize, arrowMargin } =
+    input;
 
-  const anchorMarginX = memory[10];
-  const anchorMarginY = memory[11];
+  const viewportA = input.viewportA + viewportPadding;
+  const viewportB = input.viewportB - viewportPadding;
 
-  const targetX1 = memory[12];
-  const targetY1 = memory[13];
-  const targetX2 = memory[14];
-  const targetY2 = memory[15];
+  const align = direction === DIRECTION_LTR ? input.align : alignFlipTable[input.align];
 
-  const arrowSize = memory[16];
-  const arrowMargin = memory[17];
+  const targetSize = targetB - targetA;
 
-  const direction = memory[18];
+  const arrowSpacing = min(targetSize, 2 * arrowMargin + arrowSize);
 
-  const alignX =
-    direction === DIRECTION_LTR || (memory[19] & ALIGN_MASK) === ALIGN_CENTER ? memory[19] : memory[19] ^ ALIGN_MASK;
-  const alignY = memory[20];
+  let position;
+  let maxSize;
+  let actualAlign = align;
+  let arrowOffset;
 
-  const targetWidth = targetX2 - targetX1;
-  const targetHeight = targetY2 - targetY1;
+  let startSize;
+  let endSize;
 
-  const arrowSpacingX = min(targetWidth, 2 * arrowMargin + arrowSize);
-  const arrowSpacingY = min(targetHeight, 2 * arrowMargin + arrowSize);
+  let minPosition;
+  let maxPosition;
 
-  let x;
-  let y;
+  if (align === ALIGN_OUTER_START || align === ALIGN_OUTER_END) {
+    // Available size
+    startSize = anchorA - viewportA;
+    endSize = viewportB - anchorB;
 
-  let maxWidth;
-  let maxHeight;
-
-  let actualAlignX = alignX;
-  let actualAlignY = alignY;
-  let arrowOffset = null;
-
-  let topHeight;
-  let bottomHeight;
-  let leftWidth;
-  let rightWidth;
-
-  let minX;
-  let maxX;
-  let minY;
-  let maxY;
-
-  if (alignX === ALIGN_START_OUTER || alignX === ALIGN_END_OUTER) {
-    // Available width
-    leftWidth = anchorX1 - viewportX1;
-    rightWidth = viewportX2 - anchorX2;
-
-    if (
-      alignX === ALIGN_START_OUTER ||
-      (alignX !== ALIGN_END_OUTER && leftWidth >= rightWidth + 1 && rightWidth <= targetWidth + anchorMarginX)
-    ) {
-      x = anchorX1 - anchorMarginX - targetWidth;
-      maxWidth = leftWidth - anchorMarginX;
-      actualAlignX = ALIGN_START_OUTER;
+    if (align === ALIGN_OUTER_START) {
+      position = anchorA - anchorMargin - targetSize;
+      maxSize = startSize - anchorMargin;
+      actualAlign = ALIGN_OUTER_START;
     } else {
-      x = anchorX2 + anchorMarginX;
-      maxWidth = rightWidth - anchorMarginX;
-      actualAlignX = ALIGN_END_OUTER;
+      position = anchorB + anchorMargin;
+      maxSize = endSize - anchorMargin;
+      actualAlign = ALIGN_OUTER_END;
     }
   } else {
     // Desired position
-    if (alignX === ALIGN_START || alignX === ALIGN_START_EXACT || alignX === ALIGN_START_INNER) {
-      x = anchorX1 + anchorMarginX;
-    } else if (alignX === ALIGN_END || alignX === ALIGN_END_EXACT || alignX === ALIGN_END_INNER) {
-      x = anchorX2 - anchorMarginX - targetWidth;
+    if (align === ALIGN_START || align === ALIGN_EXACT_START || align === ALIGN_INNER_START) {
+      position = anchorA + anchorMargin;
+    } else if (align === ALIGN_END || align === ALIGN_EXACT_END || align === ALIGN_INNER_END) {
+      position = anchorB - anchorMargin - targetSize;
     } else {
-      x = anchorX1 + (anchorX2 - anchorX1 - targetWidth) / 2;
+      position = anchorA + (anchorB - anchorA - targetSize) / 2;
     }
 
-    maxWidth = viewportX2 - viewportX1;
+    maxSize = viewportB - viewportA;
 
-    if (alignX === ALIGN_START_EXACT) {
-      maxWidth = viewportX2 - x;
+    if (align === ALIGN_EXACT_START) {
+      maxSize = viewportB - position;
     }
-    if (alignX === ALIGN_END_EXACT) {
-      maxWidth = anchorX2 - anchorMarginX - viewportX1;
+    if (align === ALIGN_EXACT_END) {
+      maxSize = anchorB - anchorMargin - viewportA;
     }
 
     // Clamp position to viewport
     if (
-      alignX === ALIGN_START ||
-      alignX === ALIGN_START_INNER ||
-      alignX === ALIGN_CENTER ||
-      alignX === ALIGN_CENTER_INNER ||
-      alignX === ALIGN_END ||
-      alignX === ALIGN_END_INNER
+      align === ALIGN_CENTER ||
+      align === ALIGN_START ||
+      align === ALIGN_END ||
+      align === ALIGN_INNER_CENTER ||
+      align === ALIGN_INNER_START ||
+      align === ALIGN_INNER_END
     ) {
-      if (alignX === ALIGN_START || alignX === ALIGN_END || alignX === ALIGN_CENTER) {
-        minX = min(viewportX1, anchorX2 - anchorMarginX - arrowSpacingX);
-        maxX = max(viewportX2 - targetWidth, anchorX1 - targetWidth + anchorMarginX + arrowSpacingX);
+      if (align === ALIGN_CENTER || align === ALIGN_START || align === ALIGN_END) {
+        minPosition = min(viewportA, anchorB - anchorMargin - arrowSpacing);
+        maxPosition = max(viewportB - targetSize, anchorA - targetSize + anchorMargin + arrowSpacing);
       } else {
-        minX = min(viewportX1, anchorX1 + anchorMarginX);
-        maxX = max(viewportX2 - targetWidth, anchorX2 - targetWidth - anchorMarginX);
+        minPosition = min(viewportA, anchorA + anchorMargin);
+        maxPosition = max(viewportB - targetSize, anchorB - targetSize - anchorMargin);
       }
 
       if (direction === DIRECTION_LTR) {
-        x = max(minX, min(x, maxX));
+        position = max(minPosition, min(position, maxPosition));
       } else {
-        x = min(max(minX, x), maxX);
+        position = min(max(minPosition, position), maxPosition);
       }
     }
 
-    arrowOffset = max(0, anchorX1 - x) + (min(x + targetWidth, anchorX2) - max(x, anchorX1) - arrowSize) / 2;
+    arrowOffset =
+      max(0, anchorA - position) + (min(position + targetSize, anchorB) - max(position, anchorA) - arrowSize) / 2;
   }
 
-  if (alignY === ALIGN_START_OUTER || alignY === ALIGN_END_OUTER) {
-    // Available height
-    topHeight = anchorY1 - viewportY1;
-    bottomHeight = viewportY2 - anchorY2;
-
-    if (
-      alignY === ALIGN_START_OUTER ||
-      (alignY !== ALIGN_END_OUTER && topHeight >= bottomHeight + 1 && bottomHeight <= targetHeight + anchorMarginY)
-    ) {
-      y = anchorY1 - anchorMarginY - targetHeight;
-      maxHeight = topHeight - anchorMarginY;
-      actualAlignY = ALIGN_START_OUTER;
-    } else {
-      y = anchorY2 + anchorMarginY;
-      maxHeight = bottomHeight - anchorMarginY;
-      actualAlignY = ALIGN_END_OUTER;
-    }
-  } else {
-    // Desired position
-    if (alignY === ALIGN_START || alignY === ALIGN_START_EXACT || alignY === ALIGN_START_INNER) {
-      y = anchorY1 + anchorMarginY;
-    } else if (alignY === ALIGN_END || alignY === ALIGN_END_EXACT || alignY === ALIGN_END_INNER) {
-      y = anchorY2 - anchorMarginY - targetHeight;
-    } else {
-      y = anchorY1 + (anchorY2 - anchorY1 - targetHeight) / 2;
-    }
-
-    maxHeight = viewportY2 - viewportY1;
-
-    if (alignY === ALIGN_START_EXACT) {
-      maxHeight = viewportY2 - y;
-    }
-    if (alignY === ALIGN_END_EXACT) {
-      maxHeight = anchorY2 - anchorMarginY - viewportY1;
-    }
-
-    // Clamp position to viewport
-    if (
-      alignY === ALIGN_START ||
-      alignY === ALIGN_START_INNER ||
-      alignY === ALIGN_CENTER ||
-      alignY === ALIGN_CENTER_INNER ||
-      alignY === ALIGN_END ||
-      alignY === ALIGN_END_INNER
-    ) {
-      if (alignY === ALIGN_START || alignY === ALIGN_END || alignY === ALIGN_CENTER) {
-        minY = min(viewportY1, anchorY2 - anchorMarginY - arrowSpacingY);
-        maxY = max(viewportY2 - targetHeight, anchorY1 - targetHeight + anchorMarginY + arrowSpacingY);
-      } else {
-        minY = min(viewportY1, anchorY1 + anchorMarginY);
-        maxY = max(viewportY2 - targetHeight, anchorY2 - targetHeight - anchorMarginY);
-      }
-
-      y = max(minY, min(y, maxY));
-    }
-
-    if (arrowOffset === null) {
-      arrowOffset = max(0, anchorY1 - y) + (min(y + targetHeight, anchorY2) - max(y, anchorY1) - arrowSize) / 2;
-    }
-  }
-
-  memory[0] = x;
-  memory[1] = y;
-  memory[2] = max(0, min(maxWidth, viewportX2 - viewportX1));
-  memory[3] = max(0, min(maxHeight, viewportY2 - viewportY1));
-  memory[4] = actualAlignX;
-  memory[5] = actualAlignY;
-  memory[6] = arrowOffset === null ? 0 : arrowOffset;
+  output.position = position;
+  output.maxSize = max(0, min(maxSize, viewportB - viewportA));
+  output.actualAlign = actualAlign;
+  output.arrowOffset = arrowOffset;
 }
 
-// prettier-ignore
-const encodeAlignTable: Record<AnchorAlign, number> = {
-  center:      ALIGN_CENTER,
-  start:       ALIGN_START,
-  end:         ALIGN_END,
-  exactCenter: ALIGN_CENTER_EXACT,
-  exactStart:  ALIGN_START_EXACT,
-  exactEnd:    ALIGN_END_EXACT,
-  innerCenter: ALIGN_CENTER_INNER,
-  innerStart:  ALIGN_START_INNER,
-  innerEnd:    ALIGN_END_INNER,
-  outerStart:  ALIGN_START_OUTER,
-  outerEnd:    ALIGN_END_OUTER,
+const alignFlipTable: Record<AnchorAlign, AnchorAlign> = {
+  [ALIGN_CENTER]: ALIGN_CENTER,
+  [ALIGN_START]: ALIGN_END,
+  [ALIGN_END]: ALIGN_START,
+  [ALIGN_EXACT_CENTER]: ALIGN_EXACT_CENTER,
+  [ALIGN_EXACT_START]: ALIGN_EXACT_END,
+  [ALIGN_EXACT_END]: ALIGN_EXACT_START,
+  [ALIGN_INNER_CENTER]: ALIGN_INNER_CENTER,
+  [ALIGN_INNER_START]: ALIGN_INNER_END,
+  [ALIGN_INNER_END]: ALIGN_INNER_START,
+  [ALIGN_OUTER_START]: ALIGN_OUTER_END,
+  [ALIGN_OUTER_END]: ALIGN_OUTER_START,
 };
