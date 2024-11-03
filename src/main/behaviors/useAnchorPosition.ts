@@ -596,7 +596,7 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
       maxSize = anchorB - anchorMargin - viewportA;
     }
 
-    // Clamp position to viewport
+    // Clamp position
     if (
       align === ALIGN_CENTER ||
       align === ALIGN_START ||
@@ -609,8 +609,8 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
         minPosition = min(viewportA, anchorB - anchorMargin - arrowSpacing);
         maxPosition = max(viewportB - targetSize, anchorA - targetSize + anchorMargin + arrowSpacing);
       } else {
-        minPosition = min(viewportA, anchorA + anchorMargin);
-        maxPosition = max(viewportB - targetSize, anchorB - targetSize - anchorMargin);
+        minPosition = min(viewportA, max(anchorA + anchorMargin, anchorB - targetSize - anchorMargin));
+        maxPosition = max(viewportB - targetSize, min(anchorA + anchorMargin, anchorB - targetSize - anchorMargin));
       }
 
       if (direction === DIRECTION_LTR) {
