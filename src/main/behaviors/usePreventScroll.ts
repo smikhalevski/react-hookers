@@ -60,20 +60,23 @@ function disableScroll(): () => void {
 
   const container = document.documentElement;
   const { paddingRight, overflow } = container.style;
-  const { scrollY } = window;
 
   container.style.paddingRight = window.innerWidth - container.clientWidth + 'px';
   container.style.overflow = 'hidden';
-  container.scrollTop = scrollY;
+
+  container.scrollTo(window.scrollX, window.scrollY);
 
   enableScroll = () => {
     if (--disableCount !== 0) {
       return;
     }
 
+    const { scrollLeft, scrollTop } = container;
+
     container.style.paddingRight = paddingRight;
     container.style.overflow = overflow;
-    container.scrollTop = scrollY;
+
+    window.scrollTo(scrollLeft, scrollTop);
   };
 
   return enableScroll;
