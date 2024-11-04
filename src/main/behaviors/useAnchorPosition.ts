@@ -222,6 +222,13 @@ export interface AnchorPositionProps {
   variants?: AnchorPositionVariant[];
 
   /**
+   * If `true` then horizontal alignment is mirrored.
+   *
+   * @default false
+   */
+  isRTL?: boolean;
+
+  /**
    * A handler that is called when the {@link targetRef target} element must be repositioned.
    *
    * @param info An info about the current target position around an anchor. The info object is reused between handler
@@ -309,7 +316,14 @@ function createAnchorPositionManager(): AnchorPositionManager {
   };
 
   const frameRequestCallback = () => {
-    const { getAnchorRect, targetRef, viewportRef, variants = defaultVariants, onPositionChange } = manager.props;
+    const {
+      getAnchorRect,
+      targetRef,
+      viewportRef,
+      variants = defaultVariants,
+      isRTL = false,
+      onPositionChange,
+    } = manager.props;
 
     if (targetRef.current === null || variants.length === 0) {
       // Nothing to anchor, or no position variants
@@ -326,8 +340,6 @@ function createAnchorPositionManager(): AnchorPositionManager {
 
     const viewport = viewportRef === undefined ? null : viewportRef.current;
     const viewportRect = getViewportRect(viewport);
-
-    const direction = document.dir === 'rtl' ? DIRECTION_RTL : DIRECTION_LTR;
 
     let pickedVariantIndex = 0;
     let pickedVariantScore = 0;
@@ -361,7 +373,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
       input.anchorB = anchorRect.right;
       input.targetA = targetRect.x;
       input.targetB = targetRect.right;
-      input.direction = direction;
+      input.isRTL = isRTL;
       input.viewportPadding = viewportPaddingX;
       input.anchorMargin = anchorMarginX;
       input.arrowSize = arrowSize;
@@ -382,7 +394,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
       input.anchorB = anchorRect.bottom;
       input.targetA = targetRect.y;
       input.targetB = targetRect.bottom;
-      input.direction = DIRECTION_LTR;
+      input.isRTL = false;
       input.viewportPadding = viewportPaddingY;
       input.anchorMargin = anchorMarginY;
       input.arrowSize = arrowSize;
@@ -490,9 +502,6 @@ const ALIGN_INNER_END: AnchorAlign = 'innerEnd';
 const ALIGN_OUTER_START: AnchorAlign = 'outerStart';
 const ALIGN_OUTER_END: AnchorAlign = 'outerEnd';
 
-const DIRECTION_LTR = 'ltr';
-const DIRECTION_RTL = 'rtl';
-
 const input: CalcAnchorPositionInput = {
   viewportA: 0,
   viewportB: 0,
@@ -500,7 +509,7 @@ const input: CalcAnchorPositionInput = {
   anchorB: 0,
   targetA: 0,
   targetB: 0,
-  direction: DIRECTION_LTR,
+  isRTL: false,
   viewportPadding: 0,
   anchorMargin: 0,
   arrowSize: 0,
@@ -524,7 +533,7 @@ export interface CalcAnchorPositionInput {
   anchorB: number;
   targetA: number;
   targetB: number;
-  direction: 'rtl' | 'ltr';
+  isRTL: boolean;
   viewportPadding: number;
   anchorMargin: number;
   arrowSize: number;
@@ -540,13 +549,12 @@ export interface CalcAnchorPositionOutput {
 }
 
 export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcAnchorPositionOutput): void {
-  const { anchorA, anchorB, targetA, targetB, direction, viewportPadding, anchorMargin, arrowSize, arrowMargin } =
-    input;
+  const { anchorA, anchorB, targetA, targetB, isRTL, viewportPadding, anchorMargin, arrowSize, arrowMargin } = input;
 
   const viewportA = input.viewportA + viewportPadding;
   const viewportB = input.viewportB - viewportPadding;
 
-  const align = direction === DIRECTION_LTR ? input.align : alignFlipTable[input.align];
+  const align = isRTL ? alignFlipTable[input.align] : input.align;
 
   const targetSize = targetB - targetA;
 
@@ -613,10 +621,10 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
         maxPosition = max(viewportB - targetSize, min(anchorA + anchorMargin, anchorB - targetSize - anchorMargin));
       }
 
-      if (direction === DIRECTION_LTR) {
-        position = max(minPosition, min(position, maxPosition));
-      } else {
+      if (isRTL) {
         position = min(max(minPosition, position), maxPosition);
+      } else {
+        position = max(minPosition, min(position, maxPosition));
       }
     }
 
