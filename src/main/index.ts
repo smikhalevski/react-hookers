@@ -79,7 +79,6 @@ export { callOrGet, isEqual } from './utils/lang';
 export { getIntersectionRatio, intersectRects, getViewportRect, getWindowViewportRect } from './utils/rects';
 export { mergeProps, mergeClassNames } from './utils/mergeProps';
 export { mergeRefs } from './utils/mergeRefs';
-export { useAnchorDelegate, AnchorDelegate } from './useAnchorDelegate';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect';
 export { useBlocker } from './useBlocker';
