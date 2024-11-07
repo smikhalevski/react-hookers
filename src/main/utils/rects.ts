@@ -50,11 +50,11 @@ export function getIntersectionRatio(a: DOMRect, b: DOMRect): number {
 }
 
 /**
- * Returns a rect that bounds the window visual viewport.
+ * Returns a rect that bounds the visual viewport of a window.
  *
  * @group Other
  */
-export function getWindowViewportRect(): DOMRect {
+export function getViewportRect(): DOMRect {
   const { visualViewport } = window;
 
   if (visualViewport === null || visualViewport === undefined) {
@@ -62,20 +62,4 @@ export function getWindowViewportRect(): DOMRect {
   }
 
   return new DOMRect(0, 0, visualViewport.width, visualViewport.height);
-}
-
-/**
- * Returns a bounding rect of an element that fits into a viewport, or a window viewport rect if there's no element.
- *
- * @param element An element that constrains visual viewport bounds.
- * @group Other
- */
-export function getViewportRect(element: Element | null | undefined): DOMRect {
-  const windowRect = getWindowViewportRect();
-
-  if (element === null || element === undefined) {
-    return windowRect;
-  }
-
-  return intersectRects(windowRect, element.getBoundingClientRect());
 }

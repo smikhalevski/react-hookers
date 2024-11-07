@@ -34,7 +34,7 @@ export interface HeadlessTrackHandleValue {
  */
 export interface HeadlessTrackHandleProps extends DragProps {
   /**
-   * Returns a bounding box of a track relative to a window viewport.
+   * Returns a bounding rect of a track.
    */
   getTrackRect: () => DOMRect;
 

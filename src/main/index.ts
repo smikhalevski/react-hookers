@@ -76,7 +76,7 @@ export {
   isPortalEvent,
 } from './utils/dom';
 export { callOrGet, isEqual } from './utils/lang';
-export { getIntersectionRatio, intersectRects, getViewportRect, getWindowViewportRect } from './utils/rects';
+export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/rects';
 export { mergeProps, mergeClassNames } from './utils/mergeProps';
 export { mergeRefs } from './utils/mergeRefs';
 export { useAnimationFrame } from './useAnimationFrame';
@@ -102,6 +102,5 @@ export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';
 export { useUniqueId } from './useUniqueId';
-export { useViewportRef, ViewportRefProvider } from './useViewportRef';
-export { useWindowViewportResize } from './useWindowViewportResize';
+export { useViewport } from './useViewport';
 export { type DOMEventHandler, type FocusableElement, type ValueOrProvider, type Schedule } from './types';

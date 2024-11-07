@@ -1,10 +1,9 @@
-import { EffectCallback, RefObject, useLayoutEffect } from 'react';
+import { EffectCallback, useLayoutEffect } from 'react';
 import { useFunction } from '../useFunction';
 import { getViewportRect } from '../utils/rects';
 
 /**
- * An alignment of a {@link AnchorPositionProps.targetRef target} element relative to
- * an {@link AnchorPositionProps.getAnchorRect anchor rect}.
+ * An alignment of a target relative to an anchor.
  *
  * @see {@link useAnchorPosition}
  * @group Behaviors
@@ -30,52 +29,42 @@ export type AnchorAlign =
  */
 export interface AnchorPositionInfo {
   /**
-   * An element that is a viewport that constrains the target positioning, or `null` if window is a viewport.
-   */
-  viewport: Element | null;
-
-  /**
-   * An element that is positioned around an anchor rect.
-   */
-  target: Element;
-
-  /**
-   * A bounding rect of a viewport.
-   */
-  viewportRect: DOMRect;
-
-  /**
-   * An anchor rect around which a target element is positioned.
-   */
-  anchorRect: DOMRect;
-
-  /**
-   * A bounding rect of a {@link target} element.
+   * A target rect.
    */
   targetRect: DOMRect;
 
   /**
-   * A horizontal position of a {@link target}, relative to a {@link viewport}.
+   * An anchor rect around which a target is positioned.
+   */
+  anchorRect: DOMRect;
+
+  /**
+   * A bounding rect of a container that constrains target positioning.
+   */
+  containerRect: DOMRect;
+
+  /**
+   * A horizontal position of a target, relative to a window.
    */
   x: number;
 
   /**
-   * A vertical position of a {@link target}, relative to a {@link viewport}.
+   * A vertical position of a target, relative to a window.
    */
   y: number;
 
   /**
-   * The maximum width of a {@link target} that can fit into a {@link viewport}.
+   * The maximum width of a target, so it can fit into a container.
    */
   maxWidth: number;
 
   /**
-   * The maximum height of a {@link target} that can fit into a {@link viewport}.
+   * The maximum height of a target, so it can fit into a container.
    */
   maxHeight: number;
 
   /**
-   * An arrow offset, relative to a {@link target}.
+   * An arrow offset, relative to a target.
    *
    * `undefined` if {@link targetPlacement} isn't top, right, bottom or left.
    */
@@ -110,62 +99,56 @@ export interface AnchorPositionInfo {
  */
 export interface AnchorPositionVariant {
   /**
-   * A horizontal padding inside a {@link AnchorPositionProps.viewportRef viewport} that must be avoided during
-   * a {@link AnchorPositionProps.targetRef target} placement.
+   * A horizontal padding inside a container that must be avoided during a target placement.
    *
    * @default 0
    */
-  viewportPaddingX?: number;
+  containerPaddingX?: number;
 
   /**
-   * A vertical padding inside a {@link AnchorPositionProps.viewportRef viewport} that must be avoided during
-   * a {@link AnchorPositionProps.targetRef target} placement.
+   * A vertical padding inside a container that must be avoided during a target placement.
    *
    * @default 0
    */
-  viewportPaddingY?: number;
+  containerPaddingY?: number;
 
   /**
-   * A horizontal distance between an {@link AnchorPositionProps.getAnchorRect anchor rect} and
-   * a {@link targetRef target}.
+   * A horizontal distance between an anchor and a target.
    *
    * @default 0
    */
   anchorMarginX?: number;
 
   /**
-   * A vertical distance between an {@link AnchorPositionProps.getAnchorRect anchor rect} and
-   * a {@link targetRef target}.
+   * A vertical distance between an anchor and a target.
    *
    * @default 0
    */
   anchorMarginY?: number;
 
   /**
-   * A width or height of an arrow, depending on preferred alignment.
+   * Width or height of an arrow, depending on preferred alignment.
    *
    * @default 0
    */
   arrowSize?: number;
 
   /**
-   * A margin between an arrow and a {@link AnchorPositionProps.targetRef target} bonding rect.
+   * A margin between an arrow and a target bonding rect.
    *
    * @default 0
    */
   arrowMargin?: number;
 
   /**
-   * A horizontal alignment of a {@link targetRef target} relative to
-   * an {@link AnchorPositionProps.getAnchorRect anchor rect}.
+   * A horizontal alignment of a target relative to an anchor.
    *
    * @default "center"
    */
   alignX?: AnchorAlign;
 
   /**
-   * A vertical alignment of a {@link targetRef target} relative to
-   * an {@link AnchorPositionProps.getAnchorRect anchor rect}.
+   * A vertical alignment of a target relative to an anchor.
    *
    * @default "outerStart"
    */
@@ -185,20 +168,25 @@ export interface AnchorPositionVariant {
 /**
  * Props of the {@link useAnchorPosition} hook.
  *
- * @see {@link useAnchorPosition}
  * @group Behaviors
  */
 export interface AnchorPositionProps {
   /**
-   * Returns a bounding box of an anchor relative to a window viewport around which a {@link targetRef target} is
-   * positioned.
+   * Returns a bounding rect of an element that is positioned around an anchor.
+   */
+  getTargetRect: () => DOMRect;
+
+  /**
+   * Returns a bounding rect of an anchor relative to a window around which a target is positioned.
    */
   getAnchorRect: () => DOMRect;
 
   /**
-   * A reference to an element that is positioned around an {@link getAnchorRect anchor rect}.
+   * Returns a bounding rect of a container that constrains a target positioning.
+   *
+   * By default, window visual viewport is used as a container.
    */
-  targetRef: RefObject<Element>;
+  getContainerRect?: () => DOMRect;
 
   /**
    * If `true` then anchored position of a target element isn't tracked.
@@ -206,13 +194,6 @@ export interface AnchorPositionProps {
    * @default false
    */
   isDisabled?: boolean;
-
-  /**
-   * A reference to an element that is a viewport that constrains the target positioning.
-   *
-   * If omitted or `current is `null`, then the window is used as a viewport.
-   */
-  viewportRef?: RefObject<Element>;
 
   /**
    * An array of target position variants from which the most suitable is picked.
@@ -229,7 +210,7 @@ export interface AnchorPositionProps {
   isRTL?: boolean;
 
   /**
-   * A handler that is called when the {@link targetRef target} element must be repositioned.
+   * A handler that is called when the target element must be repositioned.
    *
    * @param info An info about the current target position around an anchor. The info object is reused between handler
    * invocations.
@@ -246,7 +227,7 @@ export interface AnchorPositionProps {
  *
  * useAnchorPosition({
  *   getAnchorRect: () => anchorRef.current.getBoundingClientRect(),
- *   targetRef,
+ *   getTargetRect: () => targetRef.current.getBoundingClientRect(),
  *   variants: [
  *     {
  *       alignX: 'outerEnd',
@@ -254,7 +235,7 @@ export interface AnchorPositionProps {
  *     },
  *   ],
  *   onPositionChange: info => {
- *     info.target.style.transform = `translateX(${info.x}px) translateY(${info.y}px)`;
+ *     targetRef.current.style.transform = `translateX(${info.x}px) translateY(${info.y}px)`;
  *   },
  * });
  *
@@ -294,11 +275,9 @@ function createAnchorPositionManager(): AnchorPositionManager {
   let prevActualAlignX: AnchorAlign;
 
   const info: AnchorPositionInfo = {
-    viewport: null,
-    target: undefined!,
-    viewportRect: undefined!,
-    anchorRect: undefined!,
     targetRect: undefined!,
+    anchorRect: undefined!,
+    containerRect: undefined!,
     x: 0,
     y: 0,
     maxWidth: 0,
@@ -317,15 +296,15 @@ function createAnchorPositionManager(): AnchorPositionManager {
 
   const frameRequestCallback = () => {
     const {
+      getTargetRect,
       getAnchorRect,
-      targetRef,
-      viewportRef,
+      getContainerRect = getViewportRect,
       variants = defaultVariants,
       isRTL = false,
       onPositionChange,
     } = manager.props;
 
-    if (targetRef.current === null || variants.length === 0) {
+    if (variants.length === 0) {
       // Nothing to anchor, or no position variants
       prevMaxWidth = prevMaxHeight = -1;
 
@@ -333,13 +312,9 @@ function createAnchorPositionManager(): AnchorPositionManager {
       return;
     }
 
-    const target = targetRef.current;
-
     const anchorRect = getAnchorRect();
-    const targetRect = target.getBoundingClientRect();
-
-    const viewport = viewportRef === undefined ? null : viewportRef.current;
-    const viewportRect = getViewportRect(viewport);
+    const targetRect = getTargetRect();
+    const containerRect = getContainerRect();
 
     let pickedVariantIndex = 0;
     let pickedVariantScore = 0;
@@ -354,8 +329,8 @@ function createAnchorPositionManager(): AnchorPositionManager {
 
     for (let i = 0, isPicked = false; i < variants.length; ++i) {
       const {
-        viewportPaddingX = 0,
-        viewportPaddingY = 0,
+        containerPaddingX = 0,
+        containerPaddingY = 0,
         anchorMarginX = 0,
         anchorMarginY = 0,
         arrowSize = 0,
@@ -367,14 +342,14 @@ function createAnchorPositionManager(): AnchorPositionManager {
       } = variants[i];
 
       // X
-      input.viewportA = viewportRect.x;
-      input.viewportB = viewportRect.right;
+      input.containerA = containerRect.x;
+      input.containerB = containerRect.right;
       input.anchorA = anchorRect.x;
       input.anchorB = anchorRect.right;
       input.targetA = targetRect.x;
       input.targetB = targetRect.right;
       input.isRTL = isRTL;
-      input.viewportPadding = viewportPaddingX;
+      input.containerPadding = containerPaddingX;
       input.anchorMargin = anchorMarginX;
       input.arrowSize = arrowSize;
       input.arrowMargin = arrowMargin;
@@ -388,14 +363,14 @@ function createAnchorPositionManager(): AnchorPositionManager {
       arrowOffset = output.arrowOffset;
 
       // Y
-      input.viewportA = viewportRect.y;
-      input.viewportB = viewportRect.bottom;
+      input.containerA = containerRect.y;
+      input.containerB = containerRect.bottom;
       input.anchorA = anchorRect.y;
       input.anchorB = anchorRect.bottom;
       input.targetA = targetRect.y;
       input.targetB = targetRect.bottom;
       input.isRTL = false;
-      input.viewportPadding = viewportPaddingY;
+      input.containerPadding = containerPaddingY;
       input.anchorMargin = anchorMarginY;
       input.arrowSize = arrowSize;
       input.arrowMargin = arrowMargin;
@@ -450,9 +425,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
     prevActualAlignX = actualAlignX;
     prevActualAlignY = actualAlignY;
 
-    info.viewport = viewport;
-    info.target = target;
-    info.viewportRect = viewportRect;
+    info.containerRect = containerRect;
     info.anchorRect = anchorRect;
     info.targetRect = targetRect;
     info.x = prevX = x;
@@ -503,14 +476,14 @@ const ALIGN_OUTER_START: AnchorAlign = 'outerStart';
 const ALIGN_OUTER_END: AnchorAlign = 'outerEnd';
 
 const input: CalcAnchorPositionInput = {
-  viewportA: 0,
-  viewportB: 0,
+  containerA: 0,
+  containerB: 0,
   anchorA: 0,
   anchorB: 0,
   targetA: 0,
   targetB: 0,
   isRTL: false,
-  viewportPadding: 0,
+  containerPadding: 0,
   anchorMargin: 0,
   arrowSize: 0,
   arrowMargin: 0,
@@ -527,14 +500,14 @@ const output: CalcAnchorPositionOutput = {
 const { min, max } = Math;
 
 export interface CalcAnchorPositionInput {
-  viewportA: number;
-  viewportB: number;
+  containerA: number;
+  containerB: number;
   anchorA: number;
   anchorB: number;
   targetA: number;
   targetB: number;
   isRTL: boolean;
-  viewportPadding: number;
+  containerPadding: number;
   anchorMargin: number;
   arrowSize: number;
   arrowMargin: number;
@@ -549,10 +522,10 @@ export interface CalcAnchorPositionOutput {
 }
 
 export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcAnchorPositionOutput): void {
-  const { anchorA, anchorB, targetA, targetB, isRTL, viewportPadding, anchorMargin, arrowSize, arrowMargin } = input;
+  const { anchorA, anchorB, targetA, targetB, isRTL, containerPadding, anchorMargin, arrowSize, arrowMargin } = input;
 
-  const viewportA = input.viewportA + viewportPadding;
-  const viewportB = input.viewportB - viewportPadding;
+  const containerA = input.containerA + containerPadding;
+  const containerB = input.containerB - containerPadding;
 
   const align = isRTL ? alignFlipTable[input.align] : input.align;
 
@@ -573,8 +546,8 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
 
   if (align === ALIGN_OUTER_START || align === ALIGN_OUTER_END) {
     // Available size
-    startSize = anchorA - viewportA;
-    endSize = viewportB - anchorB;
+    startSize = anchorA - containerA;
+    endSize = containerB - anchorB;
 
     if (align === ALIGN_OUTER_START) {
       position = anchorA - anchorMargin - targetSize;
@@ -595,13 +568,13 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
       position = anchorA + (anchorB - anchorA - targetSize) / 2;
     }
 
-    maxSize = viewportB - viewportA;
+    maxSize = containerB - containerA;
 
     if (align === ALIGN_EXACT_START) {
-      maxSize = viewportB - position;
+      maxSize = containerB - position;
     }
     if (align === ALIGN_EXACT_END) {
-      maxSize = anchorB - anchorMargin - viewportA;
+      maxSize = anchorB - anchorMargin - containerA;
     }
 
     // Clamp position
@@ -614,11 +587,11 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
       align === ALIGN_INNER_END
     ) {
       if (align === ALIGN_CENTER || align === ALIGN_START || align === ALIGN_END) {
-        minPosition = min(viewportA, anchorB - anchorMargin - arrowSpacing);
-        maxPosition = max(viewportB - targetSize, anchorA - targetSize + anchorMargin + arrowSpacing);
+        minPosition = min(containerA, anchorB - anchorMargin - arrowSpacing);
+        maxPosition = max(containerB - targetSize, anchorA - targetSize + anchorMargin + arrowSpacing);
       } else {
-        minPosition = min(viewportA, max(anchorA + anchorMargin, anchorB - targetSize - anchorMargin));
-        maxPosition = max(viewportB - targetSize, min(anchorA + anchorMargin, anchorB - targetSize - anchorMargin));
+        minPosition = min(containerA, max(anchorA + anchorMargin, anchorB - targetSize - anchorMargin));
+        maxPosition = max(containerB - targetSize, min(anchorA + anchorMargin, anchorB - targetSize - anchorMargin));
       }
 
       if (isRTL) {
@@ -633,7 +606,7 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
   }
 
   output.position = position;
-  output.maxSize = max(0, min(maxSize, viewportB - viewportA));
+  output.maxSize = max(0, min(maxSize, containerB - containerA));
   output.actualAlign = actualAlign;
   output.arrowOffset = arrowOffset;
 }
