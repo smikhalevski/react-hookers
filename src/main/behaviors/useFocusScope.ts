@@ -1,8 +1,8 @@
-import { EffectCallback, RefObject, useLayoutEffect } from 'react';
+import { EffectCallback, RefObject, useEffect } from 'react';
 import { FocusableElement } from '../types';
 import { useFunction } from '../useFunction';
 import { getFocusedElement, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
-import { emptyArray, emptyObject } from '../utils/lang';
+import { die, emptyArray, emptyObject } from '../utils/lang';
 import { focusRing } from './focusRing';
 import { cancelFocus, requestFocus } from './useFocus';
 import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusControls } from './useFocusControls';
@@ -57,19 +57,18 @@ export interface FocusScopeProps extends UnorderedFocusOptions {
  */
 export function useFocusScope(ref: RefObject<Element>, props: FocusScopeProps = emptyObject): FocusControls {
   const manager = useFunction(createFocusScopeManager);
-  const parentFocusControls = useFocusControls();
 
-  manager.parent = parentFocusControls === null ? null : focusScopeManagerByControls.get(parentFocusControls)!;
+  manager.parentFocusControls = useFocusControls();
   manager.ref = ref;
   manager.props = props;
 
-  useLayoutEffect(manager.onMounted, emptyArray);
+  useEffect(manager.onMounted, emptyArray);
 
   return manager.focusControls;
 }
 
 interface FocusScopeManager {
-  parent: FocusScopeManager | null;
+  parentFocusControls: FocusControls | null;
   ref: RefObject<Element>;
   props: FocusScopeProps;
   focusControls: FocusControls;
@@ -125,7 +124,7 @@ function createFocusScopeManager(): FocusScopeManager {
   };
 
   const manager: FocusScopeManager = {
-    parent: null,
+    parentFocusControls: null,
     ref: undefined!,
     props: undefined!,
     focusControls,
@@ -220,6 +219,12 @@ function getFocusTrap(): FocusScopeManager | null {
   return null;
 }
 
+function getParentManager(manager: FocusScopeManager): FocusScopeManager | null {
+  return manager.parentFocusControls === null
+    ? null
+    : focusScopeManagerByControls.get(manager.parentFocusControls) || die('Unexpected parent focus controls');
+}
+
 const FOCUS_CANDIDATE_SELECTOR =
   'input,textarea,select,button,details,summary,a[href],[tabindex],audio[controls],video[controls],[contenteditable]';
 
@@ -232,6 +237,11 @@ function getFocusCandidates(
   candidates = new Set<FocusableElement>()
 ): Set<FocusableElement> {
   const container = manager.ref.current;
+
+  if (!focusScopeManagerByControls.has(manager.focusControls)) {
+    // Focus scope isn't mounted yet or was unmounted
+    return candidates;
+  }
 
   if (container !== null) {
     const elements = container.querySelectorAll<FocusableElement>(FOCUS_CANDIDATE_SELECTOR);
@@ -246,7 +256,7 @@ function getFocusCandidates(
   }
 
   for (const peerManager of focusScopeManagers) {
-    if (peerManager.parent === manager) {
+    if (getParentManager(peerManager) === manager) {
       getFocusCandidates(peerManager, candidates);
     }
   }
@@ -264,7 +274,7 @@ function containsElement(manager: FocusScopeManager, element: Element | null): b
   }
 
   for (const peerManager of focusScopeManagers) {
-    if (peerManager.parent === manager && containsElement(peerManager, element)) {
+    if (getParentManager(peerManager) === manager && containsElement(peerManager, element)) {
       return true;
     }
   }
@@ -280,7 +290,7 @@ function containsManager(parentManager: FocusScopeManager, manager: FocusScopeMa
   }
 
   for (const peerManager of focusScopeManagers) {
-    if (peerManager.parent === parentManager && containsManager(peerManager, manager)) {
+    if (getParentManager(peerManager) === parentManager && containsManager(peerManager, manager)) {
       return true;
     }
   }

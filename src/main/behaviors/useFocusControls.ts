@@ -110,8 +110,7 @@ export interface FocusControls {
   focusRight(options?: UnorderedFocusOptions): boolean;
 
   /**
-   * Returns `true` if a focus scope has focus or is allowed capture focus, because it is a part of the active focus
-   * trap which doesn't contain focus.
+   * Returns `true` if a focus scope contains focused element, or if a focus scope is a part of an active focus trap.
    */
   isActive(): boolean;
 
