@@ -55,11 +55,11 @@ export function getIntersectionRatio(a: DOMRect, b: DOMRect): number {
  * @group Other
  */
 export function getViewportRect(): DOMRect {
-  const { visualViewport } = window;
+  const visualViewport = window.visualViewport || null;
 
-  if (visualViewport === null || visualViewport === undefined) {
+  if (visualViewport === null) {
     return new DOMRect(0, 0, window.innerWidth, window.innerHeight);
   }
 
-  return new DOMRect(0, 0, visualViewport.width, visualViewport.height);
+  return new DOMRect(visualViewport.offsetLeft, visualViewport.offsetTop, visualViewport.width, visualViewport.height);
 }
