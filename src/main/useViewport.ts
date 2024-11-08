@@ -1,4 +1,4 @@
-import { EffectCallback, useLayoutEffect } from 'react';
+import { EffectCallback, useEffect } from 'react';
 import { useFunction } from './useFunction';
 import { emptyArray } from './utils/lang';
 import { getViewportRect } from './utils/rects';
@@ -27,7 +27,7 @@ export function useViewport(props: ViewportProps): void {
 
   manager.props = props;
 
-  useLayoutEffect(manager.onMounted, emptyArray);
+  useEffect(manager.onMounted, emptyArray);
 }
 
 interface WindowViewportResizeManager {

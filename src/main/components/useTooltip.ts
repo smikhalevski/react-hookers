@@ -1,13 +1,13 @@
-import { EffectCallback, HTMLAttributes, RefObject, useLayoutEffect } from 'react';
+import { EffectCallback, HTMLAttributes, RefObject, useEffect } from 'react';
 import { focusRing } from '../behaviors/focusRing';
-import { mergeProps } from '../utils/mergeProps';
 import { FocusProps, useFocus } from '../behaviors/useFocus';
-import { useFunction } from '../useFunction';
 import { HoverProps, useHover } from '../behaviors/useHover';
-import { useUniqueId } from '../useUniqueId';
 import { DOMEventHandler } from '../types';
 import { useCopyObject } from '../useCopyObject';
+import { useFunction } from '../useFunction';
+import { useUniqueId } from '../useUniqueId';
 import { emptyArray } from '../utils/lang';
+import { mergeProps } from '../utils/mergeProps';
 
 /**
  * A value returned from the {@link useTooltip} hook.
@@ -100,8 +100,8 @@ export function useTooltip(ref: RefObject<Element>, props: HeadlessTooltipProps)
 
   manager.props = props;
 
-  useLayoutEffect(manager.onMounted, emptyArray);
-  useLayoutEffect(manager.onOpenedUpdated, [props.isOpened]);
+  useEffect(manager.onMounted, emptyArray);
+  useEffect(manager.onOpenedUpdated, [props.isOpened]);
 
   return value;
 }
