@@ -5,6 +5,27 @@ import { HeadlessTrackHandleProps, useTrackHandle } from './useTrackHandle';
 import { emptyArray, noop } from '../utils/lang';
 
 /**
+ * An info about the current state of a scrollbar.
+ *
+ * @see {@link HeadlessScrollbarProps.onScroll}
+ * @group Components
+ */
+export interface ScrollbarInfo {
+  /**
+   * A scroll percentage of a container, determines a position of a scrollbar handle.
+   *
+   * Percentage can be less than 0 and greater than 1 during an overscroll.
+   */
+  percentage: number;
+
+  /**
+   * A container bounding rect size divided by a container scroll size, determines the size of a scrollbar handle,
+   * so it reflects the amount of visible content.
+   */
+  ratio: number;
+}
+
+/**
  * A value returned from the {@link useScrollbar} hook.
  *
  * @group Components
@@ -80,11 +101,9 @@ export interface HeadlessScrollbarProps {
   /**
    * A handler that is called when a {@link containerRef container} is being scrolled.
    *
-   * @param scrollPercentage A scroll percentage of a container, determines a position of a scrollbar handle.
-   * @param scrollRatio A container bounding rect size divided by a container scroll size, determines the size of
-   * a scrollbar handle, so it reflects the amount of visible content.
+   * @param info An info about the current state of a scrollbar. The info object is reused between handler invocations.
    */
-  onScroll?: (scrollPercentage: number, scrollRatio: number) => void;
+  onScroll?: (info: Readonly<ScrollbarInfo>) => void;
 }
 
 /**
@@ -138,6 +157,11 @@ function createScrollbarManager(setStatus: (status: number) => void): ScrollbarM
   let repositionTimer: NodeJS.Timeout;
   let deactivateTimer: NodeJS.Timeout;
 
+  const info: ScrollbarInfo = {
+    percentage: 0,
+    ratio: 0,
+  };
+
   const getTrackRect = (): DOMRect => manager.props.trackRef.current!.getBoundingClientRect();
 
   const deactivate = (): void => {
@@ -169,16 +193,20 @@ function createScrollbarManager(setStatus: (status: number) => void): ScrollbarM
     }
 
     if (
+      onScroll === undefined ||
       percentage ===
-      (percentage =
-        orientation === 'horizontal'
-          ? scrollLeft / (scrollWidth - clientWidth)
-          : scrollTop / (scrollHeight - clientHeight))
+        (percentage =
+          orientation === 'horizontal'
+            ? scrollLeft / (scrollWidth - clientWidth)
+            : scrollTop / (scrollHeight - clientHeight))
     ) {
       return;
     }
 
-    onScroll?.(percentage, orientation === 'horizontal' ? clientWidth / scrollWidth : clientHeight / scrollHeight);
+    info.percentage = percentage;
+    info.ratio = orientation === 'horizontal' ? clientWidth / scrollWidth : clientHeight / scrollHeight;
+
+    onScroll(info);
   };
 
   const handleMounted: EffectCallback = () => {
