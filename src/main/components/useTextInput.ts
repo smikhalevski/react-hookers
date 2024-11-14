@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, LabelHTMLAttributes, RefObject } from 'react';
+import { HTMLInputAutoCompleteAttribute, InputHTMLAttributes, LabelHTMLAttributes, RefObject } from 'react';
 import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
 import { useFunction } from '../useFunction';
@@ -90,6 +90,12 @@ export interface HeadlessTextInputProps extends HoverProps, FocusProps {
    * @default false
    */
   isAutofocused?: boolean;
+
+  /**
+   * What permission the user agent has to provide automated assistance in filling out form field values, as well as
+   * guidance to the browser as to the type of information expected in the field.
+   */
+  autoComplete?: HTMLInputAutoCompleteAttribute;
 }
 
 /**
@@ -112,6 +118,7 @@ export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTe
   value.inputProps.id = value.labelProps.htmlFor = props.id || fallbackId;
   value.inputProps.type = props.isTextArea ? undefined : 'text';
   value.inputProps.value = value.value = props.value === undefined ? '' : props.value;
+  value.inputProps.autoComplete = props.isTextArea ? undefined : props.autoComplete;
   value.inputProps['aria-disabled'] = value.inputProps.disabled = props.isDisabled || undefined;
   value.inputProps['aria-invalid'] = props.isInvalid || undefined;
   value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused;
