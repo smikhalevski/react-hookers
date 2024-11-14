@@ -5,7 +5,7 @@ interface MouseEvent {
 }
 
 interface KeyboardEvent {
-  readonly target: HTMLElement | SVGElement;
+  readonly target: HTMLInputElement;
 }
 
 interface PointerEvent {

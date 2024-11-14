@@ -110,14 +110,41 @@ function registerArrowKeysNavigationManager(manager: ArrowKeysNavigationManager)
   };
 }
 
+const KEY_ARROW_UP = 'ArrowUp';
+const KEY_ARROW_DOWN = 'ArrowDown';
+const KEY_ARROW_LEFT = 'ArrowLeft';
+const KEY_ARROW_RIGHT = 'ArrowRight';
+const KEY_PAGE_UP = 'PageUp';
+const KEY_PAGE_DOWN = 'PageDown';
+
 function handleArrowKeyDown(event: KeyboardEvent): void {
-  const { key } = event;
+  const { target, key } = event;
+
+  if (!isArrowKeyNavigationEvent(event) || target.tagName === 'TEXTAREA') {
+    return;
+  }
+
+  if (target.tagName === 'INPUT' && target.type === 'text') {
+    const { selectionStart, selectionEnd } = target;
+
+    if (
+      // Non-empty selection
+      selectionStart !== selectionEnd ||
+      // Arrows move cursor before the first or after the last character
+      !(
+        (selectionStart === 0 && (key === KEY_ARROW_LEFT || key === KEY_ARROW_UP)) ||
+        (selectionStart === target.value.length && (key === KEY_ARROW_RIGHT || key === KEY_ARROW_DOWN))
+      )
+    ) {
+      return;
+    }
+  }
 
   for (const manager of arrowKeysNavigationManagers) {
     const { focusControls, props } = manager;
     const { isDisabled, orientation, isFocusCycled } = props;
 
-    if (isDisabled || focusControls === null || !isArrowKeyNavigationEvent(event) || !focusControls.isActive()) {
+    if (isDisabled || focusControls === null || !focusControls.isActive()) {
       continue;
     }
 
@@ -125,16 +152,17 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
 
     if (
       (orientation !== 'horizontal' &&
-        ((key === 'ArrowUp' && (focusControls.focusUp(props) || (isFocusCycled && focusControls.focusLast(props)))) ||
-          (key === 'ArrowDown' &&
+        ((key === KEY_ARROW_UP &&
+          (focusControls.focusUp(props) || (isFocusCycled && focusControls.focusLast(props)))) ||
+          (key === KEY_ARROW_DOWN &&
             (focusControls.focusDown(props) || (isFocusCycled && focusControls.focusFirst(props)))))) ||
       (orientation !== 'vertical' &&
-        ((key === 'ArrowLeft' &&
+        ((key === KEY_ARROW_LEFT &&
           (focusControls.focusLeft(props) || (isFocusCycled && focusControls.focusLast(props)))) ||
-          (key === 'ArrowRight' &&
+          (key === KEY_ARROW_RIGHT &&
             (focusControls.focusRight(props) || (isFocusCycled && focusControls.focusFirst(props)))))) ||
-      (key === 'PageUp' && focusControls.focusFirst(props)) ||
-      (key === 'PageDown' && focusControls.focusLast(props))
+      (key === KEY_PAGE_UP && focusControls.focusFirst(props)) ||
+      (key === KEY_PAGE_DOWN && focusControls.focusLast(props))
     ) {
       event.preventDefault();
       cancelHover();
@@ -148,12 +176,12 @@ export function isArrowKeyNavigationEvent(event: React.KeyboardEvent | KeyboardE
   const { key } = event;
 
   return (
-    (key === 'ArrowUp' ||
-      key === 'ArrowDown' ||
-      key === 'ArrowLeft' ||
-      key === 'ArrowRight' ||
-      key === 'PageUp' ||
-      key === 'PageDown') &&
+    (key === KEY_ARROW_UP ||
+      key === KEY_ARROW_DOWN ||
+      key === KEY_ARROW_LEFT ||
+      key === KEY_ARROW_RIGHT ||
+      key === KEY_PAGE_UP ||
+      key === KEY_PAGE_DOWN) &&
     !event.defaultPrevented &&
     !event.metaKey
   );
