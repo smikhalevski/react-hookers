@@ -10,6 +10,23 @@ import { emptyArray } from './utils/lang';
  *
  * The timeout should be started/stopped after the component is mounted. Before that, it is a no-op.
  *
+ * @example
+ * const [schedule, cancel] = useTimeout();
+ *
+ * useEffect(() => {
+ *   // Cancels pending debounce and schedules the new call
+ *   schedule(
+ *     (a, b) => {
+ *       doSomething(a, b);
+ *     },
+ *     500, // Timeout after which the callback is called
+ *     a, b, // Varargs that are passed to the callback
+ *   );
+ *
+ *   // Cancels the last debounce call
+ *   cancel();
+ * }, []);
+ *
  * @group Other
  */
 export function useTimeout(): [schedule: Schedule, cancel: () => void] {

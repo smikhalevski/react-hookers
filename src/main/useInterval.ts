@@ -12,6 +12,23 @@ import { emptyArray, noop } from './utils/lang';
  *
  * Intervals must be scheduled/canceled after the component is mounted. Before that, it is a no-op.
  *
+ * @example
+ * const [schedule, cancel] = useInterval();
+ *
+ * useEffect(() => {
+ *   // Cancels currently scheduled callback and schedules the new one
+ *   schedule(
+ *     (a, b) => {
+ *       doSomething(a, b);
+ *     },
+ *     500, // Interval delay
+ *     a, b, // Varargs that are passed to the callback
+ *   );
+ *
+ *   // Stops invoking the callback that was last provided to schedule()
+ *   cancel();
+ * }, []);
+ *
  * @see {@link useRerenderInterval}
  * @group Other
  */

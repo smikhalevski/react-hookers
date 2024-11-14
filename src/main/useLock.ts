@@ -10,6 +10,23 @@ import { emptyArray, noop } from './utils/lang';
  * as soon as previous lock owner invokes their release callback. If `acquire` is called after unmount then the returned
  * promise is never fulfilled.
  *
+ * @example
+ * const [locked, acquire] = useLock();
+ *
+ * async function doSomething() {
+ *   const release = await acquire();
+ *   try {
+ *     // Long process starts here
+ *   } finally {
+ *     release();
+ *   }
+ * }
+ *
+ * // Long process would be executed three times sequentially
+ * doSomething();
+ * doSomething();
+ * doSomething();
+ *
  * @group Other
  */
 export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void>] {

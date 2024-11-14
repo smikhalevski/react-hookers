@@ -11,6 +11,20 @@ import { emptyArray } from './utils/lang';
  * An animation is automatically stopped on unmount.
  *
  * An animation should be started/stopped after the component is mounted. Before that, it is a no-op.
+ *
+ * @example
+ * const [start, stop] = useAnimationFrame();
+ *
+ * useEffect(() => {
+ *   // Cancels pending animation loop and schedules the new animation loop
+ *   start(() => {
+ *     // Apply animation changes
+ *   });
+ *
+ *   // Stop the animation
+ *   stop();
+ * }, []);
+ *
  * @group Other
  */
 export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void, stop: () => void] {

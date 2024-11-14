@@ -13,6 +13,17 @@ export function useBlocker(): [isBlocked: boolean, block: () => Promise<void>, u
 /**
  * Block an async flow and unblock it from an external context.
  *
+ * @example
+ * const [isBlocked, block, unblock] = useBlocker<string>();
+ *
+ * useEffect(() => {
+ *   // Returns a Promise that is resolved with the value passed to unblock(value)
+ *   block(); // → Promise<string>
+ *
+ *   // Unblocks the blocker with given value
+ *   unblock('Hello');
+ * }, []);
+ *
  * @template T The type of value that can be passed to `unblock` to resolve the `Promise` returned by `block`.
  * @group Other
  */

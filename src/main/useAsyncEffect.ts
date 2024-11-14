@@ -18,6 +18,18 @@ export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => vo
  * if effect is called again before the previously returned promise is resolved. Cleanup callbacks returned from
  * the aborted effects are ignored.
  *
+ * @example
+ * useAsyncEffect(
+ *   async (signal) => {
+ *     doSomething(a, b);
+ *
+ *     return () => {
+ *       cleanup();
+ *     };
+ *   },
+ *   [a, b],
+ * );
+ *
  * @param fn The callback that is invoked if `deps` have changed. An effect may return a destructor/cleanup callback.
  * The previous effect is cleaned up before executing the next effect.
  * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.

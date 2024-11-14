@@ -5,6 +5,9 @@ import { useFunction } from './useFunction';
  * Returns `true` if the window
  * [matches the media query](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia), or `false` otherwise.
  *
+ * @example
+ * const isMatched = useMediaQuery('(min-width: 600px)');
+ *
  * @param query The media query to match.
  * @param initialValue A value returned during the initial render.
  * @group Other
