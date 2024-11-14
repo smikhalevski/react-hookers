@@ -439,12 +439,13 @@ function getElementsInDirection(
     }
 
     if (direction === DIRECTION_UP || direction === DIRECTION_DOWN) {
-      crossDistance = bx2 < ax1 ? ax1 - bx2 : bx1 > ax2 ? bx1 - ax2 : 0;
+      crossDistance = bx2 <= ax1 ? ax2 - bx2 : bx1 >= ax2 ? bx1 - ax1 : 0;
     } else {
-      crossDistance = by2 < ay1 ? ay1 - by2 : by1 > ay2 ? by1 - ay2 : 0;
+      crossDistance = by2 <= ay1 ? ay2 - by2 : by1 >= ay2 ? by1 - ay1 : 0;
     }
 
-    const elementScore = crossSize / (majorDistance + crossDistance * crossDistance);
+    const elementScore =
+      crossDistance === 0 ? 1e9 / majorDistance : crossSize / (majorDistance + crossDistance * crossDistance);
 
     if (elementScore > 0) {
       elementScores.set(element, elementScore);
