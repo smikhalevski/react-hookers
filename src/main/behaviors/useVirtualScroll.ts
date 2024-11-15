@@ -229,7 +229,7 @@ function reduceRerenderCount(count: number): number {
 /**
  * A typed array constructor which instances are used for storing item sizes.
  */
-const BlockArrayConstructor = Uint16Array;
+const BlockArrayConstructor = Float32Array;
 
 const MAX_TYPED_ARRAY_BYTE_SIZE = 0x7fe00000;
 const MAX_BROWSER_SCROLL_SIZE = 0xfffffe;
