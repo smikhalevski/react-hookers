@@ -1,24 +1,10 @@
 import { PubSub } from 'parallel-universe';
-import { cloneElement, FunctionComponent, Key, ReactElement, ReactNode, useEffect } from 'react';
+import React, { FunctionComponent, Key, ReactElement, ReactNode, useEffect } from 'react';
+import { CloseHandlerProvider } from './behaviors/useCloseHandler';
 import { useRerender } from './useRerender';
 import { die, emptyArray } from './utils/lang';
 
 const containers = new WeakMap<FunctionComponent, (element: ReactElement) => () => void>();
-
-/**
- * Props injected into an element rendered inside a {@link useRenderContainer render container}.
- *
- * @group Other
- */
-export interface DisposableProps {
-  /**
-   * A handler that a component should call to unmount itself from a container.
-   *
-   * This property is injected when a component is rendered by a callback returned from a {@link useRenderContainer}
-   * hook. The function identity is unchanged between re-renders.
-   */
-  onDispose?: () => void;
-}
 
 /**
  * Props of a {@link createRenderContainer render container}.
@@ -30,7 +16,7 @@ export interface RenderContainerProps {
    * Customizes how elements are rendered in a container. Each element has a non-`null` key. Elements are in the order
    * they were added.
    */
-  children?: (elements: ReactElement<DisposableProps>[]) => ReactNode;
+  children?: (elements: ReactElement[]) => ReactNode;
 }
 
 /**
@@ -56,9 +42,7 @@ export interface RenderContainerProps {
  * @see {@link createRenderContainer}
  * @group Other
  */
-export function useRenderContainer(
-  container: FunctionComponent
-): (element: ReactElement<DisposableProps>) => () => void {
+export function useRenderContainer(container: FunctionComponent): (element: ReactElement) => () => void {
   return containers.get(container) || die('Must be a render container component');
 }
 
@@ -91,9 +75,15 @@ export function createRenderContainer(): FunctionComponent<RenderContainerProps>
       }
     };
 
-    element = cloneElement(element, typeof element.type === 'string' ? { key } : { key, onDispose: dispose });
-
-    elementMap.set(key, element);
+    elementMap.set(
+      key,
+      <CloseHandlerProvider
+        key={key}
+        value={dispose}
+      >
+        {element}
+      </CloseHandlerProvider>
+    );
 
     pubSub.publish();
 

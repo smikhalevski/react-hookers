@@ -99,12 +99,7 @@ export { useIntervalCallback } from './useIntervalCallback';
 export { useLock } from './useLock';
 export { useMediaQuery } from './useMediaQuery';
 export { detectPlatform, usePlatform, PlatformProvider, type Platform } from './usePlatform';
-export {
-  useRenderContainer,
-  createRenderContainer,
-  type DisposableProps,
-  type RenderContainerProps,
-} from './useRenderContainer';
+export { useRenderContainer, createRenderContainer, type RenderContainerProps } from './useRenderContainer';
 export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';

@@ -39,7 +39,7 @@ export interface KeyboardShortcutProps {
  *
  * @example
  * useKeyboardShortcut({
- *   // Ctrl+J on Windows, Command+J of macOS
+ *   // Ctrl+J on Windows, Command+J on macOS
  *   shortcut: ['Ctrl', 'J'],
  *   onAction() {
  *     // Handle shortcut action here

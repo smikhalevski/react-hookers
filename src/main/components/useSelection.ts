@@ -72,12 +72,12 @@ export function useSelection<T>(): Selection<T> {
 /**
  * Creates a {@link Selection}.
  *
- * @param maximumSize The maximum number of values that selection may hold. If an excessive item is added,
- * then a selection behaves like a LIFO stack.
+ * @param maxSize The maximum number of values that selection may hold. If an excessive item is added, then a selection
+ * behaves like a LIFO stack.
  * @template T A value stored in a selection.
  * @group Components
  */
-export function createSelection<T>(maximumSize = Infinity): Selection<T> {
+export function createSelection<T>(maxSize = Infinity): Selection<T> {
   const pubSub = new PubSub();
   const values = new Set<T>();
 
@@ -106,7 +106,7 @@ export function createSelection<T>(maximumSize = Infinity): Selection<T> {
         return;
       }
 
-      if (values.size + 1 > maximumSize) {
+      if (values.size + 1 > maxSize) {
         values.delete(lastValue);
       }
 
