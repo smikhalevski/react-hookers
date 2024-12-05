@@ -89,8 +89,9 @@ export {
 export {
   getRenderInContainer,
   createRenderContainer,
+  useRenderInContainer,
   type RenderContainerProps,
-  type RenderInContainer,
+  type RenderInContainerCallback,
 } from './createRenderContainer';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect';

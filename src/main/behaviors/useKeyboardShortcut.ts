@@ -63,7 +63,7 @@ interface KeyboardShortcutManager {
   onMounted: EffectCallback;
 }
 
-function createKeyboardShortcutManager() {
+function createKeyboardShortcutManager(): KeyboardShortcutManager {
   const handleMounted: EffectCallback = () => registerKeyboardShortcutManager(manager);
 
   const manager: KeyboardShortcutManager = {

@@ -1,6 +1,7 @@
 import { PubSub } from 'parallel-universe';
-import React, { FunctionComponent, Key, ReactElement, ReactNode, useEffect } from 'react';
+import React, { type EffectCallback, FunctionComponent, Key, ReactElement, ReactNode, useEffect } from 'react';
 import { CloseHandlerProvider } from './behaviors/useCloseHandler';
+import { useFunction } from './useFunction';
 import { useRerender } from './useRerender';
 import { die, emptyArray } from './utils/lang';
 
@@ -9,15 +10,16 @@ import { die, emptyArray } from './utils/lang';
  *
  * @internal
  */
-const containers = new WeakMap<FunctionComponent, RenderInContainer>();
+const containers = new WeakMap<FunctionComponent, RenderInContainerCallback>();
 
 /**
  * A function that renders/re-renders an element in a container.
  *
  * @param element An element to render in a container.
- * @returns A callback that unmounts the rendered element.
+ * @returns A callback that unmounts the rendered element. For elements with the same key, the same unmount callback is
+ * returned.
  */
-export type RenderInContainer = (element: ReactElement) => () => void;
+export type RenderInContainerCallback = (element: ReactElement) => () => void;
 
 /**
  * Returns a function that renders/re-renders an element in a {@link container}.
@@ -39,14 +41,14 @@ export type RenderInContainer = (element: ReactElement) => () => void;
  * const renderInContainer = getRenderInContainer(MyContainer);
  *
  * // 4. Render an element in the container
- * renderInContainer(<div>Hello</div>);
+ * const unmount = renderInContainer(<div>Hello</div>);
  *
  * @param container A container component created by a {@link createRenderContainer} function.
  * @returns A function that renders/re-renders an element.
  * @see {@link createRenderContainer}
  * @group Other
  */
-export function getRenderInContainer(container: FunctionComponent): RenderInContainer {
+export function getRenderInContainer(container: FunctionComponent): RenderInContainerCallback {
   return containers.get(container) || die('Must be a render container component');
 }
 
@@ -74,6 +76,7 @@ export interface RenderContainerProps {
 export function createRenderContainer(): FunctionComponent<RenderContainerProps> {
   const pubSub = new PubSub();
   const elementMap = new Map<Key, ReactElement>();
+  const unmountMap = new Map<Key, () => void>();
 
   const Container: FunctionComponent<RenderContainerProps> = props => {
     const rerender = useRerender();
@@ -85,14 +88,22 @@ export function createRenderContainer(): FunctionComponent<RenderContainerProps>
     return props.children === undefined ? elements : props.children(elements);
   };
 
-  const renderInContainer: RenderInContainer = element => {
+  const renderInContainer: RenderInContainerCallback = element => {
     const key = element.key === null ? Math.random() : element.key;
 
-    const unmount = () => {
-      if (elementMap.delete(key)) {
-        pubSub.publish();
-      }
-    };
+    let unmount = unmountMap.get(key);
+
+    if (unmount === undefined) {
+      unmount = () => {
+        unmountMap.delete(key);
+
+        if (elementMap.delete(key)) {
+          pubSub.publish();
+        }
+      };
+
+      unmountMap.set(key, unmount);
+    }
 
     elementMap.set(
       key,
@@ -112,4 +123,39 @@ export function createRenderContainer(): FunctionComponent<RenderContainerProps>
   containers.set(Container, renderInContainer);
 
   return Container;
+}
+
+/**
+ * A hook that works exactly like {@link getRenderInContainer} and unmounts all rendered elements when host component is
+ * unmounted.
+ */
+export function useRenderInContainer(container: FunctionComponent): RenderInContainerCallback {
+  const manager = useFunction(createRenderInContainerManager, getRenderInContainer(container));
+
+  useEffect(manager.onMounted, emptyArray);
+
+  return manager.renderInContainer;
+}
+
+interface RenderInContainerManager {
+  renderInContainer: RenderInContainerCallback;
+  onMounted: EffectCallback;
+}
+
+function createRenderInContainerManager(renderInContainer: RenderInContainerCallback): RenderInContainerManager {
+  const unmounts = new Set<() => void>();
+
+  return {
+    renderInContainer: element => {
+      const unmount = renderInContainer(element);
+      unmounts.add(unmount);
+      return unmount;
+    },
+
+    onMounted: () => () => {
+      for (const unmount of unmounts) {
+        unmount();
+      }
+    },
+  };
 }
