@@ -68,12 +68,6 @@ export {
 } from './components/useTrackHandle';
 
 export {
-  createDelegateContext,
-  type DelegateContext,
-  type DelegateProviderProps,
-  type DelegateValue,
-} from './createDelegateContext';
-export {
   sortByTabOrder,
   sortByVisualOrder,
   sortByDocumentOrder,
@@ -86,6 +80,18 @@ export { callOrGet, isEqual } from './utils/lang';
 export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/rects';
 export { mergeProps, mergeClassNames } from './utils/mergeProps';
 export { mergeRefs } from './utils/mergeRefs';
+export {
+  createDelegateContext,
+  type DelegateContext,
+  type DelegateProviderProps,
+  type DelegateValue,
+} from './createDelegateContext';
+export {
+  getRenderInContainer,
+  createRenderContainer,
+  type RenderContainerProps,
+  type RenderInContainer,
+} from './createRenderContainer';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect';
 export { useBlocker } from './useBlocker';
@@ -99,7 +105,6 @@ export { useIntervalCallback } from './useIntervalCallback';
 export { useLock } from './useLock';
 export { useMediaQuery } from './useMediaQuery';
 export { detectPlatform, usePlatform, PlatformProvider, type Platform } from './usePlatform';
-export { useRenderContainer, createRenderContainer, type RenderContainerProps } from './useRenderContainer';
 export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';
