@@ -36,7 +36,7 @@ export interface HeadlessTrackHandleProps extends DragProps {
   /**
    * Returns a bounding rect of a track.
    */
-  getTrackRect: () => DOMRect;
+  getTrackRect: () => DOMRect | undefined;
 
   /**
    * Minimum distance between {@link getTrackRect track bounds} and handle bounds in the {@link orientation} direction.
@@ -80,7 +80,7 @@ export function useTrackHandle(ref: RefObject<HTMLElement>, props: HeadlessTrack
   const dragValue = useDrag(ref, manager.dragProps);
 
   manager.value.isDragged = dragValue.isDragged;
-  manager.value.cancelDrag = dragValue.cancelDrag;
+  manager.value.cancelDrag = manager.cancelDrag = dragValue.cancelDrag;
 
   return manager.value;
 }
@@ -89,6 +89,7 @@ interface TrackHandleManager {
   dragProps: DragProps;
   props: HeadlessTrackHandleProps;
   value: HeadlessTrackHandleValue;
+  cancelDrag: () => void;
 }
 
 function createTrackHandleManager(): TrackHandleManager {
@@ -96,6 +97,11 @@ function createTrackHandleManager(): TrackHandleManager {
     const { getTrackRect, handleMargin = 0, orientation, onPercentageChange, onDrag } = manager.props;
 
     const trackRect = getTrackRect();
+
+    if (trackRect === undefined) {
+      manager.cancelDrag();
+      return;
+    }
 
     const top = trackRect.top + handleMargin;
     const left = trackRect.left + handleMargin;
@@ -122,6 +128,7 @@ function createTrackHandleManager(): TrackHandleManager {
       isDragged: false,
       cancelDrag: noop,
     },
+    cancelDrag: noop,
   };
 
   return manager;

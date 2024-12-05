@@ -174,19 +174,19 @@ export interface AnchorPositionProps {
   /**
    * Returns a bounding rect of an element that is positioned around an anchor.
    */
-  getTargetRect: () => DOMRect;
+  getTargetRect: () => DOMRect | undefined;
 
   /**
    * Returns a bounding rect of an anchor relative to a window around which a target is positioned.
    */
-  getAnchorRect: () => DOMRect;
+  getAnchorRect: () => DOMRect | undefined;
 
   /**
    * Returns a bounding rect of a container that constrains a target positioning.
    *
    * By default, window visual viewport is used as a container.
    */
-  getContainerRect?: () => DOMRect;
+  getContainerRect?: () => DOMRect | undefined;
 
   /**
    * If `true` then anchored position of a target element isn't tracked.
@@ -304,17 +304,17 @@ function createAnchorPositionManager(): AnchorPositionManager {
       onPositionChange,
     } = manager.props;
 
-    if (variants.length === 0) {
+    const anchorRect = getAnchorRect();
+    const targetRect = getTargetRect();
+    const containerRect = getContainerRect() || getViewportRect();
+
+    if (anchorRect === undefined || targetRect === undefined || variants.length === 0) {
       // Nothing to anchor, or no position variants
       prevMaxWidth = prevMaxHeight = -1;
 
       handle = requestAnimationFrame(frameRequestCallback);
       return;
     }
-
-    const anchorRect = getAnchorRect();
-    const targetRect = getTargetRect();
-    const containerRect = getContainerRect();
 
     let pickedVariantIndex = 0;
     let pickedVariantScore = 0;

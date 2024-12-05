@@ -162,7 +162,7 @@ function createScrollbarManager(setStatus: (status: number) => void): ScrollbarM
     ratio: 0,
   };
 
-  const getTrackRect = (): DOMRect => manager.props.trackRef.current!.getBoundingClientRect();
+  const getTrackRect = (): DOMRect | undefined => manager.props.trackRef.current?.getBoundingClientRect();
 
   const deactivate = (): void => {
     if (status === STATUS_NOT_SCROLLABLE) {
