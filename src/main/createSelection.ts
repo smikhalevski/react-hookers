@@ -1,12 +1,12 @@
 import { PubSub } from 'parallel-universe';
 import { createContext, useContext } from 'react';
-import { die } from '../utils/lang';
+import { die } from './utils/lang';
 
 /**
  * An observable set of values that is used for managing various selections in components.
  *
  * @template T A value stored in a selection.
- * @group Components
+ * @group Other
  */
 export interface Selection<T = unknown> {
   /**
@@ -55,7 +55,7 @@ SelectionContext.displayName = 'SelectionContext';
 /**
  * Provides a selection to underlying components.
  *
- * @group Components
+ * @group Other
  */
 export const SelectionProvider = SelectionContext.Provider;
 
@@ -63,7 +63,7 @@ export const SelectionProvider = SelectionContext.Provider;
  * Returns the current selection provided by a {@link SelectionProvider}.
  *
  * @template T A value stored in a selection.
- * @group Components
+ * @group Other
  */
 export function useSelection<T>(): Selection<T> {
   return useContext(SelectionContext) || die('No selection provided');
@@ -75,7 +75,7 @@ export function useSelection<T>(): Selection<T> {
  * @param maxSize The maximum number of values that selection may hold. If an excessive item is added, then a selection
  * behaves like a LIFO stack.
  * @template T A value stored in a selection.
- * @group Components
+ * @group Other
  */
 export function createSelection<T>(maxSize = Infinity): Selection<T> {
   const pubSub = new PubSub();

@@ -3,13 +3,12 @@ import { focusRing } from '../behaviors/focusRing';
 import { useCloseHandler } from '../behaviors/useCloseHandler';
 import { requestFocus } from '../behaviors/useFocus';
 import { PressableProps, usePressable } from '../behaviors/usePressable';
+import { Selection } from '../createSelection';
 import { FocusableElement } from '../types';
 import { useFunction } from '../useFunction';
 import { useUniqueId } from '../useUniqueId';
 import { emptyObject } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
-
-import { Selection } from './useSelection';
 
 /**
  * A value returned from the {@link useMenu} hook.
@@ -39,6 +38,37 @@ export interface HeadlessMenuProps {
 
 /**
  * A menu displays a list of actions or options that a user can choose.
+ *
+ * @example
+ * function Menu(props) {
+ *   const { menuProps } = useMenu(props);
+ *   const selection = useFunction(createSelection, 1);
+ *
+ *   return (
+ *     <ul {...menuProps}>
+ *       <SelectionProvider value={selection}>{props.children}</SelectionProvider>
+ *     </ul>
+ *   );
+ * }
+ *
+ * function MenuItem(props) {
+ *   const menuItemRef = useRef(null);
+ *   const { menuItemProps } = useMenuItem(menuItemRef, selection, props);
+ *   const selection = useSelection();
+ *
+ *   return (
+ *     <li
+ *       {...menuItemProps}
+ *       ref={menuItemRef}
+ *     >
+ *       {props.children}
+ *     </li>
+ *   );
+ * }
+ *
+ * <Menu>
+ *   <MenuItem>{'Hello'}</MenuItem>
+ * </Menu>
  *
  * @param props Menu props.
  * @group Components

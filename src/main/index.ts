@@ -58,7 +58,6 @@ export {
   type HeadlessMenuItemValue,
 } from './components/useMenu';
 export { useScrollbar, type HeadlessScrollbarProps, type HeadlessScrollbarValue } from './components/useScrollbar';
-export { createSelection, useSelection, SelectionProvider, type Selection } from './components/useSelection';
 export { useTextInput, type HeadlessTextInputProps, type HeadlessTextInputValue } from './components/useTextInput';
 export { useTooltip, type HeadlessTooltipProps, type HeadlessTooltipValue } from './components/useTooltip';
 export {
@@ -93,6 +92,7 @@ export {
   type RenderContainerProps,
   type RenderInContainerCallback,
 } from './createRenderContainer';
+export { createSelection, useSelection, SelectionProvider, type Selection } from './createSelection';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect';
 export { useBlocker } from './useBlocker';
