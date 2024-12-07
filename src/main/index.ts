@@ -100,6 +100,7 @@ export { useCopyObject } from './useCopyObject';
 export { useDebouncedState, type DebouncedStateProtocol } from './useDebouncedState';
 export { useFunction } from './useFunction';
 export { useFunctionEffect } from './useFunctionEffect';
+export { useFunctionOnce } from './useFunctionOnce';
 export { useHandler } from './useHandler';
 export { useInterval } from './useInterval';
 export { useIntervalCallback } from './useIntervalCallback';

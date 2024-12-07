@@ -1,5 +1,7 @@
 import { ValueOrProvider } from '../types';
 
+export const NEVER = {} as never;
+
 export const emptyObject = Object.freeze({});
 
 export const emptyArray = Object.freeze([]);
