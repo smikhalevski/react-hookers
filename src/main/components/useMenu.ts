@@ -144,7 +144,7 @@ export interface HeadlessMenuItemProps {
 /**
  * A single item in a {@link useMenu menu}.
  *
- * @param ref A reference to an menu item element. This must be the same element to which
+ * @param ref A reference to a menu item element. This must be the same element to which
  * {@link HeadlessMenuItemValue.menuItemProps} are attached.
  * @param selection A selection which is updated when a menu item becomes selected by hover or click.
  * @param props Menu item props.

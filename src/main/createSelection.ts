@@ -8,7 +8,7 @@ import { die } from './utils/lang';
  * @template T A value stored in a selection.
  * @group Other
  */
-export interface Selection<T = unknown> {
+export interface Selection<T = unknown> extends Iterable<T> {
   /**
    * The number of values in a selection.
    */
@@ -48,7 +48,7 @@ export interface Selection<T = unknown> {
   subscribe(listener: () => void): () => void;
 }
 
-const SelectionContext = createContext<Selection | null>(null);
+const SelectionContext = createContext<Selection<any> | null>(null);
 
 SelectionContext.displayName = 'SelectionContext';
 
@@ -74,14 +74,24 @@ export function useSelection<T>(): Selection<T> {
  *
  * @param maxSize The maximum number of values that selection may hold. If an excessive item is added, then a selection
  * behaves like a LIFO stack.
+ * @param initialValues Initially selected values.
  * @template T A value stored in a selection.
  * @group Other
  */
-export function createSelection<T>(maxSize = Infinity): Selection<T> {
+export function createSelection<T>(maxSize = Infinity, initialValues?: Iterable<T>): Selection<T> {
+  let lastValue: T;
+
   const pubSub = new PubSub();
   const values = new Set<T>();
 
-  let lastValue: T;
+  if (initialValues !== undefined) {
+    for (lastValue of initialValues) {
+      if (values.size > maxSize) {
+        break;
+      }
+      values.add(lastValue);
+    }
+  }
 
   return {
     get size() {
@@ -125,6 +135,10 @@ export function createSelection<T>(maxSize = Infinity): Selection<T> {
 
     subscribe(listener) {
       return pubSub.subscribe(listener);
+    },
+
+    [Symbol.iterator]() {
+      return values[Symbol.iterator]();
     },
   };
 }
