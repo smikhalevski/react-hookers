@@ -1,10 +1,10 @@
 import React, { EffectCallback, useLayoutEffect } from 'react';
+import { useFunctionOnce } from '../useFunctionOnce';
+import { emptyArray, emptyObject } from '../utils/lang';
 import { focusRing } from './focusRing';
 import { FocusControls, OrderedFocusOptions } from './useFocusControls';
-import { useFunction } from '../useFunction';
 import { cancelHover } from './useHover';
 import { cancelPress } from './usePress';
-import { emptyArray, emptyObject } from '../utils/lang';
 
 /**
  * Props of the {@link useArrowKeysNavigation} hook.
@@ -68,7 +68,7 @@ export function useArrowKeysNavigation(
   focusControls: FocusControls | null,
   props: ArrowKeysNavigationProps = emptyObject
 ): void {
-  const manager = useFunction(createArrowKeysNavigationManager);
+  const manager = useFunctionOnce(createArrowKeysNavigationManager);
 
   manager.focusControls = focusControls;
   manager.props = props;

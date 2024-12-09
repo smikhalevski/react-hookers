@@ -1,8 +1,8 @@
 import { DOMAttributes, EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
 import { DOMEventHandler } from '../types';
-import { useFunction } from '../useFunction';
-import { HeadlessTrackHandleProps, useTrackHandle } from './useTrackHandle';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { emptyArray, noop } from '../utils/lang';
+import { HeadlessTrackHandleProps, useTrackHandle } from './useTrackHandle';
 
 /**
  * An info about the current state of a scrollbar.
@@ -116,7 +116,7 @@ export interface HeadlessScrollbarProps {
 export function useScrollbar(props: HeadlessScrollbarProps): HeadlessScrollbarValue {
   const [status, setStatus] = useState(STATUS_NOT_SCROLLABLE);
 
-  const manager = useFunction(createScrollbarManager, setStatus);
+  const manager = useFunctionOnce(createScrollbarManager, setStatus);
 
   manager.props = props;
   manager.trackHandleProps.handleMargin = props.handleMargin;

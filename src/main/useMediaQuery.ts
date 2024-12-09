@@ -1,5 +1,5 @@
 import { EffectCallback, useEffect, useState } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 
 /**
  * Returns `true` if the window
@@ -15,7 +15,7 @@ import { useFunction } from './useFunction';
 export function useMediaQuery(query: string, initialValue = false): boolean {
   const [isMatched, setMatched] = useState(initialValue);
 
-  const manager = useFunction(createMediaQueryManager, setMatched);
+  const manager = useFunctionOnce(createMediaQueryManager, setMatched);
 
   manager.query = query;
 

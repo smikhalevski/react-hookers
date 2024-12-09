@@ -5,7 +5,7 @@ import { requestFocus } from '../behaviors/useFocus';
 import { PressableProps, usePressable } from '../behaviors/usePressable';
 import { Selection } from '../createSelection';
 import { FocusableElement } from '../types';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { useUniqueId } from '../useUniqueId';
 import { emptyObject } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
@@ -74,7 +74,7 @@ export interface HeadlessMenuProps {
  * @group Components
  */
 export function useMenu(props: HeadlessMenuProps = emptyObject): HeadlessMenuValue {
-  const manager = useFunction(createMenuManager);
+  const manager = useFunctionOnce(createMenuManager);
 
   manager.props = props;
 
@@ -158,7 +158,7 @@ export function useMenuItem(
   const fallbackId = useUniqueId();
   const id = props.id || fallbackId;
   const [isSelected, setSelected] = useState(selection.has(id));
-  const manager = useFunction(createMenuItemManager, setSelected);
+  const manager = useFunctionOnce(createMenuItemManager, setSelected);
 
   manager.id = id;
   manager.ref = ref;
@@ -170,7 +170,7 @@ export function useMenuItem(
   const pressableValue = usePressable(ref, manager.pressableProps);
   const { value } = manager;
 
-  value.menuItemProps = useFunction(mergeProps, pressableValue.pressableProps, manager.menuItemProps);
+  value.menuItemProps = useFunctionOnce(mergeProps, pressableValue.pressableProps, manager.menuItemProps);
   value.menuItemProps.role = 'menuitem';
   value.menuItemProps['aria-disabled'] = props.isDisabled || undefined;
   value.menuItemProps.tabIndex = props.isDisabled ? undefined : -1;

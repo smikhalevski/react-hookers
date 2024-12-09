@@ -1,5 +1,5 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray } from './utils/lang';
 
 /**
@@ -28,7 +28,7 @@ import { emptyArray } from './utils/lang';
  * @group Other
  */
 export function useAnimationFrame(): [start: (cb: FrameRequestCallback) => void, stop: () => void] {
-  const manager = useFunction(createAnimationFrameManager);
+  const manager = useFunctionOnce(createAnimationFrameManager);
 
   useLayoutEffect(manager.onMounted, emptyArray);
 

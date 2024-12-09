@@ -1,7 +1,7 @@
 import { InputHTMLAttributes, LabelHTMLAttributes, RefObject } from 'react';
 import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { useUniqueId } from '../useUniqueId';
 import { DATA_AUTOFOCUS } from '../utils/dom';
 import { mergeProps } from '../utils/mergeProps';
@@ -96,7 +96,7 @@ export function useCheckbox(ref: RefObject<HTMLInputElement>, props: HeadlessChe
   const focusValue = useFocus(ref, props);
   const fallbackId = useUniqueId();
 
-  const manager = useFunction(createCheckboxManager, hoverValue, focusValue);
+  const manager = useFunctionOnce(createCheckboxManager, hoverValue, focusValue);
   const { value } = manager;
 
   value.inputProps.id = value.labelProps.htmlFor = props.id || fallbackId;

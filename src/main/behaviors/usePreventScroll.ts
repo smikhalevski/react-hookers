@@ -1,5 +1,5 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { emptyObject, noop } from '../utils/lang';
 
 /**
@@ -23,7 +23,7 @@ export interface PreventScrollProps {
  * @group Behaviors
  */
 export function usePreventScroll(props: PreventScrollProps = emptyObject): void {
-  const manager = useFunction(createPreventScrollManager);
+  const manager = useFunctionOnce(createPreventScrollManager);
 
   manager.props = props;
 

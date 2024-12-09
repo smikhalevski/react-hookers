@@ -1,5 +1,5 @@
 import { DOMAttributes, KeyboardEventHandler } from 'react';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 
 /**
  * A value returned from the {@link useKeyboard} hook.
@@ -47,7 +47,7 @@ export interface KeyboardProps {
  * @group Behaviors
  */
 export function useKeyboard(props: KeyboardProps): KeyboardValue {
-  const manager = useFunction(createKeyboardManager);
+  const manager = useFunctionOnce(createKeyboardManager);
 
   manager.props = props;
 

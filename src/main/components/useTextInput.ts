@@ -1,7 +1,7 @@
 import { HTMLInputAutoCompleteAttribute, InputHTMLAttributes, LabelHTMLAttributes, RefObject } from 'react';
 import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { useUniqueId } from '../useUniqueId';
 import { DATA_AUTOFOCUS } from '../utils/dom';
 import { mergeProps } from '../utils/mergeProps';
@@ -112,7 +112,7 @@ export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTe
   const focusValue = useFocus(ref, props);
   const fallbackId = useUniqueId();
 
-  const manager = useFunction(createTextInputManager, hoverValue, focusValue);
+  const manager = useFunctionOnce(createTextInputManager, hoverValue, focusValue);
   const { value } = manager;
 
   value.inputProps.id = value.labelProps.htmlFor = props.id || fallbackId;

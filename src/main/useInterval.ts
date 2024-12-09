@@ -1,6 +1,6 @@
 import { EffectCallback, useLayoutEffect } from 'react';
 import type { Schedule } from './types';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray, noop } from './utils/lang';
 
 /**
@@ -33,7 +33,7 @@ import { emptyArray, noop } from './utils/lang';
  * @group Other
  */
 export function useInterval(): [schedule: Schedule, cancel: () => void] {
-  const manager = useFunction(createIntervalManager);
+  const manager = useFunctionOnce(createIntervalManager);
 
   useLayoutEffect(manager.onMounted, emptyArray);
 

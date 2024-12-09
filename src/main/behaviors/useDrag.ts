@@ -1,6 +1,6 @@
 import { EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
 import { DOMEventHandler } from '../types';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { emptyArray, noop } from '../utils/lang';
 
 /**
@@ -111,7 +111,7 @@ export interface DragProps {
 export function useDrag(ref: RefObject<HTMLElement>, props: DragProps): DragValue {
   const [isDragged, setDragged] = useState(false);
 
-  const manager = useFunction(createDragManager, setDragged);
+  const manager = useFunctionOnce(createDragManager, setDragged);
 
   manager.ref = ref;
   manager.props = props;

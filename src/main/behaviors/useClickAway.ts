@@ -1,5 +1,5 @@
 import { DOMAttributes, EffectCallback, PointerEventHandler, useLayoutEffect } from 'react';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { emptyArray } from '../utils/lang';
 
 /**
@@ -43,7 +43,7 @@ export interface ClickAwayProps {
  * @group Behaviors
  */
 export function useClickAway(props: ClickAwayProps): ClickAwayValue {
-  const manager = useFunction(createClickAwayManager);
+  const manager = useFunctionOnce(createClickAwayManager);
 
   manager.props = props;
 
@@ -59,7 +59,7 @@ interface ClickAwayManager {
   onMounted: EffectCallback;
 }
 
-function createClickAwayManager() {
+function createClickAwayManager(): ClickAwayManager {
   const handleMounted: EffectCallback = () => registerClickAwayManager(manager);
 
   const handlePointerDown: PointerEventHandler = event => {

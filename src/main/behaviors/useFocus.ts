@@ -1,9 +1,9 @@
 import { PubSub } from 'parallel-universe';
 import React, { DOMAttributes, EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
-import { focusRing } from './focusRing';
-import { useFunction } from '../useFunction';
-import { emptyArray, emptyObject } from '../utils/lang';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { getFocusedElement, isFocusable, isPortalEvent } from '../utils/dom';
+import { emptyArray, emptyObject } from '../utils/lang';
+import { focusRing } from './focusRing';
 
 const REQUEST_FOCUS_EVENT = 'requestfocus';
 
@@ -132,7 +132,7 @@ export interface FocusProps {
 export function useFocus(ref: RefObject<Element>, props: FocusProps = emptyObject): FocusValue {
   const [status, setStatus] = useState(STATUS_BLURRED);
 
-  const manager = useFunction(createFocusManager, setStatus);
+  const manager = useFunctionOnce(createFocusManager, setStatus);
 
   manager.ref = ref;
   manager.props = props;

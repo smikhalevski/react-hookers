@@ -7,12 +7,12 @@ import React, {
   useLayoutEffect,
   useState,
 } from 'react';
-import { focusRing } from './focusRing';
 import { DOMEventHandler } from '../types';
-import { requestFocus } from './useFocus';
-import { useFunction } from '../useFunction';
-import { emptyArray, emptyObject, noop } from '../utils/lang';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { isPortalEvent } from '../utils/dom';
+import { emptyArray, emptyObject, noop } from '../utils/lang';
+import { focusRing } from './focusRing';
+import { requestFocus } from './useFocus';
 
 const cancelPressPubSub = new PubSub();
 
@@ -91,7 +91,7 @@ export interface PressProps {
 export function usePress(props: PressProps = emptyObject): PressValue {
   const [isPressed, setPressed] = useState(false);
 
-  const manager = useFunction(createPressManager, setPressed);
+  const manager = useFunctionOnce(createPressManager, setPressed);
 
   manager.props = props;
   manager.value.isPressed = isPressed;

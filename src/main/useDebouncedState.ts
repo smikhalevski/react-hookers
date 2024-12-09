@@ -1,5 +1,5 @@
 import { Dispatch, EffectCallback, SetStateAction, useEffect, useState } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray } from './utils/lang';
 
 /**
@@ -37,7 +37,7 @@ export function useDebouncedState<T>(ms: number, initialValue?: T | (() => T)) {
   const [value, setValue] = useState(initialValue);
   const [nextValue, setNextValue] = useState(() => value);
 
-  const manager = useFunction(createDebouncedStateManager, setValue, setNextValue);
+  const manager = useFunctionOnce(createDebouncedStateManager, setValue, setNextValue);
 
   manager.ms = ms;
 

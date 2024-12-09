@@ -1,6 +1,6 @@
 import { DOMAttributes, RefObject } from 'react';
 import { DragInfo, DragProps, useDrag } from '../behaviors/useDrag';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { noop } from '../utils/lang';
 
 /**
@@ -69,7 +69,7 @@ export interface HeadlessTrackHandleProps extends DragProps {
  * @group Components
  */
 export function useTrackHandle(ref: RefObject<HTMLElement>, props: HeadlessTrackHandleProps): HeadlessTrackHandleValue {
-  const manager = useFunction(createTrackHandleManager);
+  const manager = useFunctionOnce(createTrackHandleManager);
 
   manager.props = props;
   manager.dragProps.isDisabled = props.isDisabled;

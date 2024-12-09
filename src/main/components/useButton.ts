@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, RefObject } from 'react';
-import { useFunction } from '../useFunction';
 import { PressableProps, usePressable } from '../behaviors/usePressable';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { DATA_AUTOFOCUS } from '../utils/dom';
 
 /**
@@ -63,7 +63,7 @@ export interface HeadlessButtonProps extends PressableProps {
  */
 export function useButton(ref: RefObject<HTMLButtonElement>, props: HeadlessButtonProps): HeadlessButtonValue {
   const pressableValue = usePressable(ref, props);
-  const value = useFunction(createButtonValue);
+  const value = useFunctionOnce(createButtonValue);
 
   value.buttonProps = pressableValue.pressableProps;
   value.buttonProps.type = 'button';

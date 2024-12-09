@@ -1,6 +1,6 @@
 import { EffectCallback, RefObject, useEffect } from 'react';
 import { FocusableElement } from '../types';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { getFocusedElement, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
 import { die, emptyArray, emptyObject } from '../utils/lang';
 import { focusRing } from './focusRing';
@@ -56,7 +56,7 @@ export interface FocusScopeProps extends UnorderedFocusOptions {
  * @group Behaviors
  */
 export function useFocusScope(ref: RefObject<Element>, props: FocusScopeProps = emptyObject): FocusControls {
-  const manager = useFunction(createFocusScopeManager);
+  const manager = useFunctionOnce(createFocusScopeManager);
 
   manager.parentFocusControls = useFocusControls();
   manager.ref = ref;

@@ -1,5 +1,5 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { getViewportRect } from '../utils/rects';
 
 /**
@@ -249,7 +249,7 @@ export interface AnchorPositionProps {
  * @group Behaviors
  */
 export function useAnchorPosition(props: AnchorPositionProps): void {
-  const manager = useFunction(createAnchorPositionManager);
+  const manager = useFunctionOnce(createAnchorPositionManager);
 
   manager.props = props;
 

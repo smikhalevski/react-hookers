@@ -5,6 +5,7 @@ import { HoverProps, useHover } from '../behaviors/useHover';
 import { DOMEventHandler } from '../types';
 import { useCopyObject } from '../useCopyObject';
 import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { useUniqueId } from '../useUniqueId';
 import { emptyArray } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
@@ -83,7 +84,7 @@ export interface HeadlessTooltipProps {
  * @group Components
  */
 export function useTooltip(ref: RefObject<Element>, props: HeadlessTooltipProps): HeadlessTooltipValue {
-  const manager = useFunction(createTooltipManager);
+  const manager = useFunctionOnce(createTooltipManager);
 
   const hoverValue = useHover(manager.anchorInteractionProps);
   const focusValue = useFocus(ref, manager.anchorInteractionProps);

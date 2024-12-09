@@ -1,6 +1,6 @@
 import { Blocker } from 'parallel-universe';
 import { EffectCallback, useLayoutEffect, useState } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray, noop } from './utils/lang';
 
 /**
@@ -31,7 +31,7 @@ export function useBlocker<T>(): [isBlocked: boolean, block: () => Promise<T>, u
 
 export function useBlocker() {
   const [isBlocked, setBlocked] = useState(false);
-  const manager = useFunction(createBlockerManager, setBlocked);
+  const manager = useFunctionOnce(createBlockerManager, setBlocked);
 
   useLayoutEffect(manager.onMounted, emptyArray);
 

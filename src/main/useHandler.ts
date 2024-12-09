@@ -1,5 +1,5 @@
 import { type EffectCallback, useLayoutEffect } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray } from './utils/lang';
 
 /**
@@ -14,7 +14,7 @@ import { emptyArray } from './utils/lang';
 export function useHandler<A extends any[], R>(
   fn: ((...args: A) => R) | null | undefined
 ): (...args: A) => R | undefined {
-  const manager = useFunction(createHandlerManager<A, R>);
+  const manager = useFunctionOnce(createHandlerManager<A, R>);
 
   manager.fn = fn;
 

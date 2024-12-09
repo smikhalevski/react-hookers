@@ -1,6 +1,6 @@
 import { Lock } from 'parallel-universe';
 import { EffectCallback, useLayoutEffect, useState } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray, noop } from './utils/lang';
 
 /**
@@ -31,14 +31,19 @@ import { emptyArray, noop } from './utils/lang';
  */
 export function useLock(): [isLocked: boolean, acquire: () => Promise<() => void>] {
   const [isLocked, setLocked] = useState(false);
-  const manager = useFunction(createLockManager, setLocked);
+  const manager = useFunctionOnce(createLockManager, setLocked);
 
   useLayoutEffect(manager.onMounted, emptyArray);
 
   return [isLocked, manager.acquire];
 }
 
-function createLockManager(setLocked: (isLocked: boolean) => void) {
+interface LockManager {
+  acquire: () => Promise<() => void>;
+  onMounted: EffectCallback;
+}
+
+function createLockManager(setLocked: (isLocked: boolean) => void): LockManager {
   let isMounted = false;
 
   const lock = new Lock();

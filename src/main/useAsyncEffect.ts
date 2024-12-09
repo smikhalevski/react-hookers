@@ -1,5 +1,5 @@
 import { DependencyList, EffectCallback, useEffect } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 
 /**
  * The callback provided to {@link useAsyncEffect}.
@@ -36,7 +36,7 @@ export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => vo
  * @group Other
  */
 export function useAsyncEffect(fn: AsyncEffectCallback, deps?: DependencyList): void {
-  const manager = useFunction(createAsyncEffectManager);
+  const manager = useFunctionOnce(createAsyncEffectManager);
 
   manager.fn = fn;
 

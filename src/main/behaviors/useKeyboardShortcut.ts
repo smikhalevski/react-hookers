@@ -1,5 +1,5 @@
 import { EffectCallback, RefObject, useEffect } from 'react';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { Platform, usePlatform } from '../usePlatform';
 import { emptyArray } from '../utils/lang';
 
@@ -49,7 +49,7 @@ export interface KeyboardShortcutProps {
  * @group Behaviors
  */
 export function useKeyboardShortcut(props: KeyboardShortcutProps): void {
-  const manager = useFunction(createKeyboardShortcutManager);
+  const manager = useFunctionOnce(createKeyboardShortcutManager);
 
   manager.platform = usePlatform();
   manager.props = props;

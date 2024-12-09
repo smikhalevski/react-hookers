@@ -9,6 +9,8 @@ import { isEqual } from './utils/lang';
  * @returns A function return value, or a cached return value if {@link args} didn't change.
  * @template A Function arguments.
  * @template R A function return value.
+ * @see {@link useFunctionOnce}
+ * @see {@link useFunctionEffect}
  * @group Other
  */
 export function useFunction<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;

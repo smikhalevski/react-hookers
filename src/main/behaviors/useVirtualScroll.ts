@@ -1,6 +1,6 @@
 import { EffectCallback, RefObject, useLayoutEffect, useReducer } from 'react';
 import type { DOMEventHandler } from '../types';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 
 /**
  * An item rendered by the {@link useVirtualScroll} hook.
@@ -204,7 +204,7 @@ export interface VirtualScrollProps {
  */
 export function useVirtualScroll(props: VirtualScrollProps): VirtualScrollValue {
   const [rerenderCount, rerender] = useReducer(reduceRerenderCount, 0);
-  const manager = useFunction(createVirtualScrollManager, rerender);
+  const manager = useFunctionOnce(createVirtualScrollManager, rerender);
 
   manager.rerenderCount = rerenderCount;
   manager.props = props;

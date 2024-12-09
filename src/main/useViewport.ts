@@ -1,5 +1,5 @@
 import { EffectCallback, useEffect } from 'react';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray } from './utils/lang';
 import { getViewportRect } from './utils/rects';
 
@@ -23,7 +23,7 @@ export interface ViewportProps {
  * @group Other
  */
 export function useViewport(props: ViewportProps): void {
-  const manager = useFunction(createViewportManager);
+  const manager = useFunctionOnce(createViewportManager);
 
   manager.props = props;
 

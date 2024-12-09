@@ -1,6 +1,6 @@
 import { EffectCallback, useLayoutEffect } from 'react';
 import type { Schedule } from './types';
-import { useFunction } from './useFunction';
+import { useFunctionOnce } from './useFunctionOnce';
 import { emptyArray } from './utils/lang';
 
 /**
@@ -30,7 +30,7 @@ import { emptyArray } from './utils/lang';
  * @group Other
  */
 export function useTimeout(): [schedule: Schedule, cancel: () => void] {
-  const manager = useFunction(createTimeoutManager);
+  const manager = useFunctionOnce(createTimeoutManager);
 
   useLayoutEffect(manager.onMounted, emptyArray);
 

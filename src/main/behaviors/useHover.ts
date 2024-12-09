@@ -1,6 +1,6 @@
 import { PubSub } from 'parallel-universe';
 import { DOMAttributes, EffectCallback, PointerEventHandler, useLayoutEffect, useState } from 'react';
-import { useFunction } from '../useFunction';
+import { useFunctionOnce } from '../useFunctionOnce';
 import { isPortalEvent } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
 
@@ -76,7 +76,7 @@ export interface HoverProps {
 export function useHover(props: HoverProps = emptyObject): HoverValue {
   const [isHovered, setHovered] = useState(false);
 
-  const manager = useFunction(createHoverManager, setHovered);
+  const manager = useFunctionOnce(createHoverManager, setHovered);
 
   manager.props = props;
   manager.value.isHovered = isHovered;

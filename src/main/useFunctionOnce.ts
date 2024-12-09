@@ -1,6 +1,18 @@
 import { useRef } from 'react';
 import { NEVER } from './utils/lang';
 
+/**
+ * Calls a {@link fn function} during initial render and caches its result until component is unmounted.
+ *
+ * @param fn A function to call.
+ * @param args Function arguments.
+ * @returns A function return value, or a cached return value.
+ * @template A Function arguments.
+ * @template R A function return value.
+ * @see {@link useFunction}
+ * @see {@link useFunctionEffect}
+ * @group Other
+ */
 export function useFunctionOnce<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;
 
 export function useFunctionOnce(fn: Function) {

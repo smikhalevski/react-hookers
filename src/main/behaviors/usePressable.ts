@@ -1,10 +1,10 @@
 import { DOMAttributes, RefObject } from 'react';
+import { useFunctionOnce } from '../useFunctionOnce';
+import { emptyObject } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
 import { FocusProps, FocusValue, useFocus } from './useFocus';
-import { useFunction } from '../useFunction';
 import { HoverProps, HoverValue, useHover } from './useHover';
 import { PressProps, PressValue, usePress } from './usePress';
-import { emptyObject } from '../utils/lang';
 
 /**
  * A value returned from the {@link usePressable} hook.
@@ -62,7 +62,7 @@ export function usePressable(ref: RefObject<Element>, props: PressableProps = em
   const hoverValue = useHover(props);
   const pressValue = usePress(props);
   const focusValue = useFocus(ref, props);
-  const value = useFunction(createPressableValue, hoverValue, pressValue, focusValue);
+  const value = useFunctionOnce(createPressableValue, hoverValue, pressValue, focusValue);
 
   value.isHovered = hoverValue.isHovered;
   value.isPressed = pressValue.isPressed;
