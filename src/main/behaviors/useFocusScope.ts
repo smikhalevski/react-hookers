@@ -1,7 +1,7 @@
 import { EffectCallback, RefObject, useEffect } from 'react';
 import { FocusableElement } from '../types';
 import { useFunctionOnce } from '../useFunctionOnce';
-import { getFocusedElement, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
+import { getFocusedElement, isAutoFocusable, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
 import { die, emptyArray, emptyObject } from '../utils/lang';
 import { focusRing } from './focusRing';
 import { cancelFocus, requestFocus } from './useFocus';
@@ -77,12 +77,22 @@ interface FocusScopeManager {
 
 function createFocusScopeManager(): FocusScopeManager {
   const handleMounted: EffectCallback = () => {
-    const { isAutofocused = focusRing.isVisible, isFocusTrap } = manager.props;
+    const { isAutofocused = focusRing.isVisible, isFocusTrap, approveFocusCandidate } = manager.props;
     const lastFocusedElement = getFocusedElement();
     const unregister = registerFocusScopeManager(manager);
 
     if (isAutofocused) {
-      focusControls.focusFirst(manager.props);
+      // Focus the first approved auto-focusable element
+      focusControls.focusFirst({
+        ...manager.props,
+
+        approveFocusCandidate: element =>
+          isAutoFocusable(element) && (approveFocusCandidate === undefined || approveFocusCandidate(element)),
+      }) ||
+        // Focus the first focusable element
+        focusControls.focusFirst(manager.props) ||
+        // Hide focus
+        (isFocusTrap && cancelFocus());
     } else if (isFocusTrap) {
       cancelFocus();
     }

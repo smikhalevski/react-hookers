@@ -121,7 +121,7 @@ export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTe
   value.inputProps.autoComplete = props.isTextArea ? undefined : props.autoComplete;
   value.inputProps['aria-disabled'] = value.inputProps.disabled = props.isDisabled || undefined;
   value.inputProps['aria-invalid'] = props.isInvalid || undefined;
-  value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused;
+  value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused || undefined;
   value.isHovered = hoverValue.isHovered;
   value.isFocused = focusValue.isFocused;
   value.isFocusVisible = focusValue.isFocusVisible;

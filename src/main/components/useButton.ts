@@ -69,7 +69,7 @@ export function useButton(ref: RefObject<HTMLButtonElement>, props: HeadlessButt
   value.buttonProps.type = 'button';
   value.buttonProps['aria-disabled'] = value.buttonProps.disabled = props.isDisabled || undefined;
   value.buttonProps.tabIndex = props.isDisabled ? undefined : 0;
-  value.buttonProps[DATA_AUTOFOCUS] = props.isAutofocused;
+  value.buttonProps[DATA_AUTOFOCUS] = props.isAutofocused || undefined;
   value.isPressed = pressableValue.isPressed;
   value.isHovered = pressableValue.isHovered;
   value.isFocused = pressableValue.isFocused;

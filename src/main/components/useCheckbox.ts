@@ -103,7 +103,7 @@ export function useCheckbox(ref: RefObject<HTMLInputElement>, props: HeadlessChe
   value.inputProps.checked = props.isChecked || false;
   value.inputProps['aria-disabled'] = value.inputProps.disabled = props.isDisabled || undefined;
   value.inputProps['aria-invalid'] = props.isInvalid || undefined;
-  value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused;
+  value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused || undefined;
   value.isHovered = hoverValue.isHovered;
   value.isFocused = focusValue.isFocused;
   value.isFocusVisible = focusValue.isFocusVisible;
