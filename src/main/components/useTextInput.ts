@@ -107,7 +107,7 @@ export interface HeadlessTextInputProps extends HoverProps, FocusProps {
  * @returns An object which identity never changes between renders.
  * @group Components
  */
-export function useTextInput(ref: RefObject<HTMLInputElement>, props: HeadlessTextInputProps): HeadlessTextInputValue {
+export function useTextInput(ref: RefObject<HTMLElement>, props: HeadlessTextInputProps): HeadlessTextInputValue {
   const hoverValue = useHover(props);
   const focusValue = useFocus(ref, props);
   const fallbackId = useUniqueId();

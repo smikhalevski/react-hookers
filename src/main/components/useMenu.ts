@@ -1,5 +1,6 @@
 import { EffectCallback, HTMLAttributes, KeyboardEventHandler, RefObject, useEffect, useState } from 'react';
 import { focusRing } from '../behaviors/focusRing';
+import { useActionHandler } from '../behaviors/useActionHandler';
 import { useCloseHandler } from '../behaviors/useCloseHandler';
 import { requestFocus } from '../behaviors/useFocus';
 import { PressableProps, usePressable } from '../behaviors/usePressable';
@@ -41,20 +42,20 @@ export interface HeadlessMenuProps {
  *
  * @example
  * function Menu(props) {
+ *   const selection = useFunctionOnce(createSelection);
  *   const { menuProps } = useMenu(props);
- *   const selection = useFunction(createSelection, 1);
  *
  *   return (
- *     <ul {...menuProps}>
- *       <SelectionProvider value={selection}>{props.children}</SelectionProvider>
- *     </ul>
+ *     <SelectionProvider value={selection}>
+ *       <ul {...menuProps}>{props.children}</ul>
+ *     </SelectionProvider>
  *   );
  * }
  *
  * function MenuItem(props) {
+ *   const selection = useSelection();
  *   const menuItemRef = useRef(null);
  *   const { menuItemProps } = useMenuItem(menuItemRef, selection, props);
- *   const selection = useSelection();
  *
  *   return (
  *     <li
@@ -123,22 +124,78 @@ function createMenuManager(): MenuManager {
  * @group Components
  */
 export interface HeadlessMenuItemValue {
+  /**
+   * Props of an element that must have a menu item behaviour.
+   *
+   * An object which identity never changes between renders.
+   */
   menuItemProps: HTMLAttributes<HTMLElement>;
-  isActive: boolean;
+
+  /**
+   * `true` if a menu item is currently focused.
+   */
+  isFocused: boolean;
+
+  /**
+   * `true` if a menu item is currently pressed.
+   */
   isPressed: boolean;
-  isSelected: boolean;
+
+  /**
+   * `true` if a menu item is currently active.
+   */
+  isActive: boolean;
 }
 
 /**
  * Props of the {@link useMenuItem} hook.
  *
+ * @template T A value that is passed to {@link onAction} handler.
  * @group Components
  */
-export interface HeadlessMenuItemProps {
-  id?: unknown;
+export interface HeadlessMenuItemProps<T> {
+  /**
+   * An ID that uniquely identifies a menu item.
+   */
+  id?: string;
+
+  /**
+   * A value that is passed to {@link onAction} handler.
+   */
+  value?: T;
+
+  /**
+   * If `true` then menu item is disabled.
+   *
+   * @default false
+   */
   isDisabled?: boolean;
+
+  /**
+   * If `true` then a menu item is {@link HeadlessMenuItemValue.isActive activated} if a user presses
+   * <kbd>ArrowRight</kbd> or <kbd>ArrowLeft</kbd> to expand or collapse the submenu.
+   *
+   * An {@link HeadlessMenuItemValue.isActive active} menu item with a submenu is considered expanded.
+   *
+   * {@link onAction} is ignored for menu items that have a submenu.
+   *
+   * @default false
+   */
   hasSubmenu?: boolean;
-  onAction?: () => void;
+
+  /**
+   * A delay in milliseconds after which a menu item is activated.
+   *
+   * @default 200
+   */
+  activateDelay?: number;
+
+  /**
+   * A handler that is called when user presses a menu item.
+   *
+   * @see {@link hasSubmenu}
+   */
+  onAction?: (value: T) => void;
 }
 
 /**
@@ -146,26 +203,28 @@ export interface HeadlessMenuItemProps {
  *
  * @param ref A reference to a menu item element. This must be the same element to which
  * {@link HeadlessMenuItemValue.menuItemProps} are attached.
- * @param selection A selection which is updated when a menu item becomes selected by hover or click.
+ * @param selection A selection which is updated when a menu item becomes active by hover or press. All items in a menu
+ * must share the same selection. Only one item can be active in the menu at a time.
  * @param props Menu item props.
  * @group Components
  */
-export function useMenuItem(
+export function useMenuItem<T>(
   ref: RefObject<FocusableElement>,
   selection: Selection,
-  props: HeadlessMenuItemProps = emptyObject
+  props: HeadlessMenuItemProps<T> = emptyObject
 ): HeadlessMenuItemValue {
   const fallbackId = useUniqueId();
   const id = props.id || fallbackId;
-  const [isSelected, setSelected] = useState(selection.has(id));
-  const manager = useFunctionOnce(createMenuItemManager, setSelected);
+  const [isActive, setActive] = useState(selection.has(id));
+  const manager = useFunctionOnce(createMenuItemManager, setActive);
 
   manager.id = id;
   manager.ref = ref;
   manager.selection = selection;
   manager.props = props;
   manager.pressableProps.isDisabled = props.isDisabled;
-  manager.onClose = useCloseHandler();
+  manager.handleClose = useCloseHandler();
+  manager.handleAction = useActionHandler();
 
   const pressableValue = usePressable(ref, manager.pressableProps);
   const { value } = manager;
@@ -175,15 +234,15 @@ export function useMenuItem(
   value.menuItemProps['aria-disabled'] = props.isDisabled || undefined;
   value.menuItemProps.tabIndex = props.isDisabled ? undefined : -1;
   value.isPressed = pressableValue.isPressed;
-  value.isActive = pressableValue.isFocused;
-  value.isSelected = isSelected;
+  value.isFocused = pressableValue.isFocused;
+  value.isActive = isActive;
 
   useEffect(manager.onSelectionUpdated, [selection, id]);
 
   return value;
 }
 
-const SELECT_DELAY = 200;
+const ACTIVATE_DELAY = 200;
 
 interface MenuItemManager {
   pressableProps: PressableProps;
@@ -191,22 +250,25 @@ interface MenuItemManager {
   id: unknown;
   ref: RefObject<FocusableElement>;
   selection: Selection;
-  props: HeadlessMenuItemProps;
+  props: HeadlessMenuItemProps<any>;
   value: HeadlessMenuItemValue;
   onSelectionUpdated: EffectCallback;
-  onClose?: () => void;
+  handleClose?: () => void;
+  handleAction?: (value: unknown) => void;
 }
 
-function createMenuItemManager(setSelected: (isSelected: boolean) => void): MenuItemManager {
+function createMenuItemManager(setActive: (isActive: boolean) => void): MenuItemManager {
   let timer: NodeJS.Timeout;
 
-  const select = (): void => {
+  const activate = (): void => {
     clearTimeout(timer);
 
+    manager.selection.clear();
     manager.selection.add(manager.id);
   };
 
   const handleHoverChange = (isHovered: boolean): void => {
+    const { activateDelay = ACTIVATE_DELAY } = manager.props;
     const element = manager.ref.current;
 
     if (!isHovered) {
@@ -215,13 +277,16 @@ function createMenuItemManager(setSelected: (isSelected: boolean) => void): Menu
     }
 
     focusRing.conceal();
-    requestFocus(element, { isScrollPrevented: true });
 
-    clearTimeout(timer);
-    timer = setTimeout(select, SELECT_DELAY);
+    if (requestFocus(element, { isScrollPrevented: true })) {
+      clearTimeout(timer);
+      timer = setTimeout(activate, activateDelay);
+    }
   };
 
   const handleFocusChange = (isFocused: boolean): void => {
+    const { activateDelay = ACTIVATE_DELAY } = manager.props;
+
     clearTimeout(timer);
 
     if (!isFocused || focusRing.isVisible) {
@@ -229,21 +294,23 @@ function createMenuItemManager(setSelected: (isSelected: boolean) => void): Menu
       return;
     }
 
-    timer = setTimeout(select, SELECT_DELAY);
+    timer = setTimeout(activate, activateDelay);
   };
 
   const handlePress = (): void => {
-    const { onClose } = manager;
-    const { hasSubmenu, onAction } = manager.props;
+    const { handleAction, handleClose } = manager;
+    const { value, hasSubmenu, onAction } = manager.props;
 
-    select();
+    activate();
 
     if (hasSubmenu) {
       return;
     }
 
-    onAction?.();
-    onClose?.();
+    onAction?.(value);
+
+    handleAction?.(value);
+    handleClose?.();
   };
 
   const handleArrowKeyDown: KeyboardEventHandler = event => {
@@ -259,11 +326,11 @@ function createMenuItemManager(setSelected: (isSelected: boolean) => void): Menu
     }
 
     focusRing.reveal();
-    select();
+    activate();
   };
 
   const handleSelectionUpdated: EffectCallback = () =>
-    manager.selection.subscribe(() => setSelected(manager.selection.has(manager.id)));
+    manager.selection.subscribe(() => setActive(manager.selection.has(manager.id)));
 
   const manager: MenuItemManager = {
     pressableProps: {
@@ -280,12 +347,12 @@ function createMenuItemManager(setSelected: (isSelected: boolean) => void): Menu
     props: undefined!,
     value: {
       menuItemProps: undefined!,
-      isActive: false,
+      isFocused: false,
       isPressed: false,
-      isSelected: false,
+      isActive: false,
     },
     onSelectionUpdated: handleSelectionUpdated,
-    onClose: undefined,
+    handleClose: undefined,
   };
 
   return manager;
