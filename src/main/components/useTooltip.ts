@@ -70,7 +70,7 @@ export interface HeadlessTooltipProps {
   /**
    * A handler that is called when a tooltip opened state is changed.
    *
-   * @param isOpened `true` if tooltip must be visible to a user.
+   * @param isOpened `true` if a tooltip must be visible to a user.
    */
   onOpenChanged?: (isOpened: boolean) => void;
 }
