@@ -96,6 +96,7 @@ export {
 } from './createRenderContainer';
 export { createSelection, useSelection, SelectionProvider, type Selection } from './createSelection';
 export { useAnimationFrame } from './useAnimationFrame';
+export { useAnimationFrameCallback } from './useAnimationFrameCallback';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect';
 export { useBlocker } from './useBlocker';
 export { useCopyObject } from './useCopyObject';
