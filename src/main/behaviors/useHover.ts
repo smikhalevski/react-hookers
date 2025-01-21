@@ -123,6 +123,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
     if (++hoverManagerCount === 1) {
       window.addEventListener('blur', cancelHover);
+      window.addEventListener('pointerdown', handleHoverLockPointerDown, true);
+      window.addEventListener('pointerup', handleHoverLockPointerUp, true);
     }
 
     return () => {
@@ -130,6 +132,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
       if (hoverManagerCount-- === 1) {
         window.removeEventListener('blur', cancelHover);
+        window.removeEventListener('pointerdown', handleHoverLockPointerDown, true);
+        window.removeEventListener('pointerup', handleHoverLockPointerUp, true);
       }
     };
   };
@@ -159,7 +163,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
       isDisabled ||
       status !== STATUS_NOT_HOVERED ||
       event.pointerType !== 'mouse' ||
-      // event.buttons !== 0 ||
+      !(event.buttons === 0 || event.currentTarget.contains(hoverLockElement)) ||
       isPortalEvent(event)
     ) {
       return;
@@ -194,4 +198,17 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
   };
 
   return manager;
+}
+
+/**
+ * An element that exclusively captures hover events.
+ */
+let hoverLockElement: Element | null = null;
+
+function handleHoverLockPointerDown(event: PointerEvent): void {
+  hoverLockElement = event.target;
+}
+
+function handleHoverLockPointerUp(_event: PointerEvent): void {
+  hoverLockElement = null;
 }
