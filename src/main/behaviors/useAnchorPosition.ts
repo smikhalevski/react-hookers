@@ -337,8 +337,8 @@ function createAnchorPositionManager(): AnchorPositionManager {
         arrowMargin = 0,
         alignX = ALIGN_CENTER,
         alignY = ALIGN_OUTER_START,
-        minWidth,
-        minHeight,
+        minWidth = targetRect.width,
+        minHeight = targetRect.height,
       } = variants[i];
 
       // X
@@ -383,23 +383,19 @@ function createAnchorPositionManager(): AnchorPositionManager {
       actualAlignY = output.actualAlign;
       arrowOffset = arrowOffset === undefined ? output.arrowOffset : arrowOffset;
 
-      if (isPicked) {
+      if (
+        isPicked ||
+        ((minWidth !== undefined || minHeight !== undefined) &&
+          (minWidth === undefined || maxWidth >= minWidth) &&
+          (minHeight === undefined || maxHeight >= minHeight))
+      ) {
         break;
       }
 
       // Check constraints and pick a variant
-
       if (maxWidth * maxHeight > pickedVariantScore) {
         pickedVariantIndex = i;
         pickedVariantScore = maxWidth * maxHeight;
-      }
-
-      if (
-        (minWidth !== undefined || minHeight !== undefined) &&
-        (minWidth === undefined || maxWidth >= minWidth) &&
-        (minHeight === undefined || maxHeight >= minHeight)
-      ) {
-        break;
       }
 
       if (i === variants.length - 1 && i !== pickedVariantIndex) {
