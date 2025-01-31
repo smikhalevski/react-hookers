@@ -1,7 +1,7 @@
 import { PubSub } from 'parallel-universe';
 import React, { type EffectCallback, FunctionComponent, Key, ReactElement, ReactNode, useEffect } from 'react';
 import { CloseHandlerProvider } from './behaviors/useCloseHandler';
-import { useFunctionOnce } from './useFunctionOnce';
+import { useFunction } from './useFunction';
 import { useRerender } from './useRerender';
 import { die, emptyArray } from './utils/lang';
 
@@ -130,9 +130,9 @@ export function createRenderContainer(): FunctionComponent<RenderContainerProps>
  * unmounted.
  */
 export function useRenderInContainer(container: FunctionComponent): RenderInContainerCallback {
-  const manager = useFunctionOnce(createRenderInContainerManager, getRenderInContainer(container));
+  const manager = useFunction(createRenderInContainerManager, getRenderInContainer(container));
 
-  useEffect(manager.onMounted, emptyArray);
+  useEffect(manager.onMounted, [manager]);
 
   return manager.renderInContainer;
 }
