@@ -4,12 +4,52 @@ import { useActionHandler } from '../behaviors/useActionHandler';
 import { useCloseHandler } from '../behaviors/useCloseHandler';
 import { requestFocus } from '../behaviors/useFocus';
 import { PressableProps, usePressable } from '../behaviors/usePressable';
-import { Selection } from '../createSelection';
 import { FocusableElement } from '../types';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { useUniqueId } from '../useUniqueId';
 import { emptyObject } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
+import { PubSub } from 'parallel-universe';
+
+export class HeadlessMenuState {
+  registeredIds = new Set<string>();
+
+  private pubSub = new PubSub();
+
+  constructor(
+    public activeId?: string | undefined,
+    public tabbableId = activeId
+  ) {}
+
+  setActiveId(id: string | undefined): void {
+    if (this.activeId !== (this.activeId = id)) {
+      this.pubSub.publish();
+    }
+  }
+
+  setTabbableId(id: string | undefined): void {
+    if (this.tabbableId !== (this.tabbableId = id)) {
+      this.tabbableId = id;
+      this.pubSub.publish();
+    }
+  }
+
+  registerId(id: string): () => void {
+    this.registeredIds.add(id);
+
+    if (this.tabbableId === undefined) {
+      this.setTabbableId(id);
+    }
+
+    return () => {
+      this.registeredIds.delete(id);
+    };
+  }
+
+  subscribe(listener: () => void): () => void {
+    return this.pubSub.subscribe(listener);
+  }
+}
 
 /**
  * A value returned from the {@link useMenu} hook.
@@ -32,7 +72,7 @@ export interface HeadlessMenuValue {
  */
 export interface HeadlessMenuProps {
   /**
-   * A handler that is called when a user requested to close the menu.
+   * A handler that is called when a user requested to close the menu by pressing an arrow key.
    */
   onClose?: () => void;
 }
@@ -110,6 +150,7 @@ function createMenuManager(): MenuManager {
     value: {
       menuProps: {
         role: 'menu',
+        tabIndex: -1,
         onKeyDown: handleArrowKeyDown,
       },
     },
@@ -155,7 +196,7 @@ export interface HeadlessMenuItemValue {
  */
 export interface HeadlessMenuItemProps<T> {
   /**
-   * An ID that uniquely identifies a menu item.
+   * An ID that uniquely identifies a menu item. If omitted a fallback ID is dynamically created.
    */
   id?: string;
 
@@ -193,6 +234,7 @@ export interface HeadlessMenuItemProps<T> {
   /**
    * A handler that is called when user presses a menu item.
    *
+   * @see {@link ActionHandlerProvider}
    * @see {@link hasSubmenu}
    */
   onAction?: (value: T) => void;
@@ -203,24 +245,24 @@ export interface HeadlessMenuItemProps<T> {
  *
  * @param ref A reference to a menu item element. This must be the same element to which
  * {@link HeadlessMenuItemValue.menuItemProps} are attached.
- * @param selection A selection which is updated when a menu item becomes active by hover or press. All items in a menu
- * must share the same selection. Only one item can be active in the menu at a time.
+ * @param state
  * @param props Menu item props.
  * @group Components
  */
 export function useMenuItem<T>(
   ref: RefObject<FocusableElement>,
-  selection: Selection,
+  state: HeadlessMenuState,
   props: HeadlessMenuItemProps<T> = emptyObject
 ): HeadlessMenuItemValue {
   const fallbackId = useUniqueId();
   const id = props.id || fallbackId;
-  const [isActive, setActive] = useState(selection.has(id));
-  const manager = useFunctionOnce(createMenuItemManager, setActive);
+  const [isActive, setActive] = useState(state.activeId === id);
+  const [isTabbable, setTabbable] = useState(state.tabbableId === id);
+  const manager = useFunctionOnce(createMenuItemManager, setActive, setTabbable);
 
   manager.id = id;
   manager.ref = ref;
-  manager.selection = selection;
+  manager.state = state;
   manager.props = props;
   manager.pressableProps.isDisabled = props.isDisabled;
   manager.handleClose = useCloseHandler();
@@ -232,12 +274,12 @@ export function useMenuItem<T>(
   value.menuItemProps = useFunctionOnce(mergeProps, pressableValue.pressableProps, manager.menuItemProps);
   value.menuItemProps.role = 'menuitem';
   value.menuItemProps['aria-disabled'] = props.isDisabled || undefined;
-  value.menuItemProps.tabIndex = props.isDisabled ? undefined : -1;
+  value.menuItemProps.tabIndex = props.isDisabled ? undefined : isTabbable ? 0 : -1;
   value.isPressed = pressableValue.isPressed;
   value.isFocused = pressableValue.isFocused;
   value.isActive = isActive;
 
-  useEffect(manager.onSelectionUpdated, [selection, id]);
+  useEffect(manager.onStateUpdated, [state, id]);
 
   return value;
 }
@@ -247,31 +289,35 @@ const ACTIVATE_DELAY = 200;
 interface MenuItemManager {
   pressableProps: PressableProps;
   menuItemProps: HTMLAttributes<HTMLElement>;
-  id: unknown;
+  id: string;
   ref: RefObject<FocusableElement>;
-  selection: Selection;
+  state: HeadlessMenuState;
   props: HeadlessMenuItemProps<any>;
   value: HeadlessMenuItemValue;
-  onSelectionUpdated: EffectCallback;
+  onStateUpdated: EffectCallback;
   handleClose?: () => void;
   handleAction?: (value: unknown) => void;
 }
 
-function createMenuItemManager(setActive: (isActive: boolean) => void): MenuItemManager {
+function createMenuItemManager(
+  setActive: (isActive: boolean) => void,
+  setTabbable: (isTabbable: boolean) => void
+): MenuItemManager {
   let timer: NodeJS.Timeout;
 
   const activate = (): void => {
     clearTimeout(timer);
 
-    manager.selection.clear();
-    manager.selection.add(manager.id);
+    manager.state.setActiveId(manager.id);
   };
 
   const handleHoverChange = (isHovered: boolean): void => {
     const { activateDelay = ACTIVATE_DELAY } = manager.props;
     const element = manager.ref.current;
 
-    if (!isHovered) {
+    if (isHovered) {
+      manager.state.setTabbableId(manager.id);
+    } else {
       manager.ref.current?.blur();
       return;
     }
@@ -288,6 +334,10 @@ function createMenuItemManager(setActive: (isActive: boolean) => void): MenuItem
     const { activateDelay = ACTIVATE_DELAY } = manager.props;
 
     clearTimeout(timer);
+
+    if (isFocused) {
+      manager.state.setTabbableId(manager.id);
+    }
 
     if (!isFocused || focusRing.isVisible) {
       // Don't select an item when focused by keyboard
@@ -329,8 +379,19 @@ function createMenuItemManager(setActive: (isActive: boolean) => void): MenuItem
     activate();
   };
 
-  const handleSelectionUpdated: EffectCallback = () =>
-    manager.selection.subscribe(() => setActive(manager.selection.has(manager.id)));
+  const handleStateUpdated: EffectCallback = () => {
+    const unsubscribe = manager.state.subscribe(() => {
+      setActive(manager.state.activeId === manager.id);
+      setTabbable(manager.state.tabbableId === manager.id);
+    });
+
+    const unregister = manager.state.registerId(manager.id);
+
+    return () => {
+      unsubscribe();
+      unregister();
+    };
+  };
 
   const manager: MenuItemManager = {
     pressableProps: {
@@ -343,7 +404,7 @@ function createMenuItemManager(setActive: (isActive: boolean) => void): MenuItem
     },
     id: undefined!,
     ref: undefined!,
-    selection: undefined!,
+    state: undefined!,
     props: undefined!,
     value: {
       menuItemProps: undefined!,
@@ -351,7 +412,7 @@ function createMenuItemManager(setActive: (isActive: boolean) => void): MenuItem
       isPressed: false,
       isActive: false,
     },
-    onSelectionUpdated: handleSelectionUpdated,
+    onStateUpdated: handleStateUpdated,
     handleClose: undefined,
   };
 

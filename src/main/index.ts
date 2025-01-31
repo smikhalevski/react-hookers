@@ -53,6 +53,7 @@ export { useCheckbox, type HeadlessCheckboxProps, type HeadlessCheckboxValue } f
 export {
   useMenu,
   useMenuItem,
+  HeadlessMenuState,
   type HeadlessMenuProps,
   type HeadlessMenuValue,
   type HeadlessMenuItemProps,
@@ -94,7 +95,6 @@ export {
   type RenderContainerProps,
   type RenderInContainerCallback,
 } from './createRenderContainer';
-export { createSelection, useSelection, SelectionProvider, type Selection } from './createSelection';
 export { useAnimationFrame } from './useAnimationFrame';
 export { useAnimationFrameCallback } from './useAnimationFrameCallback';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect';
