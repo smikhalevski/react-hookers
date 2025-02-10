@@ -13,6 +13,7 @@ const cancelHoverPubSub = new PubSub();
  * @group Behaviors
  */
 export function cancelHover(): void {
+  unlockHover();
   cancelHoverPubSub.publish();
 }
 
@@ -123,8 +124,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
     if (++hoverManagerCount === 1) {
       window.addEventListener('blur', cancelHover);
-      window.addEventListener('pointerdown', handleHoverLockPointerDown, true);
-      window.addEventListener('pointerup', handleHoverLockPointerUp, true);
+      window.addEventListener('pointerdown', lockHover, true);
+      window.addEventListener('pointerup', unlockHover, true);
     }
 
     return () => {
@@ -132,8 +133,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
       if (hoverManagerCount-- === 1) {
         window.removeEventListener('blur', cancelHover);
-        window.removeEventListener('pointerdown', handleHoverLockPointerDown, true);
-        window.removeEventListener('pointerup', handleHoverLockPointerUp, true);
+        window.removeEventListener('pointerdown', lockHover, true);
+        window.removeEventListener('pointerup', unlockHover, true);
       }
     };
   };
@@ -163,7 +164,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
       isDisabled ||
       status !== STATUS_NOT_HOVERED ||
       event.pointerType !== 'mouse' ||
-      !(event.buttons === 0 || event.currentTarget.contains(hoverLockElement)) ||
+      !(event.buttons === 0 || event.currentTarget.contains(hoverTarget)) ||
       isPortalEvent(event)
     ) {
       return;
@@ -203,12 +204,12 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 /**
  * An element that exclusively captures hover events.
  */
-let hoverLockElement: Element | null = null;
+let hoverTarget: Element | null = null;
 
-function handleHoverLockPointerDown(event: PointerEvent): void {
-  hoverLockElement = event.target;
+function lockHover(event: PointerEvent): void {
+  hoverTarget = event.target;
 }
 
-function handleHoverLockPointerUp(_event: PointerEvent): void {
-  hoverLockElement = null;
+function unlockHover(): void {
+  hoverTarget = null;
 }

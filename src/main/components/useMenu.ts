@@ -337,7 +337,7 @@ function createMenuItemManager(
     }
 
     if (!isFocused || focusRing.isVisible) {
-      // Don't select an item when focused by keyboard
+      // Don't expand a submenu when focused by keyboard
       return;
     }
 
