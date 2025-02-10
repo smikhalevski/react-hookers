@@ -1,13 +1,12 @@
-import { MutableRefObject, RefCallback, RefObject } from 'react';
+import { MutableRefObject, type Ref, RefCallback } from 'react';
 
 /**
  * Merges multiple refs into a single callback ref.
  *
  * @param refs Refs to merge.
- * @template R Refs to merge.
  * @group Other
  */
-export function mergeRefs<R extends Array<RefObject<any> | RefCallback<any> | null | undefined>>(...refs: R): R[number];
+export function mergeRefs<T>(...refs: Array<Ref<T> | null | undefined>): Ref<T> | undefined;
 
 export function mergeRefs() {
   let ref = arguments[0];
@@ -18,7 +17,7 @@ export function mergeRefs() {
     ref = ref === undefined || ref === null ? refI : refI === undefined || refI === null ? ref : unionRefs(ref, refI);
   }
 
-  return ref;
+  return ref === null ? undefined : ref;
 }
 
 function unionRefs(
