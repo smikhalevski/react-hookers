@@ -17,6 +17,20 @@ export function isPortalEvent(event: SyntheticEvent): boolean {
 }
 
 /**
+ * Returns text direction of an element.
+ *
+ * @group Other
+ */
+export function getTextDirection(element: Element | null = null): 'rtl' | 'ltr' {
+  const dir =
+    element === null || element === document.documentElement
+      ? document.dir
+      : window.getComputedStyle(element).direction;
+
+  return dir === 'rtl' ? 'rtl' : 'ltr';
+}
+
+/**
  * Returns the currently focused element or `null` if no element is focused.
  *
  * @group Other

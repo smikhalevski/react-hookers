@@ -73,6 +73,7 @@ export {
   sortByTabOrder,
   sortByVisualOrder,
   sortByDocumentOrder,
+  getTextDirection,
   getFocusedElement,
   isTabbable,
   isAutoFocusable,
