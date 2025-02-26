@@ -343,46 +343,46 @@ function createAnchorPositionManager(): AnchorPositionManager {
       } = variants[i];
 
       // X
-      input.containerA = containerRect.x;
-      input.containerB = containerRect.right;
-      input.anchorA = anchorRect.x;
-      input.anchorB = anchorRect.right;
-      input.targetA = targetRect.x;
-      input.targetB = targetRect.right;
-      input.isRTL = isRTL;
-      input.containerPadding = containerPaddingX;
-      input.anchorMargin = anchorMarginX;
-      input.arrowSize = arrowSize;
-      input.arrowMargin = arrowMargin;
-      input.align = alignX;
+      state.containerA = containerRect.x;
+      state.containerB = containerRect.right;
+      state.anchorA = anchorRect.x;
+      state.anchorB = anchorRect.right;
+      state.targetA = targetRect.x;
+      state.targetB = targetRect.right;
+      state.isRTL = isRTL;
+      state.containerPadding = containerPaddingX;
+      state.anchorMargin = anchorMarginX;
+      state.arrowSize = arrowSize;
+      state.arrowMargin = arrowMargin;
+      state.align = alignX;
 
-      calcAnchorPosition(input, output);
+      updateAnchorPosition(state);
 
-      x = output.position;
-      maxWidth = output.maxSize;
-      actualAlignX = output.actualAlign;
-      arrowOffset = output.arrowOffset;
+      x = state.position;
+      maxWidth = state.maxSize;
+      actualAlignX = state.actualAlign;
+      arrowOffset = state.arrowOffset;
 
       // Y
-      input.containerA = containerRect.y;
-      input.containerB = containerRect.bottom;
-      input.anchorA = anchorRect.y;
-      input.anchorB = anchorRect.bottom;
-      input.targetA = targetRect.y;
-      input.targetB = targetRect.bottom;
-      input.isRTL = false;
-      input.containerPadding = containerPaddingY;
-      input.anchorMargin = anchorMarginY;
-      input.arrowSize = arrowSize;
-      input.arrowMargin = arrowMargin;
-      input.align = alignY;
+      state.containerA = containerRect.y;
+      state.containerB = containerRect.bottom;
+      state.anchorA = anchorRect.y;
+      state.anchorB = anchorRect.bottom;
+      state.targetA = targetRect.y;
+      state.targetB = targetRect.bottom;
+      state.isRTL = false;
+      state.containerPadding = containerPaddingY;
+      state.anchorMargin = anchorMarginY;
+      state.arrowSize = arrowSize;
+      state.arrowMargin = arrowMargin;
+      state.align = alignY;
 
-      calcAnchorPosition(input, output);
+      updateAnchorPosition(state);
 
-      y = output.position;
-      maxHeight = output.maxSize;
-      actualAlignY = output.actualAlign;
-      arrowOffset = arrowOffset === undefined ? output.arrowOffset : arrowOffset;
+      y = state.position;
+      maxHeight = state.maxSize;
+      actualAlignY = state.actualAlign;
+      arrowOffset = arrowOffset === undefined ? state.arrowOffset : arrowOffset;
 
       if (
         isPicked ||
@@ -472,7 +472,11 @@ const ALIGN_INNER_END: AnchorAlign = 'innerEnd';
 const ALIGN_OUTER_START: AnchorAlign = 'outerStart';
 const ALIGN_OUTER_END: AnchorAlign = 'outerEnd';
 
-const input: CalcAnchorPositionInput = {
+/**
+ * The internal state object that is reused by all {@link AnchorPositionManager} instances.
+ */
+const state: AnchorPositionState = {
+  // Input
   containerA: 0,
   containerB: 0,
   anchorA: 0,
@@ -485,9 +489,8 @@ const input: CalcAnchorPositionInput = {
   arrowSize: 0,
   arrowMargin: 0,
   align: ALIGN_CENTER,
-};
 
-const output: CalcAnchorPositionOutput = {
+  // Output
   position: 0,
   maxSize: 0,
   actualAlign: ALIGN_CENTER,
@@ -496,7 +499,8 @@ const output: CalcAnchorPositionOutput = {
 
 const { min, max } = Math;
 
-export interface CalcAnchorPositionInput {
+export interface AnchorPositionState {
+  // Input
   containerA: number;
   containerB: number;
   anchorA: number;
@@ -509,22 +513,21 @@ export interface CalcAnchorPositionInput {
   arrowSize: number;
   arrowMargin: number;
   align: AnchorAlign;
-}
 
-export interface CalcAnchorPositionOutput {
+  // Output
   position: number;
   maxSize: number;
   actualAlign: AnchorAlign;
   arrowOffset: number | undefined;
 }
 
-export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcAnchorPositionOutput): void {
-  const { anchorA, anchorB, targetA, targetB, isRTL, containerPadding, anchorMargin, arrowSize, arrowMargin } = input;
+export function updateAnchorPosition(state: AnchorPositionState): void {
+  const { anchorA, anchorB, targetA, targetB, isRTL, containerPadding, anchorMargin, arrowSize, arrowMargin } = state;
 
-  const containerA = input.containerA + containerPadding;
-  const containerB = input.containerB - containerPadding;
+  const containerA = state.containerA + containerPadding;
+  const containerB = state.containerB - containerPadding;
 
-  const align = isRTL ? alignFlipTable[input.align] : input.align;
+  const align = isRTL ? alignFlipTable[state.align] : state.align;
 
   const targetSize = targetB - targetA;
 
@@ -602,10 +605,10 @@ export function calcAnchorPosition(input: CalcAnchorPositionInput, output: CalcA
       max(0, anchorA - position) + (min(position + targetSize, anchorB) - max(position, anchorA) - arrowSize) / 2;
   }
 
-  output.position = position;
-  output.maxSize = max(0, min(maxSize, containerB - containerA));
-  output.actualAlign = actualAlign;
-  output.arrowOffset = arrowOffset;
+  state.position = position;
+  state.maxSize = max(0, min(maxSize, containerB - containerA));
+  state.actualAlign = actualAlign;
+  state.arrowOffset = arrowOffset;
 }
 
 const alignFlipTable: Record<AnchorAlign, AnchorAlign> = {
