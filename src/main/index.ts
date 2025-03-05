@@ -69,6 +69,7 @@ export {
   type HeadlessTrackHandleValue,
 } from './components/useTrackHandle';
 
+export { BigArray } from './utils/BigArray';
 export {
   sortByTabOrder,
   sortByVisualOrder,
