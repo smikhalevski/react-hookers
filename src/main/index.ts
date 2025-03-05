@@ -77,6 +77,7 @@ export {
 
 export { BigArray } from './utils/BigArray';
 export {
+  DATA_AUTOFOCUS,
   sortByTabOrder,
   sortByVisualOrder,
   sortByDocumentOrder,

@@ -3,6 +3,8 @@ import { FocusableElement } from '../types';
 
 /**
  * An attribute that replaces `autofocus` for a {@link useFocusScope focus scope}. Expects a boolean value.
+ *
+ * @group Other
  */
 export const DATA_AUTOFOCUS = 'data-autofocus';
 
