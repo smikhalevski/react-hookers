@@ -152,7 +152,7 @@ export interface VirtualizerProps {
   /**
    * The orientation of the scroll axis.
    *
-   * @defult "vertical"
+   * @default "vertical"
    */
   orientation?: 'horizontal' | 'vertical';
 

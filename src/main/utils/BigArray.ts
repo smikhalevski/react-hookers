@@ -21,6 +21,7 @@ const BLOCK_LENGTH = Number.MAX_SAFE_INTEGER / 0x13731a1;
  * }
  *
  * @template T A value stored in an array.
+ * @group Other
  */
 export class BigArray<T> {
   private _negativeBlocks: T[][] = [];

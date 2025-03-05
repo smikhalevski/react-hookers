@@ -1,6 +1,9 @@
 import { HTMLAttributes, LabelHTMLAttributes, RefObject, useState } from 'react';
-import { mergeProps, PressableProps, useFunctionOnce, usePressable, useUniqueId } from '../index';
+import { type PressableProps, usePressable } from '../behaviors/usePressable';
+import { useFunctionOnce } from '../useFunctionOnce';
+import { useUniqueId } from '../useUniqueId';
 import { DATA_AUTOFOCUS } from '../utils/dom';
+import { mergeProps } from '../utils/mergeProps';
 
 /**
  * A value returned from the {@link useSelect} hook.
@@ -107,7 +110,7 @@ export interface HeadlessSelectProps<T> extends PressableProps {
  * of options and allows a user to select one of them.
  *
  * @param ref A reference to a select trigger element that opens and closes a select dropdown. This must be the same
- * element to which {@link HeadlessTextInputValue.triggerProps} are attached.
+ * element to which {@link HeadlessSelectValue.triggerProps} are attached.
  * @param props Select props.
  * @returns An object which identity never changes between renders.
  * @template T A selected value.

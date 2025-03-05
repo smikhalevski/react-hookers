@@ -60,7 +60,12 @@ export {
   type HeadlessMenuItemProps,
   type HeadlessMenuItemValue,
 } from './components/useMenu';
-export { useScrollbar, type HeadlessScrollbarProps, type HeadlessScrollbarValue } from './components/useScrollbar';
+export {
+  useScrollbar,
+  type HeadlessScrollbarProps,
+  type HeadlessScrollbarValue,
+  type ScrollbarInfo,
+} from './components/useScrollbar';
 export { useSelect, type HeadlessSelectProps, type HeadlessSelectValue } from './components/useSelect';
 export { useTextInput, type HeadlessTextInputProps, type HeadlessTextInputValue } from './components/useTextInput';
 export { useTooltip, type HeadlessTooltipProps, type HeadlessTooltipValue } from './components/useTooltip';
@@ -126,5 +131,5 @@ export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';
 export { useUniqueId } from './useUniqueId';
-export { useViewport } from './useViewport';
+export { useViewport, type ViewportProps } from './useViewport';
 export { type DOMEventHandler, type FocusableElement, type ValueOrProvider, type Schedule } from './types';

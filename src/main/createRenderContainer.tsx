@@ -18,6 +18,7 @@ const containers = new WeakMap<FunctionComponent, RenderInContainerCallback>();
  * @param element An element to render in a container.
  * @returns A callback that unmounts the rendered element. For elements with the same key, the same unmount callback is
  * returned.
+ * @group Other
  */
 export type RenderInContainerCallback = (element: ReactElement) => () => void;
 
@@ -128,6 +129,8 @@ export function createRenderContainer(): FunctionComponent<RenderContainerProps>
 /**
  * A hook that works exactly like {@link getRenderInContainer} and unmounts all rendered elements when host component is
  * unmounted.
+ *
+ * @group Other
  */
 export function useRenderInContainer(container: FunctionComponent): RenderInContainerCallback {
   const manager = useFunction(createRenderInContainerManager, getRenderInContainer(container));

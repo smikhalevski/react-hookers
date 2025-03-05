@@ -12,6 +12,11 @@ import { getTextDirection } from '../utils/dom';
 import { emptyObject } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
 
+/**
+ * A state shared by a {@link useMenu} and {@link useMenuItem}.
+ *
+ * @group Components
+ */
 export class HeadlessMenuState {
   registeredIds = new Set<string>();
 
@@ -211,10 +216,10 @@ export interface HeadlessMenuItemProps<T> {
   isDisabled?: boolean;
 
   /**
-   * If `true` then a menu item is {@link HeadlessMenuItemValue.isActive activated} if a user presses
+   * If `true` then a menu item is {@link HeadlessMenuItemValue.isExpanded expanded} if a user presses
    * <kbd>ArrowRight</kbd> or <kbd>ArrowLeft</kbd> to expand or collapse the submenu.
    *
-   * An {@link HeadlessMenuItemValue.isActive active} menu item with a submenu is considered expanded.
+   * An {@link HeadlessMenuItemValue.isExpanded expanded} menu item with a submenu is considered expanded.
    *
    * {@link onAction} is ignored for menu items that have a submenu.
    *

@@ -12,7 +12,8 @@
   "entryPoints": ["./src/main/index.ts"],
   "navigation": {
     "includeCategories": true,
-    "includeFolders": false
+    "includeFolders": false,
+    "includeGroups": true
   },
   "compilerOptions": {
     "skipLibCheck": true
