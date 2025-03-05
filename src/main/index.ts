@@ -110,7 +110,16 @@ export { useInterval } from './useInterval';
 export { useIntervalCallback } from './useIntervalCallback';
 export { useLock } from './useLock';
 export { useMediaQuery } from './useMediaQuery';
-export { detectPlatform, usePlatform, PlatformProvider, type Platform } from './usePlatform';
+export {
+  detectBrowser,
+  detectOS,
+  detectPlatform,
+  usePlatform,
+  PlatformProvider,
+  type BrowserType,
+  type OSType,
+  type Platform,
+} from './usePlatform';
 export { useRerender } from './useRerender';
 export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';

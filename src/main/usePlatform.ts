@@ -4,9 +4,8 @@ import { createContext, useContext } from 'react';
  * @group Other
  */
 export interface Platform {
-  browser: string | undefined;
-  os: string | undefined;
-
+  browser: BrowserType;
+  os: OSType;
   isChrome: boolean;
   isSafari: boolean;
   isFirefox: boolean;
@@ -16,6 +15,16 @@ export interface Platform {
   isWindows: boolean;
   isAndroid: boolean;
 }
+
+/**
+ * @group Other
+ */
+export type BrowserType = 'chrome' | 'firefox' | 'safari' | 'unknown';
+
+/**
+ * @group Other
+ */
+export type OSType = 'ios' | 'mac' | 'windows' | 'android' | 'unknown';
 
 /**
  * @group Other
@@ -33,9 +42,7 @@ const OS_MAC = 'mac';
 const OS_WINDOWS = 'windows';
 const OS_ANDROID = 'android';
 
-const PlatformContext = createContext<Platform>(
-  detectPlatform(typeof navigator !== 'undefined' ? navigator.userAgent : '')
-);
+const PlatformContext = createContext<Platform>(detectPlatform());
 
 PlatformContext.displayName = 'PlatformContext';
 
@@ -44,22 +51,23 @@ PlatformContext.displayName = 'PlatformContext';
  */
 export const PlatformProvider = PlatformContext.Provider;
 
+function getNavigatorUserAgent(): string {
+  return typeof navigator !== 'undefined' ? navigator.userAgent : '';
+}
+
 /**
  * Infers the platform from the user agent string.
  *
  * @param userAgent A user agent string.
  * @group Other
  */
-export function detectPlatform(userAgent: string): Platform {
-  userAgent = userAgent.toLowerCase();
-
+export function detectPlatform(userAgent = getNavigatorUserAgent()): Platform {
   const browser = detectBrowser(userAgent);
   const os = detectOS(userAgent);
 
   return {
     browser,
     os,
-
     isChrome: browser === BROWSER_CHROME,
     isSafari: browser === BROWSER_SAFARI,
     isFirefox: browser === BROWSER_FIREFOX,
@@ -71,19 +79,34 @@ export function detectPlatform(userAgent: string): Platform {
   };
 }
 
-function detectBrowser(userAgent: string): string | undefined {
+/**
+ * Infers the browser type from the user agent string.
+ *
+ * @group Other
+ */
+export function detectBrowser(userAgent = getNavigatorUserAgent()): BrowserType {
+  userAgent = userAgent.toLowerCase();
+
   if (userAgent.includes('chrome')) {
     return BROWSER_CHROME;
   }
   if (userAgent.includes('firefox')) {
     return BROWSER_FIREFOX;
   }
-  if (userAgent.includes('applewebkit')) {
+  if (userAgent.includes('webkit')) {
     return BROWSER_SAFARI;
   }
+  return 'unknown';
 }
 
-function detectOS(userAgent: string): string | undefined {
+/**
+ * Infers the OS type from the user agent string.
+ *
+ * @group Other
+ */
+export function detectOS(userAgent = getNavigatorUserAgent()): OSType {
+  userAgent = userAgent.toLowerCase();
+
   if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('ipod')) {
     return OS_IOS;
   }
@@ -96,4 +119,5 @@ function detectOS(userAgent: string): string | undefined {
   if (userAgent.includes('android')) {
     return OS_ANDROID;
   }
+  return 'unknown';
 }
