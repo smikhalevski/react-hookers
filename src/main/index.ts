@@ -41,12 +41,13 @@ export { usePress, cancelPress, type PressProps, type PressValue } from './behav
 export { usePressable, type PressableProps, type PressableValue } from './behaviors/usePressable';
 export { usePreventScroll, type PreventScrollProps } from './behaviors/usePreventScroll';
 export {
-  useVirtualScroll,
-  type VirtualScrollInfo,
-  type VirtualScrollItem,
-  type VirtualScrollProps,
-  type VirtualScrollValue,
-} from './behaviors/useVirtualScroll';
+  useVirtualizer,
+  type VirtualItem,
+  type VirtualizerScrollInfo,
+  type VirtualizerScrollToOptions,
+  type Virtualizer,
+  type VirtualizerProps,
+} from './behaviors/useVirtualizer';
 
 export { useButton, type HeadlessButtonProps, type HeadlessButtonValue } from './components/useButton';
 export { useCheckbox, type HeadlessCheckboxProps, type HeadlessCheckboxValue } from './components/useCheckbox';
