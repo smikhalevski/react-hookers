@@ -852,10 +852,13 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
       requiredScrollPosition = scrollPosition + zonePosition - actualZonePosition;
     }
 
-    if (prevPageStartIndex === prevZoneEndIndex && zoneStartIndex === zoneEndIndex && pageStartIndex !== pageEndIndex) {
+    if (
+      // Accommodate new items if page size is insufficient
+      ((pageStartIndex < prevPageStartIndex || pageEndIndex > prevPageEndIndex) && prevPageSize < containerSize) ||
       // Non-empty page should not yield an empty zone
-
-      state.paddingStart = pageStartIndex;
+      (prevPageStartIndex === prevZoneEndIndex && zoneStartIndex === zoneEndIndex && pageStartIndex !== pageEndIndex)
+    ) {
+      state.pageStartIndex = pageStartIndex;
       state.pageEndIndex = pageEndIndex;
 
       updateVirtualizer(state, isPivotPreserved);
