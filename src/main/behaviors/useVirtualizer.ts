@@ -189,6 +189,7 @@ export interface VirtualizerProps {
  * const virtualizer = useVirtualizer({
  *   startIndex: 0,
  *   endIndex: Number.MAX_SAFE_INTEGER,
+ *   containerRef,
  *
  *   onScroll: info => {
  *     pageRef.current.style.height = info.pageSize + 'px';
