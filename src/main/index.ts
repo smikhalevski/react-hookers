@@ -76,6 +76,7 @@ export {
 } from './components/useTrackHandle';
 
 export { BigArray } from './utils/BigArray';
+export { writeToClipboard } from './utils/clipboard';
 export {
   DATA_AUTOFOCUS,
   sortByTabOrder,
@@ -83,6 +84,7 @@ export {
   sortByDocumentOrder,
   getTextDirection,
   getFocusedElement,
+  getTabIndex,
   isTabbable,
   isAutoFocusable,
   isPortalEvent,
