@@ -68,6 +68,7 @@ export function useFocusScope(ref: RefObject<Element>, props: FocusScopeProps = 
 }
 
 interface FocusScopeManager {
+  lastFocusedElement: FocusableElement | null;
   parentFocusControls: FocusControls | null;
   ref: RefObject<Element>;
   props: FocusScopeProps;
@@ -78,8 +79,9 @@ interface FocusScopeManager {
 function createFocusScopeManager(): FocusScopeManager {
   const handleMounted: EffectCallback = () => {
     const { isAutofocused = focusRing.isVisible, isFocusTrap, approveFocusCandidate } = manager.props;
-    const lastFocusedElement = getFocusedElement();
     const unregister = registerFocusScopeManager(manager);
+
+    manager.lastFocusedElement = getFocusedElement();
 
     if (isAutofocused) {
       // Focus the first approved auto-focusable element
@@ -100,10 +102,19 @@ function createFocusScopeManager(): FocusScopeManager {
     return () => {
       const { isFocusRestored = focusRing.isVisible } = manager.props;
 
+      // If an intermediate focus scope unmounts it sets its lastFocusedElement to
+      // the next currently mounted scope. For example, when popup is opened from
+      // the dropdown that is closed.
+      const managerIndex = focusScopeManagers.indexOf(manager) - 1;
+
+      if (managerIndex >= 0) {
+        focusScopeManagers[managerIndex].lastFocusedElement = manager.lastFocusedElement;
+      }
+
       unregister();
 
       if (isFocusRestored) {
-        requestFocus(lastFocusedElement);
+        requestFocus(manager.lastFocusedElement);
       }
     };
   };
@@ -134,6 +145,7 @@ function createFocusScopeManager(): FocusScopeManager {
   };
 
   const manager: FocusScopeManager = {
+    lastFocusedElement: null,
     parentFocusControls: null,
     ref: undefined!,
     props: undefined!,
