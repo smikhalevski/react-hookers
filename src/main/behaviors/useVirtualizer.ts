@@ -32,11 +32,6 @@ export interface VirtualItem {
  */
 export interface VirtualizerScrollInfo {
   /**
-   * A combined size of all items of the current page along the scroll axis.
-   */
-  pageSize: number;
-
-  /**
    * An index of the first item, inclusive.
    *
    * @see {@link VirtualizerProps.startIndex}
@@ -51,29 +46,44 @@ export interface VirtualizerScrollInfo {
   endIndex: number;
 
   /**
-   * A position at which the rendered zone must be placed.
+   * A combined size of all items of the current page along the scroll axis.
    */
-  zonePosition: number;
+  pageSize: number;
+
+  /**
+   * The first index of a current page, inclusive.
+   */
+  pageStartIndex: number;
+
+  /**
+   * The last index of a current page, exclusive.
+   */
+  pageEndIndex: number;
+
+  /**
+   * A position in pixels at which rendered items must be placed.
+   */
+  itemsPosition: number;
 
   /**
    * An index of the first rendered item, inclusive.
    */
-  zoneStartIndex: number;
+  itemsStartIndex: number;
 
   /**
    * An index of the last rendered item, exclusive.
    */
-  zoneEndIndex: number;
+  itemsEndIndex: number;
 
   /**
    * An index of the first item that is visible to a user, inclusive.
    */
-  visibleZoneStartIndex: number;
+  visibleItemsStartIndex: number;
 
   /**
    * An index of the last item that is visible to a user, exclusive.
    */
-  visibleZoneEndIndex: number;
+  visibleItemsEndIndex: number;
 }
 
 /**
@@ -184,7 +194,7 @@ export interface VirtualizerProps {
  * @example
  * const containerRef = useRef(null);
  * const pageRef = useRef(null);
- * const zoneRef = useRef(null);
+ * const itemsRef = useRef(null);
  *
  * const virtualizer = useVirtualizer({
  *   startIndex: 0,
@@ -193,7 +203,7 @@ export interface VirtualizerProps {
  *
  *   onScroll: info => {
  *     pageRef.current.style.height = info.pageSize + 'px';
- *     zoneRef.current.style.transform = `translateY(${info.zonePosition}px)`;
+ *     itemsRef.current.style.transform = `translateY(${info.itemsPosition}px)`;
  *   },
  * });
  *
@@ -202,7 +212,7 @@ export interface VirtualizerProps {
  *   style={{ height: 300, overflow: 'auto' }}
  * >
  *   <div ref={pageRef}>
- *     <div ref={zoneRef}>
+ *     <div ref={itemsRef}>
  *       {virtualizer.items.map(item => (
  *         <div
  *           key={item.index}
@@ -241,14 +251,16 @@ interface VirtualizerManager {
 
 function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => void): VirtualizerManager {
   const info: VirtualizerScrollInfo = {
-    pageSize: 0,
     startIndex: 0,
     endIndex: 0,
-    zonePosition: 0,
-    zoneStartIndex: 0,
-    zoneEndIndex: 0,
-    visibleZoneStartIndex: 0,
-    visibleZoneEndIndex: 0,
+    pageSize: 0,
+    pageStartIndex: 0,
+    pageEndIndex: 0,
+    itemsPosition: 0,
+    itemsStartIndex: 0,
+    itemsEndIndex: 0,
+    visibleItemsStartIndex: 0,
+    visibleItemsEndIndex: 0,
   };
 
   const elementItemIndexes = new Map<Element, number>();
@@ -284,14 +296,16 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
     if (renderedStateVersion !== state.version) {
       renderedStateVersion = state.version;
 
-      info.pageSize = state.pageSize;
       info.startIndex = state.startIndex;
       info.endIndex = state.endIndex;
-      info.zonePosition = (orientation | 1) * state.adjustedZonePosition;
-      info.zoneStartIndex = state.zoneStartIndex;
-      info.zoneEndIndex = state.zoneEndIndex;
-      info.visibleZoneStartIndex = state.visibleZoneStartIndex;
-      info.visibleZoneEndIndex = state.visibleZoneEndIndex;
+      info.pageSize = state.pageSize;
+      info.pageStartIndex = state.pageStartIndex;
+      info.pageEndIndex = state.pageEndIndex;
+      info.itemsPosition = (orientation | 1) * state.adjustedItemsPosition;
+      info.itemsStartIndex = state.itemsStartIndex;
+      info.itemsEndIndex = state.itemsEndIndex;
+      info.visibleItemsStartIndex = state.visibleItemsStartIndex;
+      info.visibleItemsEndIndex = state.visibleItemsEndIndex;
 
       (0, manager.props.onScroll)(info);
     }
@@ -497,12 +511,12 @@ export interface VirtualizerState {
   itemSizeCache: BigArray<number>;
 
   /**
-   * A position of a zone adjusted by the accumulated {@link scrollShift}.
+   * A position at which items must be rendered, adjusted by the accumulated {@link scrollShift}.
    */
-  adjustedZonePosition: number;
+  adjustedItemsPosition: number;
 
   /**
-   * A scroll position that must be applied to a container.
+   * A scroll position that must be applied to a container, or `null` if scroll position shouldn't be changed.
    */
   requiredScrollPosition: number | null;
 
@@ -522,29 +536,29 @@ export interface VirtualizerState {
   pageEndIndex: number;
 
   /**
-   * A position in pixels at which the zone must be positioned so it is visible to a user.
+   * A position in pixels at which the items must be positioned so it is visible to a user.
    */
-  zonePosition: number;
+  itemsPosition: number;
 
   /**
    * An index of the first rendered item, inclusive.
    */
-  zoneStartIndex: number;
+  itemsStartIndex: number;
 
   /**
    * An index of the last rendered item, exclusive.
    */
-  zoneEndIndex: number;
+  itemsEndIndex: number;
 
   /**
    * An index of the first item that is visible to a user, inclusive.
    */
-  visibleZoneStartIndex: number;
+  visibleItemsStartIndex: number;
 
   /**
    * An index of the last item that is visible to a user, exclusive.
    */
-  visibleZoneEndIndex: number;
+  visibleItemsEndIndex: number;
 
   /**
    * An offset of a pivot item from the container top.
@@ -582,16 +596,16 @@ export function createVirtualizerState(): VirtualizerState {
     // Output
     items: [],
     itemSizeCache: new BigArray(),
-    adjustedZonePosition: 0,
+    adjustedItemsPosition: 0,
     requiredScrollPosition: null,
     pageSize: 0,
     pageStartIndex: 0,
     pageEndIndex: 0,
-    zonePosition: 0,
-    zoneStartIndex: 0,
-    zoneEndIndex: 0,
-    visibleZoneStartIndex: 0,
-    visibleZoneEndIndex: 0,
+    itemsPosition: 0,
+    itemsStartIndex: 0,
+    itemsEndIndex: 0,
+    visibleItemsStartIndex: 0,
+    visibleItemsEndIndex: 0,
     pivotOffset: 0,
     pivotIndex: 0,
     scrollShift: 0,
@@ -613,7 +627,7 @@ export function createVirtualizerState(): VirtualizerState {
  * when scroll is close to 0 or container scroll height.
  * </dd>
  *
- * <dt>Zone</dt>
+ * <dt>Items</dt>
  * <dd>A set of rendered items.</dd>
  *
  * <dt>Pivot item</dt>
@@ -638,16 +652,16 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
 
     items: prevItems,
     itemSizeCache,
-    // adjustedZonePosition,
+    // adjustedItemsPosition,
     // requiredScrollPosition,
     pageSize: prevPageSize,
     pageStartIndex: prevPageStartIndex,
     pageEndIndex: prevPageEndIndex,
-    zonePosition: prevZonePosition,
-    zoneStartIndex: prevZoneStartIndex,
-    zoneEndIndex: prevZoneEndIndex,
-    visibleZoneStartIndex: prevVisibleZoneStartIndex,
-    visibleZoneEndIndex: prevVisibleZoneEndIndex,
+    itemsPosition: prevItemsPosition,
+    itemsStartIndex: prevItemsStartIndex,
+    itemsEndIndex: prevItemsEndIndex,
+    visibleItemsStartIndex: prevVisibleItemsStartIndex,
+    visibleItemsEndIndex: prevVisibleItemsEndIndex,
     pivotOffset: prevPivotOffset,
     pivotIndex: prevPivotIndex,
     scrollShift: prevScrollShift,
@@ -657,9 +671,9 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
 
   if (isPivotPreserved) {
     // Ensure that pivot position is visually preserved after items are rendered
-    let actualPivotPosition = prevZonePosition;
+    let actualPivotPosition = prevItemsPosition;
 
-    for (let i = prevZoneStartIndex; i < prevPivotIndex && i < endIndex; ++i) {
+    for (let i = prevItemsStartIndex; i < prevPivotIndex && i < endIndex; ++i) {
       actualPivotPosition += itemSizeCache.getOrSet(i, estimateItemSize);
     }
 
@@ -672,13 +686,13 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
   let pageStartIndex = min(max(prevPageStartIndex, startIndex), endIndex);
   let pageEndIndex = max(startIndex, min(prevPageEndIndex, endIndex));
 
-  let zonePosition = 0;
-  let zoneSize = 0;
-  let zoneStartIndex = pageStartIndex;
-  let zoneEndIndex = pageStartIndex;
+  let itemsPosition = 0;
+  let itemsSize = 0;
+  let itemsStartIndex = pageStartIndex;
+  let itemsEndIndex = pageStartIndex;
 
-  let visibleZoneStartIndex = pageStartIndex;
-  let visibleZoneEndIndex = pageStartIndex;
+  let visibleItemsStartIndex = pageStartIndex;
+  let visibleItemsEndIndex = pageStartIndex;
 
   let pivotPosition = 0;
   let pivotIndex = pageStartIndex;
@@ -686,25 +700,25 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
   if (anchorIndex !== null) {
     // Ignore the current scroll position and fill the container with the anchored item
 
-    zoneStartIndex = zoneEndIndex = pivotIndex = anchorIndex;
-    zoneSize = pivotPosition = 0;
+    itemsStartIndex = itemsEndIndex = pivotIndex = anchorIndex;
+    itemsSize = pivotPosition = 0;
 
-    for (let i = anchorIndex; i < endIndex && zoneSize < containerSize; ++i) {
-      zoneSize += itemSizeCache.getOrSet(i, estimateItemSize);
-      zoneEndIndex = i + 1;
+    for (let i = anchorIndex; i < endIndex && itemsSize < containerSize; ++i) {
+      itemsSize += itemSizeCache.getOrSet(i, estimateItemSize);
+      itemsEndIndex = i + 1;
     }
 
-    for (let i = anchorIndex - 1; i >= startIndex && zoneSize < containerSize; --i) {
+    for (let i = anchorIndex - 1; i >= startIndex && itemsSize < containerSize; --i) {
       const itemSize = itemSizeCache.getOrSet(i, estimateItemSize);
 
       pivotPosition += itemSize;
-      zoneSize += itemSize;
-      zoneStartIndex = i;
+      itemsSize += itemSize;
+      itemsStartIndex = i;
     }
 
-    pageSize = zoneSize;
-    pageStartIndex = visibleZoneStartIndex = zoneStartIndex;
-    pageEndIndex = visibleZoneEndIndex = zoneEndIndex;
+    pageSize = itemsSize;
+    pageStartIndex = visibleItemsStartIndex = itemsStartIndex;
+    pageEndIndex = visibleItemsEndIndex = itemsEndIndex;
 
     scrollPosition = paddingStart + pivotPosition - scrollPaddingStart;
     scrollShift = 0;
@@ -723,14 +737,14 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
 
         pageSize += itemSize;
         pivotPosition += itemSize;
-        pivotIndex = visibleZoneStartIndex = visibleZoneEndIndex = i + 1;
+        pivotIndex = visibleItemsStartIndex = visibleItemsEndIndex = i + 1;
 
         if (paddingStart + pageSize <= scrollPosition - overscanSize) {
           // Item ends before the overscan range start
-          zonePosition += itemSize;
-          zoneStartIndex = zoneEndIndex = i + 1;
+          itemsPosition += itemSize;
+          itemsStartIndex = itemsEndIndex = i + 1;
         } else {
-          zoneSize += itemSize;
+          itemsSize += itemSize;
         }
         continue;
       }
@@ -740,8 +754,8 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
 
         if (paddingStart + pageSize < scrollPosition + containerSize + overscanSize) {
           // Item starts before the overscan range end
-          zoneSize += itemSize;
-          zoneEndIndex = i + 1;
+          itemsSize += itemSize;
+          itemsEndIndex = i + 1;
         }
 
         pageSize += itemSize;
@@ -759,20 +773,20 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
 
       // Visible item
       pageSize += itemSize;
-      zoneSize += itemSize;
-      zoneEndIndex = visibleZoneEndIndex = i + 1;
+      itemsSize += itemSize;
+      itemsEndIndex = visibleItemsEndIndex = i + 1;
     }
 
     // Render items that yielded a size of 0 during the last measurement
-    visibleZoneStartIndex -= zeroOffset;
-    zoneStartIndex -= zeroOffset;
+    visibleItemsStartIndex -= zeroOffset;
+    itemsStartIndex -= zeroOffset;
   }
 
   let requiredScrollPosition = null;
   let pivotOffset = pivotPosition - scrollPosition;
 
   if (!isScrolling) {
-    const actualZonePosition = zonePosition;
+    const actualItemsPosition = itemsPosition;
 
     if (
       anchorIndex !== null ||
@@ -780,21 +794,21 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     ) {
       // Go to the next page
 
-      zonePosition = 0;
-      pageStartIndex = zoneStartIndex;
-      pageEndIndex = zoneEndIndex;
+      itemsPosition = 0;
+      pageStartIndex = itemsStartIndex;
+      pageEndIndex = itemsEndIndex;
 
       // Threshold
       for (
         let i = pageStartIndex - 1;
-        i >= startIndex && scrollPosition - actualZonePosition + zonePosition < MIN_PAGE_SIZE * PAGE_THRESHOLD;
+        i >= startIndex && scrollPosition - actualItemsPosition + itemsPosition < MIN_PAGE_SIZE * PAGE_THRESHOLD;
         --i
       ) {
-        zonePosition += itemSizeCache.getOrSet(i, estimateItemSize);
+        itemsPosition += itemSizeCache.getOrSet(i, estimateItemSize);
         pageStartIndex = i;
       }
 
-      pageSize = zonePosition + zoneSize;
+      pageSize = itemsPosition + itemsSize;
 
       // Page
       for (let i = pageEndIndex; i < endIndex && paddingStart + pageSize < MIN_PAGE_SIZE; ++i) {
@@ -806,23 +820,23 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
       for (let i = pageStartIndex - 1; i >= startIndex && paddingStart + pageSize < MIN_PAGE_SIZE; --i) {
         const itemSize = itemSizeCache.getOrSet(i, estimateItemSize);
 
-        zonePosition += itemSize;
+        itemsPosition += itemSize;
         pageSize += itemSize;
         pageStartIndex = i;
       }
     } else if (actualScrollPosition <= prevPageSize * PAGE_THRESHOLD) {
       // Go to the previous page
 
-      zonePosition = 0;
+      itemsPosition = 0;
       pageSize = 0;
-      pageStartIndex = zoneStartIndex;
-      pageEndIndex = zoneEndIndex;
+      pageStartIndex = itemsStartIndex;
+      pageEndIndex = itemsEndIndex;
 
       // Threshold
       for (
         let i = pageEndIndex;
         i < endIndex &&
-        actualZonePosition + zoneSize - (scrollPosition + containerSize) + paddingStart + pageSize <
+        actualItemsPosition + itemsSize - (scrollPosition + containerSize) + paddingStart + pageSize <
           MIN_PAGE_SIZE * PAGE_THRESHOLD;
         ++i
       ) {
@@ -830,13 +844,13 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
         pageEndIndex = i + 1;
       }
 
-      pageSize += zoneSize;
+      pageSize += itemsSize;
 
       // Page
       for (let i = pageStartIndex - 1; i >= startIndex && paddingStart + pageSize < MIN_PAGE_SIZE; --i) {
         const size = itemSizeCache.getOrSet(i, estimateItemSize);
 
-        zonePosition += size;
+        itemsPosition += size;
         pageSize += size;
         pageStartIndex = i;
       }
@@ -848,16 +862,16 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
       }
     }
 
-    if (scrollShift !== 0 || actualZonePosition !== zonePosition) {
+    if (scrollShift !== 0 || actualItemsPosition !== itemsPosition) {
       scrollShift = 0;
-      requiredScrollPosition = scrollPosition + zonePosition - actualZonePosition;
+      requiredScrollPosition = scrollPosition + itemsPosition - actualItemsPosition;
     }
 
     if (
       // Accommodate new items if page size is insufficient
       ((pageStartIndex < prevPageStartIndex || pageEndIndex > prevPageEndIndex) && prevPageSize < containerSize) ||
-      // Non-empty page should not yield an empty zone
-      (prevPageStartIndex === prevPageEndIndex && zoneStartIndex === zoneEndIndex && pageStartIndex !== pageEndIndex)
+      // Non-empty page should not yield empty items
+      (prevPageStartIndex === prevPageEndIndex && itemsStartIndex === itemsEndIndex && pageStartIndex !== pageEndIndex)
     ) {
       state.pageStartIndex = pageStartIndex;
       state.pageEndIndex = pageEndIndex;
@@ -867,14 +881,14 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     }
   }
 
-  if (prevZoneStartIndex !== zoneStartIndex || prevZoneEndIndex !== zoneEndIndex) {
-    // Populate zone items
+  if (prevItemsStartIndex !== itemsStartIndex || prevItemsEndIndex !== itemsEndIndex) {
+    // Populate items items
     const items: VirtualItem[] = [];
 
-    for (let i = zoneStartIndex; i < zoneEndIndex; ++i) {
-      if (i >= prevZoneStartIndex && i < prevZoneEndIndex) {
+    for (let i = itemsStartIndex; i < itemsEndIndex; ++i) {
+      if (i >= prevItemsStartIndex && i < prevItemsEndIndex) {
         // Reuse previously rendered items
-        items.push(prevItems[i - prevZoneStartIndex]);
+        items.push(prevItems[i - prevItemsStartIndex]);
       } else {
         items.push({ index: i, ref: { current: null } });
       }
@@ -888,26 +902,26 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     prevPageSize !== pageSize ||
     prevPageStartIndex !== pageStartIndex ||
     prevPageEndIndex !== pageEndIndex ||
-    prevZonePosition !== zonePosition ||
-    prevZoneStartIndex !== zoneStartIndex ||
-    prevZoneEndIndex !== zoneEndIndex ||
-    prevVisibleZoneStartIndex !== visibleZoneStartIndex ||
-    prevVisibleZoneEndIndex !== visibleZoneEndIndex
+    prevItemsPosition !== itemsPosition ||
+    prevItemsStartIndex !== itemsStartIndex ||
+    prevItemsEndIndex !== itemsEndIndex ||
+    prevVisibleItemsStartIndex !== visibleItemsStartIndex ||
+    prevVisibleItemsEndIndex !== visibleItemsEndIndex
   ) {
     state.version++;
   }
 
   state.anchorIndex = null;
-  state.adjustedZonePosition = zonePosition - scrollShift;
+  state.adjustedItemsPosition = itemsPosition - scrollShift;
   state.requiredScrollPosition = actualScrollPosition !== requiredScrollPosition ? requiredScrollPosition : null;
   state.pageSize = pageSize;
   state.pageStartIndex = pageStartIndex;
   state.pageEndIndex = pageEndIndex;
-  state.zonePosition = zonePosition;
-  state.zoneStartIndex = zoneStartIndex;
-  state.zoneEndIndex = zoneEndIndex;
-  state.visibleZoneStartIndex = visibleZoneStartIndex;
-  state.visibleZoneEndIndex = visibleZoneEndIndex;
+  state.itemsPosition = itemsPosition;
+  state.itemsStartIndex = itemsStartIndex;
+  state.itemsEndIndex = itemsEndIndex;
+  state.visibleItemsStartIndex = visibleItemsStartIndex;
+  state.visibleItemsEndIndex = visibleItemsEndIndex;
   state.pivotOffset = pivotOffset;
   state.pivotIndex = pivotIndex;
   state.scrollShift = scrollShift;
