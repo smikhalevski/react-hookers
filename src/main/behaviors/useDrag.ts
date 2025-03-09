@@ -1,4 +1,4 @@
-import { EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
+import React, { type DOMAttributes, EffectCallback, useLayoutEffect, useState } from 'react';
 import { DOMEventHandler } from '../types';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { emptyArray, noop } from '../utils/lang';
@@ -9,6 +9,13 @@ import { emptyArray, noop } from '../utils/lang';
  * @group Behaviors
  */
 export interface DragValue {
+  /**
+   * Props of an element for which drag is tracked.
+   *
+   * An object which identity never changes between renders.
+   */
+  dragProps: DOMAttributes<Element>;
+
   /**
    * `true` if an element is currently being dragged.
    */
@@ -28,12 +35,30 @@ export interface DragValue {
  */
 export interface DragInfo {
   /**
-   * Pointer X coordinate relative to window top-left corner. Doesn't include the scroll position.
+   * Pointer X coordinate relative to window top-left corner where the drag has started.
+   *
+   * Doesn't include the scroll position.
+   */
+  originX: number;
+
+  /**
+   * Pointer Y coordinate relative to window top-left corner where the drag has started.
+   *
+   * Doesn't include the scroll position.
+   */
+  originY: number;
+
+  /**
+   * Pointer X coordinate relative to window top-left corner.
+   *
+   * Doesn't include the scroll position.
    */
   clientX: number;
 
   /**
-   * Pointer Y coordinate relative to window top-left corner. Doesn't include the scroll position.
+   * Pointer Y coordinate relative to window top-left corner.
+   *
+   * Doesn't include the scroll position.
    */
   clientY: number;
 
@@ -103,17 +128,15 @@ export interface DragProps {
 /**
  * Handles the drag behaviour across platforms.
  *
- * @param ref A ref to a draggable element.
  * @param props Drag props.
  * @returns An object which identity never changes between renders.
  * @group Behaviors
  */
-export function useDrag(ref: RefObject<HTMLElement>, props: DragProps): DragValue {
+export function useDrag(props: DragProps): DragValue {
   const [isDragged, setDragged] = useState(false);
 
   const manager = useFunctionOnce(createDragManager, setDragged);
 
-  manager.ref = ref;
   manager.props = props;
   manager.value.isDragged = isDragged;
 
@@ -124,7 +147,6 @@ export function useDrag(ref: RefObject<HTMLElement>, props: DragProps): DragValu
 }
 
 interface DragManager {
-  ref: RefObject<HTMLElement>;
   props: DragProps;
   value: DragValue;
   onMounted: EffectCallback;
@@ -136,17 +158,7 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
   let unsubscribeEventListeners = noop;
   let cancel = noop;
 
-  const handleMounted: EffectCallback = () => {
-    document.addEventListener('touchstart', handleDragStart, { passive: false });
-    document.addEventListener('mousedown', handleDragStart);
-
-    return () => {
-      document.removeEventListener('touchstart', handleDragStart);
-      document.removeEventListener('mousedown', handleDragStart);
-
-      unsubscribeEventListeners();
-    };
-  };
+  const handleMounted: EffectCallback = () => () => unsubscribeEventListeners();
 
   const handleUpdated: EffectCallback = () => {
     if (manager.props.isDisabled) {
@@ -154,27 +166,30 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
     }
   };
 
-  const handleDragStart: DOMEventHandler<MouseEvent | TouchEvent> = event => {
+  const handleDragStart = (event: React.TouchEvent | React.MouseEvent): void => {
     const { isDisabled, onDragStart, onDragChange } = manager.props;
-    const target = manager.ref.current;
 
-    if (isDisabled || isDragged || event.defaultPrevented || target === null || !target.contains(event.target)) {
+    if (isDisabled || isDragged || event.defaultPrevented) {
       return;
     }
 
     event.preventDefault();
 
-    const targetRect = target.getBoundingClientRect();
+    const targetRect = event.currentTarget.getBoundingClientRect();
 
-    const pointerOffsetY = getClientY(event) - targetRect.top;
-    const pointerOffsetX = getClientX(event) - targetRect.left;
+    const originX = getClientX(event);
+    const originY = getClientY(event);
+    const pointerOffsetX = originX - targetRect.left;
+    const pointerOffsetY = originY - targetRect.top;
 
     const dragInfo: DragInfo = {
-      clientX: getClientX(event) - pointerOffsetX,
-      clientY: getClientY(event) - pointerOffsetY,
+      originX,
+      originY,
+      clientX: originX - pointerOffsetX,
+      clientY: originY - pointerOffsetY,
       pointerOffsetX,
       pointerOffsetY,
-      target,
+      target: event.currentTarget,
       targetRect,
     };
 
@@ -238,9 +253,12 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
   };
 
   const manager: DragManager = {
-    ref: undefined!,
     props: undefined!,
     value: {
+      dragProps: {
+        onTouchStart: handleDragStart,
+        onMouseDown: handleDragStart,
+      },
       isDragged: false,
       cancelDrag: () => cancel(),
     },
@@ -251,10 +269,10 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
   return manager;
 }
 
-function getClientX(event: MouseEvent | TouchEvent): number {
+function getClientX(event: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent): number {
   return 'touches' in event ? event.touches[0].clientX : event.clientX;
 }
 
-function getClientY(event: MouseEvent | TouchEvent): number {
+function getClientY(event: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent): number {
   return 'touches' in event ? event.touches[0].clientY : event.clientY;
 }

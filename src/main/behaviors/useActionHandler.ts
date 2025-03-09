@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-const ActionHandlerContext = createContext<((value: unknown) => void) | undefined>(undefined);
+const ActionHandlerContext = createContext<((value: any) => void) | undefined>(undefined);
 
 ActionHandlerContext.displayName = 'ActionHandlerContext';
 
@@ -18,6 +18,6 @@ export const ActionHandlerProvider = ActionHandlerContext.Provider;
  * @see {@link ActionHandlerProvider}
  * @group Behaviors
  */
-export function useActionHandler(): ((value: unknown) => void) | undefined {
+export function useActionHandler(): ((value: any) => void) | undefined {
   return useContext(ActionHandlerContext);
 }

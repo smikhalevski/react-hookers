@@ -77,8 +77,9 @@ export function useTrackHandle(ref: RefObject<HTMLElement>, props: HeadlessTrack
   manager.dragProps.onDragEnd = props.onDragEnd;
   manager.dragProps.onDragChange = props.onDragChange;
 
-  const dragValue = useDrag(ref, manager.dragProps);
+  const dragValue = useDrag(manager.dragProps);
 
+  manager.value.handleProps = dragValue.dragProps;
   manager.value.isDragged = dragValue.isDragged;
   manager.value.cancelDrag = manager.cancelDrag = dragValue.cancelDrag;
 
@@ -124,7 +125,7 @@ function createTrackHandleManager(): TrackHandleManager {
     },
     props: undefined!,
     value: {
-      handleProps: {},
+      handleProps: undefined!,
       isDragged: false,
       cancelDrag: noop,
     },
