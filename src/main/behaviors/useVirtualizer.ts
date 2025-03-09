@@ -857,7 +857,7 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
       // Accommodate new items if page size is insufficient
       ((pageStartIndex < prevPageStartIndex || pageEndIndex > prevPageEndIndex) && prevPageSize < containerSize) ||
       // Non-empty page should not yield an empty zone
-      (prevPageStartIndex === prevZoneEndIndex && zoneStartIndex === zoneEndIndex && pageStartIndex !== pageEndIndex)
+      (prevPageStartIndex === prevPageEndIndex && zoneStartIndex === zoneEndIndex && pageStartIndex !== pageEndIndex)
     ) {
       state.pageStartIndex = pageStartIndex;
       state.pageEndIndex = pageEndIndex;
