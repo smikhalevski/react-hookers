@@ -85,6 +85,8 @@ export function useTrackHandle(props: HeadlessTrackHandleProps): HeadlessTrackHa
   return manager.value;
 }
 
+const { min, max } = Math;
+
 interface TrackHandleManager {
   dragProps: DragProps;
   props: HeadlessTrackHandleProps;
@@ -106,16 +108,16 @@ function createTrackHandleManager(): TrackHandleManager {
     const top = trackRect.top + handleMargin;
     const left = trackRect.left + handleMargin;
 
-    const right = Math.max(left, trackRect.right - handleMargin);
-    const bottom = Math.max(top, trackRect.bottom - handleMargin);
+    const right = max(left, trackRect.right - handleMargin);
+    const bottom = max(top, trackRect.bottom - handleMargin);
+
+    const percentage =
+      orientation === 'vertical'
+        ? (min(bottom, max(info.clientY, top)) - top) / (bottom - top - info.targetRect.height)
+        : (min(right, max(info.clientX, left)) - left) / (right - left - info.targetRect.width);
 
     onDrag?.(info);
-
-    onPercentageChange?.(
-      orientation === 'vertical'
-        ? (Math.min(bottom, Math.max(info.clientY, top)) - top) / (bottom - top - info.targetRect.height)
-        : (Math.min(right, Math.max(info.clientX, left)) - left) / (right - left - info.targetRect.width)
-    );
+    onPercentageChange?.(percentage);
   };
 
   const manager: TrackHandleManager = {

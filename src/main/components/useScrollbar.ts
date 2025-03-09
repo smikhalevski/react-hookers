@@ -67,13 +67,13 @@ export interface HeadlessScrollbarProps {
   containerRef: RefObject<Element>;
 
   /**
-   * A reference to a scrollbar track element.
+   * Returns a bounding rect of a track.
    */
-  trackRef: RefObject<Element>;
+  getTrackRect: () => DOMRect | undefined;
 
   /**
-   * Minimum distance between {@link trackRef a scrollbar track} bounds and {@link handleRef a scrollbar handle} in
-   * the direction of scrollbar {@link orientation}.
+   * Minimum distance between {@link getTrackRect a scrollbar track} bounds and
+   * {@link HeadlessScrollbarValue.handleProps a scrollbar handle} in the direction of a scrollbar {@link orientation}.
    *
    * @default 0
    */
@@ -114,6 +114,7 @@ export function useScrollbar(props: HeadlessScrollbarProps): HeadlessScrollbarVa
   const manager = useFunctionOnce(createScrollbarManager, setStatus);
 
   manager.props = props;
+  manager.trackHandleProps.getTrackRect = props.getTrackRect;
   manager.trackHandleProps.handleMargin = props.handleMargin;
   manager.trackHandleProps.orientation = props.orientation === 'horizontal' ? 'horizontal' : 'vertical';
 
@@ -156,8 +157,6 @@ function createScrollbarManager(setStatus: (status: number) => void): ScrollbarM
     percentage: 0,
     ratio: 0,
   };
-
-  const getTrackRect = (): DOMRect | undefined => manager.props.trackRef.current?.getBoundingClientRect();
 
   const deactivate = (): void => {
     if (status === STATUS_NOT_SCROLLABLE) {
@@ -267,7 +266,7 @@ function createScrollbarManager(setStatus: (status: number) => void): ScrollbarM
 
   const manager: ScrollbarManager = {
     trackHandleProps: {
-      getTrackRect,
+      getTrackRect: undefined!,
       onPercentageChange: handleScrollbarScroll,
       onDragChange: handleScrollbarDragChange,
     },
