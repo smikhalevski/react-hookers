@@ -72,11 +72,6 @@ export interface HeadlessScrollbarProps {
   trackRef: RefObject<Element>;
 
   /**
-   * A reference to a scrollbar handle element.
-   */
-  handleRef: RefObject<HTMLElement>;
-
-  /**
    * Minimum distance between {@link trackRef a scrollbar track} bounds and {@link handleRef a scrollbar handle} in
    * the direction of scrollbar {@link orientation}.
    *
@@ -122,7 +117,7 @@ export function useScrollbar(props: HeadlessScrollbarProps): HeadlessScrollbarVa
   manager.trackHandleProps.handleMargin = props.handleMargin;
   manager.trackHandleProps.orientation = props.orientation === 'horizontal' ? 'horizontal' : 'vertical';
 
-  const trackHandleValue = useTrackHandle(props.handleRef, manager.trackHandleProps);
+  const trackHandleValue = useTrackHandle(manager.trackHandleProps);
 
   manager.cancelDrag = trackHandleValue.cancelDrag;
   manager.value.handleProps = trackHandleValue.handleProps;

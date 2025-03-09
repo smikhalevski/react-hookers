@@ -271,7 +271,7 @@ export function useMenuItem<T>(
   manager.handleClose = useCloseHandler();
   manager.handleAction = useActionHandler();
 
-  const pressableValue = usePressable(ref, manager.pressableProps);
+  const pressableValue = usePressable(manager.pressableProps);
   const { value } = manager;
 
   value.menuItemProps = useFunctionOnce(mergeProps, pressableValue.pressableProps, manager.menuItemProps);

@@ -1,4 +1,4 @@
-import { DOMAttributes, RefObject } from 'react';
+import { DOMAttributes } from 'react';
 import { DragInfo, DragProps, useDrag } from '../behaviors/useDrag';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { noop } from '../utils/lang';
@@ -63,12 +63,11 @@ export interface HeadlessTrackHandleProps extends DragProps {
 /**
  * A handle that can be dragged along the track.
  *
- * @param ref A reference to a handle element.
  * @param props Track handle props.
  * @returns An object which identity never changes between renders.
  * @group Components
  */
-export function useTrackHandle(ref: RefObject<HTMLElement>, props: HeadlessTrackHandleProps): HeadlessTrackHandleValue {
+export function useTrackHandle(props: HeadlessTrackHandleProps): HeadlessTrackHandleValue {
   const manager = useFunctionOnce(createTrackHandleManager);
 
   manager.props = props;

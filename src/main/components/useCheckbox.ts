@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, LabelHTMLAttributes, RefObject } from 'react';
+import { InputHTMLAttributes, LabelHTMLAttributes } from 'react';
 import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
 import { useFunctionOnce } from '../useFunctionOnce';
@@ -86,14 +86,12 @@ export interface HeadlessCheckboxProps extends HoverProps, FocusProps {
  * Provides the behavior and accessibility implementation for a checkbox component. Checkboxes allow users to select
  * multiple items from a list of individual items, or to mark one individual item as selected.
  *
- * @param ref A reference to an input element. This must be the same element to which
- * {@link HeadlessCheckboxValue.inputProps} are attached.
  * @param props Checkbox props.
  * @group Components
  */
-export function useCheckbox(ref: RefObject<HTMLInputElement>, props: HeadlessCheckboxProps): HeadlessCheckboxValue {
+export function useCheckbox(props: HeadlessCheckboxProps): HeadlessCheckboxValue {
   const hoverValue = useHover(props);
-  const focusValue = useFocus(ref, props);
+  const focusValue = useFocus(props);
   const fallbackId = useUniqueId();
 
   const manager = useFunctionOnce(createCheckboxManager, hoverValue, focusValue);

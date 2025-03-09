@@ -1,4 +1,4 @@
-import { HTMLAttributes, LabelHTMLAttributes, RefObject, useState } from 'react';
+import { HTMLAttributes, LabelHTMLAttributes, useState } from 'react';
 import { type PressableProps, usePressable } from '../behaviors/usePressable';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { useUniqueId } from '../useUniqueId';
@@ -109,19 +109,17 @@ export interface HeadlessSelectProps<T> extends PressableProps {
  * Provides the behavior and accessibility implementation for a select component. A select displays a collapsible list
  * of options and allows a user to select one of them.
  *
- * @param ref A reference to a select trigger element that opens and closes a select dropdown. This must be the same
- * element to which {@link HeadlessSelectValue.triggerProps} are attached.
  * @param props Select props.
  * @returns An object which identity never changes between renders.
  * @template T A selected value.
  * @group Components
  */
-export function useSelect<T>(ref: RefObject<Element>, props: HeadlessSelectProps<T>): HeadlessSelectValue<T> {
+export function useSelect<T>(props: HeadlessSelectProps<T>): HeadlessSelectValue<T> {
   const [isOpened, setOpened] = useState(false);
   const manager = useFunctionOnce(createSelectManager<T>, setOpened);
   const fallbackId = useUniqueId();
 
-  const pressableValue = usePressable(ref, mergeProps(props, manager.pressableProps));
+  const pressableValue = usePressable(mergeProps(props, manager.pressableProps));
   const { value } = manager;
 
   value.triggerProps = pressableValue.pressableProps;

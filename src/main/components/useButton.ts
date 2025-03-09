@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, RefObject } from 'react';
+import { ButtonHTMLAttributes } from 'react';
 import { PressableProps, usePressable } from '../behaviors/usePressable';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { DATA_AUTOFOCUS } from '../utils/dom';
@@ -55,14 +55,12 @@ export interface HeadlessButtonProps extends PressableProps {
  * Provides the behavior and accessibility implementation for a button component. Handles mouse, keyboard, and touch
  * interactions, focus behavior, and ARIA props for both native button elements.
  *
- * @param ref A reference to a button element. This must be the same element to which
- * {@link HeadlessButtonValue.buttonProps} are attached.
  * @param props Button props.
  * @returns An object which identity never changes between renders.
  * @group Components
  */
-export function useButton(ref: RefObject<HTMLButtonElement>, props: HeadlessButtonProps): HeadlessButtonValue {
-  const pressableValue = usePressable(ref, props);
+export function useButton(props: HeadlessButtonProps): HeadlessButtonValue {
+  const pressableValue = usePressable(props);
   const value = useFunctionOnce(createButtonValue);
 
   value.buttonProps = pressableValue.pressableProps;

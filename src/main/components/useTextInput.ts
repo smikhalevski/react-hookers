@@ -1,4 +1,4 @@
-import { HTMLInputAutoCompleteAttribute, InputHTMLAttributes, LabelHTMLAttributes, RefObject } from 'react';
+import { HTMLInputAutoCompleteAttribute, InputHTMLAttributes, LabelHTMLAttributes } from 'react';
 import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
 import { useFunctionOnce } from '../useFunctionOnce';
@@ -101,15 +101,13 @@ export interface HeadlessTextInputProps extends HoverProps, FocusProps {
 /**
  * Provides the behavior and accessibility implementation for a text input.
  *
- * @param ref A reference to a textarea or input element. This must be the same element to which
- * {@link HeadlessTextInputValue.inputProps} are attached.
  * @param props Text input props.
  * @returns An object which identity never changes between renders.
  * @group Components
  */
-export function useTextInput(ref: RefObject<HTMLElement>, props: HeadlessTextInputProps): HeadlessTextInputValue {
+export function useTextInput(props: HeadlessTextInputProps): HeadlessTextInputValue {
   const hoverValue = useHover(props);
-  const focusValue = useFocus(ref, props);
+  const focusValue = useFocus(props);
   const fallbackId = useUniqueId();
 
   const manager = useFunctionOnce(createTextInputManager, hoverValue, focusValue);

@@ -1,11 +1,9 @@
 import { PubSub } from 'parallel-universe';
-import React, { DOMAttributes, EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
+import React, { DOMAttributes, EffectCallback, type FocusEventHandler, useLayoutEffect, useState } from 'react';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { getFocusedElement, isFocusable, isPortalEvent } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
 import { focusRing } from './focusRing';
-
-const REQUEST_FOCUS_EVENT = 'requestfocus';
 
 const cancelFocusPubSub = new PubSub();
 
@@ -51,13 +49,7 @@ export function requestFocus(element: Element | null, options?: RequestFocusOpti
 
   element.focus(options === undefined ? undefined : { preventScroll: options.isScrollPrevented });
 
-  if (getFocusedElement() !== element) {
-    // Cannot focus the requested element
-    return false;
-  }
-
-  element.dispatchEvent(new CustomEvent(REQUEST_FOCUS_EVENT, { bubbles: true }));
-  return true;
+  return getFocusedElement() === element;
 }
 
 /**
@@ -123,18 +115,15 @@ export interface FocusProps {
 /**
  * Handles focus events and normalizes them across platforms.
  *
- * @param ref A reference to a focusable element. This must be the same element to which {@link FocusValue.focusProps}
- * are attached.
  * @param props Focus props.
  * @returns An object which identity never changes between renders.
  * @group Behaviors
  */
-export function useFocus(ref: RefObject<Element>, props: FocusProps = emptyObject): FocusValue {
+export function useFocus(props: FocusProps = emptyObject): FocusValue {
   const [status, setStatus] = useState(STATUS_BLURRED);
 
   const manager = useFunctionOnce(createFocusManager, setStatus);
 
-  manager.ref = ref;
   manager.props = props;
   manager.value.isFocused =
     (manager.value.isFocusVisible = status === STATUS_FOCUS_VISIBLE) || status === STATUS_FOCUSED;
@@ -150,7 +139,6 @@ const STATUS_FOCUSED = 1;
 const STATUS_FOCUS_VISIBLE = 2;
 
 interface FocusManager {
-  ref: RefObject<Element>;
   props: FocusProps;
   value: FocusValue;
   onMounted: EffectCallback;
@@ -180,13 +168,9 @@ function createFocusManager(setStatus: (status: number) => void): FocusManager {
 
     const unsubscribeCancelFocus = cancelFocusPubSub.subscribe(cancel);
 
-    window.addEventListener(REQUEST_FOCUS_EVENT, handleRequestFocus, true);
-
     return () => {
       unsubscribeFocusRing();
       unsubscribeCancelFocus();
-
-      window.removeEventListener(REQUEST_FOCUS_EVENT, handleRequestFocus, true);
     };
   };
 
@@ -202,14 +186,13 @@ function createFocusManager(setStatus: (status: number) => void): FocusManager {
     }
   };
 
-  const handleRequestFocus = (event: React.FocusEvent | Event) => {
+  const handleFocus: FocusEventHandler = event => {
     const { isDisabled, onFocusChange, onFocus, onFocusVisible } = manager.props;
 
     if (
       isDisabled ||
       status !== STATUS_BLURRED ||
-      (event.type === 'focus' && isPortalEvent(event as React.FocusEvent)) ||
-      (event.type === REQUEST_FOCUS_EVENT && event.target !== manager.ref.current)
+      (event.type === 'focus' && isPortalEvent(event as React.FocusEvent))
     ) {
       return;
     }
@@ -240,13 +223,12 @@ function createFocusManager(setStatus: (status: number) => void): FocusManager {
   };
 
   const manager: FocusManager = {
-    ref: undefined!,
     props: undefined!,
     value: {
       isFocused: false,
       isFocusVisible: false,
       focusProps: {
-        onFocus: handleRequestFocus,
+        onFocus: handleFocus,
         onBlur: cancel,
       },
     },

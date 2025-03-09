@@ -1,4 +1,4 @@
-import { EffectCallback, HTMLAttributes, RefObject, useEffect } from 'react';
+import { EffectCallback, HTMLAttributes, useEffect } from 'react';
 import { focusRing } from '../behaviors/focusRing';
 import { FocusProps, useFocus } from '../behaviors/useFocus';
 import { HoverProps, useHover } from '../behaviors/useHover';
@@ -78,16 +78,15 @@ export interface HeadlessTooltipProps {
 /**
  * Provides the behavior and accessibility implementation for a tooltip.
  *
- * @param ref A reference to an anchor element for which tooltip is displayed.
  * @param props Tooltip props.
  * @returns An object which identity never changes between renders.
  * @group Components
  */
-export function useTooltip(ref: RefObject<Element>, props: HeadlessTooltipProps): HeadlessTooltipValue {
+export function useTooltip(props: HeadlessTooltipProps): HeadlessTooltipValue {
   const manager = useFunctionOnce(createTooltipManager);
 
   const hoverValue = useHover(manager.anchorInteractionProps);
-  const focusValue = useFocus(ref, manager.anchorInteractionProps);
+  const focusValue = useFocus(manager.anchorInteractionProps);
   const tooltipId = useUniqueId();
 
   const { value } = manager;

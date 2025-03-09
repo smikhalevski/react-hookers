@@ -1,4 +1,4 @@
-import { DOMAttributes, RefObject } from 'react';
+import { DOMAttributes } from 'react';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { emptyObject } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
@@ -52,16 +52,14 @@ export interface PressableProps extends HoverProps, PressProps, FocusProps {}
  *
  * This hook is a combination of {@link useHover}, {@link usePress} and {@link useFocus} hooks.
  *
- * @param ref A reference to a pressable element. This must be the same element to which
- * {@link PressableValue.pressableProps} are attached.
  * @param props Pressable props.
  * @returns An object which identity never changes between renders.
  * @group Behaviors
  */
-export function usePressable(ref: RefObject<Element>, props: PressableProps = emptyObject): PressableValue {
+export function usePressable(props: PressableProps = emptyObject): PressableValue {
   const hoverValue = useHover(props);
   const pressValue = usePress(props);
-  const focusValue = useFocus(ref, props);
+  const focusValue = useFocus(props);
   const value = useFunctionOnce(createPressableValue, hoverValue, pressValue, focusValue);
 
   value.isHovered = hoverValue.isHovered;
