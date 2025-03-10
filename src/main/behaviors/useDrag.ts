@@ -35,42 +35,44 @@ export interface DragValue {
  */
 export interface DragInfo {
   /**
-   * Pointer X coordinate relative to window top-left corner where the drag has started.
+   * The X coordinate of the dragged element's bounding rect, captured when the drag has started.
    *
    * Doesn't include the scroll position.
    */
-  originX: number;
+  startX: number;
 
   /**
-   * Pointer Y coordinate relative to window top-left corner where the drag has started.
+   * The Y coordinate of the dragged element's bounding rect, captured when the drag has started.
    *
    * Doesn't include the scroll position.
    */
-  originY: number;
+  startY: number;
 
   /**
-   * Pointer X coordinate relative to window top-left corner.
+   * The current X coordinate of the dragged element's bounding rect.
    *
    * Doesn't include the scroll position.
    */
-  clientX: number;
+  x: number;
 
   /**
-   * Pointer Y coordinate relative to window top-left corner.
+   * The current Y coordinate of the dragged element's bounding rect.
    *
    * Doesn't include the scroll position.
    */
-  clientY: number;
+  y: number;
 
   /**
-   * Pointer X offset relative to the top-left corner of the dragged element.
+   * The distance between the X coordinate of the dragged element's bounding rect and pointer X position, captured when
+   * the drag has started.
    */
-  pointerOffsetX: number;
+  offsetX: number;
 
   /**
-   * Pointer Y offset relative to the top-left corner of the dragged element.
+   * The distance between the T coordinate of the dragged element's bounding rect and pointer Y position, captured when
+   * the drag has started.
    */
-  pointerOffsetY: number;
+  offsetY: number;
 
   /**
    * The dragged element.
@@ -128,6 +130,26 @@ export interface DragProps {
 /**
  * Handles the drag behaviour across platforms.
  *
+ * @example
+ * const targetRef = useRef(null);
+ *
+ * const { dragProps, isDragged } = useDrag({
+ *   onDrag(info) {
+ *     targetRef.current.style.inset = `${info.y}px auto auto ${info.x}px`;
+ *   }
+ * });
+ *
+ * <div
+ *   {...dragProps}
+ *   ref={targetRef}
+ *   style={{
+ *     position: 'absolute',
+ *     width: 100,
+ *     height: 100,
+ *     backgroundColor: isDragged ? 'red' : 'blue',
+ *   }}
+ * />
+ *
  * @param props Drag props.
  * @returns An object which identity never changes between renders.
  * @group Behaviors
@@ -177,18 +199,18 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
 
     const targetRect = event.currentTarget.getBoundingClientRect();
 
-    const originX = getClientX(event);
-    const originY = getClientY(event);
-    const pointerOffsetX = originX - targetRect.left;
-    const pointerOffsetY = originY - targetRect.top;
+    const startX = targetRect.left;
+    const startY = targetRect.top;
+    const offsetX = getClientX(event) - startX;
+    const offsetY = getClientY(event) - startY;
 
     const dragInfo: DragInfo = {
-      originX,
-      originY,
-      clientX: originX - pointerOffsetX,
-      clientY: originY - pointerOffsetY,
-      pointerOffsetX,
-      pointerOffsetY,
+      startX,
+      startY,
+      x: startX,
+      y: startY,
+      offsetX,
+      offsetY,
       target: event.currentTarget,
       targetRect,
     };
@@ -211,8 +233,8 @@ function createDragManager(setDragged: (isDragged: boolean) => void): DragManage
 
       event.preventDefault();
 
-      dragInfo.clientX = getClientX(event) - pointerOffsetX;
-      dragInfo.clientY = getClientY(event) - pointerOffsetY;
+      dragInfo.x = getClientX(event) - offsetX;
+      dragInfo.y = getClientY(event) - offsetY;
 
       onDrag?.(dragInfo);
     };

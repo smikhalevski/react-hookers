@@ -113,8 +113,8 @@ function createTrackHandleManager(): TrackHandleManager {
 
     const percentage =
       orientation === 'vertical'
-        ? (min(bottom, max(info.clientY, top)) - top) / (bottom - top - info.targetRect.height)
-        : (min(right, max(info.clientX, left)) - left) / (right - left - info.targetRect.width);
+        ? (min(bottom, max(info.y, top)) - top) / (bottom - top - info.targetRect.height)
+        : (min(right, max(info.x, left)) - left) / (right - left - info.targetRect.width);
 
     onDrag?.(info);
     onPercentageChange?.(percentage);

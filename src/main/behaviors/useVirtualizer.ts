@@ -201,7 +201,7 @@ export interface VirtualizerProps {
  *   endIndex: Number.MAX_SAFE_INTEGER,
  *   containerRef,
  *
- *   onScroll: info => {
+ *   onScroll(info) {
  *     pageRef.current.style.height = info.pageSize + 'px';
  *     itemsRef.current.style.transform = `translateY(${info.itemsPosition}px)`;
  *   },

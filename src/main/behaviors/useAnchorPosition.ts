@@ -235,7 +235,7 @@ export interface AnchorPositionProps {
  *       alignY: 'center',
  *     },
  *   ],
- *   onPositionChange: info => {
+ *   onPositionChange(info) {
  *     targetRef.current.style.transform = `translateX(${info.x}px) translateY(${info.y}px)`;
  *   },
  * });
