@@ -3,6 +3,7 @@ import { DOMAttributes, EffectCallback, PointerEventHandler, useLayoutEffect, us
 import { useFunctionOnce } from '../useFunctionOnce';
 import { isPortalEvent } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
+import { cursor } from './cursor';
 
 const cancelHoverPubSub = new PubSub();
 
@@ -13,7 +14,7 @@ const cancelHoverPubSub = new PubSub();
  * @group Behaviors
  */
 export function cancelHover(): void {
-  unlockHover();
+  handleHoverUnlocked();
   cancelHoverPubSub.publish();
 }
 
@@ -92,8 +93,6 @@ const STATUS_NOT_HOVERED = 0;
 const STATUS_HOVERED = 1;
 const STATUS_HOVER_DISCARDED = 2;
 
-let hoverManagerCount = 0;
-
 interface HoverManager {
   props: HoverProps;
   value: HoverValue;
@@ -122,19 +121,19 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
   const handleMounted: EffectCallback = () => {
     const unsubscribeCancelHover = cancelHoverPubSub.subscribe(cancel);
 
-    if (++hoverManagerCount === 1) {
+    if (cancelHoverPubSub.listenerCount === 1) {
       window.addEventListener('blur', cancelHover);
-      window.addEventListener('pointerdown', lockHover, true);
-      window.addEventListener('pointerup', unlockHover, true);
+      window.addEventListener('pointerdown', handleHoverLocked, true);
+      window.addEventListener('pointerup', handleHoverUnlocked, true);
     }
 
     return () => {
       unsubscribeCancelHover();
 
-      if (hoverManagerCount-- === 1) {
+      if (cancelHoverPubSub.listenerCount === 0) {
         window.removeEventListener('blur', cancelHover);
-        window.removeEventListener('pointerdown', lockHover, true);
-        window.removeEventListener('pointerup', unlockHover, true);
+        window.removeEventListener('pointerdown', handleHoverLocked, true);
+        window.removeEventListener('pointerup', handleHoverUnlocked, true);
       }
     };
   };
@@ -165,7 +164,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
       status !== STATUS_NOT_HOVERED ||
       event.pointerType !== 'mouse' ||
       !(event.buttons === 0 || event.currentTarget.contains(hoverTarget)) ||
-      isPortalEvent(event)
+      isPortalEvent(event) ||
+      !cursor.isActive
     ) {
       return;
     }
@@ -206,10 +206,10 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
  */
 let hoverTarget: Element | null = null;
 
-function lockHover(event: PointerEvent): void {
+function handleHoverLocked(event: PointerEvent): void {
   hoverTarget = event.target;
 }
 
-function unlockHover(): void {
+function handleHoverUnlocked(): void {
   hoverTarget = null;
 }

@@ -58,6 +58,6 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "parallel-universe": "^6.1.1"
+    "parallel-universe": "^6.1.2"
   }
 }

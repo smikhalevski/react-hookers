@@ -1,4 +1,5 @@
 export { ArrowKeysNavigation } from './behaviors/ArrowKeysNavigation';
+export { cursor } from './behaviors/cursor';
 export { focusRing } from './behaviors/focusRing';
 export { FocusScope, type FocusScopeProviderProps } from './behaviors/FocusScope';
 export { useActionHandler, ActionHandlerProvider } from './behaviors/useActionHandler';
