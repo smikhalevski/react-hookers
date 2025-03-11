@@ -13,15 +13,6 @@ export type DOMEventHandler<E extends Event = Event> = (event: E) => void;
 export type FocusableElement = HTMLElement | SVGElement;
 
 /**
- * A callback that returns a value, or a value itself.
- *
- * @template T A value.
- * @template A Arguments of a callback that return a value.
- * @group Other
- */
-export type ValueOrProvider<T, A extends any[] = []> = T | ((...args: A) => T);
-
-/**
  * Schedules a timed invocation of the callback with provided arguments.
  *
  * @param cb The callback to invoke.

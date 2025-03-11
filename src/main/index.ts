@@ -90,7 +90,7 @@ export {
   isAutoFocusable,
   isPortalEvent,
 } from './utils/dom';
-export { callOrGet, isEqual } from './utils/lang';
+export { arrayOf, callOrGet, isEqual } from './utils/lang';
 export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/rects';
 export { mergeProps, mergeClassNames } from './utils/mergeProps';
 export { mergeRefs } from './utils/mergeRefs';
@@ -136,4 +136,4 @@ export { useRerenderInterval } from './useRerenderInterval';
 export { useTimeout } from './useTimeout';
 export { useUniqueId } from './useUniqueId';
 export { useViewport, type ViewportProps } from './useViewport';
-export { type DOMEventHandler, type FocusableElement, type ValueOrProvider, type Schedule } from './types';
+export { type DOMEventHandler, type FocusableElement, type Schedule } from './types';

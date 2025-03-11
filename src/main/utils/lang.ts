@@ -1,5 +1,3 @@
-import { ValueOrProvider } from '../types';
-
 export const NEVER = {} as never;
 
 export const emptyObject = Object.freeze({});
@@ -18,7 +16,7 @@ export function noop() {}
  * @template A Arguments of a callback that return a value.
  * @group Other
  */
-export function callOrGet<T, A extends any[]>(value: ValueOrProvider<T, A>, ...args: A): T;
+export function callOrGet<T, A extends any[]>(value: T | ((...args: A) => T), ...args: A): T;
 
 export function callOrGet(value: unknown) {
   if (typeof value !== 'function') {
@@ -59,4 +57,27 @@ export function die(message?: string): never {
  */
 export function isEqual(a: unknown, b: unknown): boolean {
   return a === b || (a !== a && b !== b);
+}
+
+/**
+ * Creates an array of given {@link length} and fills it with {@link value}.
+ *
+ * @example
+ * // Create a array of 3 element refs
+ * const refs = useFunction(arrayOf, 3, createRef<Element>);
+ *
+ * @param length The length of the array.
+ * @param value A value or a value provider callback.
+ * @returns An array.
+ * @template T A value stored in an array.
+ * @group Other
+ */
+export function arrayOf<T = any>(length: number, value?: T | ((index: number) => T)): T[] {
+  const values: any[] = [];
+
+  for (let i = 0; i < length; ++i) {
+    values.push(callOrGet(value, i));
+  }
+
+  return values;
 }
