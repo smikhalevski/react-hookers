@@ -206,7 +206,7 @@ export interface AnchorPositionProps {
   /**
    * If `true` then horizontal alignment is mirrored.
    *
-   * @default false
+   * By default, RTL is derived a document.
    */
   isRTL?: boolean;
 

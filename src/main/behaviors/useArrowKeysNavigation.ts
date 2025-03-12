@@ -1,10 +1,27 @@
 import React, { EffectCallback, useLayoutEffect } from 'react';
 import { useFunctionOnce } from '../useFunctionOnce';
+import { getTextDirection } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
 import { focusRing } from './focusRing';
 import { FocusControls, OrderedFocusOptions } from './useFocusControls';
 import { cancelHover } from './useHover';
 import { cancelPress } from './usePress';
+
+/**
+ * Focus cycling modifier.
+ *
+ * @see {@link ArrowKeysNavigationProps.focusCycle}
+ * @group Behaviors
+ */
+export type FocusCycle =
+  | 'arrowDownToFirst'
+  | 'arrowDownToLast'
+  | 'arrowUpToFirst'
+  | 'arrowUpToLast'
+  | 'arrowRightToNext'
+  | 'arrowLeftToPrevious'
+  | 'pageUpToFirst'
+  | 'pageDownToLast';
 
 /**
  * Props of the {@link useArrowKeysNavigation} hook.
@@ -36,11 +53,18 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
   orientation?: 'vertical' | 'horizontal' | 'auto';
 
   /**
-   * If `true` then focus cycles back to the first element after the last element and vice versa.
+   * The ordered list of focus cycling modifiers.
    *
-   * @default false
+   * By default, no focus cycling is done.
    */
-  isFocusCycled?: boolean;
+  focusCycle?: readonly FocusCycle[];
+
+  /**
+   * If `true` then <kbd>ArrowLeft</kbd> and <kbd>ArrowRight</kbd> behavior is mirrored when focus is cycled.
+   *
+   * By default, RTL is derived a document.
+   */
+  isRTL?: boolean;
 }
 
 /**
@@ -142,28 +166,20 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
 
   for (const manager of arrowKeysNavigationManagers) {
     const { focusControls, props } = manager;
-    const { isDisabled, orientation, isFocusCycled } = props;
+    const { isDisabled, orientation } = props;
 
     if (isDisabled || focusControls === null || !focusControls.isActive()) {
       continue;
     }
 
-    focusRing.reveal();
-
     if (
-      (orientation !== 'horizontal' &&
-        ((key === KEY_ARROW_UP &&
-          (focusControls.focusUp(props) || (isFocusCycled && focusControls.focusLast(props)))) ||
-          (key === KEY_ARROW_DOWN &&
-            (focusControls.focusDown(props) || (isFocusCycled && focusControls.focusFirst(props)))))) ||
-      (orientation !== 'vertical' &&
-        ((key === KEY_ARROW_LEFT &&
-          (focusControls.focusLeft(props) || (isFocusCycled && focusControls.focusLast(props)))) ||
-          (key === KEY_ARROW_RIGHT &&
-            (focusControls.focusRight(props) || (isFocusCycled && focusControls.focusFirst(props)))))) ||
-      (key === KEY_PAGE_UP && focusControls.focusFirst(props)) ||
-      (key === KEY_PAGE_DOWN && focusControls.focusLast(props))
+      ((orientation !== 'horizontal' && (key === KEY_ARROW_UP || key === KEY_ARROW_DOWN)) ||
+        (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT)) ||
+        key === KEY_PAGE_UP ||
+        key === KEY_PAGE_DOWN) &&
+      focusByKey(focusControls, key, props)
     ) {
+      focusRing.reveal();
       event.preventDefault();
       cancelHover();
       cancelPress();
@@ -185,4 +201,44 @@ export function isArrowKeyNavigationEvent(event: React.KeyboardEvent | KeyboardE
     !event.defaultPrevented &&
     !event.metaKey
   );
+}
+
+function focusByKey(focusControls: FocusControls, key: string, props: ArrowKeysNavigationProps): boolean {
+  const { focusCycle, isRTL = getTextDirection() === 'rtl' } = props;
+
+  if (
+    (key === KEY_ARROW_UP && focusControls.focusUp(props)) ||
+    (key === KEY_ARROW_DOWN && focusControls.focusDown(props)) ||
+    (key === KEY_ARROW_LEFT && focusControls.focusLeft(props)) ||
+    (key === KEY_ARROW_RIGHT && focusControls.focusRight(props)) ||
+    (key === KEY_PAGE_UP && focusControls.focusFirst(props)) ||
+    (key === KEY_PAGE_DOWN && focusControls.focusLast(props))
+  ) {
+    return true;
+  }
+
+  if (focusCycle === undefined) {
+    return false;
+  }
+
+  for (const type of focusCycle) {
+    if (
+      (key === KEY_ARROW_UP && type === 'arrowUpToFirst' && focusControls.focusFirst(props)) ||
+      (key === KEY_ARROW_UP && type === 'arrowUpToLast' && focusControls.focusLast(props)) ||
+      (key === KEY_ARROW_DOWN && type === 'arrowDownToFirst' && focusControls.focusFirst(props)) ||
+      (key === KEY_ARROW_DOWN && type === 'arrowDownToLast' && focusControls.focusLast(props)) ||
+      (key === KEY_ARROW_RIGHT &&
+        type === 'arrowRightToNext' &&
+        (isRTL ? focusControls.focusPrevious(props) : focusControls.focusNext(props))) ||
+      (key === KEY_ARROW_LEFT &&
+        type === 'arrowLeftToPrevious' &&
+        (isRTL ? focusControls.focusNext(props) : focusControls.focusPrevious(props))) ||
+      (key === KEY_PAGE_UP && type === 'pageUpToFirst' && focusControls.focusFirst(props)) ||
+      (key === KEY_PAGE_DOWN && type === 'pageDownToLast' && focusControls.focusLast(props))
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }
