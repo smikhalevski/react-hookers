@@ -10,7 +10,7 @@ import { DATA_AUTOFOCUS } from '../utils/dom';
  */
 export interface HeadlessButtonValue {
   /**
-   * Props of an element that must have a button behaviour.
+   * Props of an element that must have a button behavior.
    *
    * An object which identity never changes between renders.
    */

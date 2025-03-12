@@ -8,6 +8,6 @@
 npm install --save-prod react-hookers
 ```
 
-Headless UI library that provides components, behaviours, state management, and rendering primitives. 
+Headless UI library that provides components, behaviors, state management, and rendering primitives. 
 
 🚀 [API documentation is available here.](https://smikhalevski.github.io/react-hookers/)

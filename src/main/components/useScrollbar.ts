@@ -32,7 +32,7 @@ export interface ScrollbarInfo {
  */
 export interface HeadlessScrollbarValue {
   /**
-   * Props of an element that must have a scroll handle behaviour.
+   * Props of an element that must have a scroll handle behavior.
    *
    * An object which identity never changes between renders.
    */

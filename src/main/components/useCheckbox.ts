@@ -13,14 +13,14 @@ import { mergeProps } from '../utils/mergeProps';
  */
 export interface HeadlessCheckboxValue {
   /**
-   * Props of an element that must have a checkbox behaviour.
+   * Props of an element that must have a checkbox behavior.
    *
    * An object which identity never changes between renders.
    */
   inputProps: InputHTMLAttributes<HTMLInputElement>;
 
   /**
-   * Props of an element that must have a checkbox label behaviour.
+   * Props of an element that must have a checkbox label behavior.
    *
    * An object which identity never changes between renders.
    */

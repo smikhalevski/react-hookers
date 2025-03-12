@@ -61,7 +61,7 @@ export class HeadlessMenuState {
  */
 export interface HeadlessMenuValue {
   /**
-   * Props of an element that must have a menu behaviour.
+   * Props of an element that must have a menu behavior.
    *
    * An object which identity never changes between renders.
    */
@@ -169,7 +169,7 @@ function createMenuManager(): MenuManager {
  */
 export interface HeadlessMenuItemValue {
   /**
-   * Props of an element that must have a menu item behaviour.
+   * Props of an element that must have a menu item behavior.
    *
    * An object which identity never changes between renders.
    */

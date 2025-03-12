@@ -128,7 +128,7 @@ export interface DragProps {
 }
 
 /**
- * Handles the drag behaviour across platforms.
+ * Handles the drag behavior across platforms.
  *
  * @example
  * const targetRef = useRef(null);

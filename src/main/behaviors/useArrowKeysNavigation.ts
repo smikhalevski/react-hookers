@@ -53,6 +53,23 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
   orientation?: 'vertical' | 'horizontal' | 'auto';
 
   /**
+   * <kbd>PageUp</kbd> and <kbd>PageDown</kbd> keys behavior:
+   *
+   * <dl>
+   * <dt>"focus"</dt>
+   * <dd>Move focus to the first or last element. If {@link focusCycle focus cycling} is enabled it is also
+   * applied.</dd>
+   * <dt>"prevent"</dt>
+   * <dd>Paging events are prevented.</dd>
+   * <dt>"none"</dt>
+   * <dd>Paging events are ignored and default browser behavior may take place.</dd>
+   * </dl>
+   *
+   * @default "none"
+   */
+  pagingBehavior?: 'focus' | 'prevent' | 'none';
+
+  /**
    * The ordered list of focus cycling modifiers.
    *
    * By default, no focus cycling is done.
@@ -166,17 +183,21 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
 
   for (const manager of arrowKeysNavigationManagers) {
     const { focusControls, props } = manager;
-    const { isDisabled, orientation } = props;
+    const { isDisabled, orientation, pagingBehavior } = props;
 
     if (isDisabled || focusControls === null || !focusControls.isActive()) {
       continue;
     }
 
+    if (pagingBehavior === 'prevent' && (key === KEY_PAGE_UP || key === KEY_PAGE_DOWN)) {
+      event.preventDefault();
+      return;
+    }
+
     if (
-      ((orientation !== 'horizontal' && (key === KEY_ARROW_UP || key === KEY_ARROW_DOWN)) ||
-        (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT)) ||
-        key === KEY_PAGE_UP ||
-        key === KEY_PAGE_DOWN) &&
+      ((pagingBehavior === 'focus' && (key === KEY_PAGE_UP || key === KEY_PAGE_DOWN)) ||
+        (orientation !== 'horizontal' && (key === KEY_ARROW_UP || key === KEY_ARROW_DOWN)) ||
+        (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT))) &&
       focusByKey(focusControls, key, props)
     ) {
       focusRing.reveal();

@@ -13,14 +13,14 @@ import { mergeProps } from '../utils/mergeProps';
  */
 export interface HeadlessSelectValue<T> {
   /**
-   * Props of an element that must have a select trigger behaviour.
+   * Props of an element that must have a select trigger behavior.
    *
    * An object which identity never changes between renders.
    */
   triggerProps: HTMLAttributes<HTMLElement>;
 
   /**
-   * Props of an element that must have a select label behaviour.
+   * Props of an element that must have a select label behavior.
    *
    * An object which identity never changes between renders.
    */

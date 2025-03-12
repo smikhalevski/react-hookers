@@ -17,7 +17,7 @@ import { mergeProps } from '../utils/mergeProps';
  */
 export interface HeadlessTooltipValue {
   /**
-   * Props of an element that must have a tooltip behaviour.
+   * Props of an element that must have a tooltip behavior.
    *
    * An object which identity never changes between renders.
    */

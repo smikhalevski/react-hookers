@@ -13,14 +13,14 @@ import { mergeProps } from '../utils/mergeProps';
  */
 export interface HeadlessTextInputValue {
   /**
-   * Props of an element that must have a text input behaviour.
+   * Props of an element that must have a text input behavior.
    *
    * An object which identity never changes between renders.
    */
   inputProps: InputHTMLAttributes<HTMLElement>;
 
   /**
-   * Props of an element that must have an input label behaviour.
+   * Props of an element that must have an input label behavior.
    *
    * An object which identity never changes between renders.
    */
