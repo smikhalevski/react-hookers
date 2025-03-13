@@ -45,7 +45,6 @@ export const cursor = {
     if (cursorPubSub.listenerCount === 1) {
       window.addEventListener('mousemove', handleCursorActivate, true);
       window.addEventListener('mousedown', handleCursorActivate, true);
-      window.addEventListener('mouseup', handleCursorActivate, true);
     }
 
     return () => {
@@ -59,7 +58,6 @@ export const cursor = {
 
       window.removeEventListener('mousemove', handleCursorActivate, true);
       window.removeEventListener('mousedown', handleCursorActivate, true);
-      window.removeEventListener('mouseup', handleCursorActivate, true);
     };
   },
 };

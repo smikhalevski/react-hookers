@@ -18,6 +18,18 @@ export function cancelHover(): void {
   cancelHoverPubSub.publish();
 }
 
+const hoveredElements = new Set<Element>();
+
+/**
+ * Returns an array of {@link useHover hovered elements}.
+ *
+ * @see {@link useHover}
+ * @group Behaviors
+ */
+export function getHoveredElements(): Element[] {
+  return Array.from(hoveredElements);
+}
+
 /**
  * A value returned from the {@link useHover} hook.
  *
@@ -102,6 +114,7 @@ interface HoverManager {
 
 function createHoverManager(setHovered: (isHovered: boolean) => void): HoverManager {
   let status = STATUS_NOT_HOVERED;
+  let element: Element;
 
   const cancel = (): void => {
     const { onHoverChange, onHoverEnd } = manager.props;
@@ -114,13 +127,20 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
     status = STATUS_NOT_HOVERED;
     setHovered(false);
 
+    hoveredElements.delete(element);
+
     onHoverChange?.(false);
     onHoverEnd?.();
   };
 
   const handleMounted: EffectCallback = () => {
     const unsubscribeCancelHover = cancelHoverPubSub.subscribe(cancel);
-    const unsubscribeCursor = cursor.subscribe(handleCursor);
+    const unsubscribeCursor = cursor.subscribe(() => {
+      if (!cursor.isActive) {
+        // Cancel hover if cursor was deactivated
+        cancel();
+      }
+    });
 
     if (cancelHoverPubSub.listenerCount === 1) {
       window.addEventListener('blur', cancelHover);
@@ -132,6 +152,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
       unsubscribeCancelHover();
       unsubscribeCursor();
 
+      hoveredElements.delete(element);
+
       if (cancelHoverPubSub.listenerCount === 0) {
         window.removeEventListener('blur', cancelHover);
         window.removeEventListener('pointerdown', handleHoverLocked, true);
@@ -142,12 +164,6 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
   const handleUpdated: EffectCallback = () => {
     if (manager.props.isDisabled) {
-      cancel();
-    }
-  };
-
-  const handleCursor = (): void => {
-    if (!cursor.isActive) {
       cancel();
     }
   };
@@ -180,6 +196,9 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
     status = STATUS_HOVERED;
     setHovered(true);
+
+    element = event.currentTarget;
+    hoveredElements.add(element);
 
     onHoverChange?.(true);
     onHoverStart?.();
