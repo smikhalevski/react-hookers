@@ -5,8 +5,6 @@ import { emptyArray, emptyObject } from '../utils/lang';
 import { cursor } from './cursor';
 import { focusRing } from './focusRing';
 import { FocusControls, OrderedFocusOptions } from './useFocusControls';
-import { cancelHover } from './useHover';
-import { cancelPress } from './usePress';
 
 /**
  * Focus cycling modifier.
@@ -201,13 +199,12 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
         (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT))) &&
       focusByKey(focusControls, key, props)
     ) {
+      event.preventDefault();
+
       // Deactivate cursor when user is navigating via keyboard to prevent scroll from triggering unexpected hover
       cursor.deactivate();
 
       focusRing.reveal();
-      event.preventDefault();
-      cancelHover();
-      cancelPress();
       break;
     }
   }

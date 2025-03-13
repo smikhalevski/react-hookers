@@ -217,6 +217,9 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
 
     unsubscribeEventListeners = () => {
       unsubscribeEventListeners = noop;
+
+      window.removeEventListener('blur', cancel);
+      document.removeEventListener('focus', cancel, true);
       document.removeEventListener('pointercancel', cancel, true);
       document.removeEventListener('pointermove', handlePointerMove, true);
       document.removeEventListener('pointerup', handlePointerUp, true);
@@ -229,6 +232,10 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#clicking_and_focus
     // https://bugs.webkit.org/show_bug.cgi?id=22261
     requestFocus(currentTarget, { isScrollPrevented: true });
+
+    // Focus was moved elsewhere
+    window.addEventListener('blur', cancel);
+    document.addEventListener('focus', cancel, true);
   };
 
   const handleKeyDown: KeyboardEventHandler = event => {
