@@ -1,4 +1,5 @@
 import { HTMLInputAutoCompleteAttribute, InputHTMLAttributes, LabelHTMLAttributes } from 'react';
+import { cursor } from '../behaviors/cursor';
 import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
 import { useFunctionOnce } from '../useFunctionOnce';
@@ -143,6 +144,9 @@ function createTextInputManager(hoverValue: HoverValue, focusValue: FocusValue):
     if (isDisabled || event.defaultPrevented) {
       return;
     }
+
+    // Deactivate cursor when user is typing to prevent focus from being moved to hovered element by arrow navigation
+    cursor.deactivate();
 
     onChange?.(event.currentTarget.value);
   };
