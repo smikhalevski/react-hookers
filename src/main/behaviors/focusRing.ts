@@ -45,11 +45,8 @@ export const focusRing = {
     if (focusRingPubSub.listenerCount === 1) {
       document.addEventListener('keydown', handleFocusRingReveal, true);
       document.addEventListener('keyup', handleFocusRingReveal, true);
-      // window.addEventListener('blur', handleFocusRingConceal);
       document.addEventListener('mousedown', handleFocusRingConceal, true);
-      document.addEventListener('mouseup', handleFocusRingConceal, true);
       document.addEventListener('pointerdown', handleFocusRingConceal, true);
-      document.addEventListener('pointerup', handleFocusRingConceal, true);
     }
 
     return () => {
@@ -63,11 +60,8 @@ export const focusRing = {
 
       document.removeEventListener('keydown', handleFocusRingReveal, true);
       document.removeEventListener('keyup', handleFocusRingReveal, true);
-      // window.removeEventListener('blur', handleFocusRingConceal);
       document.removeEventListener('mousedown', handleFocusRingConceal, true);
-      document.removeEventListener('mouseup', handleFocusRingConceal, true);
       document.removeEventListener('pointerdown', handleFocusRingConceal, true);
-      document.removeEventListener('pointerup', handleFocusRingConceal, true);
     };
   },
 };
