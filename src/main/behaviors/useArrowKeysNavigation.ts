@@ -138,14 +138,14 @@ const arrowKeysNavigationManagers: ArrowKeysNavigationManager[] = [];
 
 function registerArrowKeysNavigationManager(manager: ArrowKeysNavigationManager): () => void {
   if (arrowKeysNavigationManagers.unshift(manager) === 1) {
-    document.addEventListener('keydown', handleArrowKeyDown, true);
+    document.addEventListener('keydown', handleArrowKeyDown);
   }
 
   return () => {
     arrowKeysNavigationManagers.splice(arrowKeysNavigationManagers.indexOf(manager), 1);
 
     if (arrowKeysNavigationManagers.length === 0) {
-      document.removeEventListener('keydown', handleArrowKeyDown, true);
+      document.removeEventListener('keydown', handleArrowKeyDown);
     }
   };
 }
@@ -158,26 +158,10 @@ const KEY_PAGE_UP = 'PageUp';
 const KEY_PAGE_DOWN = 'PageDown';
 
 function handleArrowKeyDown(event: KeyboardEvent): void {
-  const { target, key } = event;
+  const { key } = event;
 
-  if (!isArrowKeyNavigationEvent(event) || target.tagName === 'TEXTAREA') {
+  if (!isArrowKeyNavigationEvent(event)) {
     return;
-  }
-
-  if (target.tagName === 'INPUT' && target.type === 'text') {
-    const { selectionStart, selectionEnd } = target;
-
-    if (
-      // Non-empty selection
-      selectionStart !== selectionEnd ||
-      // Arrows move cursor before the first or after the last character
-      !(
-        (selectionStart === 0 && (key === KEY_ARROW_LEFT || key === KEY_ARROW_UP)) ||
-        (selectionStart === target.value.length && (key === KEY_ARROW_RIGHT || key === KEY_ARROW_DOWN))
-      )
-    ) {
-      return;
-    }
   }
 
   for (const manager of arrowKeysNavigationManagers) {
@@ -190,21 +174,22 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
 
     if (pagingBehavior === 'prevent' && (key === KEY_PAGE_UP || key === KEY_PAGE_DOWN)) {
       event.preventDefault();
-      return;
+      break;
     }
 
     if (
-      ((pagingBehavior === 'focus' && (key === KEY_PAGE_UP || key === KEY_PAGE_DOWN)) ||
-        (orientation !== 'horizontal' && (key === KEY_ARROW_UP || key === KEY_ARROW_DOWN)) ||
-        (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT))) &&
-      focusByKey(focusControls, key, props)
+      (pagingBehavior === 'focus' && (key === KEY_PAGE_UP || key === KEY_PAGE_DOWN)) ||
+      (orientation !== 'horizontal' && (key === KEY_ARROW_UP || key === KEY_ARROW_DOWN)) ||
+      (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT))
     ) {
-      event.preventDefault();
-
       // Deactivate cursor when user is navigating via keyboard to prevent scroll from triggering unexpected hover
       cursor.deactivate();
 
       focusRing.reveal();
+
+      focusByKey(focusControls, key, props);
+
+      event.preventDefault();
       break;
     }
   }
