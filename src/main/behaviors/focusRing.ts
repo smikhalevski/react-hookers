@@ -1,5 +1,4 @@
 import { PubSub } from 'parallel-universe';
-import { cursor } from './cursor';
 
 const focusRingPubSub = new PubSub();
 
@@ -15,17 +14,13 @@ export const focusRing = {
   isVisible: false,
 
   /**
-   * Reveals the focus ring to a user and deactivates the {@link cursor}.
+   * Reveals the focus ring to a user.
    */
   reveal(): void {
     if (!focusRing.isVisible) {
       focusRing.isVisible = true;
       focusRingPubSub.publish();
     }
-
-    // Disable hover interaction when user is navigating with keyboard keys.
-    // This prevents scroll from triggering unexpected hover interactions.
-    cursor.deactivate();
   },
 
   /**

@@ -120,6 +120,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
   const handleMounted: EffectCallback = () => {
     const unsubscribeCancelHover = cancelHoverPubSub.subscribe(cancel);
+    const unsubscribeCursor = cursor.subscribe(handleCursor);
 
     if (cancelHoverPubSub.listenerCount === 1) {
       window.addEventListener('blur', cancelHover);
@@ -129,6 +130,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
     return () => {
       unsubscribeCancelHover();
+      unsubscribeCursor();
 
       if (cancelHoverPubSub.listenerCount === 0) {
         window.removeEventListener('blur', cancelHover);
@@ -140,6 +142,12 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 
   const handleUpdated: EffectCallback = () => {
     if (manager.props.isDisabled) {
+      cancel();
+    }
+  };
+
+  const handleCursor = (): void => {
+    if (!cursor.isActive) {
       cancel();
     }
   };

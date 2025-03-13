@@ -2,6 +2,7 @@ import React, { EffectCallback, useLayoutEffect } from 'react';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { getTextDirection } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
+import { cursor } from './cursor';
 import { focusRing } from './focusRing';
 import { FocusControls, OrderedFocusOptions } from './useFocusControls';
 import { cancelHover } from './useHover';
@@ -200,6 +201,9 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
         (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT))) &&
       focusByKey(focusControls, key, props)
     ) {
+      // Deactivate cursor when user is navigating via keyboard to prevent scroll from triggering unexpected hover
+      cursor.deactivate();
+
       focusRing.reveal();
       event.preventDefault();
       cancelHover();
