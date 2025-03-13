@@ -11,6 +11,7 @@ const cancelHoverPubSub = new PubSub();
  * Cancels hover of all currently hovered elements.
  *
  * @see {@link useHover}
+ * @see {@link cursor.deactivate}
  * @group Behaviors
  */
 export function cancelHover(): void {

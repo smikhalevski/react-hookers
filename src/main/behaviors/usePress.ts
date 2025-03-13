@@ -11,6 +11,7 @@ import { DOMEventHandler } from '../types';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { isPortalEvent } from '../utils/dom';
 import { emptyArray, emptyObject, noop } from '../utils/lang';
+import { cursor } from './cursor';
 import { focusRing } from './focusRing';
 import { requestFocus } from './useFocus';
 
@@ -211,6 +212,13 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
       }
     };
 
+    const unsubscribeCursor = cursor.subscribe(() => {
+      if (!cursor.isActive) {
+        // Cancel press if cursor was deactivated
+        cancel();
+      }
+    });
+
     document.addEventListener('pointercancel', cancel, true);
     document.addEventListener('pointermove', handlePointerMove, true);
     document.addEventListener('pointerup', handlePointerUp, true);
@@ -218,11 +226,14 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
     unsubscribeEventListeners = () => {
       unsubscribeEventListeners = noop;
 
-      window.removeEventListener('blur', cancel);
-      document.removeEventListener('focus', cancel, true);
+      unsubscribeCursor();
+
       document.removeEventListener('pointercancel', cancel, true);
       document.removeEventListener('pointermove', handlePointerMove, true);
       document.removeEventListener('pointerup', handlePointerUp, true);
+
+      window.removeEventListener('blur', cancel);
+      document.removeEventListener('focus', cancel, true);
     };
 
     onPressChange?.(true);
