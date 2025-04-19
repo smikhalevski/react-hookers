@@ -4,8 +4,8 @@ import { createContext, useContext } from 'react';
  * @group Other
  */
 export interface Platform {
-  browser: BrowserType;
-  os: OSType;
+  browser: BrowserType | null;
+  os: OSType | null;
   isChrome: boolean;
   isSafari: boolean;
   isFirefox: boolean;
@@ -19,12 +19,12 @@ export interface Platform {
 /**
  * @group Other
  */
-export type BrowserType = 'chrome' | 'firefox' | 'safari' | 'unknown';
+export type BrowserType = 'chrome' | 'firefox' | 'safari';
 
 /**
  * @group Other
  */
-export type OSType = 'ios' | 'mac' | 'windows' | 'android' | 'unknown';
+export type OSType = 'ios' | 'mac' | 'windows' | 'android';
 
 /**
  * @group Other
@@ -84,7 +84,7 @@ export function detectPlatform(userAgent = getNavigatorUserAgent()): Platform {
  *
  * @group Other
  */
-export function detectBrowser(userAgent = getNavigatorUserAgent()): BrowserType {
+export function detectBrowser(userAgent = getNavigatorUserAgent()): BrowserType | null {
   userAgent = userAgent.toLowerCase();
 
   if (userAgent.includes('chrome')) {
@@ -96,7 +96,7 @@ export function detectBrowser(userAgent = getNavigatorUserAgent()): BrowserType 
   if (userAgent.includes('webkit')) {
     return BROWSER_SAFARI;
   }
-  return 'unknown';
+  return null;
 }
 
 /**
@@ -104,7 +104,7 @@ export function detectBrowser(userAgent = getNavigatorUserAgent()): BrowserType 
  *
  * @group Other
  */
-export function detectOS(userAgent = getNavigatorUserAgent()): OSType {
+export function detectOS(userAgent = getNavigatorUserAgent()): OSType | null {
   userAgent = userAgent.toLowerCase();
 
   if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('ipod')) {
@@ -119,5 +119,5 @@ export function detectOS(userAgent = getNavigatorUserAgent()): OSType {
   if (userAgent.includes('android')) {
     return OS_ANDROID;
   }
-  return 'unknown';
+  return null;
 }
