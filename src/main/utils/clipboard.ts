@@ -5,7 +5,7 @@
  *
  * @param text Text to write to clipboard.
  * @returns `true` if {@link text} was successfully written, or `false` otherwise.
- * @Other
+ * @group Other
  */
 export function writeToClipboard(text: string): boolean {
   const element = document.createElement('textarea');

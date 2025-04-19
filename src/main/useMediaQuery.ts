@@ -12,8 +12,10 @@ import { useFunctionOnce } from './useFunctionOnce';
  * @param initialValue A value returned during the initial render.
  * @group Other
  */
-export function useMediaQuery(query: string, initialValue = false): boolean {
-  const [isMatched, setMatched] = useState(initialValue);
+export function useMediaQuery(query: string, initialValue?: boolean): boolean {
+  const [isMatched, setMatched] = useState(() =>
+    initialValue !== undefined ? initialValue : typeof window !== 'undefined' && window.matchMedia(query).matches
+  );
 
   const manager = useFunctionOnce(createMediaQueryManager, setMatched);
 
