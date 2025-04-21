@@ -4,7 +4,7 @@ import type { DOMEventHandler } from '../types';
 import { useFunction } from '../useFunction';
 import { detectOS } from '../usePlatform';
 import { BigArray } from '../utils/BigArray';
-import { getTextDirection } from '../utils/dom';
+import { isRTLElement } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
 
 /**
@@ -404,7 +404,7 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
       startIndex,
       endIndex,
       containerRef,
-      isRTL = getTextDirection(containerRef && containerRef.current) === 'rtl',
+      isRTL = isRTLElement(containerRef && containerRef.current),
     } = manager.props;
 
     if (

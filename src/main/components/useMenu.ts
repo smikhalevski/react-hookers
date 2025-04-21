@@ -8,7 +8,7 @@ import { PressableProps, usePressable } from '../behaviors/usePressable';
 import { FocusableElement } from '../types';
 import { useFunctionOnce } from '../useFunctionOnce';
 import { useUniqueId } from '../useUniqueId';
-import { getTextDirection } from '../utils/dom';
+import { isRTLElement } from '../utils/dom';
 import { emptyObject } from '../utils/lang';
 import { mergeProps } from '../utils/mergeProps';
 
@@ -136,7 +136,7 @@ function createMenuManager(): MenuManager {
 
     if (
       event.defaultPrevented ||
-      event.key !== (getTextDirection() === 'rtl' ? 'ArrowRight' : 'ArrowLeft') ||
+      event.key !== (isRTLElement() ? 'ArrowRight' : 'ArrowLeft') ||
       onClose === undefined
     ) {
       return;
@@ -373,7 +373,7 @@ function createMenuItemManager(
       isDisabled ||
       !hasSubmenu ||
       event.defaultPrevented ||
-      event.key !== (getTextDirection() === 'rtl' ? 'ArrowLeft' : 'ArrowRight')
+      event.key !== (isRTLElement() ? 'ArrowLeft' : 'ArrowRight')
     ) {
       return;
     }

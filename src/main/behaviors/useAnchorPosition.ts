@@ -1,6 +1,6 @@
 import { EffectCallback, useLayoutEffect } from 'react';
 import { useFunctionOnce } from '../useFunctionOnce';
-import { getTextDirection } from '../utils/dom';
+import { isRTLElement } from '../utils/dom';
 import { getViewportRect } from '../utils/rects';
 
 /**
@@ -301,7 +301,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
       getAnchorRect,
       getContainerRect = getViewportRect,
       variants = defaultVariants,
-      isRTL = getTextDirection() === 'rtl',
+      isRTL = isRTLElement(),
       onPositionChange,
     } = manager.props;
 

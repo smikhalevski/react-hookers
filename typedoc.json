@@ -19,5 +19,6 @@
     "skipLibCheck": true
   },
   "plugin": ["typedoc-plugin-mdn-links"],
+  "kindSortOrder": ["Function", "Class", "Variable", "TypeAlias"],
   "intentionallyNotExported": ["UnionToIntersection"]
 }

@@ -10,7 +10,11 @@ export {
   type AnchorPositionProps,
   type AnchorPositionVariant,
 } from './behaviors/useAnchorPosition';
-export { useArrowKeysNavigation, type ArrowKeysNavigationProps } from './behaviors/useArrowKeysNavigation';
+export {
+  useArrowKeysNavigation,
+  type ArrowKeysNavigationProps,
+  type FocusCycle,
+} from './behaviors/useArrowKeysNavigation';
 export { useClickAway, type ClickAwayProps, type ClickAwayValue } from './behaviors/useClickAway';
 export { useCloseHandler, CloseHandlerProvider } from './behaviors/useCloseHandler';
 export { useDrag, type DragInfo, type DragProps, type DragValue } from './behaviors/useDrag';
@@ -76,6 +80,12 @@ export {
   type HeadlessTrackHandleValue,
 } from './components/useTrackHandle';
 
+export { useCollator } from './intl/useCollator';
+export { useDateTimeFormat } from './intl/useDateTimeFormat';
+export { useLocale, LocaleProvider, type Locale } from './intl/useLocale';
+export { useNumberFormat } from './intl/useNumberFormat';
+export { stripDiacritics } from './intl/utils';
+
 export { BigArray } from './utils/BigArray';
 export { writeToClipboard } from './utils/clipboard';
 export {
@@ -83,7 +93,7 @@ export {
   sortByTabOrder,
   sortByVisualOrder,
   sortByDocumentOrder,
-  getTextDirection,
+  isRTLElement,
   getFocusedElement,
   getTabIndex,
   isTabbable,

@@ -1,6 +1,6 @@
 import React, { EffectCallback, useLayoutEffect } from 'react';
 import { useFunctionOnce } from '../useFunctionOnce';
-import { getTextDirection } from '../utils/dom';
+import { isRTLElement } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
 import { cursor } from './cursor';
 import { focusRing } from './focusRing';
@@ -211,7 +211,7 @@ export function isArrowKeyNavigationEvent(event: React.KeyboardEvent | KeyboardE
 }
 
 function focusByKey(focusControls: FocusControls, key: string, props: ArrowKeysNavigationProps): boolean {
-  const { focusCycle, isRTL = getTextDirection() === 'rtl' } = props;
+  const { focusCycle, isRTL = isRTLElement() } = props;
 
   if (
     (key === KEY_ARROW_UP && focusControls.focusUp(props)) ||

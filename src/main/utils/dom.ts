@@ -19,17 +19,13 @@ export function isPortalEvent(event: SyntheticEvent): boolean {
 }
 
 /**
- * Returns text direction of an element.
+ * Returns `true` if an {@link element} has the right-to-left text direction.
  *
+ * @param element An element to check text direction of. If `null` then document text direction is checked.
  * @group Other
  */
-export function getTextDirection(element: Element | null = null): 'rtl' | 'ltr' {
-  const dir =
-    element === null || element === document.documentElement
-      ? document.dir
-      : window.getComputedStyle(element).direction;
-
-  return dir === 'rtl' ? 'rtl' : 'ltr';
+export function isRTLElement(element: Element | null = null): boolean {
+  return (element === null ? document.dir : window.getComputedStyle(element).direction) === 'rtl';
 }
 
 /**
