@@ -58,25 +58,23 @@ function disableScroll(): () => void {
     return enableScroll;
   }
 
-  const container = document.documentElement;
-  const { paddingRight, overflow } = container.style;
+  const body = document.body;
+  const { paddingRight, overflow } = body.style;
+  const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
 
-  container.style.paddingRight = window.innerWidth - container.clientWidth + 'px';
-  container.style.overflow = 'hidden';
-
-  container.scrollTo(window.scrollX, window.scrollY);
+  // Compensate scrollbar width
+  body.style.paddingRight = parseInt(window.getComputedStyle(body).paddingRight, 10) + scrollBarWidth + 'px';
+  body.style.overflow = 'hidden';
 
   enableScroll = () => {
     if (--disableCount !== 0) {
       return;
     }
 
-    const { scrollLeft, scrollTop } = container;
+    enableScroll = noop;
 
-    container.style.paddingRight = paddingRight;
-    container.style.overflow = overflow;
-
-    window.scrollTo(scrollLeft, scrollTop);
+    body.style.paddingRight = paddingRight;
+    body.style.overflow = overflow;
   };
 
   return enableScroll;
