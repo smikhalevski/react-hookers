@@ -1,4 +1,4 @@
-export { ArrowKeysNavigation } from './behaviors/ArrowKeysNavigation';
+export { ArrowKeys } from './behaviors/ArrowKeys';
 export { cursor } from './behaviors/cursor';
 export { focusRing } from './behaviors/focusRing';
 export { FocusScope, type FocusScopeProviderProps } from './behaviors/FocusScope';
@@ -10,11 +10,7 @@ export {
   type AnchorPositionProps,
   type AnchorPositionVariant,
 } from './behaviors/useAnchorPosition';
-export {
-  useArrowKeysNavigation,
-  type ArrowKeysNavigationProps,
-  type FocusCycle,
-} from './behaviors/useArrowKeysNavigation';
+export { useArrowKeys, type ArrowKeysProps, type FocusCycle } from './behaviors/useArrowKeys';
 export { useClickAway, type ClickAwayProps, type ClickAwayValue } from './behaviors/useClickAway';
 export { useCloseHandler, CloseHandlerProvider } from './behaviors/useCloseHandler';
 export { useDrag, type DragInfo, type DragProps, type DragValue } from './behaviors/useDrag';

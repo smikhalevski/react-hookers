@@ -9,7 +9,7 @@ import { FocusControls, OrderedFocusOptions } from './useFocusControls';
 /**
  * Focus cycling modifier.
  *
- * @see {@link ArrowKeysNavigationProps.focusCycle}
+ * @see {@link ArrowKeysProps.focusCycle}
  * @group Behaviors
  */
 export type FocusCycle =
@@ -23,11 +23,11 @@ export type FocusCycle =
   | 'pageDownToLast';
 
 /**
- * Props of the {@link useArrowKeysNavigation} hook.
+ * Props of the {@link useArrowKeys} hook.
  *
  * @group Behaviors
  */
-export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
+export interface ArrowKeysProps extends OrderedFocusOptions {
   /**
    * If `true` then arrow navigation is disabled.
    *
@@ -90,7 +90,7 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
  * const containerRef = useRef(null);
  * const focusControls = useFocusScope(containerRef);
  *
- * useArrowKeysNavigation(focusControls);
+ * useArrowKeys(focusControls);
  *
  * <div ref={containerRef}>
  *   <input/>
@@ -99,16 +99,13 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
  * @param focusControls Focus controls that are used to move focus around. If `null` then arrow keys are disabled.
  * @param props Arrow keys props.
  * @see {@link FocusScope}
- * @see {@link ArrowKeysNavigation}
+ * @see {@link ArrowKeys}
  * @see {@link useFocusScope}
  * @see {@link useFocusControls}
  * @group Behaviors
  */
-export function useArrowKeysNavigation(
-  focusControls: FocusControls | null,
-  props: ArrowKeysNavigationProps = emptyObject
-): void {
-  const manager = useFunctionOnce(createArrowKeysNavigationManager);
+export function useArrowKeys(focusControls: FocusControls | null, props: ArrowKeysProps = emptyObject): void {
+  const manager = useFunctionOnce(createArrowKeysManager);
 
   manager.focusControls = focusControls;
   manager.props = props;
@@ -116,16 +113,16 @@ export function useArrowKeysNavigation(
   useLayoutEffect(manager.onMounted, emptyArray);
 }
 
-interface ArrowKeysNavigationManager {
+interface ArrowKeysManager {
   focusControls: FocusControls | null;
-  props: ArrowKeysNavigationProps;
+  props: ArrowKeysProps;
   onMounted: EffectCallback;
 }
 
-function createArrowKeysNavigationManager(): ArrowKeysNavigationManager {
-  const handleMounted: EffectCallback = () => registerArrowKeysNavigationManager(manager);
+function createArrowKeysManager(): ArrowKeysManager {
+  const handleMounted: EffectCallback = () => registerArrowKeysManager(manager);
 
-  const manager: ArrowKeysNavigationManager = {
+  const manager: ArrowKeysManager = {
     focusControls: null,
     props: undefined!,
     onMounted: handleMounted,
@@ -134,9 +131,9 @@ function createArrowKeysNavigationManager(): ArrowKeysNavigationManager {
   return manager;
 }
 
-const arrowKeysNavigationManagers: ArrowKeysNavigationManager[] = [];
+const arrowKeysNavigationManagers: ArrowKeysManager[] = [];
 
-function registerArrowKeysNavigationManager(manager: ArrowKeysNavigationManager): () => void {
+function registerArrowKeysManager(manager: ArrowKeysManager): () => void {
   if (arrowKeysNavigationManagers.unshift(manager) === 1) {
     document.addEventListener('keydown', handleArrowKeyDown);
   }
@@ -210,7 +207,7 @@ export function isArrowKeyNavigationEvent(event: React.KeyboardEvent | KeyboardE
   );
 }
 
-function focusByKey(focusControls: FocusControls, key: string, props: ArrowKeysNavigationProps): boolean {
+function focusByKey(focusControls: FocusControls, key: string, props: ArrowKeysProps): boolean {
   const { focusCycle, isRTL = isRTLElement() } = props;
 
   if (

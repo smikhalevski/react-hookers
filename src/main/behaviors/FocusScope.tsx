@@ -25,7 +25,7 @@ export interface FocusScopeProviderProps extends FocusScopeProps {
  * Creates a {@link useFocusScope focus scope} inside a {@link FocusScopeProviderProps.containerRef container}
  * and provides {@link FocusControls} to underlying components.
  *
- * @see {@link ArrowKeysNavigation}
+ * @see {@link ArrowKeys}
  * @group Behaviors
  */
 export function FocusScope(props: FocusScopeProviderProps): ReactElement {
