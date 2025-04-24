@@ -4,7 +4,80 @@ import { isRTLElement } from '../utils/dom';
 import { emptyArray, emptyObject } from '../utils/lang';
 import { cursor } from './cursor';
 import { focusRing } from './focusRing';
-import { FocusControls, OrderedFocusOptions } from './useFocusControls';
+
+/**
+ * Controls that move focus inside a {@link useFocusScope focus scope}.
+ *
+ * @group Behaviors
+ */
+export interface MoveControls {
+  /**
+   * Focuses the first focusable element inside a focus scope.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveToFirst(): boolean;
+
+  /**
+   * Focuses the last focusable element inside a focus scope.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveToLast(): boolean;
+
+  /**
+   * If focus scope contains the currently focused element, then the next element in <kbd>Tab</kbd> order after it
+   * receives focus.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveToNext(): boolean;
+
+  /**
+   * If focus scope contains the currently focused element, then the previous element in <kbd>Tab</kbd> order before it
+   * receives focus.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveToPrevious(): boolean;
+
+  /**
+   * If focus scope contains the currently focused element, then moves focus to the closest focusable element above
+   * the currently focused element.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveUp(): boolean;
+
+  /**
+   * If focus scope contains the currently focused element, then moves focus to the closest focusable element below
+   * the currently focused element.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveDown(): boolean;
+
+  /**
+   * If focus scope contains the currently focused element, then moves focus to the closest focusable element at left
+   * side from the currently focused element.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveLeft(): boolean;
+
+  /**
+   * If focus scope contains the currently focused element, then moves focus to the closest focusable element at right
+   * side from the currently focused element.
+   *
+   * @returns `true` if an element was focused.
+   */
+  moveRight(): boolean;
+
+  /**
+   * Returns `true` if a focus scope contains focused element, or if a focus scope is a part of an active focus trap.
+   */
+  isActive(): boolean;
+}
 
 /**
  * Move cycling modifier.
@@ -27,7 +100,7 @@ export type MoveCycle =
  *
  * @group Behaviors
  */
-export interface ArrowKeysProps extends OrderedFocusOptions {
+export interface ArrowKeysProps {
   /**
    * If `true` then arrow keys are disabled.
    *
@@ -104,7 +177,7 @@ export interface ArrowKeysProps extends OrderedFocusOptions {
  * @see {@link useFocusControls}
  * @group Behaviors
  */
-export function useArrowKeys(moveControls: FocusControls | null, props: ArrowKeysProps = emptyObject): void {
+export function useArrowKeys(moveControls: MoveControls | null, props: ArrowKeysProps = emptyObject): void {
   const manager = useFunctionOnce(createArrowKeysManager);
 
   manager.moveControls = moveControls;
@@ -114,7 +187,7 @@ export function useArrowKeys(moveControls: FocusControls | null, props: ArrowKey
 }
 
 interface ArrowKeysManager {
-  moveControls: FocusControls | null;
+  moveControls: MoveControls | null;
   props: ArrowKeysProps;
   onMounted: EffectCallback;
 }
@@ -207,16 +280,16 @@ export function isArrowKeyEvent(event: React.KeyboardEvent | KeyboardEvent): boo
   );
 }
 
-function moveByArrowKey(moveControls: FocusControls, key: string, props: ArrowKeysProps): boolean {
+function moveByArrowKey(moveControls: MoveControls, key: string, props: ArrowKeysProps): boolean {
   const { moveCycle, isRTL = isRTLElement() } = props;
 
   if (
-    (key === KEY_ARROW_UP && moveControls.moveUp(props)) ||
-    (key === KEY_ARROW_DOWN && moveControls.moveDown(props)) ||
-    (key === KEY_ARROW_LEFT && moveControls.moveLeft(props)) ||
-    (key === KEY_ARROW_RIGHT && moveControls.moveRight(props)) ||
-    (key === KEY_PAGE_UP && moveControls.moveToFirst(props)) ||
-    (key === KEY_PAGE_DOWN && moveControls.moveToLast(props))
+    (key === KEY_ARROW_UP && moveControls.moveUp()) ||
+    (key === KEY_ARROW_DOWN && moveControls.moveDown()) ||
+    (key === KEY_ARROW_LEFT && moveControls.moveLeft()) ||
+    (key === KEY_ARROW_RIGHT && moveControls.moveRight()) ||
+    (key === KEY_PAGE_UP && moveControls.moveToFirst()) ||
+    (key === KEY_PAGE_DOWN && moveControls.moveToLast())
   ) {
     return true;
   }
@@ -227,18 +300,18 @@ function moveByArrowKey(moveControls: FocusControls, key: string, props: ArrowKe
 
   for (const type of moveCycle) {
     if (
-      (key === KEY_ARROW_UP && type === 'arrowUpToFirst' && moveControls.moveToFirst(props)) ||
-      (key === KEY_ARROW_UP && type === 'arrowUpToLast' && moveControls.moveToLast(props)) ||
-      (key === KEY_ARROW_DOWN && type === 'arrowDownToFirst' && moveControls.moveToFirst(props)) ||
-      (key === KEY_ARROW_DOWN && type === 'arrowDownToLast' && moveControls.moveToLast(props)) ||
+      (key === KEY_ARROW_UP && type === 'arrowUpToFirst' && moveControls.moveToFirst()) ||
+      (key === KEY_ARROW_UP && type === 'arrowUpToLast' && moveControls.moveToLast()) ||
+      (key === KEY_ARROW_DOWN && type === 'arrowDownToFirst' && moveControls.moveToFirst()) ||
+      (key === KEY_ARROW_DOWN && type === 'arrowDownToLast' && moveControls.moveToLast()) ||
       (key === KEY_ARROW_RIGHT &&
         type === 'arrowRightToNext' &&
-        (isRTL ? moveControls.moveToPrevious(props) : moveControls.moveToNext(props))) ||
+        (isRTL ? moveControls.moveToPrevious() : moveControls.moveToNext())) ||
       (key === KEY_ARROW_LEFT &&
         type === 'arrowLeftToPrevious' &&
-        (isRTL ? moveControls.moveToNext(props) : moveControls.moveToPrevious(props))) ||
-      (key === KEY_PAGE_UP && type === 'pageUpToFirst' && moveControls.moveToFirst(props)) ||
-      (key === KEY_PAGE_DOWN && type === 'pageDownToLast' && moveControls.moveToLast(props))
+        (isRTL ? moveControls.moveToNext() : moveControls.moveToPrevious())) ||
+      (key === KEY_PAGE_UP && type === 'pageUpToFirst' && moveControls.moveToFirst()) ||
+      (key === KEY_PAGE_DOWN && type === 'pageDownToLast' && moveControls.moveToLast())
     ) {
       return true;
     }

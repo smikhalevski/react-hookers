@@ -19,7 +19,7 @@ import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusCont
  *
  * @group Behaviors
  */
-export interface FocusScopeProps extends UnorderedFocusOptions {
+export interface FocusScopeProps extends OrderedFocusOptions {
   /**
    * If `true` then focuses the first {@link approveFocusCandidate approved candidate} element inside a container
    * when a scope is mounted.
@@ -91,15 +91,17 @@ function createFocusScopeManager(): FocusScopeManager {
     manager.lastFocusedElement = getFocusedElement();
 
     if (isAutofocused) {
-      // Focus the first approved auto-focusable element
-      focusControls.moveToFirst({
+      const autoFocusOptions: UnorderedFocusOptions = {
         ...manager.props,
 
         approveFocusCandidate: element =>
           isAutoFocusable(element) && (approveFocusCandidate === undefined || approveFocusCandidate(element)),
-      }) ||
+      };
+
+      // Focus the first approved auto-focusable element
+      focusAbsolute(manager, false, autoFocusOptions) ||
         // Focus the first focusable element
-        focusControls.moveToFirst(manager.props) ||
+        focusAbsolute(manager, false, manager.props) ||
         // Hide focus
         (isFocusTrap && cancelFocus());
     } else if (isFocusTrap) {
@@ -139,14 +141,14 @@ function createFocusScopeManager(): FocusScopeManager {
   const hasFocus = (): boolean => containsElement(manager, getFocusedElement());
 
   const focusControls: FocusControls = {
-    moveToFirst: options => focusAbsolute(manager, false, options),
-    moveToLast: options => focusAbsolute(manager, true, options),
-    moveToNext: options => focusRelative(manager, false, options),
-    moveToPrevious: options => focusRelative(manager, true, options),
-    moveUp: options => focusInDirection(manager, 'up', options),
-    moveRight: options => focusInDirection(manager, 'right', options),
-    moveDown: options => focusInDirection(manager, 'down', options),
-    moveLeft: options => focusInDirection(manager, 'left', options),
+    moveToFirst: () => focusAbsolute(manager, false, manager.props),
+    moveToLast: () => focusAbsolute(manager, true, manager.props),
+    moveToNext: () => focusRelative(manager, false, manager.props),
+    moveToPrevious: () => focusRelative(manager, true, manager.props),
+    moveUp: () => focusInDirection(manager, 'up', manager.props),
+    moveRight: () => focusInDirection(manager, 'right', manager.props),
+    moveDown: () => focusInDirection(manager, 'down', manager.props),
+    moveLeft: () => focusInDirection(manager, 'left', manager.props),
     isActive,
     hasFocus,
   };
@@ -213,15 +215,15 @@ function handleFocusTrapTabKeyDown(event: KeyboardEvent): void {
 
   event.preventDefault();
 
-  const options: OrderedFocusOptions = {
+  const tabKeyFocusOptions: OrderedFocusOptions = {
     sortFocusCandidates: sortByTabOrder,
     approveFocusCandidate: isTabbable,
   };
 
   // Focus the next element in the tab order
-  if (!focusRelative(focusTrap, event.shiftKey, options)) {
+  if (!focusRelative(focusTrap, event.shiftKey, tabKeyFocusOptions)) {
     // Or cycle focus
-    focusAbsolute(focusTrap, event.shiftKey, options);
+    focusAbsolute(focusTrap, event.shiftKey, tabKeyFocusOptions);
   }
 }
 
@@ -347,11 +349,7 @@ function focusAtIndex(candidates: FocusableElement[], index: number, options: Un
 /**
  * Focuses the first or the last element in manager containers.
  */
-function focusAbsolute(
-  manager: FocusScopeManager,
-  isReversed: boolean,
-  options: OrderedFocusOptions = emptyObject
-): boolean {
+function focusAbsolute(manager: FocusScopeManager, isReversed: boolean, options: OrderedFocusOptions): boolean {
   const { sortFocusCandidates = sortByDocumentOrder } = options;
 
   const candidates = Array.from(getFocusCandidates(manager)).sort(sortFocusCandidates);
@@ -366,11 +364,7 @@ function focusAbsolute(
 /**
  * Focuses the next or the previous element relative to the currently focused element in manager containers.
  */
-function focusRelative(
-  manager: FocusScopeManager,
-  isReversed: boolean,
-  options: OrderedFocusOptions = emptyObject
-): boolean {
+function focusRelative(manager: FocusScopeManager, isReversed: boolean, options: OrderedFocusOptions): boolean {
   const { sortFocusCandidates = sortByDocumentOrder } = options;
   const focusedElement = getFocusedElement();
 
@@ -395,7 +389,7 @@ function focusRelative(
 function focusInDirection(
   manager: FocusScopeManager,
   direction: 'up' | 'down' | 'left' | 'right',
-  options: UnorderedFocusOptions = emptyObject
+  options: UnorderedFocusOptions
 ): boolean {
   const focusedElement = getFocusedElement();
 
