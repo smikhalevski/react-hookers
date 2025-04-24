@@ -132,3 +132,76 @@ export function getTabIndex(element: FocusableElement): number {
   }
   return tabIndex;
 }
+
+/**
+ * Returns elements from {@link elements} that are in {@link direction} from the {@link origin}, sorted by
+ * a perceived proximity.
+ */
+export function pickElementsInDirection<T extends Element>(
+  pivotElement: Element,
+  elements: Iterable<T>,
+  direction: 'up' | 'down' | 'left' | 'right'
+): T[] {
+  const rectA = pivotElement.getBoundingClientRect();
+  const ax1 = rectA.left;
+  const ay1 = rectA.top;
+  const ay2 = rectA.bottom;
+  const ax2 = rectA.right;
+
+  const elementScores = new Map<T, number>();
+
+  for (const element of elements) {
+    if (element === pivotElement) {
+      continue;
+    }
+
+    const rectB = element.getBoundingClientRect();
+    const bx1 = rectB.left;
+    const by1 = rectB.top;
+    const by2 = rectB.bottom;
+    const bx2 = rectB.right;
+
+    let majorDistance = 0;
+    let crossDistance;
+    let crossSize = 0;
+
+    if (direction === 'up' && by2 < ay2 && by1 < ay1) {
+      majorDistance = ay2 - by2;
+      crossSize = bx2 - bx1;
+    }
+
+    if (direction === 'down' && by1 > ay1 && by2 > ay2) {
+      majorDistance = by1 - ay1;
+      crossSize = bx2 - bx1;
+    }
+
+    if (direction === 'right' && bx1 > ax1 && bx2 > ax2) {
+      majorDistance = bx1 - ax1;
+      crossSize = by2 - by1;
+    }
+
+    if (direction === 'left' && bx2 < ax2 && bx1 < ax1) {
+      majorDistance = ax2 - bx2;
+      crossSize = by2 - by1;
+    }
+
+    if (majorDistance === 0) {
+      continue;
+    }
+
+    if (direction === 'up' || direction === 'down') {
+      crossDistance = bx2 <= ax1 ? ax2 - bx2 : bx1 >= ax2 ? bx1 - ax1 : 0;
+    } else {
+      crossDistance = by2 <= ay1 ? ay2 - by2 : by1 >= ay2 ? by1 - ay1 : 0;
+    }
+
+    const elementScore =
+      crossDistance === 0 ? 1e9 / majorDistance : crossSize / (majorDistance + crossDistance * crossDistance);
+
+    if (elementScore > 0) {
+      elementScores.set(element, elementScore);
+    }
+  }
+
+  return Array.from(elementScores.keys()).sort((a, b) => elementScores.get(b)! - elementScores.get(a)!);
+}

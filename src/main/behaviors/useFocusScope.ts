@@ -1,7 +1,14 @@
 import { EffectCallback, RefObject, useEffect } from 'react';
 import { FocusableElement } from '../types';
 import { useFunctionOnce } from '../useFunctionOnce';
-import { getFocusedElement, isAutoFocusable, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
+import {
+  getFocusedElement,
+  isAutoFocusable,
+  isTabbable,
+  pickElementsInDirection,
+  sortByDocumentOrder,
+  sortByTabOrder,
+} from '../utils/dom';
 import { die, emptyArray, emptyObject } from '../utils/lang';
 import { focusRing } from './focusRing';
 import { cancelFocus, requestFocus } from './useFocus';
@@ -136,10 +143,10 @@ function createFocusScopeManager(): FocusScopeManager {
     focusLast: options => focusAbsolute(manager, true, options),
     focusNext: options => focusRelative(manager, false, options),
     focusPrevious: options => focusRelative(manager, true, options),
-    focusUp: options => focusInDirection(manager, DIRECTION_UP, options),
-    focusRight: options => focusInDirection(manager, DIRECTION_RIGHT, options),
-    focusDown: options => focusInDirection(manager, DIRECTION_DOWN, options),
-    focusLeft: options => focusInDirection(manager, DIRECTION_LEFT, options),
+    focusUp: options => focusInDirection(manager, 'up', options),
+    focusRight: options => focusInDirection(manager, 'right', options),
+    focusDown: options => focusInDirection(manager, 'down', options),
+    focusLeft: options => focusInDirection(manager, 'left', options),
     isActive,
     hasFocus,
   };
@@ -387,7 +394,7 @@ function focusRelative(
  */
 function focusInDirection(
   manager: FocusScopeManager,
-  direction: number,
+  direction: 'up' | 'down' | 'left' | 'right',
   options: UnorderedFocusOptions = emptyObject
 ): boolean {
   const focusedElement = getFocusedElement();
@@ -396,83 +403,5 @@ function focusInDirection(
     return false;
   }
 
-  return focusAtIndex(getElementsInDirection(focusedElement, getFocusCandidates(manager), direction), 0, options);
-}
-
-const DIRECTION_UP = 0;
-const DIRECTION_RIGHT = 1;
-const DIRECTION_DOWN = 2;
-const DIRECTION_LEFT = 3;
-
-/**
- * Returns elements from {@link elements} that are in {@link direction} from the {@link pivotElement}, sorted by
- * a perceived proximity.
- */
-function getElementsInDirection(
-  pivotElement: FocusableElement,
-  elements: Set<FocusableElement>,
-  direction: number
-): FocusableElement[] {
-  const rectA = pivotElement.getBoundingClientRect();
-  const ax1 = rectA.left;
-  const ay1 = rectA.top;
-  const ay2 = rectA.bottom;
-  const ax2 = rectA.right;
-
-  const elementScores = new Map<FocusableElement, number>();
-
-  for (const element of elements) {
-    if (element === pivotElement) {
-      continue;
-    }
-
-    const rectB = element.getBoundingClientRect();
-    const bx1 = rectB.left;
-    const by1 = rectB.top;
-    const by2 = rectB.bottom;
-    const bx2 = rectB.right;
-
-    let majorDistance = 0;
-    let crossDistance;
-    let crossSize = 0;
-
-    if (direction === DIRECTION_UP && by2 < ay2 && by1 < ay1) {
-      majorDistance = ay2 - by2;
-      crossSize = bx2 - bx1;
-    }
-
-    if (direction === DIRECTION_DOWN && by1 > ay1 && by2 > ay2) {
-      majorDistance = by1 - ay1;
-      crossSize = bx2 - bx1;
-    }
-
-    if (direction === DIRECTION_RIGHT && bx1 > ax1 && bx2 > ax2) {
-      majorDistance = bx1 - ax1;
-      crossSize = by2 - by1;
-    }
-
-    if (direction === DIRECTION_LEFT && bx2 < ax2 && bx1 < ax1) {
-      majorDistance = ax2 - bx2;
-      crossSize = by2 - by1;
-    }
-
-    if (majorDistance === 0) {
-      continue;
-    }
-
-    if (direction === DIRECTION_UP || direction === DIRECTION_DOWN) {
-      crossDistance = bx2 <= ax1 ? ax2 - bx2 : bx1 >= ax2 ? bx1 - ax1 : 0;
-    } else {
-      crossDistance = by2 <= ay1 ? ay2 - by2 : by1 >= ay2 ? by1 - ay1 : 0;
-    }
-
-    const elementScore =
-      crossDistance === 0 ? 1e9 / majorDistance : crossSize / (majorDistance + crossDistance * crossDistance);
-
-    if (elementScore > 0) {
-      elementScores.set(element, elementScore);
-    }
-  }
-
-  return Array.from(elementScores.keys()).sort((a, b) => elementScores.get(b)! - elementScores.get(a)!);
+  return focusAtIndex(pickElementsInDirection(focusedElement, getFocusCandidates(manager), direction), 0, options);
 }
