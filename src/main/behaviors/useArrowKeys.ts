@@ -7,12 +7,12 @@ import { focusRing } from './focusRing';
 import { FocusControls, OrderedFocusOptions } from './useFocusControls';
 
 /**
- * Focus cycling modifier.
+ * Move cycling modifier.
  *
- * @see {@link ArrowKeysProps.focusCycle}
+ * @see {@link ArrowKeysProps.moveCycle}
  * @group Behaviors
  */
-export type FocusCycle =
+export type MoveCycle =
   | 'arrowDownToFirst'
   | 'arrowDownToLast'
   | 'arrowUpToFirst'
@@ -29,7 +29,7 @@ export type FocusCycle =
  */
 export interface ArrowKeysProps extends OrderedFocusOptions {
   /**
-   * If `true` then arrow navigation is disabled.
+   * If `true` then arrow keys are disabled.
    *
    * @default false
    */
@@ -56,7 +56,7 @@ export interface ArrowKeysProps extends OrderedFocusOptions {
    *
    * <dl>
    * <dt>"focus"</dt>
-   * <dd>Move focus to the first or last element. If {@link focusCycle focus cycling} is enabled it is also
+   * <dd>Move focus to the first or last element. If {@link moveCycle focus cycling} is enabled it is also
    * applied.</dd>
    * <dt>"prevent"</dt>
    * <dd>Paging events are prevented.</dd>
@@ -73,7 +73,7 @@ export interface ArrowKeysProps extends OrderedFocusOptions {
    *
    * By default, no focus cycling is done.
    */
-  focusCycle?: readonly FocusCycle[];
+  moveCycle?: readonly MoveCycle[];
 
   /**
    * If `true` then <kbd>ArrowLeft</kbd> and <kbd>ArrowRight</kbd> behavior is mirrored when focus is cycled.
@@ -88,15 +88,15 @@ export interface ArrowKeysProps extends OrderedFocusOptions {
  *
  * @example
  * const containerRef = useRef(null);
- * const focusControls = useFocusScope(containerRef);
+ * const moveControls = useFocusScope(containerRef);
  *
- * useArrowKeys(focusControls);
+ * useArrowKeys(moveControls);
  *
  * <div ref={containerRef}>
  *   <input/>
  * </div>
  *
- * @param focusControls Focus controls that are used to move focus around. If `null` then arrow keys are disabled.
+ * @param moveControls Focus controls that are used to move focus around. If `null` then arrow keys are disabled.
  * @param props Arrow keys props.
  * @see {@link FocusScope}
  * @see {@link ArrowKeys}
@@ -104,17 +104,17 @@ export interface ArrowKeysProps extends OrderedFocusOptions {
  * @see {@link useFocusControls}
  * @group Behaviors
  */
-export function useArrowKeys(focusControls: FocusControls | null, props: ArrowKeysProps = emptyObject): void {
+export function useArrowKeys(moveControls: FocusControls | null, props: ArrowKeysProps = emptyObject): void {
   const manager = useFunctionOnce(createArrowKeysManager);
 
-  manager.focusControls = focusControls;
+  manager.moveControls = moveControls;
   manager.props = props;
 
   useLayoutEffect(manager.onMounted, emptyArray);
 }
 
 interface ArrowKeysManager {
-  focusControls: FocusControls | null;
+  moveControls: FocusControls | null;
   props: ArrowKeysProps;
   onMounted: EffectCallback;
 }
@@ -123,7 +123,7 @@ function createArrowKeysManager(): ArrowKeysManager {
   const handleMounted: EffectCallback = () => registerArrowKeysManager(manager);
 
   const manager: ArrowKeysManager = {
-    focusControls: null,
+    moveControls: null,
     props: undefined!,
     onMounted: handleMounted,
   };
@@ -157,15 +157,15 @@ const KEY_PAGE_DOWN = 'PageDown';
 function handleArrowKeyDown(event: KeyboardEvent): void {
   const { key } = event;
 
-  if (!isArrowKeyNavigationEvent(event)) {
+  if (!isArrowKeyEvent(event)) {
     return;
   }
 
   for (const manager of arrowKeysNavigationManagers) {
-    const { focusControls, props } = manager;
+    const { moveControls, props } = manager;
     const { isDisabled, orientation, pagingBehavior } = props;
 
-    if (isDisabled || focusControls === null || !focusControls.isActive()) {
+    if (isDisabled || moveControls === null || !moveControls.isActive()) {
       continue;
     }
 
@@ -184,7 +184,7 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
 
       focusRing.reveal();
 
-      focusByKey(focusControls, key, props);
+      moveByArrowKey(moveControls, key, props);
 
       event.preventDefault();
       break;
@@ -192,7 +192,7 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
   }
 }
 
-export function isArrowKeyNavigationEvent(event: React.KeyboardEvent | KeyboardEvent): boolean {
+export function isArrowKeyEvent(event: React.KeyboardEvent | KeyboardEvent): boolean {
   const { key } = event;
 
   return (
@@ -207,38 +207,38 @@ export function isArrowKeyNavigationEvent(event: React.KeyboardEvent | KeyboardE
   );
 }
 
-function focusByKey(focusControls: FocusControls, key: string, props: ArrowKeysProps): boolean {
-  const { focusCycle, isRTL = isRTLElement() } = props;
+function moveByArrowKey(moveControls: FocusControls, key: string, props: ArrowKeysProps): boolean {
+  const { moveCycle, isRTL = isRTLElement() } = props;
 
   if (
-    (key === KEY_ARROW_UP && focusControls.focusUp(props)) ||
-    (key === KEY_ARROW_DOWN && focusControls.focusDown(props)) ||
-    (key === KEY_ARROW_LEFT && focusControls.focusLeft(props)) ||
-    (key === KEY_ARROW_RIGHT && focusControls.focusRight(props)) ||
-    (key === KEY_PAGE_UP && focusControls.focusFirst(props)) ||
-    (key === KEY_PAGE_DOWN && focusControls.focusLast(props))
+    (key === KEY_ARROW_UP && moveControls.moveUp(props)) ||
+    (key === KEY_ARROW_DOWN && moveControls.moveDown(props)) ||
+    (key === KEY_ARROW_LEFT && moveControls.moveLeft(props)) ||
+    (key === KEY_ARROW_RIGHT && moveControls.moveRight(props)) ||
+    (key === KEY_PAGE_UP && moveControls.moveToFirst(props)) ||
+    (key === KEY_PAGE_DOWN && moveControls.moveToLast(props))
   ) {
     return true;
   }
 
-  if (focusCycle === undefined) {
+  if (moveCycle === undefined) {
     return false;
   }
 
-  for (const type of focusCycle) {
+  for (const type of moveCycle) {
     if (
-      (key === KEY_ARROW_UP && type === 'arrowUpToFirst' && focusControls.focusFirst(props)) ||
-      (key === KEY_ARROW_UP && type === 'arrowUpToLast' && focusControls.focusLast(props)) ||
-      (key === KEY_ARROW_DOWN && type === 'arrowDownToFirst' && focusControls.focusFirst(props)) ||
-      (key === KEY_ARROW_DOWN && type === 'arrowDownToLast' && focusControls.focusLast(props)) ||
+      (key === KEY_ARROW_UP && type === 'arrowUpToFirst' && moveControls.moveToFirst(props)) ||
+      (key === KEY_ARROW_UP && type === 'arrowUpToLast' && moveControls.moveToLast(props)) ||
+      (key === KEY_ARROW_DOWN && type === 'arrowDownToFirst' && moveControls.moveToFirst(props)) ||
+      (key === KEY_ARROW_DOWN && type === 'arrowDownToLast' && moveControls.moveToLast(props)) ||
       (key === KEY_ARROW_RIGHT &&
         type === 'arrowRightToNext' &&
-        (isRTL ? focusControls.focusPrevious(props) : focusControls.focusNext(props))) ||
+        (isRTL ? moveControls.moveToPrevious(props) : moveControls.moveToNext(props))) ||
       (key === KEY_ARROW_LEFT &&
         type === 'arrowLeftToPrevious' &&
-        (isRTL ? focusControls.focusNext(props) : focusControls.focusPrevious(props))) ||
-      (key === KEY_PAGE_UP && type === 'pageUpToFirst' && focusControls.focusFirst(props)) ||
-      (key === KEY_PAGE_DOWN && type === 'pageDownToLast' && focusControls.focusLast(props))
+        (isRTL ? moveControls.moveToNext(props) : moveControls.moveToPrevious(props))) ||
+      (key === KEY_PAGE_UP && type === 'pageUpToFirst' && moveControls.moveToFirst(props)) ||
+      (key === KEY_PAGE_DOWN && type === 'pageDownToLast' && moveControls.moveToLast(props))
     ) {
       return true;
     }

@@ -45,7 +45,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusFirst(options?: OrderedFocusOptions): boolean;
+  moveToFirst(options?: OrderedFocusOptions): boolean;
 
   /**
    * Focuses the last focusable element inside a focus scope.
@@ -53,7 +53,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusLast(options?: OrderedFocusOptions): boolean;
+  moveToLast(options?: OrderedFocusOptions): boolean;
 
   /**
    * If focus scope contains the currently focused element, then the next element in <kbd>Tab</kbd> order after it
@@ -62,7 +62,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusNext(options?: OrderedFocusOptions): boolean;
+  moveToNext(options?: OrderedFocusOptions): boolean;
 
   /**
    * If focus scope contains the currently focused element, then the previous element in <kbd>Tab</kbd> order before it
@@ -71,7 +71,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusPrevious(options?: OrderedFocusOptions): boolean;
+  moveToPrevious(options?: OrderedFocusOptions): boolean;
 
   /**
    * If focus scope contains the currently focused element, then moves focus to the closest focusable element above
@@ -80,7 +80,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusUp(options?: UnorderedFocusOptions): boolean;
+  moveUp(options?: UnorderedFocusOptions): boolean;
 
   /**
    * If focus scope contains the currently focused element, then moves focus to the closest focusable element below
@@ -89,7 +89,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusDown(options?: UnorderedFocusOptions): boolean;
+  moveDown(options?: UnorderedFocusOptions): boolean;
 
   /**
    * If focus scope contains the currently focused element, then moves focus to the closest focusable element at left
@@ -98,7 +98,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusLeft(options?: UnorderedFocusOptions): boolean;
+  moveLeft(options?: UnorderedFocusOptions): boolean;
 
   /**
    * If focus scope contains the currently focused element, then moves focus to the closest focusable element at right
@@ -107,7 +107,7 @@ export interface FocusControls {
    * @param options Focus options.
    * @returns `true` if an element was focused.
    */
-  focusRight(options?: UnorderedFocusOptions): boolean;
+  moveRight(options?: UnorderedFocusOptions): boolean;
 
   /**
    * Returns `true` if a focus scope contains focused element, or if a focus scope is a part of an active focus trap.

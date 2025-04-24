@@ -92,14 +92,14 @@ function createFocusScopeManager(): FocusScopeManager {
 
     if (isAutofocused) {
       // Focus the first approved auto-focusable element
-      focusControls.focusFirst({
+      focusControls.moveToFirst({
         ...manager.props,
 
         approveFocusCandidate: element =>
           isAutoFocusable(element) && (approveFocusCandidate === undefined || approveFocusCandidate(element)),
       }) ||
         // Focus the first focusable element
-        focusControls.focusFirst(manager.props) ||
+        focusControls.moveToFirst(manager.props) ||
         // Hide focus
         (isFocusTrap && cancelFocus());
     } else if (isFocusTrap) {
@@ -139,14 +139,14 @@ function createFocusScopeManager(): FocusScopeManager {
   const hasFocus = (): boolean => containsElement(manager, getFocusedElement());
 
   const focusControls: FocusControls = {
-    focusFirst: options => focusAbsolute(manager, false, options),
-    focusLast: options => focusAbsolute(manager, true, options),
-    focusNext: options => focusRelative(manager, false, options),
-    focusPrevious: options => focusRelative(manager, true, options),
-    focusUp: options => focusInDirection(manager, 'up', options),
-    focusRight: options => focusInDirection(manager, 'right', options),
-    focusDown: options => focusInDirection(manager, 'down', options),
-    focusLeft: options => focusInDirection(manager, 'left', options),
+    moveToFirst: options => focusAbsolute(manager, false, options),
+    moveToLast: options => focusAbsolute(manager, true, options),
+    moveToNext: options => focusRelative(manager, false, options),
+    moveToPrevious: options => focusRelative(manager, true, options),
+    moveUp: options => focusInDirection(manager, 'up', options),
+    moveRight: options => focusInDirection(manager, 'right', options),
+    moveDown: options => focusInDirection(manager, 'down', options),
+    moveLeft: options => focusInDirection(manager, 'left', options),
     isActive,
     hasFocus,
   };

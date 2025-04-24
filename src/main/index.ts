@@ -10,7 +10,7 @@ export {
   type AnchorPositionProps,
   type AnchorPositionVariant,
 } from './behaviors/useAnchorPosition';
-export { useArrowKeys, type ArrowKeysProps, type FocusCycle } from './behaviors/useArrowKeys';
+export { useArrowKeys, type ArrowKeysProps, type MoveCycle } from './behaviors/useArrowKeys';
 export { useClickAway, type ClickAwayProps, type ClickAwayValue } from './behaviors/useClickAway';
 export { useCloseHandler, CloseHandlerProvider } from './behaviors/useCloseHandler';
 export { useDrag, type DragInfo, type DragProps, type DragValue } from './behaviors/useDrag';
