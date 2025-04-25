@@ -321,7 +321,7 @@ function createMenuItemManager(
     if (isHovered) {
       manager.state.setTabbableId(manager.id);
     } else {
-      manager.ref.current?.blur();
+      // manager.ref.current?.blur();
       return;
     }
 
