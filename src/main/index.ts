@@ -49,7 +49,7 @@ export {
   useVirtualizer,
   type VirtualItem,
   type VirtualizerScrollInfo,
-  type VirtualizerScrollToOptions,
+  type VirtualizerScrollToIndexOptions,
   type Virtualizer,
   type VirtualizerProps,
 } from './behaviors/useVirtualizer';

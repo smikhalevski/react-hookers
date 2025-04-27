@@ -32,6 +32,11 @@ export interface VirtualItem {
  */
 export interface VirtualizerScrollInfo {
   /**
+   * The virtualizer for which a scroll event has occurred.
+   */
+  virtualizer: Virtualizer;
+
+  /**
    * An index of the first item, inclusive.
    *
    * @see {@link VirtualizerProps.startIndex}
@@ -87,11 +92,11 @@ export interface VirtualizerScrollInfo {
 }
 
 /**
- * Options of the {@link Virtualizer.scrollTo} method.
+ * Options of the {@link Virtualizer.scrollToIndex} method.
  *
  * @group Behaviors
  */
-export interface VirtualizerScrollToOptions {
+export interface VirtualizerScrollToIndexOptions {
   /**
    * A padding to apply to the start of a container in pixels when scrolling to an item.
    *
@@ -109,17 +114,41 @@ export interface Virtualizer {
   /**
    * An array of items to render.
    *
-   * **Note:** Items of this array may be reused between re-renders.
+   * **Note:** Items in this array may be reused between re-renders.
    */
   items: readonly VirtualItem[];
 
   /**
-   * Scrolls list to an item with the given index.
+   * Returns an estimated total size of the virtualized list in pixels along the scroll axis, based on the total number
+   * of items and an estimated average item size.
+   */
+  estimateTotalSize(): number;
+
+  /**
+   * Returns {@link VirtualizerProps.estimateItemSize an estimated item size} in pixels along the scroll axis,
+   * or the latest measured item size if item was previously rendered.
    *
-   * @param itemIndex An index of an item.
+   * @param index An index of an item.
+   */
+  estimateItemSize(index: number): number;
+
+  /**
+   * Scrolls virtualizer to an item with the given index.
+   *
+   * @param index An index of an item.
    * @param options Scroll options.
    */
-  scrollTo(itemIndex: number, options?: VirtualizerScrollToOptions): void;
+  scrollToIndex(index: number, options?: VirtualizerScrollToIndexOptions): void;
+
+  /**
+   * Scrolls virtualizer to an absolute position.
+   *
+   * **Note:** The precision of the scroll position isn't guaranteed if an {@link estimateTotalSize} is greater then
+   * {@link Number.MAX_SAFE_INTEGER}.
+   *
+   * @param position A position in pixels to scroll to.
+   */
+  scrollToPosition(position: number): void;
 }
 
 /**
@@ -251,6 +280,7 @@ interface VirtualizerManager {
 
 function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => void): VirtualizerManager {
   const info: VirtualizerScrollInfo = {
+    virtualizer: undefined!,
     startIndex: 0,
     endIndex: 0,
     pageSize: 0,
@@ -296,6 +326,7 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
     if (renderedStateVersion !== state.version) {
       renderedStateVersion = state.version;
 
+      info.virtualizer = manager.value;
       info.startIndex = state.startIndex;
       info.endIndex = state.endIndex;
       info.pageSize = state.pageSize;
@@ -373,19 +404,6 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
     syncVirtualizer(false);
   };
 
-  const handleScrollTo = (itemIndex: number, options: VirtualizerScrollToOptions = emptyObject): void => {
-    if (typeof itemIndex !== 'number' || itemIndex !== itemIndex) {
-      return;
-    }
-
-    const { scrollPaddingStart = 0 } = options;
-
-    state.scrollPaddingStart = scrollPaddingStart;
-    state.anchorIndex = max(state.startIndex, min(itemIndex, state.endIndex - 1));
-
-    syncVirtualizer(true);
-  };
-
   const handleMounted: EffectCallback = () => {
     window.addEventListener('scroll', handleScroll, true);
     window.addEventListener('resize', handleWindowResize);
@@ -458,11 +476,90 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
     syncVirtualizer(true);
   };
 
+  const estimateTotalSize = (): number => {
+    if (state === undefined) {
+      // Not rendered yet
+      return 0;
+    }
+
+    const { startIndex, endIndex, itemSizeCache, estimateItemSize } = state;
+
+    let averageSize = 0;
+
+    for (let i = 0; i < MAX_PEEK_COUNT && startIndex + i < endIndex; ++i) {
+      averageSize = (averageSize / (i + 1)) * i + itemSizeCache.getOrSet(startIndex + i, estimateItemSize) / (i + 1);
+    }
+
+    return trunc((endIndex - startIndex) * averageSize);
+  };
+
+  const estimateItemSize = (index: number): number => {
+    if (state === undefined || !isSafeInteger(index) || index < state.startIndex || index >= state.endIndex) {
+      return 0;
+    }
+    return state.itemSizeCache.getOrSet(index, state.estimateItemSize);
+  };
+
+  const scrollToIndex = (index: number, options: VirtualizerScrollToIndexOptions = emptyObject): void => {
+    if (state === undefined) {
+      // Not rendered yet
+      return;
+    }
+
+    const { scrollPaddingStart = 0 } = options;
+
+    state.scrollPaddingStart = scrollPaddingStart;
+    state.anchorIndex = max(state.startIndex, min(trunc(index), state.endIndex - 1));
+
+    syncVirtualizer(true);
+  };
+
+  const scrollToPosition = (position: number): void => {
+    if (state === undefined) {
+      // Not rendered yet
+      return;
+    }
+
+    const { startIndex, endIndex, itemSizeCache, estimateItemSize } = state;
+
+    let anchorIndex = startIndex;
+    let anchorPosition = 0;
+
+    while (anchorIndex < endIndex && anchorPosition < position && anchorIndex - startIndex < MAX_PEEK_COUNT) {
+      anchorPosition += itemSizeCache.getOrSet(anchorIndex, estimateItemSize);
+      anchorIndex++;
+    }
+
+    if (anchorIndex < endIndex && anchorPosition < position) {
+      // Anchor isn't at the required position, because peek count was exceeded,
+      // so fallback to an estimated anchor index and anchor position
+      const averageSize = anchorPosition / MAX_PEEK_COUNT;
+
+      anchorIndex = trunc(position / averageSize);
+      anchorPosition = anchorIndex * averageSize;
+      anchorIndex += startIndex;
+    }
+
+    if (anchorIndex >= endIndex) {
+      // Prevent excessive re-renders on overflow
+      anchorIndex = endIndex - 1;
+      anchorPosition = position;
+    }
+
+    state.scrollPaddingStart = anchorPosition - position;
+    state.anchorIndex = anchorIndex;
+
+    syncVirtualizer(true);
+  };
+
   const manager: VirtualizerManager = {
     props: undefined!,
     value: {
       items: [],
-      scrollTo: handleScrollTo,
+      estimateTotalSize,
+      estimateItemSize,
+      scrollToIndex,
+      scrollToPosition,
     },
     onMounted: handleMounted,
     onUpdated: handleUpdated,
@@ -471,7 +568,8 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
   return manager;
 }
 
-const { min, max } = Math;
+const { min, max, trunc } = Math;
+const { isSafeInteger } = Number;
 
 const isIOS = detectOS() === 'ios';
 const resizeObserverOptions: ResizeObserverOptions = { box: 'border-box' };
@@ -480,6 +578,7 @@ const SCROLL_END_DELAY = 150;
 const MAX_BROWSER_SCROLL_SIZE = 0xfffffe;
 const MIN_PAGE_SIZE = (MAX_BROWSER_SCROLL_SIZE / 20) | 0;
 const PAGE_THRESHOLD = 0.15;
+const MAX_PEEK_COUNT = 100;
 
 export interface VirtualizerState {
   /**
