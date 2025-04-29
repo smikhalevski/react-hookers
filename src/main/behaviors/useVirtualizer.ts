@@ -96,13 +96,15 @@ export interface VirtualizerScrollInfo {
  *
  * @group Behaviors
  */
-export interface VirtualizerScrollToIndexOptions {
+export interface VirtualizerScrollOptions {
   /**
    * A padding to apply to the start of a container in pixels when scrolling to an item.
    *
    * @default 0
    */
   scrollPaddingStart?: number;
+
+  behavior?: ScrollBehavior;
 }
 
 /**
@@ -138,7 +140,7 @@ export interface Virtualizer {
    * @param index An index of an item.
    * @param options Scroll options.
    */
-  scrollToIndex(index: number, options?: VirtualizerScrollToIndexOptions): void;
+  scrollToIndex(index: number, options?: VirtualizerScrollOptions): void;
 
   /**
    * Scrolls virtualizer to an absolute position.
@@ -147,8 +149,9 @@ export interface Virtualizer {
    * {@link Number.MAX_SAFE_INTEGER}.
    *
    * @param position A position in pixels to scroll to.
+   * @param options Scroll options.
    */
-  scrollToPosition(position: number): void;
+  scrollToPosition(position: number, options?: VirtualizerScrollOptions): void;
 }
 
 /**
@@ -342,7 +345,7 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
     }
 
     if (state.requiredScrollPosition !== null) {
-      scrollTo(orientation, manager.props.containerRef, state.requiredScrollPosition, 'instant');
+      scrollTo(orientation, manager.props.containerRef, state.requiredScrollPosition, state.isSmoothScrollRequired);
       state.requiredScrollPosition = null;
     }
   };
@@ -500,7 +503,7 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
     return state.itemSizeCache.getOrSet(index, state.estimateItemSize);
   };
 
-  const scrollToIndex = (index: number, options: VirtualizerScrollToIndexOptions = emptyObject): void => {
+  const scrollToIndex = (index: number, options: VirtualizerScrollOptions = emptyObject): void => {
     if (state === undefined) {
       // Not rendered yet
       return;
@@ -510,16 +513,18 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
 
     state.scrollPaddingStart = scrollPaddingStart;
     state.anchorIndex = max(state.startIndex, min(trunc(index), state.endIndex - 1));
+    state.isSmoothScroll = isSmoothScroll(manager.props.containerRef, options.behavior);
 
     syncVirtualizer(true);
   };
 
-  const scrollToPosition = (position: number): void => {
+  const scrollToPosition = (position: number, options: VirtualizerScrollOptions = emptyObject): void => {
     if (state === undefined) {
       // Not rendered yet
       return;
     }
 
+    const { scrollPaddingStart = 0 } = options;
     const { startIndex, endIndex, itemSizeCache, estimateItemSize } = state;
 
     let anchorIndex = startIndex;
@@ -546,8 +551,9 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
       anchorPosition = position;
     }
 
-    state.scrollPaddingStart = anchorPosition - position;
+    state.scrollPaddingStart = scrollPaddingStart + anchorPosition - position;
     state.anchorIndex = anchorIndex;
+    state.isSmoothScroll = isSmoothScroll(manager.props.containerRef, options.behavior);
 
     syncVirtualizer(true);
   };
@@ -578,7 +584,7 @@ const SCROLL_END_DELAY = 150;
 const MAX_BROWSER_SCROLL_SIZE = 0xfffffe;
 const MIN_PAGE_SIZE = (MAX_BROWSER_SCROLL_SIZE / 20) | 0;
 const PAGE_THRESHOLD = 0.15;
-const MAX_PEEK_COUNT = 100;
+const MAX_PEEK_COUNT = 5;
 
 export interface VirtualizerState {
   /**
@@ -597,6 +603,7 @@ export interface VirtualizerState {
   anchorIndex: number | null;
   scrollPaddingStart: number;
   paddingStart: number;
+  isSmoothScroll: boolean;
 
   // Output
   /**
@@ -618,6 +625,11 @@ export interface VirtualizerState {
    * A scroll position that must be applied to a container, or `null` if scroll position shouldn't be changed.
    */
   requiredScrollPosition: number | null;
+
+  /**
+   * `true` if container should be scrolled with animation.
+   */
+  isSmoothScrollRequired: boolean;
 
   /**
    * A size of the current page.
@@ -691,12 +703,14 @@ export function createVirtualizerState(): VirtualizerState {
     anchorIndex: null,
     scrollPaddingStart: 0,
     paddingStart: 0,
+    isSmoothScroll: false,
 
     // Output
     items: [],
     itemSizeCache: new BigArray(),
     adjustedItemsPosition: 0,
     requiredScrollPosition: null,
+    isSmoothScrollRequired: false,
     pageSize: 0,
     pageStartIndex: 0,
     pageEndIndex: 0,
@@ -748,11 +762,10 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     anchorIndex,
     scrollPaddingStart,
     paddingStart,
+    isSmoothScroll,
 
     items: prevItems,
     itemSizeCache,
-    // adjustedItemsPosition,
-    // requiredScrollPosition,
     pageSize: prevPageSize,
     pageStartIndex: prevPageStartIndex,
     pageEndIndex: prevPageEndIndex,
@@ -881,7 +894,7 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     itemsStartIndex -= zeroOffset;
   }
 
-  let requiredScrollPosition = null;
+  let requiredScrollPosition: number | null = null;
   let pivotOffset = pivotPosition - scrollPosition;
 
   if (!isScrolling) {
@@ -964,6 +977,10 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     if (scrollShift !== 0 || actualItemsPosition !== itemsPosition) {
       scrollShift = 0;
       requiredScrollPosition = scrollPosition + itemsPosition - actualItemsPosition;
+
+      if (isSmoothScroll) {
+        requiredScrollPosition += 200;
+      }
     }
 
     if (
@@ -1067,13 +1084,29 @@ function getScrollPosition(orientation: number, containerRef: RefObject<Element>
   return orientation === TOP_TO_BOTTOM ? containerRef.current.scrollTop : orientation * containerRef.current.scrollLeft;
 }
 
+function isSmoothScroll(containerRef: RefObject<Element> | undefined, behavior: ScrollBehavior | undefined): boolean {
+  if (behavior !== 'auto' || behavior === undefined) {
+    return behavior === 'smooth';
+  }
+  if (containerRef === undefined) {
+    // Window
+    return window.getComputedStyle(document.body).scrollBehavior === 'smooth';
+  }
+  if (containerRef.current === null) {
+    // No container
+    return false;
+  }
+  return window.getComputedStyle(containerRef.current).scrollBehavior === 'smooth';
+}
+
 function scrollTo(
   orientation: number,
   containerRef: RefObject<Element> | undefined,
   position: number,
-  behavior: ScrollBehavior
+  isSmoothScroll: boolean
 ): void {
   const target = containerRef === undefined ? window : containerRef.current;
+  const behavior = isSmoothScroll ? 'smooth' : 'instant';
 
   target?.scrollTo(
     orientation === TOP_TO_BOTTOM ? { top: position, behavior } : { left: orientation * position, behavior }
