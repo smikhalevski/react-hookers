@@ -1070,13 +1070,9 @@ function getScrollPosition(orientation: number, containerRef: RefObject<Element>
 function scrollTo(orientation: number, containerRef: RefObject<Element> | undefined, position: number): void {
   const target = containerRef === undefined ? window : containerRef.current;
 
-  if (target === null) {
-    // No container
-    return;
-  }
-  if (orientation === TOP_TO_BOTTOM) {
-    target.scrollTo(0, position);
-  } else {
-    target.scrollTo(orientation * position, 0);
-  }
+  target?.scrollTo(
+    orientation === TOP_TO_BOTTOM
+      ? { behavior: 'instant', top: position }
+      : { behavior: 'instant', left: orientation * position }
+  );
 }
