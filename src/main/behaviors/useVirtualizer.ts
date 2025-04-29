@@ -342,7 +342,7 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
     }
 
     if (state.requiredScrollPosition !== null) {
-      scrollTo(orientation, manager.props.containerRef, state.requiredScrollPosition);
+      scrollTo(orientation, manager.props.containerRef, state.requiredScrollPosition, 'instant');
       state.requiredScrollPosition = null;
     }
   };
@@ -1067,16 +1067,15 @@ function getScrollPosition(orientation: number, containerRef: RefObject<Element>
   return orientation === TOP_TO_BOTTOM ? containerRef.current.scrollTop : orientation * containerRef.current.scrollLeft;
 }
 
-function scrollTo(orientation: number, containerRef: RefObject<Element> | undefined, position: number): void {
+function scrollTo(
+  orientation: number,
+  containerRef: RefObject<Element> | undefined,
+  position: number,
+  behavior: ScrollBehavior
+): void {
   const target = containerRef === undefined ? window : containerRef.current;
 
-  if (target === null) {
-    // No container
-    return;
-  }
-  if (orientation === TOP_TO_BOTTOM) {
-    target.scrollTo(0, position);
-  } else {
-    target.scrollTo(orientation * position, 0);
-  }
+  target?.scrollTo(
+    orientation === TOP_TO_BOTTOM ? { top: position, behavior } : { left: orientation * position, behavior }
+  );
 }
