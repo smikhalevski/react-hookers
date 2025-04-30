@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { emptyObject } from '../utils/lang';
 import { createCache } from './utils';
 import { useLocale } from './useLocale';
 
@@ -16,7 +17,7 @@ const getOrCreate = createCache((locale, options) => new Intl.NumberFormat(local
  * @param options Format options. Create options outside of rendering to enable format caching.
  * @group Intl
  */
-export function useNumberFormat(options: Intl.NumberFormatOptions): Intl.NumberFormat {
+export function useNumberFormat(options: Intl.NumberFormatOptions = emptyObject): Intl.NumberFormat {
   const { locale } = useLocale();
 
   return useMemo(() => getOrCreate(locale, options), [locale, options]);

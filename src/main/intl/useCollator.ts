@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { emptyObject } from '../utils/lang';
 import { createCache } from './utils';
 import { useLocale } from './useLocale';
 
@@ -16,7 +17,7 @@ const getOrCreate = createCache((locale, options) => new Intl.Collator(locale, o
  * @param options Format options. Create options outside of rendering to enable format caching.
  * @group Intl
  */
-export function useCollator(options: Intl.CollatorOptions): Intl.Collator {
+export function useCollator(options: Intl.CollatorOptions = emptyObject): Intl.Collator {
   const { locale } = useLocale();
 
   return useMemo(() => getOrCreate(locale, options), [locale, options]);

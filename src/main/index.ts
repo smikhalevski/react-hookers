@@ -84,6 +84,7 @@ export { useCollator } from './intl/useCollator';
 export { useDateTimeFormat } from './intl/useDateTimeFormat';
 export { useLocale, LocaleProvider, type Locale } from './intl/useLocale';
 export { useNumberFormat } from './intl/useNumberFormat';
+export { useRelativeTimeFormat } from './intl/useRelativeTimeFormat';
 export { stripDiacritics } from './intl/utils';
 
 export { BigArray } from './utils/BigArray';
