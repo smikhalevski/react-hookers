@@ -1,4 +1,4 @@
-import { MutableRefObject, type Ref, RefCallback } from 'react';
+import type { MutableRefObject, Ref, RefCallback } from 'react';
 
 /**
  * Merges multiple refs into a single callback ref.
@@ -14,13 +14,13 @@ export function mergeRefs() {
   for (let i = 1; i < arguments.length; ++i) {
     const refI = arguments[i];
 
-    ref = ref === undefined || ref === null ? refI : refI === undefined || refI === null ? ref : unionRefs(ref, refI);
+    ref = ref === undefined || ref === null ? refI : refI === undefined || refI === null ? ref : combineRefs(ref, refI);
   }
 
   return ref === null ? undefined : ref;
 }
 
-function unionRefs(
+function combineRefs(
   a: MutableRefObject<unknown> | RefCallback<unknown>,
   b: MutableRefObject<unknown> | RefCallback<unknown>
 ): RefCallback<unknown> {

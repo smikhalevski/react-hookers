@@ -1,3 +1,4 @@
+import { mergeClassNames } from './mergeClassNames';
 import { mergeRefs } from './mergeRefs';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
@@ -61,7 +62,7 @@ export function mergeProps() {
         key.charCodeAt(2) >= 65 /* A */ &&
         key.charCodeAt(2) <= 90 /* Z */
       ) {
-        props[key] = unionFunctions(props[key], value);
+        props[key] = combineEventHandlers(props[key], value);
         continue;
       }
 
@@ -80,30 +81,14 @@ export function mergeProps() {
 
   if (props !== undefined && 'className' in props) {
     for (let i = 0, value; i < arguments.length; ++i) {
-      value = props.className = unionClassNames(value, arguments[i].className);
+      value = props.className = mergeClassNames(value, arguments[i].className);
     }
   }
 
   return props;
 }
 
-/**
- * Merges class names into a single string.
- *
- * @group Other
- */
-export function mergeClassNames(...classNames: Array<string | boolean | null | undefined>): string | undefined;
-
-export function mergeClassNames() {
-  let className;
-
-  for (let i = 0; i < arguments.length; ++i) {
-    className = unionClassNames(className, arguments[i]);
-  }
-  return className;
-}
-
-function unionFunctions(a: unknown, b: Function): Function {
+function combineEventHandlers(a: unknown, b: Function): Function {
   if (typeof a !== 'function') {
     return b;
   }
@@ -130,14 +115,4 @@ function unionFunctions(a: unknown, b: Function): Function {
     a(...args);
     b(...args);
   };
-}
-
-function unionClassNames(a: string | undefined, b: unknown): string | undefined {
-  if (typeof b !== 'string' || b.length === 0) {
-    return a;
-  }
-  if (a === undefined || a.length === 0) {
-    return b;
-  }
-  return a + ' ' + b;
 }

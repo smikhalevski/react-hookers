@@ -103,7 +103,8 @@ export {
 } from './utils/dom';
 export { arrayOf, callOrGet, isEqual } from './utils/lang';
 export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/rects';
-export { mergeProps, mergeClassNames } from './utils/mergeProps';
+export { mergeClassNames } from './utils/mergeClassNames';
+export { mergeProps } from './utils/mergeProps';
 export { mergeRefs } from './utils/mergeRefs';
 export {
   createDelegateContext,
