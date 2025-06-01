@@ -146,6 +146,5 @@ export {
 export { useRerender } from './useRerender.js';
 export { useRerenderInterval } from './useRerenderInterval.js';
 export { useTimeout } from './useTimeout.js';
-export { useUniqueId } from './useUniqueId.js';
 export { useViewport, type ViewportProps } from './useViewport.js';
 export { type DOMEventHandler, type FocusableElement, type Schedule } from './types.js';

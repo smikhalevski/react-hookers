@@ -1,4 +1,4 @@
-import { EffectCallback, HTMLAttributes, useEffect } from 'react';
+import { EffectCallback, HTMLAttributes, useEffect, useId } from 'react';
 import { focusRing } from '../behaviors/focusRing.js';
 import { FocusProps, useFocus } from '../behaviors/useFocus.js';
 import { HoverProps, useHover } from '../behaviors/useHover.js';
@@ -6,7 +6,6 @@ import { DOMEventHandler } from '../types.js';
 import { useCopyObject } from '../useCopyObject.js';
 import { useFunction } from '../useFunction.js';
 import { useFunctionOnce } from '../useFunctionOnce.js';
-import { useUniqueId } from '../useUniqueId.js';
 import { emptyArray } from '../utils/lang.js';
 import { mergeProps } from '../utils/mergeProps.js';
 
@@ -87,7 +86,7 @@ export function useTooltip(props: HeadlessTooltipProps): HeadlessTooltipValue {
 
   const hoverValue = useHover(manager.anchorInteractionProps);
   const focusValue = useFocus(manager.anchorInteractionProps);
-  const tooltipId = useUniqueId();
+  const tooltipId = useId();
 
   const { value } = manager;
 

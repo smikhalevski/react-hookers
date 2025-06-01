@@ -1,7 +1,6 @@
-import { HTMLAttributes, LabelHTMLAttributes, useState } from 'react';
+import { HTMLAttributes, LabelHTMLAttributes, useId, useState } from 'react';
 import { type PressableProps, usePressable } from '../behaviors/usePressable.js';
 import { useFunctionOnce } from '../useFunctionOnce.js';
-import { useUniqueId } from '../useUniqueId.js';
 import { DATA_AUTOFOCUS } from '../utils/dom.js';
 import { mergeProps } from '../utils/mergeProps.js';
 
@@ -117,7 +116,7 @@ export interface HeadlessSelectProps<T> extends PressableProps {
 export function useSelect<T>(props: HeadlessSelectProps<T>): HeadlessSelectValue<T> {
   const [isOpened, setOpened] = useState(false);
   const manager = useFunctionOnce(createSelectManager<T>, setOpened);
-  const fallbackId = useUniqueId();
+  const fallbackId = useId();
 
   const pressableValue = usePressable(mergeProps(props, manager.pressableProps));
   const { value } = manager;

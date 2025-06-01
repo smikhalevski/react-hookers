@@ -1,9 +1,8 @@
-import { HTMLInputAutoCompleteAttribute, InputHTMLAttributes, LabelHTMLAttributes } from 'react';
+import { HTMLInputAutoCompleteAttribute, InputHTMLAttributes, LabelHTMLAttributes, useId } from 'react';
 import { cursor } from '../behaviors/cursor.js';
 import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus.js';
 import { HoverProps, HoverValue, useHover } from '../behaviors/useHover.js';
 import { useFunctionOnce } from '../useFunctionOnce.js';
-import { useUniqueId } from '../useUniqueId.js';
 import { DATA_AUTOFOCUS } from '../utils/dom.js';
 import { mergeProps } from '../utils/mergeProps.js';
 
@@ -109,7 +108,7 @@ export interface HeadlessTextInputProps extends HoverProps, FocusProps {
 export function useTextInput(props: HeadlessTextInputProps): HeadlessTextInputValue {
   const hoverValue = useHover(props);
   const focusValue = useFocus(props);
-  const fallbackId = useUniqueId();
+  const fallbackId = useId();
 
   const manager = useFunctionOnce(createTextInputManager, hoverValue, focusValue);
   const { value } = manager;

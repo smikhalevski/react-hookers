@@ -1,5 +1,5 @@
 import { PubSub } from 'parallel-universe';
-import { EffectCallback, HTMLAttributes, KeyboardEventHandler, RefObject, useEffect, useState } from 'react';
+import { EffectCallback, HTMLAttributes, KeyboardEventHandler, RefObject, useEffect, useId, useState } from 'react';
 import { focusRing } from '../behaviors/focusRing.js';
 import { useActionHandler } from '../behaviors/useActionHandler.js';
 import { useCloseHandler } from '../behaviors/useCloseHandler.js';
@@ -7,7 +7,6 @@ import { requestFocus } from '../behaviors/useFocus.js';
 import { PressableProps, usePressable } from '../behaviors/usePressable.js';
 import { FocusableElement } from '../types.js';
 import { useFunctionOnce } from '../useFunctionOnce.js';
-import { useUniqueId } from '../useUniqueId.js';
 import { isRTLElement } from '../utils/dom.js';
 import { emptyObject } from '../utils/lang.js';
 import { mergeProps } from '../utils/mergeProps.js';
@@ -257,7 +256,7 @@ export function useMenuItem<T>(
   state: HeadlessMenuState,
   props: HeadlessMenuItemProps<T> = emptyObject
 ): HeadlessMenuItemValue {
-  const fallbackId = useUniqueId();
+  const fallbackId = useId();
   const id = props.id || fallbackId;
   const [isExpanded, setExpanded] = useState(state.expandedId === id);
   const [isTabbable, setTabbable] = useState(state.tabbableId === id);
