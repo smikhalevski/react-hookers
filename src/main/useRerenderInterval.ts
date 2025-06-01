@@ -1,5 +1,5 @@
-import { useIntervalCallback } from './useIntervalCallback';
-import { useRerender } from './useRerender';
+import { useIntervalCallback } from './useIntervalCallback.js';
+import { useRerender } from './useRerender.js';
 
 /**
  * Re-renders the component on a periodic interval.

@@ -1,7 +1,7 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import type { Schedule } from './types';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray, noop } from './utils/lang';
+import type { Schedule } from './types.js';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray, noop } from './utils/lang.js';
 
 /**
  * The replacement for `window.setInterval` that schedules a function to be repeatedly called with a fixed time delay
@@ -86,7 +86,7 @@ function createIntervalManager(): IntervalManager {
 const schedulers = new Map<number, ReturnType<typeof getOrCreateScheduler>>();
 
 function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
-  let timer: NodeJS.Timeout;
+  let timer: number;
   let scheduler = schedulers.get(ms);
 
   if (scheduler !== undefined) {

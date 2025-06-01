@@ -1,5 +1,5 @@
 import { DOMAttributes, KeyboardEventHandler } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
+import { useFunctionOnce } from '../useFunctionOnce.js';
 
 /**
  * A value returned from the {@link useKeyboard} hook.

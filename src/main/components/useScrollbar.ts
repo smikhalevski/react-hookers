@@ -1,8 +1,8 @@
 import { DOMAttributes, EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
-import { DOMEventHandler } from '../types';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { emptyArray, noop } from '../utils/lang';
-import { HeadlessTrackHandleProps, useTrackHandle } from './useTrackHandle';
+import { DOMEventHandler } from '../types.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { emptyArray, noop } from '../utils/lang.js';
+import { HeadlessTrackHandleProps, useTrackHandle } from './useTrackHandle.js';
 
 /**
  * An info about the current state of a scrollbar.
@@ -150,8 +150,8 @@ interface ScrollbarManager {
 function createScrollbarManager(setStatus: (status: number) => void): ScrollbarManager {
   let status = STATUS_NOT_SCROLLABLE;
   let percentage = -1;
-  let repositionTimer: NodeJS.Timeout;
-  let deactivateTimer: NodeJS.Timeout;
+  let repositionTimer: number;
+  let deactivateTimer: number;
 
   const info: ScrollbarInfo = {
     percentage: 0,

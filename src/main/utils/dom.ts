@@ -1,5 +1,5 @@
 import { SyntheticEvent } from 'react';
-import { FocusableElement } from '../types';
+import { FocusableElement } from '../types.js';
 
 /**
  * An attribute that replaces `autofocus` for a {@link useFocusScope focus scope}. Expects a boolean value.

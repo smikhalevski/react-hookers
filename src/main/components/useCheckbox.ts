@@ -1,10 +1,10 @@
 import { InputHTMLAttributes, LabelHTMLAttributes } from 'react';
-import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus';
-import { HoverProps, HoverValue, useHover } from '../behaviors/useHover';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { useUniqueId } from '../useUniqueId';
-import { DATA_AUTOFOCUS } from '../utils/dom';
-import { mergeProps } from '../utils/mergeProps';
+import { FocusProps, FocusValue, useFocus } from '../behaviors/useFocus.js';
+import { HoverProps, HoverValue, useHover } from '../behaviors/useHover.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { useUniqueId } from '../useUniqueId.js';
+import { DATA_AUTOFOCUS } from '../utils/dom.js';
+import { mergeProps } from '../utils/mergeProps.js';
 
 /**
  * A value returned from the {@link useCheckbox} hook.

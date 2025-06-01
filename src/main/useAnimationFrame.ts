@@ -1,6 +1,6 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray } from './utils/lang';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray } from './utils/lang.js';
 
 /**
  * Returns the protocol that starts and stops an animation loop.

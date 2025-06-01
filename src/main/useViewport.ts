@@ -1,7 +1,7 @@
 import { EffectCallback, useEffect } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray } from './utils/lang';
-import { getViewportRect } from './utils/rects';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray } from './utils/lang.js';
+import { getViewportRect } from './utils/rects.js';
 
 /**
  * Props of the {@link useViewport} hook.

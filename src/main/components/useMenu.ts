@@ -1,16 +1,16 @@
 import { PubSub } from 'parallel-universe';
 import { EffectCallback, HTMLAttributes, KeyboardEventHandler, RefObject, useEffect, useState } from 'react';
-import { focusRing } from '../behaviors/focusRing';
-import { useActionHandler } from '../behaviors/useActionHandler';
-import { useCloseHandler } from '../behaviors/useCloseHandler';
-import { requestFocus } from '../behaviors/useFocus';
-import { PressableProps, usePressable } from '../behaviors/usePressable';
-import { FocusableElement } from '../types';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { useUniqueId } from '../useUniqueId';
-import { isRTLElement } from '../utils/dom';
-import { emptyObject } from '../utils/lang';
-import { mergeProps } from '../utils/mergeProps';
+import { focusRing } from '../behaviors/focusRing.js';
+import { useActionHandler } from '../behaviors/useActionHandler.js';
+import { useCloseHandler } from '../behaviors/useCloseHandler.js';
+import { requestFocus } from '../behaviors/useFocus.js';
+import { PressableProps, usePressable } from '../behaviors/usePressable.js';
+import { FocusableElement } from '../types.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { useUniqueId } from '../useUniqueId.js';
+import { isRTLElement } from '../utils/dom.js';
+import { emptyObject } from '../utils/lang.js';
+import { mergeProps } from '../utils/mergeProps.js';
 
 /**
  * A state shared by a {@link useMenu} and {@link useMenuItem}.
@@ -306,7 +306,7 @@ function createMenuItemManager(
   setExpanded: (isExpanded: boolean) => void,
   setTabbable: (isTabbable: boolean) => void
 ): MenuItemManager {
-  let timer: NodeJS.Timeout;
+  let timer: number;
 
   const expand = (): void => {
     clearTimeout(timer);

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { NEVER } from './utils/lang';
+import { NEVER } from './utils/lang.js';
 
 /**
  * Calls a {@link fn function} during initial render and caches its result until component is unmounted.

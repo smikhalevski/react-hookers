@@ -1,5 +1,5 @@
-import { mergeClassNames } from './mergeClassNames';
-import { mergeRefs } from './mergeRefs';
+import { mergeClassNames } from './mergeClassNames.js';
+import { mergeRefs } from './mergeRefs.js';
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
@@ -28,7 +28,7 @@ export function mergeProps() {
     return arguments[0];
   }
 
-  let props;
+  let props: Record<string, any> | undefined;
   let isCloned = false;
 
   for (let i = 0; i < arguments.length; ++i) {

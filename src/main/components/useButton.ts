@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
-import { PressableProps, usePressable } from '../behaviors/usePressable';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { DATA_AUTOFOCUS } from '../utils/dom';
+import { PressableProps, usePressable } from '../behaviors/usePressable.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { DATA_AUTOFOCUS } from '../utils/dom.js';
 
 /**
  * A value returned from the {@link useButton} hook.

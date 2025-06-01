@@ -1,7 +1,7 @@
 import React, { type DOMAttributes, EffectCallback, useLayoutEffect, useState } from 'react';
-import { DOMEventHandler } from '../types';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { emptyArray, noop } from '../utils/lang';
+import { DOMEventHandler } from '../types.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { emptyArray, noop } from '../utils/lang.js';
 
 /**
  * A value returned from the {@link useDrag} hook.

@@ -1,7 +1,7 @@
 import { EffectCallback, RefObject, useEffect } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { Platform, usePlatform } from '../usePlatform';
-import { emptyArray } from '../utils/lang';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { Platform, usePlatform } from '../usePlatform.js';
+import { emptyArray } from '../utils/lang.js';
 
 /**
  * Props of the {@link useKeyboardShortcut} hook.

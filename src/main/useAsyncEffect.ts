@@ -1,5 +1,5 @@
 import { DependencyList, EffectCallback, useEffect } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
+import { useFunctionOnce } from './useFunctionOnce.js';
 
 /**
  * The callback provided to {@link useAsyncEffect}.

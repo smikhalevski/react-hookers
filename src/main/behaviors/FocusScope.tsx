@@ -1,6 +1,6 @@
 import React, { ReactElement, ReactNode, RefObject } from 'react';
-import { FocusControlsProvider } from './useFocusControls';
-import { FocusScopeProps, useFocusScope } from './useFocusScope';
+import { FocusControlsProvider } from './useFocusControls.js';
+import { FocusScopeProps, useFocusScope } from './useFocusScope.js';
 
 /**
  * Props of a {@link FocusScope} component.

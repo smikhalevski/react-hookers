@@ -1,9 +1,9 @@
 import { HTMLAttributes, LabelHTMLAttributes, useState } from 'react';
-import { type PressableProps, usePressable } from '../behaviors/usePressable';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { useUniqueId } from '../useUniqueId';
-import { DATA_AUTOFOCUS } from '../utils/dom';
-import { mergeProps } from '../utils/mergeProps';
+import { type PressableProps, usePressable } from '../behaviors/usePressable.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { useUniqueId } from '../useUniqueId.js';
+import { DATA_AUTOFOCUS } from '../utils/dom.js';
+import { mergeProps } from '../utils/mergeProps.js';
 
 /**
  * A value returned from the {@link useSelect} hook.

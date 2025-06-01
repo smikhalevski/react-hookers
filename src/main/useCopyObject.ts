@@ -1,4 +1,4 @@
-import { useFunction } from './useFunction';
+import { useFunction } from './useFunction.js';
 
 /**
  * Returns a copy of an object if any of dependencies have changed between renders.

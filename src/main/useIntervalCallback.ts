@@ -1,6 +1,6 @@
-import { useFunctionEffect } from './useFunctionEffect';
-import { useHandler } from './useHandler';
-import { useInterval } from './useInterval';
+import { useFunctionEffect } from './useFunctionEffect.js';
+import { useHandler } from './useHandler.js';
+import { useInterval } from './useInterval.js';
 
 /**
  * Invokes a callback periodically while the component is mounted.

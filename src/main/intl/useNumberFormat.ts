@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { emptyObject } from '../utils/lang';
-import { createCache } from './utils';
-import { useLocale } from './useLocale';
+import { emptyObject } from '../utils/lang.js';
+import { createCache } from './utils.js';
+import { useLocale } from './useLocale.js';
 
 const getOrCreate = createCache((locale, options) => new Intl.NumberFormat(locale, options));
 

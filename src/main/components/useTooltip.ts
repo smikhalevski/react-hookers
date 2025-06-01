@@ -1,14 +1,14 @@
 import { EffectCallback, HTMLAttributes, useEffect } from 'react';
-import { focusRing } from '../behaviors/focusRing';
-import { FocusProps, useFocus } from '../behaviors/useFocus';
-import { HoverProps, useHover } from '../behaviors/useHover';
-import { DOMEventHandler } from '../types';
-import { useCopyObject } from '../useCopyObject';
-import { useFunction } from '../useFunction';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { useUniqueId } from '../useUniqueId';
-import { emptyArray } from '../utils/lang';
-import { mergeProps } from '../utils/mergeProps';
+import { focusRing } from '../behaviors/focusRing.js';
+import { FocusProps, useFocus } from '../behaviors/useFocus.js';
+import { HoverProps, useHover } from '../behaviors/useHover.js';
+import { DOMEventHandler } from '../types.js';
+import { useCopyObject } from '../useCopyObject.js';
+import { useFunction } from '../useFunction.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { useUniqueId } from '../useUniqueId.js';
+import { emptyArray } from '../utils/lang.js';
+import { mergeProps } from '../utils/mergeProps.js';
 
 /**
  * A value returned from the {@link useTooltip} hook.
@@ -122,7 +122,7 @@ const CLOSE_DELAY = 800;
 let activeManager: TooltipManager | undefined;
 
 function createTooltipManager(): TooltipManager {
-  let timer: NodeJS.Timeout;
+  let timer: number;
   let leaveTimestamp = 0;
 
   const open = () => {

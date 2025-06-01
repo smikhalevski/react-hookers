@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactNode } from 'react';
-import { ArrowKeysNavigationProps, useArrowKeysNavigation } from './useArrowKeysNavigation';
-import { useFocusControls } from './useFocusControls';
+import { ArrowKeysNavigationProps, useArrowKeysNavigation } from './useArrowKeysNavigation.js';
+import { useFocusControls } from './useFocusControls.js';
 
 /**
  * The component alternative of the {@link useArrowKeysNavigation} hook.

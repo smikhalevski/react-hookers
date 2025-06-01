@@ -1,4 +1,5 @@
-import { stripDiacritics } from '../../main';
+import { describe, expect, test } from 'vitest';
+import { stripDiacritics } from '../../main/index.js';
 
 describe('stripDiacritics', () => {
   test('strips diacritics', () => {

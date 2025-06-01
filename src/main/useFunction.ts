@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { isEqual } from './utils/lang';
+import { isEqual } from './utils/lang.js';
 
 /**
  * Calls a {@link fn function} during render if any of its {@link args} have changed between renders.

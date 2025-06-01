@@ -1,9 +1,9 @@
 import { PubSub } from 'parallel-universe';
 import React, { DOMAttributes, EffectCallback, type FocusEventHandler, useLayoutEffect, useState } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { getFocusedElement, isFocusable, isPortalEvent } from '../utils/dom';
-import { emptyArray, emptyObject } from '../utils/lang';
-import { focusRing } from './focusRing';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { getFocusedElement, isFocusable, isPortalEvent } from '../utils/dom.js';
+import { emptyArray, emptyObject } from '../utils/lang.js';
+import { focusRing } from './focusRing.js';
 
 const cancelFocusPubSub = new PubSub();
 

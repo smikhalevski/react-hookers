@@ -1,6 +1,6 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { emptyObject, noop } from '../utils/lang';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { emptyObject, noop } from '../utils/lang.js';
 
 /**
  * Props of the {@link usePreventScroll} hook.

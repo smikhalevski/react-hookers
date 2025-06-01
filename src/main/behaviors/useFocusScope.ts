@@ -1,11 +1,11 @@
 import { EffectCallback, RefObject, useEffect } from 'react';
-import { FocusableElement } from '../types';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { getFocusedElement, isAutoFocusable, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom';
-import { die, emptyArray, emptyObject } from '../utils/lang';
-import { focusRing } from './focusRing';
-import { cancelFocus, requestFocus } from './useFocus';
-import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusControls } from './useFocusControls';
+import { FocusableElement } from '../types.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { getFocusedElement, isAutoFocusable, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom.js';
+import { die, emptyArray, emptyObject } from '../utils/lang.js';
+import { focusRing } from './focusRing.js';
+import { cancelFocus, requestFocus } from './useFocus.js';
+import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusControls } from './useFocusControls.js';
 
 /**
  * Props of the {@link useFocusScope} hook.

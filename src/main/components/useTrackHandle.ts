@@ -1,7 +1,7 @@
 import { DOMAttributes } from 'react';
-import { DragInfo, DragProps, useDrag } from '../behaviors/useDrag';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { noop } from '../utils/lang';
+import { DragInfo, DragProps, useDrag } from '../behaviors/useDrag.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { noop } from '../utils/lang.js';
 
 /**
  * A value returned from the {@link useTrackHandle} hook.

@@ -1,4 +1,4 @@
-import { callOrGet } from './lang';
+import { callOrGet } from './lang.js';
 
 const { floor } = Math;
 

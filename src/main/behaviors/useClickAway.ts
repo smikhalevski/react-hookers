@@ -1,6 +1,6 @@
 import { DOMAttributes, EffectCallback, PointerEventHandler, useLayoutEffect } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { emptyArray } from '../utils/lang';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { emptyArray } from '../utils/lang.js';
 
 /**
  * A value returned from the {@link useClickAway} hook.

@@ -1,5 +1,5 @@
 import { EffectCallback, useEffect, useState } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
+import { useFunctionOnce } from './useFunctionOnce.js';
 
 /**
  * Returns `true` if the window

@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
-import { FocusableElement } from '../types';
-import { RequestFocusOptions } from './useFocus';
+import { FocusableElement } from '../types.js';
+import { RequestFocusOptions } from './useFocus.js';
 
 /**
  * Options of unordered focus movement methods from {@link FocusControls}.

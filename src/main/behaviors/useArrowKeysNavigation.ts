@@ -1,10 +1,10 @@
 import React, { EffectCallback, useLayoutEffect } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { isRTLElement } from '../utils/dom';
-import { emptyArray, emptyObject } from '../utils/lang';
-import { cursor } from './cursor';
-import { focusRing } from './focusRing';
-import { FocusControls, OrderedFocusOptions } from './useFocusControls';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { isRTLElement } from '../utils/dom.js';
+import { emptyArray, emptyObject } from '../utils/lang.js';
+import { cursor } from './cursor.js';
+import { focusRing } from './focusRing.js';
+import { FocusControls, OrderedFocusOptions } from './useFocusControls.js';
 
 /**
  * Focus cycling modifier.

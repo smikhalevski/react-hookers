@@ -1,6 +1,6 @@
 import { type EffectCallback, useLayoutEffect } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray } from './utils/lang';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray } from './utils/lang.js';
 
 /**
  * Starts an animation loop after component is mounted, and stops it after component is unmounted.

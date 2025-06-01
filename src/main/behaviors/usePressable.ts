@@ -1,10 +1,10 @@
 import { DOMAttributes } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { emptyObject } from '../utils/lang';
-import { mergeProps } from '../utils/mergeProps';
-import { FocusProps, FocusValue, useFocus } from './useFocus';
-import { HoverProps, HoverValue, useHover } from './useHover';
-import { PressProps, PressValue, usePress } from './usePress';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { emptyObject } from '../utils/lang.js';
+import { mergeProps } from '../utils/mergeProps.js';
+import { FocusProps, FocusValue, useFocus } from './useFocus.js';
+import { HoverProps, HoverValue, useHover } from './useHover.js';
+import { PressProps, PressValue, usePress } from './usePress.js';
 
 /**
  * A value returned from the {@link usePressable} hook.

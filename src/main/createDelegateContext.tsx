@@ -1,8 +1,8 @@
 import React, { Context, createContext, forwardRef, ReactNode, Ref, useContext } from 'react';
-import { useFunction } from './useFunction';
-import { emptyObject } from './utils/lang';
-import { mergeProps } from './utils/mergeProps';
-import { mergeRefs } from './utils/mergeRefs';
+import { useFunction } from './useFunction.js';
+import { emptyObject } from './utils/lang.js';
+import { mergeProps } from './utils/mergeProps.js';
+import { mergeRefs } from './utils/mergeRefs.js';
 
 /**
  * A value delegated to children of the {@link DelegateContext.Provider}.

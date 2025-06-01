@@ -1,6 +1,6 @@
 import { Dispatch, EffectCallback, SetStateAction, useEffect, useState } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray } from './utils/lang';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray } from './utils/lang.js';
 
 /**
  * The protocol returned by the {@link useDebouncedState} hook.

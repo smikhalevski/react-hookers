@@ -1,7 +1,7 @@
 import { Blocker } from 'parallel-universe';
 import { EffectCallback, useLayoutEffect, useState } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray, noop } from './utils/lang';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray, noop } from './utils/lang.js';
 
 /**
  * Block an async flow and unblock it from an external context.

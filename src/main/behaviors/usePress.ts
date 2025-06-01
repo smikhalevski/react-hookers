@@ -7,13 +7,13 @@ import React, {
   useLayoutEffect,
   useState,
 } from 'react';
-import { DOMEventHandler } from '../types';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { isPortalEvent } from '../utils/dom';
-import { emptyArray, emptyObject, noop } from '../utils/lang';
-import { cursor } from './cursor';
-import { focusRing } from './focusRing';
-import { requestFocus } from './useFocus';
+import { DOMEventHandler } from '../types.js';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { isPortalEvent } from '../utils/dom.js';
+import { emptyArray, emptyObject, noop } from '../utils/lang.js';
+import { cursor } from './cursor.js';
+import { focusRing } from './focusRing.js';
+import { requestFocus } from './useFocus.js';
 
 const cancelPressPubSub = new PubSub();
 

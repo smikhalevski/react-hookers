@@ -1,7 +1,7 @@
 import { Lock } from 'parallel-universe';
 import { EffectCallback, useLayoutEffect, useState } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray, noop } from './utils/lang';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray, noop } from './utils/lang.js';
 
 /**
  * Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).

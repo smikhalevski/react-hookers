@@ -1,38 +1,41 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import { renderHook } from '@testing-library/react';
-import { useHandler } from '../main';
 import { StrictMode } from 'react';
+import { expect, test, vi } from 'vitest';
+import { useHandler } from '../main/index.js';
 
-describe('useHandler', () => {
-  test('returns a function', () => {
-    const hook = renderHook(() => useHandler(() => 111), { wrapper: StrictMode });
+test('returns a function', () => {
+  const hook = renderHook(() => useHandler(() => 111), { wrapper: StrictMode });
 
-    expect(hook.result.current).toEqual(expect.any(Function));
-  });
+  expect(hook.result.current).toEqual(expect.any(Function));
+});
 
-  test('returns the same function on each render', () => {
-    const hook = renderHook(() => useHandler(() => 111), { wrapper: StrictMode });
-    const handler = hook.result.current;
+test('returns the same function on each render', () => {
+  const hook = renderHook(() => useHandler(() => 111), { wrapper: StrictMode });
+  const handler = hook.result.current;
 
-    hook.rerender();
+  hook.rerender();
 
-    expect(hook.result.current).toBe(handler);
-  });
+  expect(hook.result.current).toBe(handler);
+});
 
-  test('returned function replicates the handler signature', () => {
-    const hook = renderHook(() => useHandler((a, b) => a * 2 + b), { wrapper: StrictMode });
+test('returned function replicates the handler signature', () => {
+  const hook = renderHook(() => useHandler((a, b) => a * 2 + b), { wrapper: StrictMode });
 
-    expect(hook.result.current(3, 4)).toBe(10);
-  });
+  expect(hook.result.current(3, 4)).toBe(10);
+});
 
-  test('no-op after unmount', () => {
-    const cbMock = jest.fn();
-    const hook = renderHook(() => useHandler(cbMock), { wrapper: StrictMode });
-    const handler = hook.result.current;
+test('no-op after unmount', () => {
+  const cbMock = vi.fn();
+  const hook = renderHook(() => useHandler(cbMock), { wrapper: StrictMode });
+  const handler = hook.result.current;
 
-    hook.unmount();
+  hook.unmount();
 
-    handler();
+  handler();
 
-    expect(cbMock).not.toHaveBeenCalled();
-  });
+  expect(cbMock).not.toHaveBeenCalled();
 });

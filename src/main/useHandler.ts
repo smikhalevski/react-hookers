@@ -1,6 +1,6 @@
 import { type EffectCallback, useLayoutEffect } from 'react';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray } from './utils/lang';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray } from './utils/lang.js';
 
 /**
  * Returns a stable function identity that is no-op during initial render and after unmount.

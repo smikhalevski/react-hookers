@@ -1,7 +1,7 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import { useFunctionOnce } from '../useFunctionOnce';
-import { isRTLElement } from '../utils/dom';
-import { getViewportRect } from '../utils/rects';
+import { useFunctionOnce } from '../useFunctionOnce.js';
+import { isRTLElement } from '../utils/dom.js';
+import { getViewportRect } from '../utils/rects.js';
 
 /**
  * An alignment of a target relative to an anchor.

@@ -1,11 +1,11 @@
 import { EffectCallback, RefObject, useLayoutEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
-import type { DOMEventHandler } from '../types';
-import { useFunction } from '../useFunction';
-import { detectOS } from '../usePlatform';
-import { BigArray } from '../utils/BigArray';
-import { isRTLElement } from '../utils/dom';
-import { emptyArray, emptyObject } from '../utils/lang';
+import type { DOMEventHandler } from '../types.js';
+import { useFunction } from '../useFunction.js';
+import { detectOS } from '../usePlatform.js';
+import { BigArray } from '../utils/BigArray.js';
+import { isRTLElement } from '../utils/dom.js';
+import { emptyArray, emptyObject } from '../utils/lang.js';
 
 /**
  * An item rendered by the {@link useVirtualizer} hook.
@@ -296,7 +296,7 @@ function createVirtualizerManager(setItems: (items: readonly VirtualItem[]) => v
   const elementItemIndexes = new Map<Element, number>();
 
   let orientation: number;
-  let scrollTimeout: NodeJS.Timeout;
+  let scrollTimeout: number;
   let state: VirtualizerState;
   let resizeObserver: ResizeObserver;
   let renderedStateVersion = -1;

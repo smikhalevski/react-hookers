@@ -1,7 +1,7 @@
 import { EffectCallback, useLayoutEffect } from 'react';
-import type { Schedule } from './types';
-import { useFunctionOnce } from './useFunctionOnce';
-import { emptyArray } from './utils/lang';
+import type { Schedule } from './types.js';
+import { useFunctionOnce } from './useFunctionOnce.js';
+import { emptyArray } from './utils/lang.js';
 
 /**
  * Returns the protocol that delays invoking a callback until after a timeout.
@@ -45,7 +45,7 @@ interface TimeoutManager {
 
 function createTimeoutManager(): TimeoutManager {
   let isMounted = false;
-  let timer: NodeJS.Timeout;
+  let timer: number;
 
   const schedule: Schedule = (cb, ms, ...args) => {
     if (!isMounted) {
