@@ -15,10 +15,10 @@ export function stripDiacritics(str: string): string {
 /**
  * Caches factory values by locale and options.
  */
-export function createCache<Options extends object, Value>(
-  factory: (locale: string, options: Options) => Value
-): (locale: string, options: Options) => Value {
-  const cache = new Map<string, WeakMap<Options, Value>>();
+export function createIntlCache<O extends WeakKey, V>(
+  factory: (locale: string, options: O) => V
+): (locale: string, options: O) => V {
+  const cache = new Map<string, WeakMap<O, V>>();
 
   return (locale, options) => {
     let group = cache.get(locale);

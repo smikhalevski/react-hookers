@@ -1,9 +1,8 @@
-import { useMemo } from 'react';
 import { emptyObject } from '../utils/lang.js';
-import { createCache } from './utils.js';
 import { useLocale } from './useLocale.js';
+import { createIntlCache } from './utils.js';
 
-const getOrCreate = createCache((locale, options) => new Intl.DateTimeFormat(locale, options));
+const getOrCreate = createIntlCache((locale, options) => new Intl.DateTimeFormat(locale, options));
 
 /**
  * Provides localized {@link Intl.DateTimeFormat} for the current {@link useLocale locale}.
@@ -20,5 +19,5 @@ const getOrCreate = createCache((locale, options) => new Intl.DateTimeFormat(loc
 export function useDateTimeFormat(options: Intl.DateTimeFormatOptions = emptyObject): Intl.DateTimeFormat {
   const { locale } = useLocale();
 
-  return useMemo(() => getOrCreate(locale, options), [locale, options]);
+  return getOrCreate(locale, options);
 }
