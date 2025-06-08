@@ -54,6 +54,18 @@ export {
   type VirtualizerProps,
 } from './behaviors/useVirtualizer.js';
 
+export {
+  NumberInputHandler,
+  type NumberInputHandlerOptions,
+  type NumberInputState,
+} from './components/formatted-input/NumberInputHandler.js';
+export {
+  useFormattedInput,
+  type FormattedInputProps,
+  type FormattedInputValue,
+  type FormattedInputHandler,
+  type FormattedInputState,
+} from './components/formatted-input/useFormattedInput.js';
 export { useButton, type HeadlessButtonProps, type HeadlessButtonValue } from './components/useButton.js';
 export { useCheckbox, type HeadlessCheckboxProps, type HeadlessCheckboxValue } from './components/useCheckbox.js';
 export {
