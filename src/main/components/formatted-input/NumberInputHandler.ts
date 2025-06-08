@@ -77,6 +77,11 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
   protected _options: NumberInputHandlerOptions;
 
   /**
+   * `true` if number input supports decimal separator.
+   */
+  readonly isDecimal;
+
+  /**
    * Creates a new {@link NumberInputHandler} instance.
    *
    * @param format The number format that handler uses to format input values.
@@ -87,14 +92,17 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     options: NumberInputHandlerOptions = {}
   ) {
     const formatOptions = format.resolvedOptions();
+    const encodingTable = getEncodingTable(format, options.isMinusSignIgnored);
 
     if (formatOptions.notation !== 'standard') {
       throw new Error('Unsupported number notation: ' + formatOptions.notation);
     }
 
     this._formatOptions = formatOptions;
-    this._encodingTable = getEncodingTable(format, options.isMinusSignIgnored);
+    this._encodingTable = encodingTable;
     this._options = options;
+
+    this.isDecimal = encodingTable.decimalChar !== EMPTY;
   }
 
   getInitialState(value: number | undefined): NumberInputState {

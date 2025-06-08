@@ -66,6 +66,7 @@ export {
   type FormattedInputHandler,
   type FormattedInputState,
 } from './components/formatted-input/useFormattedInput.js';
+export { useNumberInput, type HeadlessNumberInputProps } from './components/formatted-input/useNumberInput.js';
 export { useButton, type HeadlessButtonProps, type HeadlessButtonValue } from './components/useButton.js';
 export { useCheckbox, type HeadlessCheckboxProps, type HeadlessCheckboxValue } from './components/useCheckbox.js';
 export {

@@ -3,12 +3,18 @@ import {
   CompositionEventHandler,
   FocusEventHandler,
   InputHTMLAttributes,
+  LabelHTMLAttributes,
   ReactEventHandler,
   SyntheticEvent,
+  useId,
 } from 'react';
+import { FocusProps, type FocusValue, useFocus } from '../../behaviors/useFocus.js';
+import { HoverProps, type HoverValue, useHover } from '../../behaviors/useHover.js';
 import { useRerender } from '../../useRerender.js';
 import { useFunction } from '../../useFunction.js';
+import { DATA_AUTOFOCUS } from '../../utils/dom.js';
 import { isEqual } from '../../utils/lang.js';
+import { mergeProps } from '../../utils/mergeProps.js';
 
 /**
  * A state of a {@link useFormattedInput formatted input}.
@@ -107,13 +113,45 @@ export interface FormattedInputHandler<V, S extends FormattedInputState<V> = For
  *
  * @group Components
  */
-export interface FormattedInputValue {
+export interface FormattedInputValue<V> {
   /**
    * Props of an element that must have a formatted input behaviour.
    *
    * An object which identity never changes between renders.
    */
   inputProps: InputHTMLAttributes<HTMLInputElement>;
+
+  /**
+   * Props of an element that must have an input label behavior.
+   *
+   * An object which identity never changes between renders.
+   */
+  labelProps: LabelHTMLAttributes<HTMLElement>;
+
+  /**
+   * The edited value.
+   */
+  value: V;
+
+  /**
+   * A formatted value rendered in an input.
+   */
+  formattedValue: string;
+
+  /**
+   * `true` if an element is currently hovered.
+   */
+  isHovered: boolean;
+
+  /**
+   * `true` if an element is currently focused.
+   */
+  isFocused: boolean;
+
+  /**
+   * `true` if an element is currently focused and focus should be visible.
+   */
+  isFocusVisible: boolean;
 }
 
 /**
@@ -122,7 +160,7 @@ export interface FormattedInputValue {
  * @template V An input value.
  * @group Components
  */
-export interface FormattedInputProps<V> {
+export interface FormattedInputProps<V> extends HoverProps, FocusProps {
   /**
    * A handler that updates state when various input events occur.
    */
@@ -141,11 +179,23 @@ export interface FormattedInputProps<V> {
   onChange?: (value: V) => void;
 
   /**
-   * If `true` then input event handlers are disabled.
+   * An ID that uniquely identifies a text input.
+   */
+  id?: string;
+
+  /**
+   * If `true` then an input is marked as invalid.
    *
    * @default false
    */
-  isDisabled?: boolean;
+  isInvalid?: boolean;
+
+  /**
+   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   *
+   * @default false
+   */
+  isAutofocused?: boolean;
 }
 
 /**
@@ -167,38 +217,57 @@ export interface FormattedInputProps<V> {
  * @template V An input value.
  * @group Components
  */
-export function useFormattedInput<V>(props: FormattedInputProps<V>): FormattedInputValue {
+export function useFormattedInput<V>(props: FormattedInputProps<V>): FormattedInputValue<V> {
+  const hoverValue = useHover(props);
+  const focusValue = useFocus(props);
+  const fallbackId = useId();
   const rerender = useRerender();
-  const manager = useFunction(createFormattedInputManager<V>, rerender);
+  const manager = useFunction(createFormattedInputManager<V>, rerender, hoverValue, focusValue);
   const { value } = manager;
 
-  manager.setProps(props);
+  manager.updateProps(props);
 
-  value.inputProps.autoComplete = 'off';
+  value.inputProps.id = value.labelProps.htmlFor = props.id || fallbackId;
   value.inputProps.type = 'text';
+  value.inputProps.autoComplete = 'off';
+  value.inputProps['aria-disabled'] = value.inputProps.disabled = props.isDisabled || undefined;
+  value.inputProps['aria-invalid'] = props.isInvalid || undefined;
+  value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused || undefined;
+  value.isHovered = hoverValue.isHovered;
+  value.isFocused = focusValue.isFocused;
+  value.isFocusVisible = focusValue.isFocusVisible;
 
   return manager.value;
 }
 
 interface FormattedInputManager<V> {
-  value: FormattedInputValue;
+  value: FormattedInputValue<V>;
 
-  setProps(props: FormattedInputProps<V>): void;
+  updateProps(props: FormattedInputProps<V>): void;
 }
 
-function createFormattedInputManager<V>(rerender: () => void): FormattedInputManager<V> {
+function createFormattedInputManager<V>(
+  rerender: () => void,
+  hoverValue: HoverValue,
+  focusValue: FocusValue
+): FormattedInputManager<V> {
   let props: FormattedInputProps<V>;
   let state: FormattedInputState<V>;
   let isComposing = false;
 
   let composedValue = '';
 
-  const setProps = (nextProps: FormattedInputProps<V>) => {
+  const updateProps = (nextProps: FormattedInputProps<V>): void => {
     if (props === undefined || props.handler !== nextProps.handler || !isEqual(state.value, nextProps.value)) {
       state = nextProps.handler.getInitialState(nextProps.value);
     }
 
-    manager.value.inputProps.value = isComposing ? composedValue : state.formattedValue;
+    const { value } = manager;
+
+    value.inputProps.value = isComposing ? composedValue : state.formattedValue;
+    value.value = state.value;
+    value.formattedValue = state.formattedValue;
+
     props = nextProps;
   };
 
@@ -208,7 +277,7 @@ function createFormattedInputManager<V>(rerender: () => void): FormattedInputMan
   const applyAction = (
     event: SyntheticEvent<HTMLInputElement>,
     action: (formattedValue: string, selectionStart: number, selectionEnd: number) => void
-  ) => {
+  ): void => {
     const target = event.currentTarget;
     const { onChange, isDisabled } = props;
     const { selectionStart, selectionEnd } = target;
@@ -309,7 +378,7 @@ function createFormattedInputManager<V>(rerender: () => void): FormattedInputMan
 
   const manager: FormattedInputManager<V> = {
     value: {
-      inputProps: {
+      inputProps: mergeProps(hoverValue.hoverProps, focusValue.focusProps, {
         onChange: handleChange,
         onSelect: handleSelect,
         onFocus: handleFocus,
@@ -318,9 +387,15 @@ function createFormattedInputManager<V>(rerender: () => void): FormattedInputMan
         onCut: handleCut,
         onCompositionStart: handleCompositionStart,
         onCompositionEnd: handleCompositionEnd,
-      },
+      }),
+      labelProps: {},
+      value: undefined!,
+      formattedValue: '',
+      isHovered: false,
+      isFocused: false,
+      isFocusVisible: false,
     },
-    setProps,
+    updateProps,
   };
 
   return manager;
