@@ -35,7 +35,7 @@ export interface RequestFocusOptions {
 }
 
 /**
- * Tries to focus an {@link element}.
+ * Tries to focus an element.
  *
  * @param element An element to focus.
  * @param options Focus options.

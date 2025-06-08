@@ -23,7 +23,7 @@ const containers = new WeakMap<FunctionComponent, RenderInContainerCallback>();
 export type RenderInContainerCallback = (element: ReactElement) => () => void;
 
 /**
- * Returns a function that renders/re-renders an element in a {@link container}.
+ * Returns a function that renders/re-renders an element in a container.
  *
  * If an element has a key, then the rendered element would update the already rendered element with the same key.
  *

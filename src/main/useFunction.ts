@@ -2,11 +2,11 @@ import { useRef } from 'react';
 import { isEqual } from './utils/lang.js';
 
 /**
- * Calls a {@link fn function} during render if any of its {@link args} have changed between renders.
+ * Calls a function during render if any of its arguments have changed between renders.
  *
  * @param fn A function to call.
  * @param args Function arguments.
- * @returns A function return value, or a cached return value if {@link args} didn't change.
+ * @returns A function return value, or a cached return value if arguments didn't change.
  * @template A Function arguments.
  * @template R A function return value.
  * @see {@link useFunctionOnce}

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { NEVER } from './utils/lang.js';
 
 /**
- * Calls a {@link fn function} during initial render and caches its result until component is unmounted.
+ * Calls a function during initial render and caches its result until component is unmounted.
  *
  * @param fn A function to call.
  * @param args Function arguments.

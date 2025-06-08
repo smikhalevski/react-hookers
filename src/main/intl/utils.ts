@@ -1,5 +1,5 @@
 /**
- * Removes all diacritic characters from the {@link str string}.
+ * Removes all diacritic characters from the string.
  *
  * @example
  * normalizeDiacritics('Olá, você aí');

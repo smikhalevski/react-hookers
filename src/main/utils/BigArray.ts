@@ -57,7 +57,7 @@ export class BigArray<T> {
   }
 
   /**
-   * Returns an element stored at an index or uses {@link lazyValue} to produce an element.
+   * Returns an element stored at an index or uses `lazyValue` to produce an element.
    *
    * @param index An integer index of an element.
    * @param lazyValue A value or a callback that returns a value for an index.
@@ -123,7 +123,7 @@ export class BigArray<T> {
   }
 
   /**
-   * Returns `true` if an array contains an element with the {@link index}.
+   * Returns `true` if an array contains an element with the index.
    *
    * @param index An integer index of an element.
    */

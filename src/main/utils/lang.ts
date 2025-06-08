@@ -60,7 +60,7 @@ export function isEqual(a: unknown, b: unknown): boolean {
 }
 
 /**
- * Creates an array of given {@link length} and fills it with {@link value}.
+ * Creates an array of given length and fills it with a value.
  *
  * @example
  * // Create a array of 3 element refs

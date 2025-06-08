@@ -19,7 +19,7 @@ export function isPortalEvent(event: SyntheticEvent): boolean {
 }
 
 /**
- * Returns `true` if an {@link element} has the right-to-left text direction.
+ * Returns `true` if an element has the right-to-left text direction.
  *
  * @param element An element to check text direction of. If `null` then document text direction is checked.
  * @group Other
@@ -115,7 +115,7 @@ export function isAutoFocusable(element: Element): boolean {
 }
 
 /**
- * Returns the normalized tab index of an {@link element}.
+ * Returns the normalized tab index of an element.
  *
  * @param element An element to get tab index of.
  * @group Other

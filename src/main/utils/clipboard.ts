@@ -1,10 +1,10 @@
 /**
- * Copies {@link text} to clipboard.
+ * Copies text to clipboard.
  *
  * **Note:** This only works in scope of the keyboard or mouse event handler, noop otherwise.
  *
  * @param text Text to write to clipboard.
- * @returns `true` if {@link text} was successfully written, or `false` otherwise.
+ * @returns `true` if text was successfully written, or `false` otherwise.
  * @group Other
  */
 export function writeToClipboard(text: string): boolean {
