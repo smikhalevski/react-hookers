@@ -1,8 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import {
-  decodeCharSequence,
-  getEncodingTable,
+  decodeNumberChars,
+  extractNumberEncoding,
   normalizeZeroes,
+  type NumberEncoding,
   NumberInputHandler,
   NumberInputState,
 } from '../../../main/components/formatted-input/NumberInputHandler.js';
@@ -30,7 +31,7 @@ describe('NumberInputHandler', () => {
 
       expect(handler['_options']).toEqual({});
 
-      expect(handler['_encodingTable']).toEqual({
+      expect(handler['_encoding']).toEqual({
         decimalChar: '.',
         zeroChar: '0',
         '-': '-',
@@ -595,97 +596,53 @@ describe('normalizeZeroes', () => {
   });
 });
 
-describe('getEncodingTable', () => {
+describe('extractNumberEncoding', () => {
   test('extracts digits and special characters', () => {
-    expect(getEncodingTable(new Intl.NumberFormat('en'))).toEqual({
+    expect(extractNumberEncoding(new Intl.NumberFormat('en'))).toEqual({
       zeroChar: '0',
       decimalChar: '.',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-    });
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
 
-    expect(getEncodingTable(new Intl.NumberFormat('ru'))).toEqual({
+    expect(extractNumberEncoding(new Intl.NumberFormat('ru'))).toEqual({
       zeroChar: '0',
       decimalChar: ',',
-      ',': '.',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-    });
+      decimalCodePoints: new Set([44, 46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
 
-    expect(getEncodingTable(new Intl.NumberFormat('ar-EG'))).toEqual({
+    expect(extractNumberEncoding(new Intl.NumberFormat('ar-EG'))).toEqual({
       zeroChar: '٠',
       decimalChar: '٫',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-      '٠': '0',
-      '١': '1',
-      '٢': '2',
-      '٣': '3',
-      '٤': '4',
-      '٥': '5',
-      '٦': '6',
-      '٧': '7',
-      '٨': '8',
-      '٩': '9',
-      '٫': '.',
-    });
+      decimalCodePoints: new Set([1643, 46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
 
-    expect(getEncodingTable(new Intl.NumberFormat('zh-Hans-CN-u-nu-hanidec'))).toEqual({
+    expect(extractNumberEncoding(new Intl.NumberFormat('zh-Hans-CN-u-nu-hanidec'))).toEqual({
       zeroChar: '〇',
       decimalChar: '.',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-      〇: '0',
-      一: '1',
-      七: '7',
-      三: '3',
-      九: '9',
-      二: '2',
-      五: '5',
-      八: '8',
-      六: '6',
-      四: '4',
-    });
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
+  });
+
+  test('ignores minus sign', () => {
+    expect(extractNumberEncoding(new Intl.NumberFormat('en'), true)).toEqual({
+      zeroChar: '0',
+      decimalChar: '.',
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set(),
+    } satisfies NumberEncoding);
+  });
+
+  test('signDisplay never does not discard the minus sign', () => {
+    expect(extractNumberEncoding(new Intl.NumberFormat('en', { signDisplay: 'never' }))).toEqual({
+      zeroChar: '0',
+      decimalChar: '.',
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
   });
 
   test('uses open round bracket as a minus sign for accounting currency sign', () => {
@@ -697,34 +654,12 @@ describe('getEncodingTable', () => {
 
     expect(format.format(-9876543210.9)).toBe('(US$九,八七六,五四三,二一〇.九〇)');
 
-    expect(getEncodingTable(format)).toEqual({
+    expect(extractNumberEncoding(format)).toEqual({
       zeroChar: '〇',
       decimalChar: '.',
-      '(': '-',
-      ')': '-',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-      〇: '0',
-      一: '1',
-      七: '7',
-      三: '3',
-      九: '9',
-      二: '2',
-      五: '5',
-      八: '8',
-      六: '6',
-      四: '4',
-    });
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set([40, 41, 45]),
+    } satisfies NumberEncoding);
   });
 
   test('handles maximumSignificantDigits', () => {
@@ -732,67 +667,38 @@ describe('getEncodingTable', () => {
 
     expect(format.format(-9876543210.9)).toBe('-10,000,000,000');
 
-    expect(getEncodingTable(format)).toEqual({
+    expect(extractNumberEncoding(format)).toEqual({
       zeroChar: '0',
       decimalChar: '.',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-    });
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
   });
 
-  test('style percent has no fractions by default', () => {
+  test('style percent has no fraction part by default', () => {
     const format = new Intl.NumberFormat('en', { style: 'percent' });
 
     expect(format.format(1)).toBe('100%');
 
-    expect(getEncodingTable(format)).toEqual({
+    expect(extractNumberEncoding(format)).toEqual({
       zeroChar: '0',
-      decimalChar: '',
-      '-': '-',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-    });
+      decimalChar: undefined,
+      decimalCodePoints: new Set(),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
   });
 
-  test('style percent fractions', () => {
+  test('style percent with fractions', () => {
     const format = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 });
 
     expect(format.format(1)).toBe('100%');
 
-    expect(getEncodingTable(format)).toEqual({
+    expect(extractNumberEncoding(format)).toEqual({
       zeroChar: '0',
       decimalChar: '.',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-    });
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
   });
 
   test('exotic style percent', () => {
@@ -800,50 +706,30 @@ describe('getEncodingTable', () => {
 
     expect(format.format(1)).toBe('一〇〇%');
 
-    expect(getEncodingTable(format)).toEqual({
+    expect(extractNumberEncoding(format)).toEqual({
       zeroChar: '〇',
       decimalChar: '.',
-      '-': '-',
-      '.': '.',
-      '0': '0',
-      '1': '1',
-      '2': '2',
-      '3': '3',
-      '4': '4',
-      '5': '5',
-      '6': '6',
-      '7': '7',
-      '8': '8',
-      '9': '9',
-      〇: '0',
-      一: '1',
-      七: '7',
-      三: '3',
-      九: '9',
-      二: '2',
-      五: '5',
-      八: '8',
-      六: '6',
-      四: '4',
-    });
+      decimalCodePoints: new Set([46]),
+      minusSignCodePoints: new Set([45]),
+    } satisfies NumberEncoding);
   });
 });
 
-describe('decodeCharSequence', () => {
+describe('decodeNumberChars', () => {
   test('decodes a number', () => {
     const format = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' });
 
-    expect(decodeCharSequence(format.format(-9876543210.9), getEncodingTable(format))).toBe('-9876543210.90');
+    expect(decodeNumberChars(format.format(-9876543210.9), extractNumberEncoding(format))).toBe('-9876543210.90');
 
-    expect(decodeCharSequence('11.22', getEncodingTable(format))).toBe('11.22');
-    expect(decodeCharSequence('11.22.33', getEncodingTable(format))).toBe('11.22');
-    expect(decodeCharSequence('.', getEncodingTable(format))).toBe('.');
-    expect(decodeCharSequence('..', getEncodingTable(format))).toBe('.');
-    expect(decodeCharSequence('-', getEncodingTable(format))).toBe('-');
-    expect(decodeCharSequence('--', getEncodingTable(format))).toBe('-');
-    expect(decodeCharSequence('.-', getEncodingTable(format))).toBe('.');
-    expect(decodeCharSequence('-.', getEncodingTable(format))).toBe('-.');
-    expect(decodeCharSequence('--.', getEncodingTable(format))).toBe('-');
+    expect(decodeNumberChars('11.22', extractNumberEncoding(format))).toBe('11.22');
+    expect(decodeNumberChars('11.22.33', extractNumberEncoding(format))).toBe('11.22');
+    expect(decodeNumberChars('.', extractNumberEncoding(format))).toBe('.');
+    expect(decodeNumberChars('..', extractNumberEncoding(format))).toBe('.');
+    expect(decodeNumberChars('-', extractNumberEncoding(format))).toBe('-');
+    expect(decodeNumberChars('--', extractNumberEncoding(format))).toBe('-');
+    expect(decodeNumberChars('.-', extractNumberEncoding(format))).toBe('.');
+    expect(decodeNumberChars('-.', extractNumberEncoding(format))).toBe('-.');
+    expect(decodeNumberChars('--.', extractNumberEncoding(format))).toBe('-');
   });
 
   test('decodes an exotic number', () => {
@@ -857,6 +743,6 @@ describe('decodeCharSequence', () => {
 
     expect(formattedNumber).toBe('(US$九,八七六,五四三,二一〇.九〇)');
 
-    expect(decodeCharSequence(formattedNumber, getEncodingTable(format))).toBe('-9876543210.90');
+    expect(decodeNumberChars(formattedNumber, extractNumberEncoding(format))).toBe('-9876543210.90');
   });
 });

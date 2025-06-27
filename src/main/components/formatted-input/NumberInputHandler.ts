@@ -1,4 +1,5 @@
 import { FormattedInputHandler, FormattedInputState } from './useFormattedInput.js';
+import unicodeNumericValues from './unicode-numeric-values.js';
 
 /**
  * Options of the {@link NumberInputHandler}.
@@ -11,7 +12,7 @@ export interface NumberInputHandlerOptions {
    *
    * @default false
    */
-  isMinusSignIgnored?: boolean;
+  isSignUnchangeable?: boolean;
 
   /**
    * If `true` then formatting is rendered for an `undefined` value.
@@ -65,11 +66,11 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
   protected _formatOptions;
 
   /**
-   * The mapping object from a formatted number chars to an ASCII number chars.
+   * The format-specific chars and code point mapping.
    *
    * @internal
    */
-  protected _encodingTable;
+  protected _encoding;
 
   /**
    * Handler options.
@@ -92,17 +93,17 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     options: NumberInputHandlerOptions = {}
   ) {
     const formatOptions = format.resolvedOptions();
-    const encodingTable = getEncodingTable(format, options.isMinusSignIgnored);
+    const encoding = extractNumberEncoding(format, options.isSignUnchangeable);
 
     if (formatOptions.notation !== 'standard') {
       throw new Error('Unsupported number notation: ' + formatOptions.notation);
     }
 
     this._formatOptions = formatOptions;
-    this._encodingTable = encodingTable;
+    this._encoding = encoding;
     this._options = options;
 
-    this.isDecimal = encodingTable.decimalChar !== EMPTY;
+    this.isDecimal = encoding.decimalChar !== EMPTY;
   }
 
   getInitialState(value: number | undefined): NumberInputState {
@@ -136,7 +137,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     nextSelectionEnd: number
   ): void {
     const formatOptions = this._formatOptions;
-    const encodingTable = this._encodingTable;
+    const encoding = this._encoding;
     const prevFormattedValue = state.formattedValue;
 
     // Diff range bounds from the start (i) and from the end (j) of formatted values
@@ -167,8 +168,8 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     const nextDiff = nextFormattedValue.substring(i, nextFormattedValue.length - j);
 
     // Deleted and inserted decoded chars
-    let prevChars = decodeCharSequence(prevDiff, encodingTable);
-    let nextChars = decodeCharSequence(nextDiff, encodingTable);
+    let prevChars = decodeNumberChars(prevDiff, encoding);
+    let nextChars = decodeNumberChars(nextDiff, encoding);
 
     if (prevChars === EMPTY && nextChars === EMPTY) {
       // Only decoration chars were affected
@@ -181,24 +182,26 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
       return;
     }
 
-    if (prevChars.includes(MINUS_SIGN) !== nextChars.includes(MINUS_SIGN)) {
+    if (prevChars.includes(MINUS_SIGN_CHAR) !== nextChars.includes(MINUS_SIGN_CHAR)) {
       // The minus sign presence have changed (it was either deleted or inserted)
       state.isNegative = !state.isNegative;
     }
 
     // Number chars before and after the edited substring
-    let prefixChars = decodeCharSequence(prevFormattedValue.substring(0, i), encodingTable);
-    let suffixChars = decodeCharSequence(prevFormattedValue.substring(prevFormattedValue.length - j), encodingTable);
+    let prefixChars = decodeNumberChars(prevFormattedValue.substring(0, i), encoding);
+    let suffixChars = decodeNumberChars(prevFormattedValue.substring(prevFormattedValue.length - j), encoding);
 
-    if (nextChars.includes(DECIMAL)) {
+    if (nextChars.includes(DECIMAL_CHAR)) {
       // A decimal separator position was changed
-      prefixChars = prefixChars.replace(DECIMAL, EMPTY);
-      suffixChars = suffixChars.replace(DECIMAL, EMPTY);
+      prefixChars = prefixChars.replace(DECIMAL_CHAR, EMPTY);
+      suffixChars = suffixChars.replace(DECIMAL_CHAR, EMPTY);
     }
 
     // Prefix and suffix may contain only digits and a decimal separator
-    prefixChars = normalizeZeroes(prefixChars.replace(MINUS_SIGN, EMPTY) + nextChars.replace(MINUS_SIGN, EMPTY));
-    suffixChars = suffixChars.replace(MINUS_SIGN, EMPTY);
+    prefixChars = normalizeZeroes(
+      prefixChars.replace(MINUS_SIGN_CHAR, EMPTY) + nextChars.replace(MINUS_SIGN_CHAR, EMPTY)
+    );
+    suffixChars = suffixChars.replace(MINUS_SIGN_CHAR, EMPTY);
 
     let valueStr = prefixChars + suffixChars;
 
@@ -210,7 +213,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
       return;
     }
 
-    if (valueStr !== EMPTY && valueStr.charAt(0) === DECIMAL) {
+    if (valueStr !== EMPTY && valueStr.charAt(0) === DECIMAL_CHAR) {
       // The number must start with a digit
       prefixChars = '0' + prefixChars;
       valueStr = '0' + valueStr;
@@ -219,7 +222,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     // Number of characters in a faction part of a number, or -1 if both decimal and fraction parts must be removed
     let fractionLength = -1;
 
-    const decimalIndex = valueStr.indexOf(DECIMAL);
+    const decimalIndex = valueStr.indexOf(DECIMAL_CHAR);
 
     if (decimalIndex !== -1) {
       // Truncate fraction digits that user has entered to prevent rounding introduced by a format
@@ -241,19 +244,19 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
 
     const parts = this.format.formatToParts((valueStr === EMPTY ? 0 : parseFloat(valueStr)) / divider);
 
-    truncateFraction(parts, fractionLength, encodingTable);
+    truncateFraction(parts, fractionLength, encoding);
 
     let cursorPosition = -1;
     let formattedValue = EMPTY;
 
     for (const part of parts) {
-      if (valueStr === EMPTY && isSignificantPart(part)) {
+      if (valueStr === EMPTY && isNotDecorationPart(part)) {
+        // Strip non-decoration parts when value is empty
+
         if (cursorPosition === -1) {
           // Place the cursor where the number should start
           cursorPosition = formattedValue.length;
         }
-
-        // Show only decoration when value is empty
         continue;
       }
 
@@ -275,21 +278,27 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
 
       let maxCursorPosition = 0;
 
-      for (let i = prefixChars.length; cursorPosition < formattedValue.length; ++cursorPosition) {
-        const char = decodeCharSequence(formattedValue.charAt(cursorPosition), encodingTable);
+      for (
+        let i = prefixChars.length, codePoint;
+        cursorPosition < formattedValue.length;
+        cursorPosition += getCodePointLength(codePoint)
+      ) {
+        codePoint = getCodePointAt(formattedValue, cursorPosition);
+
+        const char = decodeNumberChars(String.fromCodePoint(codePoint), encoding);
 
         if (char !== EMPTY) {
-          maxCursorPosition = cursorPosition + 1;
+          maxCursorPosition = cursorPosition + getCodePointLength(codePoint);
         }
 
-        if (char === EMPTY || char === MINUS_SIGN) {
+        if (char === EMPTY || char === MINUS_SIGN_CHAR) {
           continue;
         }
         if (i === 0) {
           break;
         }
         if (--i === 0) {
-          ++cursorPosition;
+          cursorPosition += getCodePointLength(codePoint);
           break;
         }
       }
@@ -300,9 +309,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
 
     // Ensure that the value is exactly equal to the formatted number
     state.value =
-      valueStr === EMPTY
-        ? undefined
-        : Math.abs(parseFloat(decodeCharSequence(formattedValue, encodingTable))) / divider;
+      valueStr === EMPTY ? undefined : Math.abs(parseFloat(decodeNumberChars(formattedValue, encoding))) / divider;
 
     state.formattedValue = formattedValue;
     state.selectionStart = state.selectionEnd = cursorPosition;
@@ -321,41 +328,20 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
   getSelectedText(state: NumberInputState): string {
     const str = state.formattedValue.substring(state.selectionStart, state.selectionEnd);
 
-    return this._options.isCopyDecoded ? decodeCharSequence(str, this._encodingTable) : str;
+    return this._options.isCopyDecoded ? decodeNumberChars(str, this._encoding) : str;
   }
-}
-
-const EMPTY = '';
-const MINUS_SIGN = '-';
-const DECIMAL = '.';
-
-interface EncodingTable {
-  /**
-   * The formatted zero number char.
-   */
-  zeroChar: string;
-
-  /**
-   * The formatted decimal separator char.
-   */
-  decimalChar: string;
-
-  /**
-   * Mapping from a formatted char to an ASCII number char.
-   */
-  [char: string]: string;
 }
 
 /**
- * Removes redundant leading zeroes.
+ * Removes redundant leading zeroes from an ASCII number.
  */
-export function normalizeZeroes(str: string): string {
+export function normalizeZeroes(chars: string): string {
   let i = 0;
 
-  while (i < str.length - 1 && str.charAt(i) === '0') {
+  while (i < chars.length - 1 && chars.charAt(i) === '0') {
     ++i;
   }
-  return str.substring(i);
+  return chars.substring(i);
 }
 
 /**
@@ -363,10 +349,10 @@ export function normalizeZeroes(str: string): string {
  *
  * @param parts Formatted parts.
  * @param length The required length of the fraction part, or -1 if both decimal and fraction parts must be removed.
- * @param encodingTable The format encoding table.
+ * @param encoding The number encoding.
  */
-export function truncateFraction(parts: Intl.NumberFormatPart[], length: number, encodingTable: EncodingTable): void {
-  if (length === -1) {
+export function truncateFraction(parts: Intl.NumberFormatPart[], length: number, encoding: NumberEncoding): void {
+  if (length === -1 || encoding.decimalChar === undefined) {
     // Clear decimal and fraction parts
 
     for (const part of parts) {
@@ -383,7 +369,13 @@ export function truncateFraction(parts: Intl.NumberFormatPart[], length: number,
     const part = parts[i];
 
     if (part.type === 'fraction') {
-      part.value = part.value.padEnd(length, encodingTable.zeroChar).substring(0, length);
+      const chars = toCodePointChars(part.value, length);
+
+      while (chars.length < length) {
+        chars.push(encoding.zeroChar);
+      }
+
+      part.value = chars.join(EMPTY);
       return;
     }
 
@@ -392,123 +384,165 @@ export function truncateFraction(parts: Intl.NumberFormatPart[], length: number,
     }
   }
 
-  const decimalPart: Intl.NumberFormatPart = { type: 'decimal', value: encodingTable.decimalChar };
+  const decimalPart: Intl.NumberFormatPart = { type: 'decimal', value: encoding.decimalChar };
 
   if (length === 0) {
     parts.splice(decimalIndex, 0, decimalPart);
     return;
   }
 
-  parts.splice(decimalIndex, 0, decimalPart, { type: 'fraction', value: encodingTable.zeroChar.repeat(length) });
+  parts.splice(decimalIndex, 0, decimalPart, { type: 'fraction', value: encoding.zeroChar.repeat(length) });
+}
+
+/**
+ * Mapping from a Unicode code point to an ASCII integer numeric value.
+ */
+const numericCodePoints = new Map<number, string>();
+
+for (const entry of unicodeNumericValues) {
+  for (const codePoint of entry.codePoints) {
+    numericCodePoints.set(codePoint, entry.value);
+  }
+}
+
+const EMPTY = '';
+const MINUS_SIGN_CHAR = '-';
+const DECIMAL_CHAR = '.';
+
+export interface NumberEncoding {
+  /**
+   * The formatted zero digit char.
+   */
+  zeroChar: string;
+
+  /**
+   * The formatted decimal separator, or `undefined` if format doesn't have fraction parts.
+   */
+  decimalChar: string | undefined;
+
+  /**
+   * Formatted decimal separator code points.
+   */
+  decimalCodePoints: ReadonlySet<number>;
+
+  /**
+   * Formatted minus sign code points.
+   */
+  minusSignCodePoints: ReadonlySet<number>;
+}
+
+/**
+ * Returns the encoding for formatted number decoding.
+ */
+export function extractNumberEncoding(format: Intl.NumberFormat, isSignUnchangeable = false): NumberEncoding {
+  const formatOptions = format.resolvedOptions();
+
+  const decimalCodePoints = new Set<number>();
+  const minusSignCodePoints = new Set<number>();
+
+  const zeroPart = format.formatToParts(0).find(part => part.type === 'integer');
+  const zeroChar = zeroPart !== undefined ? String.fromCodePoint(getCodePointAt(zeroPart.value, 0)) : '0';
+
+  let decimalChar;
+
+  if (formatOptions.maximumFractionDigits !== 0) {
+    const sampleValue = formatOptions.style === 'percent' ? 0.001 : 0.1;
+    const decimalPart = format.formatToParts(sampleValue).find(part => part.type === 'decimal');
+
+    if (decimalPart !== undefined) {
+      decimalChar = decimalPart.value;
+      decimalCodePoints.add(getCodePointAt(decimalChar, 0));
+
+      if (decimalChar !== DECIMAL_CHAR && !format.format(1_000_000).includes(DECIMAL_CHAR)) {
+        // Period can be used as a decimal separator
+        decimalCodePoints.add(46); // .
+      }
+    }
+  }
+
+  if (!isSignUnchangeable) {
+    minusSignCodePoints.add(45); // -
+
+    for (const part of format.formatToParts(-1)) {
+      if (part.type === 'minusSign') {
+        minusSignCodePoints.add(getCodePointAt(part.value, 0));
+        continue;
+      }
+
+      // The accounting style may use round brackets instead of the minus sign
+      if (formatOptions.currencySign === 'accounting' && formatOptions.style === 'currency' && part.value === '(') {
+        minusSignCodePoints.add(40); // (
+        minusSignCodePoints.add(41); // )
+      }
+    }
+  }
+
+  return { zeroChar, decimalChar, decimalCodePoints, minusSignCodePoints };
 }
 
 /**
  * Decodes formatted number chars as an ASCII number chars.
  *
- * @param value The string that contains format encoded chars.
- * @param encodingTable The format encoding table.
+ * @param chars The string that contains format encoded chars.
+ * @param encoding The number encoding.
  */
-export function decodeCharSequence(value: string, encodingTable: EncodingTable): string {
+export function decodeNumberChars(chars: string, encoding: NumberEncoding): string {
   let str = EMPTY;
 
-  for (let i = 0; i < value.length; ++i) {
-    const char = encodingTable[value.charAt(i)];
+  for (let i = 0, codePoint; i < chars.length; i += getCodePointLength(codePoint)) {
+    codePoint = getCodePointAt(chars, i);
 
-    if (char === undefined) {
-      // Decoration chars are ignored
+    const value = numericCodePoints.get(codePoint);
+
+    if (value !== undefined) {
+      str += value;
       continue;
     }
 
-    if ((char === MINUS_SIGN && str !== EMPTY) || (char === DECIMAL && str.includes(DECIMAL))) {
-      // Unexpected minus sign or decimal separator
-      break;
+    if (encoding.minusSignCodePoints.has(codePoint)) {
+      if (str !== EMPTY) {
+        break;
+      }
+      str += MINUS_SIGN_CHAR;
+      continue;
     }
 
-    str += char;
+    if (encoding.decimalCodePoints.has(codePoint)) {
+      if (str.includes(DECIMAL_CHAR)) {
+        break;
+      }
+      str += DECIMAL_CHAR;
+    }
   }
 
   return str;
 }
 
-/**
- * Returns a mapping object from a formatted number chars to an ASCII number chars.
- *
- * @param format The format from which formatted chars are inferred.
- * @param isMinusSignIgnored If `true` then characters that represent minus sign are omitted from the output mapping.
- */
-export function getEncodingTable(format: Intl.NumberFormat, isMinusSignIgnored = false): EncodingTable {
-  const options = format.resolvedOptions();
+function toCodePointChars(str: string, length: number): string[] {
+  const chars = [];
 
-  const divider = options.style === 'percent' ? 100 : 1;
-  const zeroChar = getEncodedChar(format, 'integer', 0 / divider);
-  const decimalChar = getEncodedChar(format, 'decimal', 0.1 / divider);
-
-  const encodingTable: EncodingTable = {
-    zeroChar,
-    decimalChar,
-
-    // ASCII digits
-    0: '0',
-    1: '1',
-    2: '2',
-    3: '3',
-    4: '4',
-    5: '5',
-    6: '6',
-    7: '7',
-    8: '8',
-    9: '9',
-
-    // Localized digits
-    [zeroChar]: '0',
-    [getEncodedChar(format, 'integer', 1 / divider)]: '1',
-    [getEncodedChar(format, 'integer', 2 / divider)]: '2',
-    [getEncodedChar(format, 'integer', 3 / divider)]: '3',
-    [getEncodedChar(format, 'integer', 4 / divider)]: '4',
-    [getEncodedChar(format, 'integer', 5 / divider)]: '5',
-    [getEncodedChar(format, 'integer', 6 / divider)]: '6',
-    [getEncodedChar(format, 'integer', 7 / divider)]: '7',
-    [getEncodedChar(format, 'integer', 8 / divider)]: '8',
-    [getEncodedChar(format, 'integer', 9 / divider)]: '9',
-  };
-
-  if (decimalChar !== EMPTY) {
-    // Fractions are supported
-    encodingTable[decimalChar] = DECIMAL;
-
-    if (decimalChar !== DECIMAL && !format.format(1e6).includes(DECIMAL)) {
-      // Keep decimal dot as a separator
-      encodingTable[DECIMAL] = DECIMAL;
-    }
+  for (let i = 0, codePoint; i < str.length && i < length; i += getCodePointLength(codePoint)) {
+    codePoint = getCodePointAt(str, i);
+    chars.push(String.fromCodePoint(codePoint));
   }
 
-  if (isMinusSignIgnored) {
-    return encodingTable;
-  }
-
-  if (options.style === 'currency' && options.currencySign === 'accounting' && format.format(-1).charAt(0) === '(') {
-    // Accounting uses round brackets instead of a minus sign is some locales
-    encodingTable['('] = MINUS_SIGN;
-    encodingTable[')'] = MINUS_SIGN;
-  } else {
-    encodingTable[getEncodedChar(format, 'minusSign', -1)] = MINUS_SIGN;
-  }
-
-  encodingTable[MINUS_SIGN] = MINUS_SIGN;
-
-  return encodingTable;
+  return chars;
 }
 
-function getEncodedChar(format: Intl.NumberFormat, type: Intl.NumberFormatPartTypes, value: number): string {
-  for (const part of format.formatToParts(value)) {
-    if (part.type === type) {
-      return part.value;
-    }
+function getCodePointAt(str: string, index: number): number {
+  const codePoint = str.codePointAt(index);
+
+  if (codePoint === undefined) {
+    throw new Error('Reading code point out of bounds');
   }
 
-  return EMPTY;
+  return codePoint;
 }
 
-function isSignificantPart(part: Intl.NumberFormatPart): boolean {
+function getCodePointLength(codePoint: number): number {
+  return codePoint > 0xffff ? 2 : 1;
+}
+
+function isNotDecorationPart(part: Intl.NumberFormatPart): boolean {
   return part.type === 'integer' || part.type === 'group' || part.type === 'decimal' || part.type === 'fraction';
 }

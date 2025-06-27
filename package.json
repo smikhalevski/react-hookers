@@ -17,6 +17,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc --project tsconfig.build.json && node rewrite.mjs lib && tsc --project tsconfig.build.json --module CommonJS && cp package.json README.md LICENSE.txt lib/ && cd lib && npm pkg delete type scripts devDependencies",
+    "build-unicode-numeric-values": "node build-unicode-numeric-values.mjs",
     "clean": "rimraf lib docs coverage",
     "test": "vitest run",
     "docs": "typedoc"
@@ -46,6 +47,7 @@
     "typedoc": "^0.28.5",
     "typedoc-plugin-mdn-links": "^5.0.2",
     "typescript": "^5.8.3",
+    "unicode-number": "^1.0.0",
     "vitest": "^3.1.4"
   },
   "peerDependencies": {
