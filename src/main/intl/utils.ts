@@ -15,7 +15,7 @@ export function stripDiacritics(str: string): string {
 /**
  * Caches factory values by locale and options.
  */
-export function createIntlCache<O extends WeakKey, V>(
+export function createIntlCache<O extends object, V>(
   factory: (locale: string, options: O) => V
 ): (locale: string, options: O) => V {
   const cache = new Map<string, WeakMap<O, V>>();
