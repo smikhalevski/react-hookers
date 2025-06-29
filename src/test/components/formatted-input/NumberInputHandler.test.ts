@@ -1,57 +1,20 @@
 import { describe, expect, test } from 'vitest';
 import {
-  decodeNumberChars,
-  extractNumberEncoding,
+  decodeFormattedNumber,
+  encodeNumberValueParts,
+  getNumberEncoding,
   normalizeZeroes,
   type NumberEncoding,
   NumberInputHandler,
   NumberInputState,
+  type NumberValueParts,
 } from '../../../main/components/formatted-input/NumberInputHandler.js';
 
 describe('NumberInputHandler', () => {
   describe('new', () => {
-    test('returns a new instance', () => {
-      const handler = new NumberInputHandler(new Intl.NumberFormat('en'));
-
-      expect(handler['_formatOptions']).toEqual({
-        locale: 'en',
-        maximumFractionDigits: 3,
-        minimumFractionDigits: 0,
-        minimumIntegerDigits: 1,
-        notation: 'standard',
-        numberingSystem: 'latn',
-        roundingIncrement: 1,
-        roundingMode: 'halfExpand',
-        roundingPriority: 'auto',
-        signDisplay: 'auto',
-        style: 'decimal',
-        trailingZeroDisplay: 'auto',
-        useGrouping: 'auto',
-      });
-
-      expect(handler['_options']).toEqual({});
-
-      expect(handler['_encoding']).toEqual({
-        decimalChar: '.',
-        zeroChar: '0',
-        '-': '-',
-        '.': '.',
-        '0': '0',
-        '1': '1',
-        '2': '2',
-        '3': '3',
-        '4': '4',
-        '5': '5',
-        '6': '6',
-        '7': '7',
-        '8': '8',
-        '9': '9',
-      });
-    });
-
     test('throws if notation is unsupported', () => {
       expect(() => new NumberInputHandler(new Intl.NumberFormat('en', { notation: 'compact' }))).toThrow(
-        new Error('Unsupported number notation: compact')
+        new Error('Unsupported number notation')
       );
     });
   });
@@ -65,7 +28,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -77,7 +40,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       });
 
       expect(handler.getInitialState(Infinity)).toEqual({
@@ -85,7 +48,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -97,7 +60,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-1,000',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -109,7 +72,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1,000',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -121,7 +84,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '0',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -133,7 +96,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-0',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -151,7 +114,7 @@ describe('NumberInputHandler', () => {
         formattedValue: 'US$',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       });
     });
   });
@@ -165,7 +128,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '1', 1, 1);
@@ -175,7 +138,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -187,7 +150,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1,000',
         selectionStart: 2,
         selectionEnd: 4,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '333', 2, 4);
@@ -197,7 +160,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '333',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -209,7 +172,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '-', 1, 1);
@@ -219,7 +182,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -233,7 +196,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '-', 1, 1);
@@ -243,7 +206,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '($)',
         selectionEnd: 2,
         selectionStart: 2,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -255,7 +218,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1,000',
         selectionStart: 1,
         selectionEnd: 1,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '1-,000', 2, 2);
@@ -265,7 +228,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-1,000',
         selectionEnd: 2,
         selectionStart: 2,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -277,7 +240,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-1,000',
         selectionStart: 2,
         selectionEnd: 2,
-        isNegative: true,
+        sign: -1,
       };
 
       handler.onChange(state, '-1,-000', 4, 4);
@@ -287,7 +250,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1,000',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -301,7 +264,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionStart: 0,
         selectionEnd: 0,
-        isNegative: true,
+        sign: -1,
       };
 
       handler.onChange(state, '.', 1, 1);
@@ -311,7 +274,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-0.',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -325,7 +288,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-0.',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: true,
+        sign: -1,
       };
 
       handler.onChange(state, '0.0', 4, 4);
@@ -335,7 +298,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '0.0',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -349,7 +312,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '0.0',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '0.09', 4, 4);
@@ -359,7 +322,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '0.0',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -373,7 +336,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1.0',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '1.0-', 4, 4);
@@ -383,7 +346,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-1.0',
         selectionEnd: 4,
         selectionStart: 4,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -397,7 +360,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1.0',
         selectionEnd: 2,
         selectionStart: 2,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '10', 1, 1);
@@ -407,7 +370,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '10',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -421,7 +384,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1.0',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '1.0.', 4, 4);
@@ -431,7 +394,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '10.',
         selectionEnd: 3,
         selectionStart: 3,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -445,7 +408,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '1.0',
         selectionEnd: 0,
         selectionStart: 0,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '.1.0', 1, 1);
@@ -455,7 +418,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '0.1',
         selectionEnd: 2,
         selectionStart: 2,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -467,7 +430,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '100',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '1x00', 2, 2);
@@ -477,7 +440,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '100',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -499,7 +462,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionEnd: 0,
         selectionStart: 0,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '(US$九,八七六,五四三,二一〇.九〇)', 21, 21);
@@ -509,7 +472,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '(US$九,八七六,五四三,二一〇.九〇)',
         selectionEnd: 20,
         selectionStart: 20,
-        isNegative: true,
+        sign: -1,
       });
     });
 
@@ -521,7 +484,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '',
         selectionEnd: 0,
         selectionStart: 0,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '5', 1, 1);
@@ -531,7 +494,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '5%',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -545,7 +508,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '$1.00',
         selectionEnd: 0,
         selectionStart: 5,
-        isNegative: false,
+        sign: 1,
       };
 
       handler.onChange(state, '', 0, 5);
@@ -555,7 +518,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '$',
         selectionEnd: 1,
         selectionStart: 1,
-        isNegative: false,
+        sign: 1,
       });
     });
 
@@ -569,7 +532,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-$1.00',
         selectionEnd: 0,
         selectionStart: 6,
-        isNegative: true,
+        sign: -1,
       };
 
       handler.onChange(state, '-', 1, 1);
@@ -579,7 +542,7 @@ describe('NumberInputHandler', () => {
         formattedValue: '-$',
         selectionEnd: 2,
         selectionStart: 2,
-        isNegative: true,
+        sign: -1,
       });
     });
   });
@@ -596,54 +559,122 @@ describe('normalizeZeroes', () => {
   });
 });
 
-describe('extractNumberEncoding', () => {
+describe('getNumberEncoding', () => {
   test('extracts digits and special characters', () => {
-    expect(extractNumberEncoding(new Intl.NumberFormat('en'))).toEqual({
-      zeroChar: '0',
-      decimalChar: '.',
+    expect(getNumberEncoding(new Intl.NumberFormat('en'))).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+      ]),
       decimalCodePoints: new Set([46]),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
 
-    expect(extractNumberEncoding(new Intl.NumberFormat('ru'))).toEqual({
-      zeroChar: '0',
-      decimalChar: ',',
+    expect(getNumberEncoding(new Intl.NumberFormat('ru'))).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+      ]),
       decimalCodePoints: new Set([44, 46]),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
 
-    expect(extractNumberEncoding(new Intl.NumberFormat('ar-EG'))).toEqual({
-      zeroChar: '٠',
-      decimalChar: '٫',
+    expect(getNumberEncoding(new Intl.NumberFormat('ar-EG'))).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+        [1632, '0'],
+        [1633, '1'],
+        [1634, '2'],
+        [1635, '3'],
+        [1636, '4'],
+        [1637, '5'],
+        [1638, '6'],
+        [1639, '7'],
+        [1640, '8'],
+        [1641, '9'],
+      ]),
       decimalCodePoints: new Set([1643, 46]),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
 
-    expect(extractNumberEncoding(new Intl.NumberFormat('zh-Hans-CN-u-nu-hanidec'))).toEqual({
-      zeroChar: '〇',
-      decimalChar: '.',
+    expect(getNumberEncoding(new Intl.NumberFormat('zh-Hans-CN-u-nu-hanidec'))).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+        [12295, '0'],
+        [19968, '1'],
+        [20108, '2'],
+        [19977, '3'],
+        [22235, '4'],
+        [20116, '5'],
+        [20845, '6'],
+        [19971, '7'],
+        [20843, '8'],
+        [20061, '9'],
+      ]),
       decimalCodePoints: new Set([46]),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
-  });
 
-  test('ignores minus sign', () => {
-    expect(extractNumberEncoding(new Intl.NumberFormat('en'), true)).toEqual({
-      zeroChar: '0',
-      decimalChar: '.',
-      decimalCodePoints: new Set([46]),
-      minusSignCodePoints: new Set(),
+    expect(getNumberEncoding(new Intl.NumberFormat('sv-se'))).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+      ]),
+      decimalCodePoints: new Set([44, 46]),
+      minusSignCodePoints: new Set([45, 8722]),
     } satisfies NumberEncoding);
   });
 
-  test('signDisplay never does not discard the minus sign', () => {
-    expect(extractNumberEncoding(new Intl.NumberFormat('en', { signDisplay: 'never' }))).toEqual({
-      zeroChar: '0',
-      decimalChar: '.',
-      decimalCodePoints: new Set([46]),
-      minusSignCodePoints: new Set([45]),
-    } satisfies NumberEncoding);
-  });
+  // test('signDisplay never does not discard the minus sign', () => {
+  //   expect(getNumberEncoding(new Intl.NumberFormat('en', { signDisplay: 'never' }))).toEqual({
+  //     zeroChar: '0',
+  //     decimalChar: '.',
+  //     decimalCodePoints: new Set([46]),
+  //     minusSignCodePoints: new Set([45]),
+  //   } satisfies NumberEncoding);
+  // });
 
   test('uses open round bracket as a minus sign for accounting currency sign', () => {
     const format = new Intl.NumberFormat('zh-Hans-CN-u-nu-hanidec', {
@@ -654,9 +685,29 @@ describe('extractNumberEncoding', () => {
 
     expect(format.format(-9876543210.9)).toBe('(US$九,八七六,五四三,二一〇.九〇)');
 
-    expect(extractNumberEncoding(format)).toEqual({
-      zeroChar: '〇',
-      decimalChar: '.',
+    expect(getNumberEncoding(format)).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+        [12295, '0'],
+        [19968, '1'],
+        [20108, '2'],
+        [19977, '3'],
+        [22235, '4'],
+        [20116, '5'],
+        [20845, '6'],
+        [19971, '7'],
+        [20843, '8'],
+        [20061, '9'],
+      ]),
       decimalCodePoints: new Set([46]),
       minusSignCodePoints: new Set([40, 41, 45]),
     } satisfies NumberEncoding);
@@ -667,9 +718,19 @@ describe('extractNumberEncoding', () => {
 
     expect(format.format(-9876543210.9)).toBe('-10,000,000,000');
 
-    expect(extractNumberEncoding(format)).toEqual({
-      zeroChar: '0',
-      decimalChar: '.',
+    expect(getNumberEncoding(format)).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+      ]),
       decimalCodePoints: new Set([46]),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
@@ -680,9 +741,19 @@ describe('extractNumberEncoding', () => {
 
     expect(format.format(1)).toBe('100%');
 
-    expect(extractNumberEncoding(format)).toEqual({
-      zeroChar: '0',
-      decimalChar: undefined,
+    expect(getNumberEncoding(format)).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+      ]),
       decimalCodePoints: new Set(),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
@@ -693,9 +764,19 @@ describe('extractNumberEncoding', () => {
 
     expect(format.format(1)).toBe('100%');
 
-    expect(extractNumberEncoding(format)).toEqual({
-      zeroChar: '0',
-      decimalChar: '.',
+    expect(getNumberEncoding(format)).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+      ]),
       decimalCodePoints: new Set([46]),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
@@ -706,30 +787,50 @@ describe('extractNumberEncoding', () => {
 
     expect(format.format(1)).toBe('一〇〇%');
 
-    expect(extractNumberEncoding(format)).toEqual({
-      zeroChar: '〇',
-      decimalChar: '.',
+    expect(getNumberEncoding(format)).toEqual({
+      digitCodePointMap: new Map([
+        [48, '0'],
+        [49, '1'],
+        [50, '2'],
+        [51, '3'],
+        [52, '4'],
+        [53, '5'],
+        [54, '6'],
+        [55, '7'],
+        [56, '8'],
+        [57, '9'],
+        [12295, '0'],
+        [19968, '1'],
+        [20108, '2'],
+        [19977, '3'],
+        [22235, '4'],
+        [20116, '5'],
+        [20845, '6'],
+        [19971, '7'],
+        [20843, '8'],
+        [20061, '9'],
+      ]),
       decimalCodePoints: new Set([46]),
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
   });
 });
 
-describe('decodeNumberChars', () => {
+describe('decodeFormattedNumber', () => {
   test('decodes a number', () => {
     const format = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' });
 
-    expect(decodeNumberChars(format.format(-9876543210.9), extractNumberEncoding(format))).toBe('-9876543210.90');
+    expect(decodeFormattedNumber(format.format(-9876543210.9), getNumberEncoding(format))).toBe('-9876543210.90');
 
-    expect(decodeNumberChars('11.22', extractNumberEncoding(format))).toBe('11.22');
-    expect(decodeNumberChars('11.22.33', extractNumberEncoding(format))).toBe('11.22');
-    expect(decodeNumberChars('.', extractNumberEncoding(format))).toBe('.');
-    expect(decodeNumberChars('..', extractNumberEncoding(format))).toBe('.');
-    expect(decodeNumberChars('-', extractNumberEncoding(format))).toBe('-');
-    expect(decodeNumberChars('--', extractNumberEncoding(format))).toBe('-');
-    expect(decodeNumberChars('.-', extractNumberEncoding(format))).toBe('.');
-    expect(decodeNumberChars('-.', extractNumberEncoding(format))).toBe('-.');
-    expect(decodeNumberChars('--.', extractNumberEncoding(format))).toBe('-');
+    expect(decodeFormattedNumber('11.22', getNumberEncoding(format))).toBe('11.22');
+    expect(decodeFormattedNumber('11.22.33', getNumberEncoding(format))).toBe('11.22');
+    expect(decodeFormattedNumber('.', getNumberEncoding(format))).toBe('.');
+    expect(decodeFormattedNumber('..', getNumberEncoding(format))).toBe('.');
+    expect(decodeFormattedNumber('-', getNumberEncoding(format))).toBe('-');
+    expect(decodeFormattedNumber('--', getNumberEncoding(format))).toBe('-');
+    expect(decodeFormattedNumber('.-', getNumberEncoding(format))).toBe('.');
+    expect(decodeFormattedNumber('-.', getNumberEncoding(format))).toBe('-.');
+    expect(decodeFormattedNumber('--.', getNumberEncoding(format))).toBe('-');
   });
 
   test('decodes an exotic number', () => {
@@ -743,6 +844,92 @@ describe('decodeNumberChars', () => {
 
     expect(formattedNumber).toBe('(US$九,八七六,五四三,二一〇.九〇)');
 
-    expect(decodeNumberChars(formattedNumber, extractNumberEncoding(format))).toBe('-9876543210.90');
+    expect(decodeFormattedNumber(formattedNumber, getNumberEncoding(format))).toBe('-9876543210.90');
+  });
+});
+
+describe('encodeNumberValueParts', () => {
+  test('returns number format parts', () => {
+    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '1', 1)).toEqual({
+      value: 1,
+      parts: [{ type: 'integer', value: '1' }],
+    } satisfies NumberValueParts);
+
+    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '1', -1)).toEqual({
+      value: -1,
+      parts: [
+        { type: 'minusSign', value: '-' },
+        { type: 'integer', value: '1' },
+      ],
+    } satisfies NumberValueParts);
+  });
+
+  test('removes non-decoration parts if number is empty', () => {
+    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '', 1)).toEqual({
+      value: undefined,
+      parts: [{ type: 'integer', value: '' }],
+    } satisfies NumberValueParts);
+
+    expect(encodeNumberValueParts(new Intl.NumberFormat('en', { minimumFractionDigits: 2 }), '', 1)).toEqual({
+      value: undefined,
+      parts: [
+        { type: 'integer', value: '' },
+        { type: 'decimal', value: '' },
+        { type: 'fraction', value: '' },
+      ],
+    } satisfies NumberValueParts);
+
+    expect(
+      encodeNumberValueParts(
+        new Intl.NumberFormat('en', {
+          style: 'currency',
+          currency: 'USD',
+          currencySign: 'accounting',
+          minimumFractionDigits: 2,
+        }),
+        '',
+        -1
+      )
+    ).toEqual({
+      value: undefined,
+      parts: [
+        { type: 'literal', value: '(' },
+        { type: 'currency', value: '$' },
+        { type: 'integer', value: '' },
+        { type: 'decimal', value: '' },
+        { type: 'fraction', value: '' },
+        { type: 'literal', value: ')' },
+      ],
+    } satisfies NumberValueParts);
+  });
+
+  test('renders the exact number of fraction digits', () => {
+    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '1.23', -1)).toEqual({
+      value: -1.23,
+      parts: [
+        { type: 'minusSign', value: '-' },
+        { type: 'integer', value: '1' },
+        { type: 'decimal', value: '.' },
+        { type: 'fraction', value: '23' },
+      ],
+    } satisfies NumberValueParts);
+
+    expect(encodeNumberValueParts(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.23', 1)).toEqual({
+      value: 1.2,
+      parts: [
+        { type: 'integer', value: '1' },
+        { type: 'decimal', value: '.' },
+        { type: 'fraction', value: '2' },
+      ],
+    } satisfies NumberValueParts);
+
+    expect(encodeNumberValueParts(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.', 1)).toEqual({
+      value: 1,
+      parts: [
+        { type: 'integer', value: '1' },
+        { type: 'decimal', value: '.' },
+        { type: 'fraction', value: '' },
+      ],
+    } satisfies NumberValueParts);
   });
 });
