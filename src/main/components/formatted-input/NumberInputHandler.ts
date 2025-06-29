@@ -1,5 +1,4 @@
 import { FormattedInputHandler, FormattedInputState } from './useFormattedInput.js';
-import unicodeNumericValues from './unicode-numeric-values.js';
 
 /**
  * Options of the {@link NumberInputHandler}.
@@ -399,9 +398,13 @@ export function truncateFraction(parts: Intl.NumberFormatPart[], length: number,
  */
 const numericCodePoints = new Map<number, string>();
 
-for (const entry of unicodeNumericValues) {
-  for (const codePoint of entry.codePoints) {
-    numericCodePoints.set(codePoint, entry.value);
+if (typeof Intl.supportedValuesOf !== 'undefined') {
+  for (const numberingSystem of Intl.supportedValuesOf('numberingSystem')) {
+    const format = Intl.NumberFormat('en', { numberingSystem });
+
+    for (let i = 0; i < 10; ++i) {
+      numericCodePoints.set(getCodePointAt(format.format(i), 0), '' + i);
+    }
   }
 }
 
