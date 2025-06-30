@@ -75,9 +75,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
   /**
    * `true` if number input supports decimal separator.
    */
-  get isDecimal(): boolean {
-    return this._encoding.decimalCodePoints.size !== 0;
-  }
+  readonly isDecimal: boolean;
 
   /**
    * Creates a new {@link NumberInputHandler} instance.
@@ -95,6 +93,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
 
     this._encoding = getNumberEncoding(format);
     this._options = options;
+    this.isDecimal = this._encoding.decimalCodePoints.size !== 0;
   }
 
   getInitialState(value: number | undefined): NumberInputState {
