@@ -65,7 +65,7 @@ export function useNumberInput(props: HeadlessNumberInputProps): FormattedInputV
 
   const handler = useMemo(
     () => new NumberInputHandler(props.format || fallbackFormat, props),
-    [props.format, props.isMinusSignIgnored, props.isUndefinedValueFormatted, props.isCopyDecoded]
+    [props.format, props.isSignLocked, props.isUndefinedValueFormatted, props.isCopyDecoded]
   );
 
   const value = useFormattedInput({ ...props, handler });
