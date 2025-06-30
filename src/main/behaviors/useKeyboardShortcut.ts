@@ -114,7 +114,8 @@ function handleKeyDown(event: KeyboardEvent): void {
     if (
       isDisabled ||
       shortcut.length !== pressedKeys.size ||
-      (containerRef !== undefined && (containerRef.current === null || !containerRef.current.contains(event.target)))
+      (containerRef !== undefined &&
+        (containerRef.current === null || !containerRef.current.contains(event.target as Element)))
     ) {
       continue;
     }

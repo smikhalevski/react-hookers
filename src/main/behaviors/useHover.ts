@@ -235,7 +235,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
 let hoverTarget: Element | null = null;
 
 function handleHoverLocked(event: PointerEvent): void {
-  hoverTarget = event.target;
+  hoverTarget = event.target as Element;
 }
 
 function handleHoverUnlocked(): void {

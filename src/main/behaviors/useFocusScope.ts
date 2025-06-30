@@ -183,7 +183,7 @@ function registerFocusScopeManager(manager: FocusScopeManager): () => void {
 function handleFocusTrapRetainFocus(event: FocusEvent): void {
   const focusTrap = getFocusTrap();
 
-  if (focusTrap === null || containsElement(focusTrap, event.target)) {
+  if (focusTrap === null || containsElement(focusTrap, event.target as Element)) {
     return;
   }
 
@@ -221,7 +221,7 @@ function handleFocusTrapTabKeyDown(event: KeyboardEvent): void {
 function handleFocusTrapClickAway(event: PointerEvent): void {
   const focusTrap = getFocusTrap();
 
-  if (focusTrap === null || containsElement(focusTrap, event.target)) {
+  if (focusTrap === null || containsElement(focusTrap, event.target as Element)) {
     return;
   }
 

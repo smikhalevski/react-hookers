@@ -182,7 +182,10 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
     const handlePointerMove: DOMEventHandler<PointerEvent> = event => {
       const { onPressChange, onPressStart, onPressEnd } = manager.props;
 
-      if (event.pointerId !== pointerId || isOverTarget === (isOverTarget = currentTarget.contains(event.target))) {
+      if (
+        event.pointerId !== pointerId ||
+        isOverTarget === (isOverTarget = currentTarget.contains(event.target as Element))
+      ) {
         return;
       }
 
