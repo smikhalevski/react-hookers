@@ -357,13 +357,26 @@ function createFormattedInputManager<V>(
       // Allow the default browser behavior
       return;
     }
+
     event.clipboardData.setData('text/plain', props.handler.getSelectedText(state));
     event.preventDefault();
   };
 
   const handleCut: ClipboardEventHandler<HTMLInputElement> = event => {
-    handleCopy(event);
-    handleChange(event);
+    if (props.handler.getSelectedText === undefined) {
+      // Allow the default browser behavior
+      return;
+    }
+
+    event.clipboardData.setData('text/plain', props.handler.getSelectedText(state));
+    event.preventDefault();
+
+    // Preventing the default behaviour also prevents the change event, so it must be emulated
+    applyAction(event, (formattedValue, selectionStart, selectionEnd) => {
+      formattedValue = formattedValue.substring(0, selectionStart) + formattedValue.substring(selectionEnd);
+
+      props.handler.onChange(state, formattedValue, selectionStart, selectionStart);
+    });
   };
 
   const handleCompositionStart: CompositionEventHandler<HTMLInputElement> = _event => {
