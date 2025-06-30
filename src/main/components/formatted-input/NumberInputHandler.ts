@@ -148,6 +148,8 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     while (
       j < prevFormattedValue.length - i &&
       j < nextFormattedValue.length - i &&
+      state.selectionEnd < prevFormattedValue.length - j &&
+      nextSelectionEnd < nextFormattedValue.length - j &&
       prevFormattedValue.charCodeAt(prevFormattedValue.length - j - 1) ===
         nextFormattedValue.charCodeAt(nextFormattedValue.length - j - 1)
     ) {
