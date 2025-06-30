@@ -57,6 +57,7 @@ export interface NumberInputState extends FormattedInputState<number | undefined
  * <input {...inputProps} />
  *
  * @group Components
+ * @see {@link useNumberInput}
  */
 export class NumberInputHandler implements FormattedInputHandler<number | undefined, NumberInputState> {
   /**
@@ -158,8 +159,8 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     const nextDiff = nextFormattedValue.substring(i, nextFormattedValue.length - j);
 
     // Deleted and inserted decoded chars
-    let prevChars = decodeFormattedNumber(prevDiff, encoding);
-    let nextChars = decodeFormattedNumber(nextDiff, encoding);
+    let prevChars = decodeNumericChars(prevDiff, encoding);
+    let nextChars = decodeNumericChars(nextDiff, encoding);
 
     if (isSignLocked) {
       prevChars = prevChars.replace(MINUS_SIGN_CHAR, '');
@@ -178,13 +179,13 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     }
 
     if (prevChars.includes(MINUS_SIGN_CHAR) !== nextChars.includes(MINUS_SIGN_CHAR)) {
-      // The minus sign presence have changed (it was either deleted or inserted)
+      // The minus sign presence has changed (it was either deleted or inserted)
       state.sign *= -1;
     }
 
     // Number chars before and after the edited substring
-    let prefixChars = decodeFormattedNumber(prevFormattedValue.substring(0, i), encoding);
-    let suffixChars = decodeFormattedNumber(prevFormattedValue.substring(prevFormattedValue.length - j), encoding);
+    let prefixChars = decodeNumericChars(prevFormattedValue.substring(0, i), encoding);
+    let suffixChars = decodeNumericChars(prevFormattedValue.substring(prevFormattedValue.length - j), encoding);
 
     if (nextChars.includes(DECIMAL_CHAR)) {
       // A decimal separator position was changed
@@ -196,7 +197,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     prefixChars = normalizeZeroes(prefixChars.replace(MINUS_SIGN_CHAR, '') + nextChars.replace(MINUS_SIGN_CHAR, ''));
     suffixChars = suffixChars.replace(MINUS_SIGN_CHAR, '');
 
-    // Contains digits and a decimal separator
+    // Contains digits and a decimal separator, doesn't contain minus sign
     let valueStr = prefixChars + suffixChars;
 
     if (valueStr.length === 0 && state.sign === 1 && !this._options.isUndefinedValueFormatted) {
@@ -213,15 +214,9 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
       valueStr = '0' + valueStr;
     }
 
-    const { value, parts } = encodeNumberValueParts(this.format, valueStr, state.sign);
+    const { value, parts } = encodeNumericChars(this.format, valueStr, state.sign);
 
-    let formattedValue = '';
     let cursorPosition = 0;
-
-    // Compose a formatted value from parts
-    for (const part of parts) {
-      formattedValue += part.value;
-    }
 
     if (valueStr.length === 0) {
       // No numeric value, place the cursor where the number should start
@@ -233,7 +228,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
         cursorPosition += part.value.length;
       }
     } else {
-      // Cursor must be placed after the last char from prefixChars
+      // Placed after the last char entered char (after the last char from prefixChars)
 
       let prefixLength = prefixChars.length;
 
@@ -255,7 +250,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     }
 
     state.value = value;
-    state.formattedValue = formattedValue;
+    state.formattedValue = concatNumberFormatParts(parts);
     state.selectionStart = state.selectionEnd = cursorPosition;
   }
 
@@ -273,7 +268,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
 
     // Ensure that the value exactly matches the formatted value
     state.value =
-      Math.abs(parseFloat(decodeFormattedNumber(state.formattedValue, this._encoding))) /
+      Math.abs(parseFloat(decodeNumericChars(state.formattedValue, this._encoding))) /
       state.sign /
       (this.format.resolvedOptions().style === 'percent' ? 100 : 1);
   }
@@ -281,7 +276,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
   getSelectedText(state: NumberInputState): string {
     const str = state.formattedValue.substring(state.selectionStart, state.selectionEnd);
 
-    return this._options.isCopyDecoded ? decodeFormattedNumber(str, this._encoding) : str;
+    return this._options.isCopyDecoded ? decodeNumericChars(str, this._encoding) : str;
   }
 }
 
@@ -303,10 +298,10 @@ export function normalizeZeroes(str: string): string {
 /**
  * Decodes formatted number chars as an ASCII number chars.
  *
- * @param str The formatted number.
+ * @param str The formatted number chars.
  * @param encoding The {@link getNumberEncoding number format encoding}.
  */
-export function decodeFormattedNumber(str: string, encoding: NumberEncoding): string {
+export function decodeNumericChars(str: string, encoding: NumberEncoding): string {
   let result = '';
 
   for (let i = 0, codePoint; i < str.length; i += getCodePointLength(codePoint)) {
@@ -374,15 +369,15 @@ export function getNumberEncoding(format: Intl.NumberFormat): NumberEncoding {
 function getDigitCodePointMap(formatOptions: Intl.ResolvedNumberFormatOptions): Map<number, string> {
   const codePointMap = new Map<number, string>();
 
-  const decimalFormat = new Intl.NumberFormat('en', {
-    numberingSystem: formatOptions.numberingSystem,
-    maximumSignificantDigits: 1,
-  });
+  const decimalFormat = new Intl.NumberFormat('en', { numberingSystem: formatOptions.numberingSystem });
 
   for (let i = 0; i < 10; ++i) {
     const digit = i.toString();
 
+    // ASCII digits are always allowed
     codePointMap.set(48 + i, digit);
+
+    // Format-specific digits
     codePointMap.set(decimalFormat.format(i).codePointAt(0)!, digit);
   }
 
@@ -390,7 +385,7 @@ function getDigitCodePointMap(formatOptions: Intl.ResolvedNumberFormatOptions): 
 }
 
 /**
- * Returns a format-specific set that contains code points of chars that denote a decimal separator in a formatted number.
+ * Returns a format-specific set of chars code points that denote a decimal separator in a formatted number.
  */
 function getDecimalCodePoints(formatOptions: Intl.ResolvedNumberFormatOptions): Set<number> {
   const codePoints = new Set<number>();
@@ -428,7 +423,7 @@ function getDecimalCodePoints(formatOptions: Intl.ResolvedNumberFormatOptions): 
 }
 
 /**
- * Returns a format-specific set that contains code points of chars that denote a minus sign in a formatted number.
+ * Returns a format-specific set of chars code points that denote a minus sign in a formatted number.
  */
 function getMinusSignCodePoints(
   format: Intl.NumberFormat,
@@ -445,7 +440,7 @@ function getMinusSignCodePoints(
       continue;
     }
 
-    // The accounting formatting may render round brackets instead of the minus sign for some languages
+    // The accounting format may render round brackets instead of the minus sign for some languages
     if (formatOptions.currencySign === 'accounting' && formatOptions.style === 'currency' && part.value === '(') {
       codePoints.add(40); // (
       codePoints.add(41); // )
@@ -462,17 +457,23 @@ function getCodePointLength(codePoint: number): number {
   return codePoint > 0xffff ? 2 : 1;
 }
 
+function concatNumberFormatParts(parts: Intl.NumberFormatPart[]): string {
+  let str = '';
+
+  for (const part of parts) {
+    str += part.value;
+  }
+  return str;
+}
+
 export interface NumberValueParts {
   value: number | undefined;
   parts: Intl.NumberFormatPart[];
 }
 
-/**
- * Formats string number to parts.
- */
-export function encodeNumberValueParts(format: Intl.NumberFormat, str: string, sign: 1 | -1): NumberValueParts {
+export function encodeNumericChars(format: Intl.NumberFormat, str: string, sign: 1 | -1): NumberValueParts {
   if (str.length === 0) {
-    // Render decoration only
+    // No value, render decoration and minus sign
 
     const parts = format.formatToParts(sign);
 
@@ -489,6 +490,7 @@ export function encodeNumberValueParts(format: Intl.NumberFormat, str: string, s
   const formatOptions = format.resolvedOptions();
 
   let decimalIndex = str.indexOf(DECIMAL_CHAR);
+
   if (decimalIndex !== -1) {
     // Ensure that fraction doesn't overflow the maximum number of digits
 

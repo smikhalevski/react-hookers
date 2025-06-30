@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import {
-  decodeFormattedNumber,
-  encodeNumberValueParts,
+  decodeNumericChars,
+  encodeNumericChars,
   getNumberEncoding,
   normalizeZeroes,
   type NumberEncoding,
@@ -816,21 +816,21 @@ describe('getNumberEncoding', () => {
   });
 });
 
-describe('decodeFormattedNumber', () => {
+describe('decodeNumericChars', () => {
   test('decodes a number', () => {
     const format = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' });
 
-    expect(decodeFormattedNumber(format.format(-9876543210.9), getNumberEncoding(format))).toBe('-9876543210.90');
+    expect(decodeNumericChars(format.format(-9876543210.9), getNumberEncoding(format))).toBe('-9876543210.90');
 
-    expect(decodeFormattedNumber('11.22', getNumberEncoding(format))).toBe('11.22');
-    expect(decodeFormattedNumber('11.22.33', getNumberEncoding(format))).toBe('11.22');
-    expect(decodeFormattedNumber('.', getNumberEncoding(format))).toBe('.');
-    expect(decodeFormattedNumber('..', getNumberEncoding(format))).toBe('.');
-    expect(decodeFormattedNumber('-', getNumberEncoding(format))).toBe('-');
-    expect(decodeFormattedNumber('--', getNumberEncoding(format))).toBe('-');
-    expect(decodeFormattedNumber('.-', getNumberEncoding(format))).toBe('.');
-    expect(decodeFormattedNumber('-.', getNumberEncoding(format))).toBe('-.');
-    expect(decodeFormattedNumber('--.', getNumberEncoding(format))).toBe('-');
+    expect(decodeNumericChars('11.22', getNumberEncoding(format))).toBe('11.22');
+    expect(decodeNumericChars('11.22.33', getNumberEncoding(format))).toBe('11.22');
+    expect(decodeNumericChars('.', getNumberEncoding(format))).toBe('.');
+    expect(decodeNumericChars('..', getNumberEncoding(format))).toBe('.');
+    expect(decodeNumericChars('-', getNumberEncoding(format))).toBe('-');
+    expect(decodeNumericChars('--', getNumberEncoding(format))).toBe('-');
+    expect(decodeNumericChars('.-', getNumberEncoding(format))).toBe('.');
+    expect(decodeNumericChars('-.', getNumberEncoding(format))).toBe('-.');
+    expect(decodeNumericChars('--.', getNumberEncoding(format))).toBe('-');
   });
 
   test('decodes an exotic number', () => {
@@ -844,18 +844,18 @@ describe('decodeFormattedNumber', () => {
 
     expect(formattedNumber).toBe('(US$九,八七六,五四三,二一〇.九〇)');
 
-    expect(decodeFormattedNumber(formattedNumber, getNumberEncoding(format))).toBe('-9876543210.90');
+    expect(decodeNumericChars(formattedNumber, getNumberEncoding(format))).toBe('-9876543210.90');
   });
 });
 
-describe('encodeNumberValueParts', () => {
+describe('encodeNumericChars', () => {
   test('returns number format parts', () => {
-    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '1', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1', 1)).toEqual({
       value: 1,
       parts: [{ type: 'integer', value: '1' }],
     } satisfies NumberValueParts);
 
-    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '1', -1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1', -1)).toEqual({
       value: -1,
       parts: [
         { type: 'minusSign', value: '-' },
@@ -865,12 +865,12 @@ describe('encodeNumberValueParts', () => {
   });
 
   test('removes non-decoration parts if number is empty', () => {
-    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '', 1)).toEqual({
       value: undefined,
       parts: [{ type: 'integer', value: '' }],
     } satisfies NumberValueParts);
 
-    expect(encodeNumberValueParts(new Intl.NumberFormat('en', { minimumFractionDigits: 2 }), '', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en', { minimumFractionDigits: 2 }), '', 1)).toEqual({
       value: undefined,
       parts: [
         { type: 'integer', value: '' },
@@ -880,7 +880,7 @@ describe('encodeNumberValueParts', () => {
     } satisfies NumberValueParts);
 
     expect(
-      encodeNumberValueParts(
+      encodeNumericChars(
         new Intl.NumberFormat('en', {
           style: 'currency',
           currency: 'USD',
@@ -904,7 +904,7 @@ describe('encodeNumberValueParts', () => {
   });
 
   test('renders the exact number of fraction digits', () => {
-    expect(encodeNumberValueParts(new Intl.NumberFormat('en'), '1.23', -1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1.23', -1)).toEqual({
       value: -1.23,
       parts: [
         { type: 'minusSign', value: '-' },
@@ -914,7 +914,7 @@ describe('encodeNumberValueParts', () => {
       ],
     } satisfies NumberValueParts);
 
-    expect(encodeNumberValueParts(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.23', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.23', 1)).toEqual({
       value: 1.2,
       parts: [
         { type: 'integer', value: '1' },
@@ -923,7 +923,7 @@ describe('encodeNumberValueParts', () => {
       ],
     } satisfies NumberValueParts);
 
-    expect(encodeNumberValueParts(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.', 1)).toEqual({
       value: 1,
       parts: [
         { type: 'integer', value: '1' },
