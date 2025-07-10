@@ -73,6 +73,7 @@ export function mergeProps() {
 
       if (key === 'style') {
         props.style = props.style === undefined ? value : { ...props.style, ...value };
+        continue;
       }
 
       props[key] = value;
