@@ -19,7 +19,16 @@ test('sets and retrieves a value at an index', () => {
   expect(arr.get(Number.MIN_SAFE_INTEGER)).toBe('ddd');
 });
 
-test('updates startIndex', () => {
+test('throws if invalid index', () => {
+  const arr = new BigArray();
+
+  expect(() => arr.set(0.5, 'aaa')).toThrow(new RangeError('Index out of bounds'));
+  expect(() => arr.set(1e500, 'aaa')).toThrow(new RangeError('Index out of bounds'));
+  expect(() => arr.getOrSet(0.5, 'aaa')).toThrow(new RangeError('Index out of bounds'));
+  expect(() => arr.getOrSet(1e500, 'aaa')).toThrow(new RangeError('Index out of bounds'));
+});
+
+test('updates startIndex/endIndex', () => {
   const arr = new BigArray();
 
   expect(arr.startIndex).toBe(0);
@@ -34,6 +43,24 @@ test('updates startIndex', () => {
 
   expect(arr.startIndex).toBe(-100);
   expect(arr.endIndex).toBe(2);
+});
+
+test('updates positiveCount/negativeCount', () => {
+  const arr = new BigArray();
+
+  expect(arr.positiveCount).toBe(0);
+  expect(arr.negativeCount).toBe(0);
+
+  arr.set(1, 'aaa');
+
+  expect(arr.positiveCount).toBe(1);
+  expect(arr.negativeCount).toBe(0);
+
+  arr.set(-100, 'aaa');
+  arr.set(-200, 'bbb');
+
+  expect(arr.positiveCount).toBe(1);
+  expect(arr.negativeCount).toBe(2);
 });
 
 test('gets or sets a value', () => {
@@ -113,6 +140,11 @@ test('returns an index iterator', () => {
   arr.set(333, 'ccc');
   arr.set(222, 'bbb');
   arr.set(-111, 'aaa');
+  arr.set(Number.MIN_SAFE_INTEGER, 'zzz');
 
-  expect(Array.from(arr.indexes())).toEqual([-111, 222, 333]);
+  expect(Array.from(arr.indexes())).toEqual([Number.MIN_SAFE_INTEGER, -111, 222, 333]);
+});
+
+test('returns a value iterator', () => {
+  expect(Array.from(new BigArray([1, 2, 3]))).toEqual([1, 2, 3]);
 });
