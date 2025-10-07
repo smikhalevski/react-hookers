@@ -35,7 +35,7 @@ function createMediaQueryManager(setMatched: (isMatched: boolean) => void): Medi
   const handleQueryUpdated: EffectCallback = () => {
     const mediaQueryList = window.matchMedia(manager.query);
 
-    mediaQueryList.addEventListener('change', handleQueryUpdated);
+    mediaQueryList.addEventListener('change', handleMediaQueryChange);
 
     setMatched(mediaQueryList.matches);
 
