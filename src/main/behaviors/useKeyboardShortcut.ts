@@ -12,7 +12,7 @@ export interface KeyboardShortcutProps {
   /**
    * A container inside which a shortcut is applied. By default, a shortcut is document-wide.
    */
-  containerRef?: RefObject<Element>;
+  containerRef?: RefObject<Element | null>;
 
   /**
    * If `true` then shortcut isn't captured.

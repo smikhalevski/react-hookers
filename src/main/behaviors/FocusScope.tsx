@@ -11,7 +11,7 @@ export interface FocusScopeProviderProps extends FocusScopeProps {
   /**
    * A ref to a container element inside which focus state is managed.
    */
-  containerRef: RefObject<Element>;
+  containerRef: RefObject<Element | null>;
 
   /**
    * Children rendered in a focus scope.

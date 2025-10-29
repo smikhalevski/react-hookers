@@ -64,7 +64,7 @@ export interface HeadlessScrollbarProps {
   /**
    * A reference to a scrollable container element.
    */
-  containerRef: RefObject<Element>;
+  containerRef: RefObject<Element | null>;
 
   /**
    * Returns a bounding rect of a track.

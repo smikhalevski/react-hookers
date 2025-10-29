@@ -16,12 +16,12 @@ import { isEqual } from './utils/lang.js';
 export function useFunction<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;
 
 export function useFunction(fn: Function) {
-  const ref = useRef<unknown[]>();
+  const ref = useRef<unknown[]>(null);
 
   let hasChanged;
   let args = ref.current;
 
-  if ((hasChanged = args === undefined || args.length !== arguments.length)) {
+  if ((hasChanged = args === null || args.length !== arguments.length)) {
     args = ref.current = [undefined];
   }
 

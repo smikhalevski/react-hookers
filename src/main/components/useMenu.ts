@@ -252,7 +252,7 @@ export interface HeadlessMenuItemProps<T> {
  * @group Components
  */
 export function useMenuItem<T>(
-  ref: RefObject<FocusableElement>,
+  ref: RefObject<FocusableElement | null>,
   state: HeadlessMenuState,
   props: HeadlessMenuItemProps<T> = emptyObject
 ): HeadlessMenuItemValue {
@@ -292,7 +292,7 @@ interface MenuItemManager {
   pressableProps: PressableProps;
   menuItemProps: HTMLAttributes<HTMLElement>;
   id: string;
-  ref: RefObject<FocusableElement>;
+  ref: RefObject<FocusableElement | null>;
   state: HeadlessMenuState;
   props: HeadlessMenuItemProps<any>;
   value: HeadlessMenuItemValue;

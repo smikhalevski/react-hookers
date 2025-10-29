@@ -21,7 +21,7 @@ export interface VirtualItem {
   /**
    * A ref that must be added to an element associated with the item.
    */
-  readonly ref: RefObject<Element>;
+  readonly ref: RefObject<Element | null>;
 }
 
 /**
@@ -186,7 +186,7 @@ export interface VirtualizerProps {
   /**
    * A reference to a scrollable container element. If omitted then the window is a container.
    */
-  containerRef?: RefObject<Element>;
+  containerRef?: RefObject<Element | null>;
 
   /**
    * The orientation of the scroll axis.
@@ -1043,7 +1043,7 @@ function measureResizeObserverEntrySize(orientation: number, entry: ResizeObserv
   return orientation === TOP_TO_BOTTOM ? borderBoxSize[0].blockSize : borderBoxSize[0].inlineSize;
 }
 
-function measureContainerSize(orientation: number, containerRef: RefObject<Element> | undefined): number {
+function measureContainerSize(orientation: number, containerRef: RefObject<Element | null> | undefined): number {
   if (containerRef === undefined) {
     // Window
     return orientation === TOP_TO_BOTTOM ? window.innerHeight : window.innerWidth;
@@ -1055,7 +1055,7 @@ function measureContainerSize(orientation: number, containerRef: RefObject<Eleme
   return orientation === TOP_TO_BOTTOM ? containerRef.current.clientHeight : containerRef.current.clientWidth;
 }
 
-function getScrollPosition(orientation: number, containerRef: RefObject<Element> | undefined): number {
+function getScrollPosition(orientation: number, containerRef: RefObject<Element | null> | undefined): number {
   if (containerRef === undefined) {
     // Window
     return orientation === TOP_TO_BOTTOM ? window.scrollY : window.scrollX;
@@ -1067,7 +1067,7 @@ function getScrollPosition(orientation: number, containerRef: RefObject<Element>
   return orientation === TOP_TO_BOTTOM ? containerRef.current.scrollTop : orientation * containerRef.current.scrollLeft;
 }
 
-function scrollTo(orientation: number, containerRef: RefObject<Element> | undefined, position: number): void {
+function scrollTo(orientation: number, containerRef: RefObject<Element | null> | undefined, position: number): void {
   const target = containerRef === undefined ? window : containerRef.current;
 
   target?.scrollTo(

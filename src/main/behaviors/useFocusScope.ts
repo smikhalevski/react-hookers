@@ -55,7 +55,7 @@ export interface FocusScopeProps extends UnorderedFocusOptions {
  * changes between renders.
  * @group Behaviors
  */
-export function useFocusScope(ref: RefObject<Element>, props: FocusScopeProps = emptyObject): FocusControls {
+export function useFocusScope(ref: RefObject<Element | null>, props: FocusScopeProps = emptyObject): FocusControls {
   const manager = useFunctionOnce(createFocusScopeManager);
 
   manager.parentFocusControls = useFocusControls();
@@ -70,7 +70,7 @@ export function useFocusScope(ref: RefObject<Element>, props: FocusScopeProps = 
 interface FocusScopeManager {
   lastFocusedElement: FocusableElement | null;
   parentFocusControls: FocusControls | null;
-  ref: RefObject<Element>;
+  ref: RefObject<Element | null>;
   props: FocusScopeProps;
   focusControls: FocusControls;
   onMounted: EffectCallback;
