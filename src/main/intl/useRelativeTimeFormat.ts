@@ -9,7 +9,5 @@ import { getRelativeTimeFormat } from './utils.js';
  * @group Intl
  */
 export function useRelativeTimeFormat(options: Intl.RelativeTimeFormatOptions = emptyObject): Intl.RelativeTimeFormat {
-  const { locale } = useLocale();
-
-  return getRelativeTimeFormat(locale, options);
+  return getRelativeTimeFormat(useLocale().locale, options);
 }

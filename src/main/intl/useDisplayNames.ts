@@ -8,7 +8,5 @@ import { getDisplayNames } from './utils.js';
  * @group Intl
  */
 export function useDisplayNames(options: Intl.DisplayNamesOptions): Intl.DisplayNames {
-  const { locale } = useLocale();
-
-  return getDisplayNames(locale, options);
+  return getDisplayNames(useLocale().locale, options);
 }

@@ -15,9 +15,7 @@ interface Block<T> {
 /**
  * A mutable array that can store up to 2&#8309;&#8308;&#8239;-&#8239;2 elements.
  *
- * Indices should be in range
- * [[Number.MIN_SAFE_INTEGER](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_SAFE_INTEGER),
- * [Number.MAX_SAFE_INTEGER](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER)].
+ * Indices should be in range [{@link Number.MIN_SAFE_INTEGER}, {@link Number.MAX_SAFE_INTEGER}].
  *
  * @example
  * const array = new BigArray<string>();

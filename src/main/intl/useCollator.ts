@@ -15,7 +15,5 @@ import { getCollator } from './utils.js';
  * @group Intl
  */
 export function useCollator(options: Intl.CollatorOptions = emptyObject): Intl.Collator {
-  const { locale } = useLocale();
-
-  return getCollator(locale, options);
+  return getCollator(useLocale().locale, options);
 }

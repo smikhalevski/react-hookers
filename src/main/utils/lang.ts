@@ -41,16 +41,6 @@ export function callOrGet(value: unknown) {
 }
 
 /**
- * Throws an {@link Error} with a message.
- *
- * @param message An error message.
- * @group Other
- */
-export function die(message?: string): never {
-  throw new Error(message);
-}
-
-/**
  * [SameValueZero](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero) comparison.
  *
  * @group Other

@@ -15,7 +15,5 @@ import { getDateTimeFormat } from './utils.js';
  * @group Intl
  */
 export function useDateTimeFormat(options: Intl.DateTimeFormatOptions = emptyObject): Intl.DateTimeFormat {
-  const { locale } = useLocale();
-
-  return getDateTimeFormat(locale, options);
+  return getDateTimeFormat(useLocale().locale, options);
 }

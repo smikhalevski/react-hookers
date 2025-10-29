@@ -2,7 +2,7 @@ import { EffectCallback, RefObject, useEffect } from 'react';
 import { FocusableElement } from '../types.js';
 import { useFunctionOnce } from '../useFunctionOnce.js';
 import { getFocusedElement, isAutoFocusable, isTabbable, sortByDocumentOrder, sortByTabOrder } from '../utils/dom.js';
-import { die, emptyArray, emptyObject } from '../utils/lang.js';
+import { emptyArray, emptyObject } from '../utils/lang.js';
 import { focusRing } from './focusRing.js';
 import { cancelFocus, requestFocus } from './useFocus.js';
 import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusControls } from './useFocusControls.js';
@@ -242,9 +242,17 @@ function getFocusTrap(): FocusScopeManager | null {
 }
 
 function getParentManager(manager: FocusScopeManager): FocusScopeManager | null {
-  return manager.parentFocusControls === null
-    ? null
-    : focusScopeManagerByControls.get(manager.parentFocusControls) || die('Unexpected parent focus controls');
+  if (manager.parentFocusControls === null) {
+    return null;
+  }
+
+  const parentManager = focusScopeManagerByControls.get(manager.parentFocusControls);
+
+  if (parentManager === undefined) {
+    throw new Error('Unexpected parent focus controls');
+  }
+
+  return parentManager;
 }
 
 const FOCUS_CANDIDATE_SELECTOR =

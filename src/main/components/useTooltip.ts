@@ -3,7 +3,6 @@ import { focusRing } from '../behaviors/focusRing.js';
 import { FocusProps, useFocus } from '../behaviors/useFocus.js';
 import { HoverProps, useHover } from '../behaviors/useHover.js';
 import { DOMEventHandler } from '../types.js';
-import { useCopyObject } from '../useCopyObject.js';
 import { useFunction } from '../useFunction.js';
 import { useFunctionOnce } from '../useFunctionOnce.js';
 import { emptyArray } from '../utils/lang.js';
@@ -90,11 +89,11 @@ export function useTooltip(props: HeadlessTooltipProps): HeadlessTooltipValue {
 
   const { value } = manager;
 
+  const anchorProps = useFunction(mergeProps, hoverValue.hoverProps, focusValue.focusProps, manager.anchorProps);
+
   value.tooltipProps.id = tooltipId;
-  value.anchorProps = useCopyObject(
-    useFunction(mergeProps, hoverValue.hoverProps, focusValue.focusProps, manager.anchorProps),
-    props.isOpened
-  );
+  value.anchorProps = useFunction((anchorProps, _) => ({ ...anchorProps }), anchorProps, props.isOpened);
+
   value.anchorProps['aria-describedby'] = props.isOpened ? tooltipId : undefined;
 
   manager.props = props;

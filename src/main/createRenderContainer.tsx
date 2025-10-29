@@ -3,7 +3,7 @@ import React, { type EffectCallback, FunctionComponent, Key, ReactElement, React
 import { CloseHandlerProvider } from './behaviors/useCloseHandler.js';
 import { useFunction } from './useFunction.js';
 import { useRerender } from './useRerender.js';
-import { die, emptyArray } from './utils/lang.js';
+import { emptyArray } from './utils/lang.js';
 
 /**
  * A map from a container component to a render function.
@@ -50,7 +50,13 @@ export type RenderInContainerCallback = (element: ReactElement) => () => void;
  * @group Other
  */
 export function getRenderInContainer(container: FunctionComponent): RenderInContainerCallback {
-  return containers.get(container) || die('Must be a render container component');
+  const callback = containers.get(container);
+
+  if (callback === undefined) {
+    throw new Error('Must be a render container component');
+  }
+
+  return callback;
 }
 
 /**

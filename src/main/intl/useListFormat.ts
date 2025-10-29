@@ -9,7 +9,5 @@ import { getListFormat } from './utils.js';
  * @group Intl
  */
 export function useListFormat(options: Intl.ListFormatOptions = emptyObject): Intl.ListFormat {
-  const { locale } = useLocale();
-
-  return getListFormat(locale, options);
+  return getListFormat(useLocale().locale, options);
 }

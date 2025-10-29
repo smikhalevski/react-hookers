@@ -15,7 +15,5 @@ import { getNumberFormat } from './utils.js';
  * @group Intl
  */
 export function useNumberFormat(options: Intl.NumberFormatOptions = emptyObject): Intl.NumberFormat {
-  const { locale } = useLocale();
-
-  return getNumberFormat(locale, options);
+  return getNumberFormat(useLocale().locale, options);
 }

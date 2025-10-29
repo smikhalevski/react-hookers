@@ -2,8 +2,7 @@ import { EffectCallback, useEffect, useState } from 'react';
 import { useFunctionOnce } from './useFunctionOnce.js';
 
 /**
- * Returns `true` if the window
- * [matches the media query](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia), or `false` otherwise.
+ * Returns `true` if the window {@link Window.matchMedia matches the media query}, or `false` otherwise.
  *
  * @example
  * const isMatched = useMediaQuery('(min-width: 600px)');
