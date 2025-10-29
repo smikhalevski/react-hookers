@@ -95,10 +95,21 @@ export {
 
 export { useCollator } from './intl/useCollator.js';
 export { useDateTimeFormat } from './intl/useDateTimeFormat.js';
+export { useDisplayNames } from './intl/useDisplayNames.js';
+export { useListFormat } from './intl/useListFormat.js';
 export { useLocale, LocaleProvider, type Locale } from './intl/useLocale.js';
 export { useNumberFormat } from './intl/useNumberFormat.js';
 export { useRelativeTimeFormat } from './intl/useRelativeTimeFormat.js';
-export { stripDiacritics } from './intl/utils.js';
+export {
+  stripDiacritics,
+  getCollator,
+  getListFormat,
+  getNumberFormat,
+  getDateTimeFormat,
+  getPluralRules,
+  getDisplayNames,
+  getRelativeTimeFormat,
+} from './intl/utils.js';
 
 export { BigArray } from './utils/BigArray.js';
 export { writeToClipboard } from './utils/clipboard.js';

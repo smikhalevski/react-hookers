@@ -1,8 +1,6 @@
 import { emptyObject } from '../utils/lang.js';
 import { useLocale } from './useLocale.js';
-import { createIntlCache } from './utils.js';
-
-const getOrCreate = createIntlCache((locale, options) => new Intl.RelativeTimeFormat(locale, options));
+import { getRelativeTimeFormat } from './utils.js';
 
 /**
  * Provides localized {@link Intl.RelativeTimeFormat} for the current {@link useLocale locale}.
@@ -13,5 +11,5 @@ const getOrCreate = createIntlCache((locale, options) => new Intl.RelativeTimeFo
 export function useRelativeTimeFormat(options: Intl.RelativeTimeFormatOptions = emptyObject): Intl.RelativeTimeFormat {
   const { locale } = useLocale();
 
-  return getOrCreate(locale, options);
+  return getRelativeTimeFormat(locale, options);
 }

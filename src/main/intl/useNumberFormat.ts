@@ -1,8 +1,6 @@
 import { emptyObject } from '../utils/lang.js';
 import { useLocale } from './useLocale.js';
-import { createIntlCache } from './utils.js';
-
-const getOrCreate = createIntlCache((locale, options) => new Intl.NumberFormat(locale, options));
+import { getNumberFormat } from './utils.js';
 
 /**
  * Provides localized {@link Intl.NumberFormat} for the current {@link useLocale locale}.
@@ -19,5 +17,5 @@ const getOrCreate = createIntlCache((locale, options) => new Intl.NumberFormat(l
 export function useNumberFormat(options: Intl.NumberFormatOptions = emptyObject): Intl.NumberFormat {
   const { locale } = useLocale();
 
-  return getOrCreate(locale, options);
+  return getNumberFormat(locale, options);
 }

@@ -1,8 +1,6 @@
 import { emptyObject } from '../utils/lang.js';
 import { useLocale } from './useLocale.js';
-import { createIntlCache } from './utils.js';
-
-const getOrCreate = createIntlCache((locale, options) => new Intl.DateTimeFormat(locale, options));
+import { getDateTimeFormat } from './utils.js';
 
 /**
  * Provides localized {@link Intl.DateTimeFormat} for the current {@link useLocale locale}.
@@ -19,5 +17,5 @@ const getOrCreate = createIntlCache((locale, options) => new Intl.DateTimeFormat
 export function useDateTimeFormat(options: Intl.DateTimeFormatOptions = emptyObject): Intl.DateTimeFormat {
   const { locale } = useLocale();
 
-  return getOrCreate(locale, options);
+  return getDateTimeFormat(locale, options);
 }
