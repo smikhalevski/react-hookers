@@ -3,16 +3,16 @@ import { stripDiacritics } from '../../main/index.js';
 
 describe('stripDiacritics', () => {
   test('strips diacritics', () => {
-    expect(stripDiacritics('àáãâäéèêëíìîïóòõôöúùûüñçÀÁÃÂÄÉÈÊËÍÌÎÏÓÒÕÔÖÚÙÛÜÑÇ')).toEqual(
+    expect(stripDiacritics('àáãâäéèêëíìîïóòõôöúùûüñçÀÁÃÂÄÉÈÊËÍÌÎÏÓÒÕÔÖÚÙÛÜÑÇ')).toStrictEqual(
       'aaaaaeeeeiiiiooooouuuuncAAAAAEEEEIIIIOOOOOUUUUNC'
     );
   });
 
   test('does not strip special characters', () => {
-    expect(stripDiacritics('@_$><=-#!,.`\'"')).toEqual('@_$><=-#!,.`\'"');
+    expect(stripDiacritics('@_$><=-#!,.`\'"')).toStrictEqual('@_$><=-#!,.`\'"');
   });
 
   test('does not strip german letter ß', () => {
-    expect(stripDiacritics('ß')).toEqual('ß');
+    expect(stripDiacritics('ß')).toStrictEqual('ß');
   });
 });

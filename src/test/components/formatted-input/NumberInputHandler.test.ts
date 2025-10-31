@@ -23,7 +23,7 @@ describe('NumberInputHandler', () => {
     test('returns state for an undefined value', () => {
       const handler = new NumberInputHandler(new Intl.NumberFormat('en'));
 
-      expect(handler.getInitialState(undefined)).toEqual({
+      expect(handler.getInitialState(undefined)).toStrictEqual({
         value: undefined,
         formattedValue: '',
         selectionStart: 0,
@@ -35,7 +35,7 @@ describe('NumberInputHandler', () => {
     test('returns state for a non-finite value', () => {
       const handler = new NumberInputHandler(new Intl.NumberFormat('en'));
 
-      expect(handler.getInitialState(NaN)).toEqual({
+      expect(handler.getInitialState(NaN)).toStrictEqual({
         value: undefined,
         formattedValue: '',
         selectionStart: 0,
@@ -43,7 +43,7 @@ describe('NumberInputHandler', () => {
         sign: 1,
       });
 
-      expect(handler.getInitialState(Infinity)).toEqual({
+      expect(handler.getInitialState(Infinity)).toStrictEqual({
         value: undefined,
         formattedValue: '',
         selectionStart: 0,
@@ -55,7 +55,7 @@ describe('NumberInputHandler', () => {
     test('returns state for negative value', () => {
       const handler = new NumberInputHandler(new Intl.NumberFormat('en'));
 
-      expect(handler.getInitialState(-1000)).toEqual({
+      expect(handler.getInitialState(-1000)).toStrictEqual({
         value: -1000,
         formattedValue: '-1,000',
         selectionStart: 0,
@@ -67,7 +67,7 @@ describe('NumberInputHandler', () => {
     test('returns state for positive value', () => {
       const handler = new NumberInputHandler(new Intl.NumberFormat('en'));
 
-      expect(handler.getInitialState(1000)).toEqual({
+      expect(handler.getInitialState(1000)).toStrictEqual({
         value: 1000,
         formattedValue: '1,000',
         selectionStart: 0,
@@ -79,7 +79,7 @@ describe('NumberInputHandler', () => {
     test('returns state for zero', () => {
       const handler = new NumberInputHandler(new Intl.NumberFormat('en'));
 
-      expect(handler.getInitialState(0)).toEqual({
+      expect(handler.getInitialState(0)).toStrictEqual({
         value: 0,
         formattedValue: '0',
         selectionStart: 0,
@@ -91,7 +91,7 @@ describe('NumberInputHandler', () => {
     test('returns state for negative zero', () => {
       const handler = new NumberInputHandler(new Intl.NumberFormat('en'));
 
-      expect(handler.getInitialState(-0)).toEqual({
+      expect(handler.getInitialState(-0)).toStrictEqual({
         value: -0,
         formattedValue: '-0',
         selectionStart: 0,
@@ -109,7 +109,7 @@ describe('NumberInputHandler', () => {
 
       const handler = new NumberInputHandler(format, { isUndefinedValueFormatted: true });
 
-      expect(handler.getInitialState(undefined)).toEqual({
+      expect(handler.getInitialState(undefined)).toStrictEqual({
         value: undefined,
         formattedValue: 'US$',
         selectionEnd: 3,
@@ -133,7 +133,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '1', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 1,
         formattedValue: '1',
         selectionEnd: 1,
@@ -155,7 +155,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '333', 2, 4);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 333,
         formattedValue: '333',
         selectionEnd: 3,
@@ -177,7 +177,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '-', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: undefined,
         formattedValue: '-',
         selectionEnd: 1,
@@ -201,7 +201,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '-', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: undefined,
         formattedValue: '($)',
         selectionEnd: 2,
@@ -223,7 +223,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '1-,000', 2, 2);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: -1000,
         formattedValue: '-1,000',
         selectionEnd: 2,
@@ -245,7 +245,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '-1,-000', 4, 4);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 1000,
         formattedValue: '1,000',
         selectionEnd: 1,
@@ -269,7 +269,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '.', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: -0,
         formattedValue: '-0.',
         selectionEnd: 3,
@@ -293,7 +293,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '0.0', 4, 4);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 0,
         formattedValue: '0.0',
         selectionEnd: 3,
@@ -317,7 +317,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '0.09', 4, 4);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 0,
         formattedValue: '0.0',
         selectionEnd: 3,
@@ -341,7 +341,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '1.0-', 4, 4);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: -1,
         formattedValue: '-1.0',
         selectionEnd: 4,
@@ -365,7 +365,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '10', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 10,
         formattedValue: '10',
         selectionEnd: 1,
@@ -389,7 +389,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '1.0.', 4, 4);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 10,
         formattedValue: '10.',
         selectionEnd: 3,
@@ -413,7 +413,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '.1.0', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 0.1,
         formattedValue: '0.1',
         selectionEnd: 2,
@@ -435,7 +435,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '1x00', 2, 2);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 100,
         formattedValue: '100',
         selectionEnd: 1,
@@ -467,7 +467,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '(US$九,八七六,五四三,二一〇.九〇)', 21, 21);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: -9876543210.9,
         formattedValue: '(US$九,八七六,五四三,二一〇.九〇)',
         selectionEnd: 20,
@@ -489,7 +489,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '5', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: 0.05,
         formattedValue: '5%',
         selectionEnd: 1,
@@ -513,7 +513,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '', 0, 5);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: undefined,
         formattedValue: '$',
         selectionEnd: 1,
@@ -537,7 +537,7 @@ describe('NumberInputHandler', () => {
 
       handler.onChange(state, '-', 1, 1);
 
-      expect(state).toEqual({
+      expect(state).toStrictEqual({
         value: undefined,
         formattedValue: '-$',
         selectionEnd: 2,
@@ -561,7 +561,7 @@ describe('normalizeZeroes', () => {
 
 describe('getNumberEncoding', () => {
   test('extracts digits and special characters', () => {
-    expect(getNumberEncoding(new Intl.NumberFormat('en'))).toEqual({
+    expect(getNumberEncoding(new Intl.NumberFormat('en'))).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -578,7 +578,7 @@ describe('getNumberEncoding', () => {
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
 
-    expect(getNumberEncoding(new Intl.NumberFormat('ru'))).toEqual({
+    expect(getNumberEncoding(new Intl.NumberFormat('ru'))).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -595,7 +595,7 @@ describe('getNumberEncoding', () => {
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
 
-    expect(getNumberEncoding(new Intl.NumberFormat('ar-EG'))).toEqual({
+    expect(getNumberEncoding(new Intl.NumberFormat('ar-EG'))).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -622,7 +622,7 @@ describe('getNumberEncoding', () => {
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
 
-    expect(getNumberEncoding(new Intl.NumberFormat('zh-Hans-CN-u-nu-hanidec'))).toEqual({
+    expect(getNumberEncoding(new Intl.NumberFormat('zh-Hans-CN-u-nu-hanidec'))).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -649,7 +649,7 @@ describe('getNumberEncoding', () => {
       minusSignCodePoints: new Set([45]),
     } satisfies NumberEncoding);
 
-    expect(getNumberEncoding(new Intl.NumberFormat('sv-se'))).toEqual({
+    expect(getNumberEncoding(new Intl.NumberFormat('sv-se'))).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -668,7 +668,7 @@ describe('getNumberEncoding', () => {
   });
 
   // test('signDisplay never does not discard the minus sign', () => {
-  //   expect(getNumberEncoding(new Intl.NumberFormat('en', { signDisplay: 'never' }))).toEqual({
+  //   expect(getNumberEncoding(new Intl.NumberFormat('en', { signDisplay: 'never' }))).toStrictEqual({
   //     zeroChar: '0',
   //     decimalChar: '.',
   //     decimalCodePoints: new Set([46]),
@@ -685,7 +685,7 @@ describe('getNumberEncoding', () => {
 
     expect(format.format(-9876543210.9)).toBe('(US$九,八七六,五四三,二一〇.九〇)');
 
-    expect(getNumberEncoding(format)).toEqual({
+    expect(getNumberEncoding(format)).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -718,7 +718,7 @@ describe('getNumberEncoding', () => {
 
     expect(format.format(-9876543210.9)).toBe('-10,000,000,000');
 
-    expect(getNumberEncoding(format)).toEqual({
+    expect(getNumberEncoding(format)).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -741,7 +741,7 @@ describe('getNumberEncoding', () => {
 
     expect(format.format(1)).toBe('100%');
 
-    expect(getNumberEncoding(format)).toEqual({
+    expect(getNumberEncoding(format)).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -764,7 +764,7 @@ describe('getNumberEncoding', () => {
 
     expect(format.format(1)).toBe('100%');
 
-    expect(getNumberEncoding(format)).toEqual({
+    expect(getNumberEncoding(format)).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -787,7 +787,7 @@ describe('getNumberEncoding', () => {
 
     expect(format.format(1)).toBe('一〇〇%');
 
-    expect(getNumberEncoding(format)).toEqual({
+    expect(getNumberEncoding(format)).toStrictEqual({
       digitCodePointMap: new Map([
         [48, '0'],
         [49, '1'],
@@ -850,12 +850,12 @@ describe('decodeNumericChars', () => {
 
 describe('encodeNumericChars', () => {
   test('returns number format parts', () => {
-    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1', 1)).toStrictEqual({
       value: 1,
       parts: [{ type: 'integer', value: '1' }],
     } satisfies NumberValueParts);
 
-    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1', -1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1', -1)).toStrictEqual({
       value: -1,
       parts: [
         { type: 'minusSign', value: '-' },
@@ -865,12 +865,12 @@ describe('encodeNumericChars', () => {
   });
 
   test('removes non-decoration parts if number is empty', () => {
-    expect(encodeNumericChars(new Intl.NumberFormat('en'), '', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '', 1)).toStrictEqual({
       value: undefined,
       parts: [{ type: 'integer', value: '' }],
     } satisfies NumberValueParts);
 
-    expect(encodeNumericChars(new Intl.NumberFormat('en', { minimumFractionDigits: 2 }), '', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en', { minimumFractionDigits: 2 }), '', 1)).toStrictEqual({
       value: undefined,
       parts: [
         { type: 'integer', value: '' },
@@ -890,7 +890,7 @@ describe('encodeNumericChars', () => {
         '',
         -1
       )
-    ).toEqual({
+    ).toStrictEqual({
       value: undefined,
       parts: [
         { type: 'literal', value: '(' },
@@ -904,7 +904,7 @@ describe('encodeNumericChars', () => {
   });
 
   test('renders the exact number of fraction digits', () => {
-    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1.23', -1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en'), '1.23', -1)).toStrictEqual({
       value: -1.23,
       parts: [
         { type: 'minusSign', value: '-' },
@@ -914,7 +914,7 @@ describe('encodeNumericChars', () => {
       ],
     } satisfies NumberValueParts);
 
-    expect(encodeNumericChars(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.23', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.23', 1)).toStrictEqual({
       value: 1.2,
       parts: [
         { type: 'integer', value: '1' },
@@ -923,7 +923,7 @@ describe('encodeNumericChars', () => {
       ],
     } satisfies NumberValueParts);
 
-    expect(encodeNumericChars(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.', 1)).toEqual({
+    expect(encodeNumericChars(new Intl.NumberFormat('en', { maximumFractionDigits: 1 }), '1.', 1)).toStrictEqual({
       value: 1,
       parts: [
         { type: 'integer', value: '1' },

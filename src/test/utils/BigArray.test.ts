@@ -135,18 +135,18 @@ test('unshift a value', () => {
 test('returns an index iterator', () => {
   const arr = new BigArray();
 
-  expect(Array.from(arr.indexes())).toEqual([]);
+  expect(Array.from(arr.indexes())).toStrictEqual([]);
 
   arr.set(333, 'ccc');
   arr.set(222, 'bbb');
   arr.set(-111, 'aaa');
   arr.set(Number.MIN_SAFE_INTEGER, 'zzz');
 
-  expect(Array.from(arr.indexes())).toEqual([Number.MIN_SAFE_INTEGER, -111, 222, 333]);
+  expect(Array.from(arr.indexes())).toStrictEqual([Number.MIN_SAFE_INTEGER, -111, 222, 333]);
 });
 
 test('returns a value iterator', () => {
-  expect(Array.from(new BigArray().copyOver([1, 2, 3]))).toEqual([1, 2, 3]);
+  expect(Array.from(new BigArray().copyOver([1, 2, 3]))).toStrictEqual([1, 2, 3]);
 });
 
 test('copy over a Set', () => {
@@ -154,7 +154,7 @@ test('copy over a Set', () => {
 
   expect(arr.startIndex).toBe(222);
   expect(arr.endIndex).toBe(225);
-  expect(Array.from(arr)).toEqual([1, 2, 3]);
+  expect(Array.from(arr)).toStrictEqual([1, 2, 3]);
 });
 
 test('copy over another BigArray', () => {
@@ -163,11 +163,11 @@ test('copy over another BigArray', () => {
   expect(arr.startIndex).toBe(111);
   expect(arr.endIndex).toBe(223);
   expect(arr.has(221)).toBe(false);
-  expect(Array.from(arr)).toEqual(['aaa', 'bbb']);
+  expect(Array.from(arr)).toStrictEqual(['aaa', 'bbb']);
 });
 
 test('returns a slice', () => {
   const arr = new BigArray().push(111).push(222).push(333).unshift(-111);
 
-  expect(arr.slice()).toEqual([-111, 111, 222, 333]);
+  expect(arr.slice()).toStrictEqual([-111, 111, 222, 333]);
 });

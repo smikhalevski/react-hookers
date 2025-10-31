@@ -10,7 +10,7 @@ import { useHandler } from '../main/index.js';
 test('returns a function', () => {
   const hook = renderHook(() => useHandler(() => 111), { wrapper: StrictMode });
 
-  expect(hook.result.current).toEqual(expect.any(Function));
+  expect(hook.result.current).toStrictEqual(expect.any(Function));
 });
 
 test('returns the same function on each render', () => {
