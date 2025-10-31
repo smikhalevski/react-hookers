@@ -3,14 +3,13 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { expect, test, vi } from 'vitest';
 import { useInterval } from '../main/index.js';
 
 vi.useFakeTimers();
 
 test('returns a new array instance on each render', () => {
-  const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
+  const hook = renderHook(() => useInterval(), { reactStrictMode: true });
   const protocol = hook.result.current;
 
   hook.rerender();
@@ -19,7 +18,7 @@ test('returns a new array instance on each render', () => {
 });
 
 test('returns same callbacks on every call', () => {
-  const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
+  const hook = renderHook(() => useInterval(), { reactStrictMode: true });
 
   const [schedule1, cancel1] = hook.result.current;
   hook.rerender();
@@ -33,7 +32,7 @@ test('returns same callbacks on every call', () => {
 
 test('invokes the callback', () => {
   const cbMock = vi.fn();
-  const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
+  const hook = renderHook(() => useInterval(), { reactStrictMode: true });
 
   const [schedule] = hook.result.current;
 
@@ -49,7 +48,7 @@ test('invokes the callback', () => {
 test('consequent calls override the invoked callback', () => {
   const cbMock1 = vi.fn();
   const cbMock2 = vi.fn();
-  const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
+  const hook = renderHook(() => useInterval(), { reactStrictMode: true });
 
   const [schedule] = hook.result.current;
 
@@ -66,7 +65,7 @@ test('consequent calls override the invoked callback', () => {
 
 test('does not invoke the callback after unmount', () => {
   const cbMock = vi.fn();
-  const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
+  const hook = renderHook(() => useInterval(), { reactStrictMode: true });
 
   const [schedule] = hook.result.current;
 
@@ -81,7 +80,7 @@ test('does not invoke the callback after unmount', () => {
 
 test('the callback invocation is canceled', () => {
   const cbMock = vi.fn();
-  const hook = renderHook(() => useInterval(), { wrapper: StrictMode });
+  const hook = renderHook(() => useInterval(), { reactStrictMode: true });
 
   const [schedule, cancel] = hook.result.current;
 

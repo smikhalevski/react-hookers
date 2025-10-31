@@ -3,14 +3,13 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { expect, test, vi } from 'vitest';
 import { useDebouncedState } from '../main/index.js';
 
 vi.useFakeTimers();
 
 test('returns a new array instance on each render', () => {
-  const hook = renderHook(() => useDebouncedState(10), { wrapper: StrictMode });
+  const hook = renderHook(() => useDebouncedState(10), { reactStrictMode: true });
   const protocol = hook.result.current;
 
   hook.rerender();
@@ -19,7 +18,7 @@ test('returns a new array instance on each render', () => {
 });
 
 test('returns the same callback on every call', () => {
-  const hook = renderHook(() => useDebouncedState(10), { wrapper: StrictMode });
+  const hook = renderHook(() => useDebouncedState(10), { reactStrictMode: true });
 
   const setState1 = hook.result.current[2];
   hook.rerender();
@@ -32,34 +31,34 @@ test('returns the same callback on every call', () => {
 test('updates current state after the delay', async () => {
   const hookMock = vi.fn(() => useDebouncedState(10, 'aaa'));
 
-  const hook = renderHook(hookMock, { wrapper: StrictMode });
+  const hook = renderHook(hookMock, { reactStrictMode: true });
 
-  const [currState1, nextState1, setState] = hook.result.current;
+  const [value1, debouncedValue1, setState] = hook.result.current;
 
   expect(hookMock).toHaveBeenCalledTimes(2);
-  expect(currState1).toBe('aaa');
-  expect(nextState1).toBe('aaa');
+  expect(value1).toBe('aaa');
+  expect(debouncedValue1).toBe('aaa');
 
   act(() => setState('bbb'));
 
-  const [currState2, nextState2] = hook.result.current;
+  const [value2, debouncedValue2] = hook.result.current;
 
   expect(hookMock).toHaveBeenCalledTimes(4);
-  expect(currState2).toBe('aaa');
-  expect(nextState2).toBe('bbb');
+  expect(value2).toBe('bbb');
+  expect(debouncedValue2).toBe('aaa');
 
   act(() => vi.runOnlyPendingTimers());
 
-  const [currState3, nextState3] = hook.result.current;
+  const [value3, debouncedValue3] = hook.result.current;
 
   expect(hookMock).toHaveBeenCalledTimes(6);
-  expect(currState3).toBe('bbb');
-  expect(nextState3).toBe('bbb');
+  expect(value3).toBe('bbb');
+  expect(debouncedValue3).toBe('bbb');
 });
 
 test('does not re-render if next state is unchanged', async () => {
   const hookMock = vi.fn(() => useDebouncedState(10, 'aaa'));
-  const hook = renderHook(hookMock, { wrapper: StrictMode });
+  const hook = renderHook(hookMock, { reactStrictMode: true });
 
   const [, , setState] = hook.result.current;
 
@@ -74,7 +73,7 @@ test('does not re-render if next state is unchanged', async () => {
 
 test('does not re-render if current state is unchanged', async () => {
   const hookMock = vi.fn(() => useDebouncedState(10, 'aaa'));
-  const hook = renderHook(hookMock, { wrapper: StrictMode });
+  const hook = renderHook(hookMock, { reactStrictMode: true });
 
   const [, , setState] = hook.result.current;
 
@@ -88,7 +87,7 @@ test('does not re-render if current state is unchanged', async () => {
 
 test('consequent sets cause the current state to be updated only once', async () => {
   const hookMock = vi.fn(() => useDebouncedState(10, 'aaa'));
-  const hook = renderHook(hookMock, { wrapper: StrictMode });
+  const hook = renderHook(hookMock, { reactStrictMode: true });
 
   const [, , setState] = hook.result.current;
 
@@ -97,14 +96,14 @@ test('consequent sets cause the current state to be updated only once', async ()
 
   act(() => vi.runOnlyPendingTimers());
 
-  const [currState] = hook.result.current;
+  const [value] = hook.result.current;
 
-  expect(currState).toBe('ccc');
+  expect(value).toBe('ccc');
   expect(hookMock).toHaveBeenCalledTimes(8);
 });
 
 test('does not invoke the callback after unmount', async () => {
-  const hook = renderHook(() => useDebouncedState(50, 'aaa'), { wrapper: StrictMode });
+  const hook = renderHook(() => useDebouncedState(50, 'aaa'), { reactStrictMode: true });
 
   const [, , setState] = hook.result.current;
 
@@ -114,8 +113,8 @@ test('does not invoke the callback after unmount', async () => {
 
   act(() => vi.runOnlyPendingTimers());
 
-  const [currState, nextState] = hook.result.current;
+  const [value, debouncedValue] = hook.result.current;
 
-  expect(currState).toBe('aaa');
-  expect(nextState).toBe('bbb');
+  expect(value).toBe('bbb');
+  expect(debouncedValue).toBe('aaa');
 });

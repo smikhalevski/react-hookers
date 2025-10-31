@@ -3,12 +3,11 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { expect, test } from 'vitest';
 import { useLock } from '../main/index.js';
 
 test('returns a new array instance on each render', () => {
-  const hook = renderHook(() => useLock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useLock(), { reactStrictMode: true });
   const protocol = hook.result.current;
 
   hook.rerender();
@@ -17,7 +16,7 @@ test('returns a new array instance on each render', () => {
 });
 
 test('returns the same callback on each render', () => {
-  const hook = renderHook(() => useLock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useLock(), { reactStrictMode: true });
   const [, acquire1] = hook.result.current;
 
   hook.rerender();
@@ -28,13 +27,13 @@ test('returns the same callback on each render', () => {
 });
 
 test('unlocked by default', () => {
-  const hook = renderHook(() => useLock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useLock(), { reactStrictMode: true });
 
   expect(hook.result.current[0]).toBe(false);
 });
 
 test('locks', () => {
-  const hook = renderHook(() => useLock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useLock(), { reactStrictMode: true });
 
   act(() => {
     hook.result.current[1]();
@@ -44,7 +43,7 @@ test('locks', () => {
 });
 
 test('releases a lock', async () => {
-  const hook = renderHook(() => useLock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useLock(), { reactStrictMode: true });
 
   const release = await act(() => hook.result.current[1]());
 

@@ -3,14 +3,13 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { expect, test, vi } from 'vitest';
 import { useTimeout } from '../main/index.js';
 
 vi.useFakeTimers();
 
 test('returns a new array instance on each render', () => {
-  const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
+  const hook = renderHook(() => useTimeout(), { reactStrictMode: true });
   const protocol = hook.result.current;
 
   hook.rerender();
@@ -19,7 +18,7 @@ test('returns a new array instance on each render', () => {
 });
 
 test('returns the same callbacks on every call', () => {
-  const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
+  const hook = renderHook(() => useTimeout(), { reactStrictMode: true });
 
   const [debounce1, cancel1] = hook.result.current;
   hook.rerender();
@@ -31,7 +30,7 @@ test('returns the same callbacks on every call', () => {
 
 test('invokes the callback', async () => {
   const cbMock = vi.fn();
-  const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
+  const hook = renderHook(() => useTimeout(), { reactStrictMode: true });
 
   const [debounce] = hook.result.current;
 
@@ -45,7 +44,7 @@ test('invokes the callback', async () => {
 test('consequent calls override the invoked callback', async () => {
   const cbMock1 = vi.fn();
   const cbMock2 = vi.fn();
-  const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
+  const hook = renderHook(() => useTimeout(), { reactStrictMode: true });
 
   const [debounce] = hook.result.current;
 
@@ -60,7 +59,7 @@ test('consequent calls override the invoked callback', async () => {
 
 test('does not invoke the callback after unmount', async () => {
   const cbMock = vi.fn();
-  const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
+  const hook = renderHook(() => useTimeout(), { reactStrictMode: true });
 
   const [debounce] = hook.result.current;
 
@@ -75,7 +74,7 @@ test('does not invoke the callback after unmount', async () => {
 
 test('the callback invocation is canceled', async () => {
   const cbMock = vi.fn();
-  const hook = renderHook(() => useTimeout(), { wrapper: StrictMode });
+  const hook = renderHook(() => useTimeout(), { reactStrictMode: true });
 
   const [debounce, cancel] = hook.result.current;
 

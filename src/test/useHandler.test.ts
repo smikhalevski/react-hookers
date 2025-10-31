@@ -3,18 +3,17 @@
  */
 
 import { renderHook } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { expect, test, vi } from 'vitest';
 import { useHandler } from '../main/index.js';
 
 test('returns a function', () => {
-  const hook = renderHook(() => useHandler(() => 111), { wrapper: StrictMode });
+  const hook = renderHook(() => useHandler(() => 111), { reactStrictMode: true });
 
   expect(hook.result.current).toStrictEqual(expect.any(Function));
 });
 
 test('returns the same function on each render', () => {
-  const hook = renderHook(() => useHandler(() => 111), { wrapper: StrictMode });
+  const hook = renderHook(() => useHandler(() => 111), { reactStrictMode: true });
   const handler = hook.result.current;
 
   hook.rerender();
@@ -23,14 +22,14 @@ test('returns the same function on each render', () => {
 });
 
 test('returned function replicates the handler signature', () => {
-  const hook = renderHook(() => useHandler((a, b) => a * 2 + b), { wrapper: StrictMode });
+  const hook = renderHook(() => useHandler((a, b) => a * 2 + b), { reactStrictMode: true });
 
   expect(hook.result.current(3, 4)).toBe(10);
 });
 
 test('no-op after unmount', () => {
   const cbMock = vi.fn();
-  const hook = renderHook(() => useHandler(cbMock), { wrapper: StrictMode });
+  const hook = renderHook(() => useHandler(cbMock), { reactStrictMode: true });
   const handler = hook.result.current;
 
   hook.unmount();

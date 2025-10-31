@@ -3,7 +3,6 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { expect, test, vi } from 'vitest';
 import { useAsyncEffect } from '../main/index.js';
 
@@ -30,7 +29,7 @@ test('calls the effect after mount in strict mode', () => {
       useAsyncEffect(() => fn(1), undefined);
       fn(2);
     },
-    { wrapper: StrictMode }
+    { reactStrictMode: true }
   );
 
   expect(fn).toHaveBeenCalledTimes(4);
@@ -42,7 +41,7 @@ test('calls the effect after mount in strict mode', () => {
 
 test('invokes the dispose function on unmount', async () => {
   const disposeMock = vi.fn();
-  const hook = renderHook(() => useAsyncEffect(() => Promise.resolve(disposeMock), []), { wrapper: StrictMode });
+  const hook = renderHook(() => useAsyncEffect(() => Promise.resolve(disposeMock), []), { reactStrictMode: true });
 
   await act(() => vi.runAllTimersAsync());
 
@@ -54,7 +53,7 @@ test('invokes the dispose function on unmount', async () => {
 test('invokes the dispose function on re-render', async () => {
   const disposeMock = vi.fn();
   const hook = renderHook(() => useAsyncEffect(() => Promise.resolve(disposeMock), undefined), {
-    wrapper: StrictMode,
+    reactStrictMode: true,
   });
 
   await act(() => vi.runAllTimersAsync());
@@ -71,7 +70,7 @@ test('invokes the dispose function on re-render', async () => {
 test('invokes the async dispose function on re-render', async () => {
   const disposeMock = vi.fn();
   const hook = renderHook(() => useAsyncEffect(() => Promise.resolve(disposeMock), undefined), {
-    wrapper: StrictMode,
+    reactStrictMode: true,
   });
 
   await vi.runAllTimersAsync();
@@ -82,7 +81,7 @@ test('invokes the async dispose function on re-render', async () => {
 
 test('does not invoke the effect if deps did not change', () => {
   const effectMock = vi.fn();
-  const hook = renderHook(() => useAsyncEffect(effectMock, [1]), { wrapper: StrictMode });
+  const hook = renderHook(() => useAsyncEffect(effectMock, [1]), { reactStrictMode: true });
 
   hook.rerender();
 
@@ -91,7 +90,7 @@ test('does not invoke the effect if deps did not change', () => {
 
 test('invokes the effect when deps change', () => {
   const effectMock = vi.fn();
-  const hook = renderHook(deps => useAsyncEffect(effectMock, deps), { wrapper: StrictMode, initialProps: [111] });
+  const hook = renderHook(deps => useAsyncEffect(effectMock, deps), { reactStrictMode: true, initialProps: [111] });
 
   hook.rerender([222]);
 
@@ -101,7 +100,7 @@ test('invokes the effect when deps change', () => {
 test('invokes the async dispose function when deps change', async () => {
   const disposeMock = vi.fn();
   const hook = renderHook(deps => useAsyncEffect(() => Promise.resolve(disposeMock), deps), {
-    wrapper: StrictMode,
+    reactStrictMode: true,
     initialProps: [111],
   });
 
@@ -113,7 +112,7 @@ test('invokes the async dispose function when deps change', async () => {
 
 test('passes a signal to the effect callback', () => {
   const effectMock = vi.fn();
-  renderHook(() => useAsyncEffect(effectMock, undefined), { wrapper: StrictMode });
+  renderHook(() => useAsyncEffect(effectMock, undefined), { reactStrictMode: true });
 
   expect(effectMock).toHaveBeenCalledTimes(2);
   expect(effectMock).toHaveBeenCalledWith(expect.any(AbortSignal));
@@ -128,7 +127,7 @@ test('aborts the signal if the previous effect is pending', () => {
         signals.push(signal);
         return Promise.resolve();
       }, undefined),
-    { wrapper: StrictMode }
+    { reactStrictMode: true }
   );
 
   hook.rerender();
@@ -148,7 +147,7 @@ test('does not abort the signal if the previous effect is fulfilled', async () =
         signals.push(signal);
         return Promise.resolve();
       }, undefined),
-    { wrapper: StrictMode }
+    { reactStrictMode: true }
   );
 
   await vi.runAllTimersAsync();

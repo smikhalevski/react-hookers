@@ -8,14 +8,14 @@ import { emptyArray } from './utils/lang.js';
  * @template T A stateful value.
  * @group Other
  */
-export type DebouncedStateProtocol<T> = [value: T, nextValue: T, setValue: Dispatch<SetStateAction<T>>];
+export type DebouncedStateProtocol<T> = [value: T, debouncedValue: T, setValue: Dispatch<SetStateAction<T>>];
 
 /**
- * Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
- * synchronously, and the component is re-rendered. After the `ms` the `currState` is set to `nextState` and component
+ * Returns stateful values and a function to update them. Upon invocation of `setState`, the `value` is assigned
+ * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and component
  * is re-rendered again.
  *
- * @param ms A delay after which `currState` is synchronized with `nextState`.
+ * @param ms A delay after which `debouncedValue` is synchronized with `value`.
  * @param initialValue An initial value or a callback that returns an initial state.
  * @template T A stateful value.
  * @group Other
@@ -23,11 +23,11 @@ export type DebouncedStateProtocol<T> = [value: T, nextValue: T, setValue: Dispa
 export function useDebouncedState<T>(ms: number, initialValue: T | (() => T)): DebouncedStateProtocol<T>;
 
 /**
- * Returns stateful values and a function to update them. Upon invocation of `setState`, the `nextState` is assigned
- * synchronously, and the component is re-rendered. After the `ms` the `currState` is set to `nextState` and component
+ * Returns stateful values and a function to update them. Upon invocation of `setState`, the `value` is assigned
+ * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and component
  * is re-rendered again.
  *
- * @param ms A delay after which `currState` is synchronized with `nextState`.
+ * @param ms A delay after which `debouncedValue` is synchronized with `value`.
  * @template T A stateful value.
  * @group Other
  */
@@ -35,15 +35,15 @@ export function useDebouncedState<T = undefined>(ms: number): DebouncedStateProt
 
 export function useDebouncedState<T>(ms: number, initialValue?: T | (() => T)) {
   const [value, setValue] = useState(initialValue);
-  const [nextValue, setNextValue] = useState(() => value);
+  const [debouncedValue, setDebouncedValue] = useState(() => value);
 
-  const manager = useFunctionOnce(createDebouncedStateManager, setValue, setNextValue);
+  const manager = useFunctionOnce(createDebouncedStateManager, setValue, setDebouncedValue);
 
   manager.ms = ms;
 
   useEffect(manager.onMounted, emptyArray);
 
-  return [value, nextValue, manager.applyValue];
+  return [value, debouncedValue, manager.applyValue];
 }
 
 interface DebouncedStateManager<T> {
@@ -54,7 +54,7 @@ interface DebouncedStateManager<T> {
 
 function createDebouncedStateManager<T>(
   setValue: Dispatch<SetStateAction<T>>,
-  setNextValue: Dispatch<SetStateAction<T>>
+  setDebouncedValue: Dispatch<SetStateAction<T>>
 ): DebouncedStateManager<T> {
   let isMounted = false;
   let timer: number;
@@ -64,14 +64,14 @@ function createDebouncedStateManager<T>(
       return;
     }
 
-    setNextValue(nextValue => {
+    setValue(nextValue => {
       if (typeof value === 'function') {
         value = (value as Function)(nextValue) as T;
       }
 
       clearTimeout(timer);
 
-      timer = setTimeout(setValue, manager.ms, typeof value === 'function' ? () => value : value);
+      timer = setTimeout(setDebouncedValue, manager.ms, typeof value === 'function' ? () => value : value);
 
       return value;
     });

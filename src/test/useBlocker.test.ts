@@ -3,12 +3,11 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { StrictMode } from 'react';
 import { expect, test, vi } from 'vitest';
 import { useBlocker } from '../main/index.js';
 
 test('returns a new array instance on each render', () => {
-  const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
+  const hook = renderHook(() => useBlocker(), { reactStrictMode: true });
   const protocol = hook.result.current;
 
   hook.rerender();
@@ -17,7 +16,7 @@ test('returns a new array instance on each render', () => {
 });
 
 test('returns the same callbacks on each render', () => {
-  const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
+  const hook = renderHook(() => useBlocker(), { reactStrictMode: true });
   const [, block1, unblock1] = hook.result.current;
 
   hook.rerender();
@@ -29,13 +28,13 @@ test('returns the same callbacks on each render', () => {
 });
 
 test('unblocked by default', () => {
-  const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
+  const hook = renderHook(() => useBlocker(), { reactStrictMode: true });
 
   expect(hook.result.current[0]).toBe(false);
 });
 
 test('blocks', () => {
-  const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
+  const hook = renderHook(() => useBlocker(), { reactStrictMode: true });
 
   act(() => {
     hook.result.current[1]();
@@ -45,7 +44,7 @@ test('blocks', () => {
 });
 
 test('unblocks with result', async () => {
-  const hook = renderHook(() => useBlocker<string>(), { wrapper: StrictMode });
+  const hook = renderHook(() => useBlocker<string>(), { reactStrictMode: true });
   let promise;
 
   act(() => {
@@ -59,7 +58,7 @@ test('unblocks with result', async () => {
 });
 
 test('unblocks without result', async () => {
-  const hook = renderHook(() => useBlocker(), { wrapper: StrictMode });
+  const hook = renderHook(() => useBlocker(), { reactStrictMode: true });
   let promise;
 
   act(() => {
@@ -74,7 +73,7 @@ test('unblocks without result', async () => {
 
 test('block/unblock are no-op after unmount', async () => {
   const hookMock = vi.fn(() => useBlocker<string>());
-  const hook = renderHook(hookMock, { wrapper: StrictMode });
+  const hook = renderHook(hookMock, { reactStrictMode: true });
 
   const [, block, unblock] = hook.result.current;
 

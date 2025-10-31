@@ -3,19 +3,19 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { StrictMode, useEffect } from 'react';
+import { useEffect } from 'react';
 import { expect, test, vi } from 'vitest';
 import { useRerender } from '../main/index.js';
 
 test('returns a function', () => {
-  const hook = renderHook(() => useRerender(), { wrapper: StrictMode });
+  const hook = renderHook(() => useRerender(), { reactStrictMode: true });
 
   expect(hook.result.current).toBeInstanceOf(Function);
 });
 
 test('returns the same function on every render', () => {
   const useRerenderMock = vi.fn(useRerender);
-  const hook = renderHook(() => useRerenderMock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useRerenderMock(), { reactStrictMode: true });
   const fn = hook.result.current;
 
   hook.rerender();
@@ -26,7 +26,7 @@ test('returns the same function on every render', () => {
 
 test('re-render a component', () => {
   const useRerenderMock = vi.fn(useRerender);
-  const hook = renderHook(() => useRerenderMock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useRerenderMock(), { reactStrictMode: true });
 
   expect(useRerenderMock).toHaveBeenCalledTimes(2);
 
@@ -38,7 +38,7 @@ test('re-render a component', () => {
 
 test('does not re-render an unmounted component', () => {
   const useRerenderMock = vi.fn(useRerender);
-  const hook = renderHook(() => useRerenderMock(), { wrapper: StrictMode });
+  const hook = renderHook(() => useRerenderMock(), { reactStrictMode: true });
 
   hook.unmount();
 
@@ -57,7 +57,7 @@ test('triggers re-render when called from an effect', () => {
 
       useEffect(() => rerender(), []);
     },
-    { wrapper: StrictMode }
+    { reactStrictMode: true }
   );
 
   expect(useRerenderMock).toHaveBeenCalledTimes(4);
@@ -77,7 +77,7 @@ test('defers re-render when called during a render', () => {
         rerender();
       }
     },
-    { wrapper: StrictMode }
+    { reactStrictMode: true }
   );
 
   expect(useRerenderMock).toHaveBeenCalledTimes(5);
