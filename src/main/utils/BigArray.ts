@@ -7,6 +7,8 @@ const BLOCK_LENGTH = Math.ceil(Math.pow(Number.MAX_SAFE_INTEGER, 1 / 3));
 
 const SQ_BLOCK_LENGTH = BLOCK_LENGTH * BLOCK_LENGTH;
 
+const MAX_ARRAY_LENGTH = 0xffffffff;
+
 interface Block<T> {
   [index: number]: T;
   [index: string]: T;
@@ -34,18 +36,6 @@ export class BigArray<T> {
   private _positiveBlocks: Block<Block<Block<T>>> = {};
 
   /**
-   * @param source The iterable to convert.
-   * @param baseIndex The index of the first element from iterable.
-   */
-  constructor(source?: Iterable<T>, baseIndex = 0) {
-    if (source !== undefined) {
-      for (const value of source) {
-        this.set(baseIndex++, value);
-      }
-    }
-  }
-
-  /**
    * An index of the first element in an array, inclusive.
    */
   startIndex = 0;
@@ -70,7 +60,7 @@ export class BigArray<T> {
    *
    * @param index An integer index of an element.
    */
-  get(index: number): T | undefined {
+  get(index: number): T {
     const blocks = index >= 0 ? this._positiveBlocks : ((index = -index - 1), this._negativeBlocks);
 
     const index0 = floor(index / SQ_BLOCK_LENGTH);
@@ -79,13 +69,13 @@ export class BigArray<T> {
     const block0 = blocks[index0];
 
     if (block0 === undefined) {
-      return undefined;
+      return undefined!;
     }
 
     const block1 = block0[index1];
 
     if (block1 === undefined) {
-      return undefined;
+      return undefined!;
     }
 
     return block1[index - index0 * SQ_BLOCK_LENGTH - index1 * BLOCK_LENGTH];
@@ -130,10 +120,10 @@ export class BigArray<T> {
       return block1[valueIndex];
     }
 
-    if (index >= 0) {
-      this.positiveCount++;
-    } else {
+    if (index < 0) {
       this.negativeCount++;
+    } else {
+      this.positiveCount++;
     }
 
     return (block1[valueIndex] = callOrGet(lazyValue, index));
@@ -178,10 +168,10 @@ export class BigArray<T> {
       return this;
     }
 
-    if (index >= 0) {
-      this.positiveCount++;
-    } else {
+    if (index < 0) {
       this.negativeCount++;
+    } else {
+      this.positiveCount++;
     }
 
     block1[valueIndex] = value;
@@ -235,6 +225,74 @@ export class BigArray<T> {
   }
 
   /**
+   * Copies `length` number of elements from `source` (starting at `sourceStartIndex`) to this array (starting
+   * at `startIndex`).
+   *
+   * @param source The source of elements.
+   * @param startIndex The index in this array to start writing at.
+   * @param sourceStartIndex The index in source array to start reading at.
+   * @param length The maximum number of elements to read from he source.
+   */
+  copyOver(source: Iterable<T> | ArrayLike<T>, startIndex = 0, sourceStartIndex = 0, length = Infinity): this {
+    if ('length' in source) {
+      for (let i = sourceStartIndex; i < length && i < source.length; ++i) {
+        this.set(startIndex - sourceStartIndex + i, source[i]);
+      }
+
+      return this;
+    }
+
+    if (source instanceof BigArray) {
+      // Copy existing elements
+
+      for (const index of source.indexes()) {
+        if (index < sourceStartIndex) {
+          continue;
+        }
+        if (index >= sourceStartIndex + length) {
+          break;
+        }
+        this.set(startIndex - sourceStartIndex + index, source.get(index));
+      }
+
+      return this;
+    }
+
+    let i = 0;
+
+    for (const value of source) {
+      if (i < sourceStartIndex) {
+        // Skip leading elements
+        ++i;
+        continue;
+      }
+      if (i >= sourceStartIndex + length) {
+        // Stop after the required number of elements was consumed
+        break;
+      }
+      this.set(startIndex - sourceStartIndex + i, value);
+      ++i;
+    }
+
+    return this;
+  }
+
+  /**
+   * Returns a slice of elements of this array. The total length of the slice won't exceed 2&sup3;&sup2; number
+   * of items.
+   *
+   * @param startIndex The start index of the slice, inclusive.
+   * @param endIndex The end index of the slice, exclusive.
+   */
+  slice(startIndex = this.startIndex, endIndex = this.endIndex): T[] {
+    const values: T[] = [];
+
+    for (let i = startIndex; i < endIndex && values.push(this.get(i)) < MAX_ARRAY_LENGTH; ++i) {}
+
+    return values;
+  }
+
+  /**
    * Returns a new iterator object that contains indexes of {@link has existing elements}.
    */
   *indexes(): IterableIterator<number> {
@@ -267,6 +325,13 @@ export class BigArray<T> {
         }
       }
     }
+  }
+
+  /**
+   * Returns a new iterator object that contains existing values.
+   */
+  values(): IterableIterator<T> {
+    return this[Symbol.iterator]();
   }
 
   /**
