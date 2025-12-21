@@ -125,7 +125,7 @@ export {
   isAutoFocusable,
   isPortalEvent,
 } from './utils/dom.js';
-export { arrayOf, callOrGet, isEqual } from './utils/lang.js';
+export { arrayOf, callOrGet, isEqual, isShallowEqual } from './utils/lang.js';
 export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/rects.js';
 export { mergeClassNames } from './utils/mergeClassNames.js';
 export { mergeProps } from './utils/mergeProps.js';
@@ -142,6 +142,7 @@ export { useAnimationFrame } from './useAnimationFrame.js';
 export { useAnimationFrameCallback } from './useAnimationFrameCallback.js';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect.js';
 export { useBlocker } from './useBlocker.js';
+export { useCachedValue } from './useCachedValue.js';
 export { useDebouncedState } from './useDebouncedState.js';
 export { useFunction } from './useFunction.js';
 export { useFunctionEffect } from './useFunctionEffect.js';
