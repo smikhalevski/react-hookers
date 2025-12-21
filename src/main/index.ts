@@ -130,12 +130,7 @@ export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/r
 export { mergeClassNames } from './utils/mergeClassNames.js';
 export { mergeProps } from './utils/mergeProps.js';
 export { mergeRefs } from './utils/mergeRefs.js';
-export {
-  createDelegateContext,
-  type DelegateContext,
-  type DelegateProviderProps,
-  type DelegateValue,
-} from './createDelegateContext.js';
+export { createDelegatedPropsContext, type DelegatedPropsContext } from './createDelegatedPropsContext.js';
 export {
   getRenderInContainer,
   createRenderContainer,
