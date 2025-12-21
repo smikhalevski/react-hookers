@@ -147,7 +147,7 @@ export { useAnimationFrame } from './useAnimationFrame.js';
 export { useAnimationFrameCallback } from './useAnimationFrameCallback.js';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect.js';
 export { useBlocker } from './useBlocker.js';
-export { useDebouncedState, type DebouncedStateProtocol } from './useDebouncedState.js';
+export { useDebouncedState } from './useDebouncedState.js';
 export { useFunction } from './useFunction.js';
 export { useFunctionEffect } from './useFunctionEffect.js';
 export { useFunctionOnce } from './useFunctionOnce.js';

@@ -47,7 +47,7 @@ test('updates current state after the delay', async () => {
   expect(value2).toBe('bbb');
   expect(debouncedValue2).toBe('aaa');
 
-  act(() => vi.runOnlyPendingTimers());
+  await act(() => vi.runOnlyPendingTimers());
 
   const [value3, debouncedValue3] = hook.result.current;
 
@@ -66,7 +66,7 @@ test('does not re-render if next state is unchanged', async () => {
 
   expect(hookMock).toHaveBeenCalledTimes(2);
 
-  act(() => vi.runOnlyPendingTimers());
+  await act(() => vi.runOnlyPendingTimers());
 
   expect(hookMock).toHaveBeenCalledTimes(2);
 });
@@ -80,7 +80,7 @@ test('does not re-render if current state is unchanged', async () => {
   act(() => setState('bbb'));
   act(() => setState('aaa'));
 
-  act(() => vi.runOnlyPendingTimers());
+  await act(() => vi.runOnlyPendingTimers());
 
   expect(hookMock).toHaveBeenCalledTimes(8);
 });
@@ -94,7 +94,7 @@ test('consequent sets cause the current state to be updated only once', async ()
   act(() => setState('bbb'));
   act(() => setState('ccc'));
 
-  act(() => vi.runOnlyPendingTimers());
+  await act(() => vi.runOnlyPendingTimers());
 
   const [value] = hook.result.current;
 
@@ -111,7 +111,7 @@ test('does not invoke the callback after unmount', async () => {
 
   hook.unmount();
 
-  act(() => vi.runOnlyPendingTimers());
+  await act(() => vi.runOnlyPendingTimers());
 
   const [value, debouncedValue] = hook.result.current;
 

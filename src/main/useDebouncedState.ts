@@ -3,35 +3,58 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray } from './utils/lang.js';
 
 /**
- * The protocol returned by the {@link useDebouncedState} hook.
- *
- * @template T A stateful value.
- * @group Other
- */
-export type DebouncedStateProtocol<T> = [value: T, debouncedValue: T, setValue: Dispatch<SetStateAction<T>>];
-
-/**
  * Returns stateful values and a function to update them. Upon invocation of `setState`, the `value` is assigned
- * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and component
- * is re-rendered again.
+ * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and
+ * component is re-rendered again.
+ *
+ * @example
+ * const [value, debouncedValue, setValue] = useDebouncedState(500, 'hello');
+ *
+ * useEffect(() => {
+ *   fetch('https://example.com/' + debouncedValue);
+ * }, [debouncedValue]);
+ *
+ * <input
+ *   type="text"
+ *   value={value}
+ *   onChange={event => setValue(event.target.value)}
+ * />
  *
  * @param ms A delay after which `debouncedValue` is synchronized with `value`.
  * @param initialValue An initial value or a callback that returns an initial state.
  * @template T A stateful value.
  * @group Other
  */
-export function useDebouncedState<T>(ms: number, initialValue: T | (() => T)): DebouncedStateProtocol<T>;
+export function useDebouncedState<T>(
+  ms: number,
+  initialValue: T | (() => T)
+): [value: T, debouncedValue: T, setValue: Dispatch<SetStateAction<T>>];
 
 /**
  * Returns stateful values and a function to update them. Upon invocation of `setState`, the `value` is assigned
- * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and component
- * is re-rendered again.
+ * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and
+ * component is re-rendered again.
+ *
+ * @example
+ * const [value, debouncedValue, setValue] = useDebouncedState(500);
+ *
+ * useEffect(() => {
+ *   fetch('https://example.com/' + debouncedValue);
+ * }, [debouncedValue]);
+ *
+ * <input
+ *   type="text"
+ *   value={value}
+ *   onChange={event => setValue(event.target.value)}
+ * />
  *
  * @param ms A delay after which `debouncedValue` is synchronized with `value`.
  * @template T A stateful value.
  * @group Other
  */
-export function useDebouncedState<T = undefined>(ms: number): DebouncedStateProtocol<T | undefined>;
+export function useDebouncedState<T = undefined>(
+  ms: number
+): [value: T | undefined, debouncedValue: T | undefined, setValue: Dispatch<SetStateAction<T | undefined>>];
 
 export function useDebouncedState<T>(ms: number, initialValue?: T | (() => T)) {
   const [value, setValue] = useState(initialValue);
