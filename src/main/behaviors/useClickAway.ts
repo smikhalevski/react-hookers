@@ -9,37 +9,37 @@ import { emptyArray } from '../utils/lang.js';
  */
 export interface ClickAwayValue {
   /**
-   * Props of a container element that can receive clicks without triggering click away.
+   * Props for a container element that can receive clicks without triggering click-away.
    *
-   * An object which identity never changes between renders.
+   * An object whose identity never changes between renders.
    */
   containerProps: DOMAttributes<Element>;
 }
 
 /**
- * Props of the {@link useClickAway} hook.
+ * Props for the {@link useClickAway} hook.
  *
  * @group Behaviors
  */
 export interface ClickAwayProps {
   /**
-   * If `true` then click away listeners are disabled.
+   * If `true`, click-away listeners are disabled.
    *
    * @default false
    */
   isDisabled?: boolean;
 
   /**
-   * A handler that is called when a user clicks outside a {@link ClickAwayValue.containerProps container}.
+   * A handler that is called when a user clicks outside the {@link ClickAwayValue.containerProps container}.
    */
   onClickAway?: () => void;
 }
 
 /**
- * Calls {@link ClickAwayProps.onClickAway onClickAway} handler if a user clicks outside a container.
+ * Calls {@link ClickAwayProps.onClickAway onClickAway} when a user clicks outside the container.
  *
  * @param props Click-away props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Behaviors
  */
 export function useClickAway(props: ClickAwayProps): ClickAwayValue {

@@ -14,7 +14,7 @@ import { emptyArray, emptyObject } from '../utils/lang.js';
  */
 export interface VirtualItem {
   /**
-   * An index of an item.
+   * The item index.
    */
   readonly index: number;
 
@@ -25,7 +25,7 @@ export interface VirtualItem {
 }
 
 /**
- * An info about the current state of a virtualizer.
+ * Info about the current virtualizer state.
  *
  * @see {@link VirtualizerProps.onScroll}
  * @group Behaviors
@@ -37,68 +37,68 @@ export interface VirtualizerScrollInfo {
   virtualizer: Virtualizer;
 
   /**
-   * An index of the first item, inclusive.
+   * The index of the first item (inclusive).
    *
    * @see {@link VirtualizerProps.startIndex}
    */
   startIndex: number;
 
   /**
-   * An index of the last item, exclusive.
+   * The index of the last item (exclusive).
    *
    * @see {@link VirtualizerProps.endIndex}
    */
   endIndex: number;
 
   /**
-   * A combined size of all items of the current page along the scroll axis.
+   * The combined size of all items on the current page, in pixels, along the scroll axis.
    */
   pageSize: number;
 
   /**
-   * The first index of a current page, inclusive.
+   * The first index of the current page (inclusive).
    */
   pageStartIndex: number;
 
   /**
-   * The last index of a current page, exclusive.
+   * The last index of the current page (exclusive).
    */
   pageEndIndex: number;
 
   /**
-   * A position in pixels at which rendered items must be placed.
+   * The position, in pixels, at which rendered items should be placed.
    */
   itemsPosition: number;
 
   /**
-   * An index of the first rendered item, inclusive.
+   * The index of the first rendered item (inclusive).
    */
   itemsStartIndex: number;
 
   /**
-   * An index of the last rendered item, exclusive.
+   * The index of the last rendered item (exclusive).
    */
   itemsEndIndex: number;
 
   /**
-   * An index of the first item that is visible to a user, inclusive.
+   * The index of the first item visible to the user (inclusive).
    */
   visibleItemsStartIndex: number;
 
   /**
-   * An index of the last item that is visible to a user, exclusive.
+   * The index of the last item visible to the user (exclusive).
    */
   visibleItemsEndIndex: number;
 }
 
 /**
- * Options of the {@link Virtualizer.scrollToIndex} method.
+ * Options for the {@link Virtualizer.scrollToIndex} method.
  *
  * @group Behaviors
  */
 export interface VirtualizerScrollToIndexOptions {
   /**
-   * A padding to apply to the start of a container in pixels when scrolling to an item.
+   * Padding, in pixels, to apply to the start of the container when scrolling to an item.
    *
    * @default 0
    */
@@ -112,41 +112,41 @@ export interface VirtualizerScrollToIndexOptions {
  */
 export interface Virtualizer {
   /**
-   * An array of items to render.
+   * The items to render.
    *
    * **Note:** Items in this array may be reused between re-renders.
    */
   items: readonly VirtualItem[];
 
   /**
-   * Returns an estimated total size of the virtualized list in pixels along the scroll axis, based on the total number
-   * of items and an estimated average item size.
+   * Returns an estimated total size of the virtualized list, in pixels, along the scroll axis,
+   * based on the total number of items and an estimated average item size.
    */
   estimateTotalSize(): number;
 
   /**
-   * Returns {@link VirtualizerProps.estimateItemSize an estimated item size} in pixels along the scroll axis,
-   * or the latest measured item size if item was previously rendered.
+   * Returns {@link VirtualizerProps.estimateItemSize an estimated item size}, in pixels, along the scroll axis,
+   * or the most recently measured item size if the item has been rendered before.
    *
-   * @param index An index of an item.
+   * @param index The item index.
    */
   estimateItemSize(index: number): number;
 
   /**
-   * Scrolls virtualizer to an item with the given index.
+   * Scrolls the virtualizer to the item with the given index.
    *
-   * @param index An index of an item.
+   * @param index The item index.
    * @param options Scroll options.
    */
   scrollToIndex(index: number, options?: VirtualizerScrollToIndexOptions): void;
 
   /**
-   * Scrolls virtualizer to an absolute position.
+   * Scrolls the virtualizer to an absolute position.
    *
-   * **Note:** The precision of the scroll position isn't guaranteed if an {@link estimateTotalSize} is greater then
+   * **Note:** Scroll position precision is not guaranteed if {@link estimateTotalSize} is greater than
    * {@link Number.MAX_SAFE_INTEGER}.
    *
-   * @param position A position in pixels to scroll to.
+   * @param position The scroll position, in pixels.
    */
   scrollToPosition(position: number): void;
 }
@@ -158,33 +158,33 @@ export interface Virtualizer {
  */
 export interface VirtualizerProps {
   /**
-   * An index of the first item, inclusive.
+   * The index of the first item (inclusive).
    */
   startIndex: number;
 
   /**
-   * An index of the last item, exclusive.
+   * The index of the last item (exclusive).
    */
   endIndex: number;
 
   /**
-   * An estimated average item size in pixels along the scroll axis, or a callback that returns an estimated size by
-   * an item index.
+   * An estimated average item size, in pixels, along the scroll axis, or a callback that returns an estimated size
+   * for a given item index.
    *
    * @default 100
    */
   estimateItemSize?: ((index: number) => number) | number;
 
   /**
-   * The minimum number of pixels that should be rendered offscreen before and after a visible range. Additional items
-   * are rendered to fulfill this size.
+   * The minimum number of pixels that should be rendered offscreen before and after the visible range. Additional
+   * items are rendered to satisfy this size.
    *
    * @default 0
    */
   overscanSize?: number;
 
   /**
-   * A reference to a scrollable container element. If omitted then the window is a container.
+   * A reference to a scrollable container element. If omitted, the window is used as the container.
    */
   containerRef?: RefObject<Element | null>;
 
@@ -196,23 +196,23 @@ export interface VirtualizerProps {
   orientation?: 'horizontal' | 'vertical';
 
   /**
-   * A padding to apply to the start of a container in pixels.
+   * Padding, in pixels, to apply to the start of the container.
    *
    * @default 0
    */
   paddingStart?: number;
 
   /**
-   * If `true` then the horizontal scroll events are interpreted as in an RTL environment.
+   * If `true`, horizontal scroll events are interpreted as in an RTL environment.
    *
-   * By default, RTL is derived from a {@link containerRef container}.
+   * By default, RTL is derived from the {@link containerRef container}.
    */
   isRTL?: boolean;
 
   /**
-   * A handler that is called when a {@link containerRef container} is being scrolled.
+   * A handler that is called when the {@link containerRef container} is scrolled.
    *
-   * @param info An info about the current state of a virtualizer. This object is reused between handler invocations.
+   * @param info Info about the current virtualizer state. This object is reused between handler invocations.
    */
   onScroll: (info: Readonly<VirtualizerScrollInfo>) => void;
 }
@@ -255,7 +255,7 @@ export interface VirtualizerProps {
  * </div>
  *
  * @param props Virtualizer props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Behaviors
  */
 export function useVirtualizer(props: VirtualizerProps): Virtualizer {
@@ -582,7 +582,7 @@ const MAX_PEEK_COUNT = 100;
 
 export interface VirtualizerState {
   /**
-   * A version that is bumped if {@link Virtualizer.onScroll} must be called to flush changes.
+   * A version that is incremented when {@link VirtualizerProps.onScroll} must be called to flush changes.
    */
   version: number;
 
@@ -610,68 +610,68 @@ export interface VirtualizerState {
   itemSizeCache: BigArray<number>;
 
   /**
-   * A position at which items must be rendered, adjusted by the accumulated {@link scrollShift}.
+   * The position at which items must be rendered, adjusted by the accumulated {@link scrollShift}.
    */
   adjustedItemsPosition: number;
 
   /**
-   * A scroll position that must be applied to a container, or `null` if scroll position shouldn't be changed.
+   * A scroll position that must be applied to the container, or `null` if the scroll position should not be changed.
    */
   requiredScrollPosition: number | null;
 
   /**
-   * A size of the current page.
+   * The size of the current page.
    */
   pageSize: number;
 
   /**
-   * The first index of a current page, inclusive.
+   * The first index of the current page (inclusive).
    */
   pageStartIndex: number;
 
   /**
-   * The last index of a current page, exclusive.
+   * The last index of the current page (exclusive).
    */
   pageEndIndex: number;
 
   /**
-   * A position in pixels at which the items must be positioned so it is visible to a user.
+   * The position, in pixels, at which the items must be positioned so they are visible to the user.
    */
   itemsPosition: number;
 
   /**
-   * An index of the first rendered item, inclusive.
+   * The index of the first rendered item (inclusive).
    */
   itemsStartIndex: number;
 
   /**
-   * An index of the last rendered item, exclusive.
+   * The index of the last rendered item (exclusive).
    */
   itemsEndIndex: number;
 
   /**
-   * An index of the first item that is visible to a user, inclusive.
+   * The index of the first item visible to the user (inclusive).
    */
   visibleItemsStartIndex: number;
 
   /**
-   * An index of the last item that is visible to a user, exclusive.
+   * The index of the last item visible to the user (exclusive).
    */
   visibleItemsEndIndex: number;
 
   /**
-   * An offset of a pivot item from the container top.
+   * The offset of a pivot item from the container top.
    */
   pivotOffset: number;
 
   /**
-   * An index of an item which scroll position must be preserved if item sizes are adjusted after rendering.
+   * The index of an item whose scroll position must be preserved if item sizes are adjusted after rendering.
    */
   pivotIndex: number;
 
   /**
-   * A difference in estimated and measured sizes of items that precede the pivot item. This shift is applied to
-   * a scroll position if {@link isScrolling} is set to `false`.
+   * The difference between estimated and measured sizes of items that precede the pivot item. This shift is applied to
+   * the scroll position if {@link isScrolling} is `false`.
    */
   scrollShift: number;
 }
@@ -712,28 +712,28 @@ export function createVirtualizerState(): VirtualizerState {
 }
 
 /**
- * Recalculates items array depending on container scroll state.
+ * Recalculates the items array based on the container scroll state.
  *
  * Terminology:
  *
  * <dl>
  * <dt>Container</dt>
- * <dd>A scrollable element or a window which should be filled with items.</dd>
+ * <dd>A scrollable element or the window that should be filled with items.</dd>
  *
  * <dt>Page</dt>
  * <dd>
- * A set of items which cumulative size doesn't exceed the maximum supported browser height. Pages are recalculated
- * when scroll is close to 0 or container scroll height.
+ * A set of items whose cumulative size does not exceed the maximum supported browser height. Pages are recalculated
+ * when the scroll position is close to 0 or to the container scroll height.
  * </dd>
  *
  * <dt>Items</dt>
  * <dd>A set of rendered items.</dd>
  *
  * <dt>Pivot item</dt>
- * <dd>An item which scroll position must be preserved if item sizes are adjusted after rendering.</dd>
+ * <dd>An item whose scroll position must be preserved if item sizes are adjusted after rendering.</dd>
  *
  * <dt>Anchor item</dt>
- * <dd>An item to which a container must be scrolled.</dd>
+ * <dd>An item to which the container must be scrolled.</dd>
  * </dl>
  */
 export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boolean): void {
@@ -769,7 +769,7 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
   let scrollShift = prevScrollShift;
 
   if (isPivotPreserved) {
-    // Ensure that pivot position is visually preserved after items are rendered
+    // Ensure the pivot position is visually preserved after items are rendered
     let actualPivotPosition = prevItemsPosition;
 
     for (let i = prevItemsStartIndex; i < prevPivotIndex && i < endIndex; ++i) {
@@ -822,7 +822,7 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     scrollPosition = paddingStart + pivotPosition - scrollPaddingStart;
     scrollShift = 0;
   } else {
-    // Calc items that correspond to the current scroll position
+    // Calculate items that correspond to the current scroll position
 
     let zeroOffset = 0;
 
@@ -865,7 +865,7 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
         paddingStart + pageSize < scrollPosition &&
         paddingStart + pageSize + itemSize < scrollPosition + containerSize
       ) {
-        // Item starts before a visible range and ends before a visible range ends
+        // Item starts before the visible range and ends before the visible range ends
         pivotPosition += itemSize;
         pivotIndex = i + 1;
       }
@@ -967,9 +967,9 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
     }
 
     if (
-      // Accommodate new items if page size is insufficient
+      // Accommodate new items if the page size is insufficient
       ((pageStartIndex < prevPageStartIndex || pageEndIndex > prevPageEndIndex) && prevPageSize < containerSize) ||
-      // Non-empty page should not yield empty items
+      // A non-empty page should not yield empty items
       (prevPageStartIndex === prevPageEndIndex && itemsStartIndex === itemsEndIndex && pageStartIndex !== pageEndIndex)
     ) {
       state.pageStartIndex = pageStartIndex;
@@ -981,7 +981,7 @@ export function updateVirtualizer(state: VirtualizerState, isPivotPreserved: boo
   }
 
   if (prevItemsStartIndex !== itemsStartIndex || prevItemsEndIndex !== itemsEndIndex) {
-    // Populate items items
+    // Populate items
     const items: VirtualItem[] = [];
 
     for (let i = itemsStartIndex; i < itemsEndIndex; ++i) {

@@ -2,13 +2,13 @@ import { useRef } from 'react';
 import { NEVER } from './utils/lang.js';
 
 /**
- * Calls a function during initial render and caches its result until component is unmounted.
+ * Calls a function during the initial render and caches its result until the component is unmounted.
  *
- * @param fn A function to call.
- * @param args Function arguments.
- * @returns A function return value, or a cached return value.
- * @template A Function arguments.
- * @template R A function return value.
+ * @param fn The function to call.
+ * @param args The function arguments.
+ * @returns The function's return value, or the cached return value.
+ * @template A The function arguments.
+ * @template R The function return value.
  * @see {@link useFunction}
  * @see {@link useFunctionEffect}
  * @group Other

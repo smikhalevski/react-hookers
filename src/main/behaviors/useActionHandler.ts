@@ -13,7 +13,7 @@ ActionHandlerContext.displayName = 'ActionHandlerContext';
 export const ActionHandlerProvider = ActionHandlerContext.Provider;
 
 /**
- * A global action handler provided to a subtree.
+ * Returns the global action handler provided to the current subtree.
  *
  * @see {@link ActionHandlerProvider}
  * @group Behaviors

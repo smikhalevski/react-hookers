@@ -3,9 +3,9 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray } from './utils/lang.js';
 
 /**
- * Starts an animation loop after component is mounted, and stops it after component is unmounted.
+ * Starts an animation loop after the component is mounted and stops it when the component is unmounted.
  *
- * @param cb A callback that is called in an animation frame.
+ * @param cb A callback that is invoked on each animation frame.
  * @see {@link useAnimationFrame}
  * @group Other
  */

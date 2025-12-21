@@ -13,9 +13,9 @@ import { emptyArray } from './utils/lang.js';
 const containers = new WeakMap<FunctionComponent, RenderInContainerCallback>();
 
 /**
- * A function that renders/re-renders an element in a container.
+ * A function that renders or re-renders an element in a container.
  *
- * @param element An element to render in a container.
+ * @param element The element to render in the container.
  * @returns A callback that unmounts the rendered element. For elements with the same key, the same unmount callback is
  * returned.
  * @group Other
@@ -23,20 +23,20 @@ const containers = new WeakMap<FunctionComponent, RenderInContainerCallback>();
 export type RenderInContainerCallback = (element: ReactElement) => () => void;
 
 /**
- * Returns a function that renders/re-renders an element in a container.
+ * Returns a function that renders or re-renders an element in a container.
  *
- * If an element has a key, then the rendered element would update the already rendered element with the same key.
+ * If an element has a key, rendering updates the already rendered element with the same key.
  *
- * If there's no key, then a new element would be rendered on each function call.
+ * If there is no key, a new element is rendered on each call.
  *
- * Use {@link useCloseHandler} hook in a rendered component to acquire a callback that unmounts a rendered element.
+ * Use the {@link useCloseHandler} hook in a rendered component to obtain a callback that unmounts the rendered element.
  *
  * @example
  * // 1. Create a container
  * const MyContainer = createRenderContainer();
  *
- * // 2. Render a container somewhere
- * <MyContainer/>
+ * // 2. Render the container somewhere
+ * <MyContainer />
  *
  * // 3. Get a function that renders an element in the container
  * const renderInContainer = getRenderInContainer(MyContainer);
@@ -44,8 +44,8 @@ export type RenderInContainerCallback = (element: ReactElement) => () => void;
  * // 4. Render an element in the container
  * const unmount = renderInContainer(<div>Hello</div>);
  *
- * @param container A container component created by a {@link createRenderContainer} function.
- * @returns A function that renders/re-renders an element.
+ * @param container A container component created by {@link createRenderContainer}.
+ * @returns A function that renders or re-renders an element.
  * @see {@link createRenderContainer}
  * @group Other
  */
@@ -60,22 +60,22 @@ export function getRenderInContainer(container: FunctionComponent): RenderInCont
 }
 
 /**
- * Props of a {@link createRenderContainer render container}.
+ * Props for a {@link createRenderContainer render container}.
  *
  * @group Other
  */
 export interface RenderContainerProps {
   /**
-   * Customizes how elements are rendered in a container. Each element has a non-`null` key. Elements are in the order
-   * they were added.
+   * Customizes how elements are rendered in the container. Each element has a non-`null` key. Elements are ordered by
+   * insertion.
    *
-   * @param elements Elements that are rendered in a container.
+   * @param elements Elements rendered in the container.
    */
   children?: (elements: ReactElement[]) => ReactNode;
 }
 
 /**
- * Creates a component that is used by {@link getRenderInContainer} to render elements.
+ * Creates a component that can be used by {@link getRenderInContainer} to render elements.
  *
  * @see {@link getRenderInContainer}
  * @group Other
@@ -133,8 +133,8 @@ export function createRenderContainer(): FunctionComponent<RenderContainerProps>
 }
 
 /**
- * A hook that works exactly like {@link getRenderInContainer} and unmounts all rendered elements when host component is
- * unmounted.
+ * A hook that works like {@link getRenderInContainer} and unmounts all rendered elements when the host component
+ * unmounts.
  *
  * @group Other
  */

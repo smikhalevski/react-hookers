@@ -27,6 +27,8 @@ export type BrowserType = 'chrome' | 'firefox' | 'safari';
 export type OSType = 'ios' | 'mac' | 'windows' | 'android';
 
 /**
+ * Returns the detected platform information from context.
+ *
  * @group Other
  */
 export function usePlatform(): Platform {
@@ -47,6 +49,8 @@ const PlatformContext = createContext<Platform>(detectPlatform());
 PlatformContext.displayName = 'PlatformContext';
 
 /**
+ * Provides platform information to the component tree.
+ *
  * @group Other
  */
 export const PlatformProvider = PlatformContext.Provider;
@@ -82,6 +86,7 @@ export function detectPlatform(userAgent = getNavigatorUserAgent()): Platform {
 /**
  * Infers the browser type from the user agent string.
  *
+ * @param userAgent A user agent string.
  * @group Other
  */
 export function detectBrowser(userAgent = getNavigatorUserAgent()): BrowserType | null {
@@ -102,6 +107,7 @@ export function detectBrowser(userAgent = getNavigatorUserAgent()): BrowserType 
 /**
  * Infers the OS type from the user agent string.
  *
+ * @param userAgent A user agent string.
  * @group Other
  */
 export function detectOS(userAgent = getNavigatorUserAgent()): OSType | null {

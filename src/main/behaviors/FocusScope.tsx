@@ -3,7 +3,7 @@ import { FocusControlsProvider } from './useFocusControls.js';
 import { FocusScopeProps, useFocusScope } from './useFocusScope.js';
 
 /**
- * Props of a {@link FocusScope} component.
+ * Props of the {@link FocusScope} component.
  *
  * @group Behaviors
  */
@@ -14,16 +14,16 @@ export interface FocusScopeProviderProps extends FocusScopeProps {
   containerRef: RefObject<Element | null>;
 
   /**
-   * Children rendered in a focus scope.
+   * Children rendered inside a focus scope.
    */
   children?: ReactNode;
 }
 
 /**
- * The component alternative of the {@link useFocusScope} hook.
+ * A component alternative to the {@link useFocusScope} hook.
  *
  * Creates a {@link useFocusScope focus scope} inside a {@link FocusScopeProviderProps.containerRef container}
- * and provides {@link FocusControls} to underlying components.
+ * and provides {@link FocusControls} to descendant components.
  *
  * @see {@link ArrowKeysNavigation}
  * @group Behaviors

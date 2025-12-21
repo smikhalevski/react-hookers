@@ -3,7 +3,7 @@ import { FocusableElement } from '../types.js';
 import { RequestFocusOptions } from './useFocus.js';
 
 /**
- * Options of unordered focus movement methods from {@link FocusControls}.
+ * Options for unordered focus movement methods from {@link FocusControls}.
  *
  * @group Behaviors
  */
@@ -18,13 +18,13 @@ export interface UnorderedFocusOptions extends RequestFocusOptions {
 }
 
 /**
- * Options of ordered focus movement methods from {@link FocusControls}.
+ * Options for ordered focus movement methods from {@link FocusControls}.
  *
  * @group Behaviors
  */
 export interface OrderedFocusOptions extends UnorderedFocusOptions {
   /**
-   * Sorts elements that are candidates to be focused. By default, elements are sorted in a document order.
+   * Sorts candidate elements. By default, elements are sorted in document order.
    *
    * @see {@link sortByTabOrder}
    * @see {@link sortByVisualOrder}
@@ -56,8 +56,7 @@ export interface FocusControls {
   focusLast(options?: OrderedFocusOptions): boolean;
 
   /**
-   * If focus scope contains the currently focused element, then the next element in <kbd>Tab</kbd> order after it
-   * receives focus.
+   * If the scope contains the currently focused element, focuses the next element in <kbd>Tab</kbd> order.
    *
    * @param options Focus options.
    * @returns `true` if an element was focused.
@@ -65,8 +64,7 @@ export interface FocusControls {
   focusNext(options?: OrderedFocusOptions): boolean;
 
   /**
-   * If focus scope contains the currently focused element, then the previous element in <kbd>Tab</kbd> order before it
-   * receives focus.
+   * If the scope contains the currently focused element, focuses the previous element in <kbd>Tab</kbd> order.
    *
    * @param options Focus options.
    * @returns `true` if an element was focused.
@@ -74,8 +72,7 @@ export interface FocusControls {
   focusPrevious(options?: OrderedFocusOptions): boolean;
 
   /**
-   * If focus scope contains the currently focused element, then moves focus to the closest focusable element above
-   * the currently focused element.
+   * If the scope contains the currently focused element, moves focus to the closest focusable element above it.
    *
    * @param options Focus options.
    * @returns `true` if an element was focused.
@@ -83,8 +80,7 @@ export interface FocusControls {
   focusUp(options?: UnorderedFocusOptions): boolean;
 
   /**
-   * If focus scope contains the currently focused element, then moves focus to the closest focusable element below
-   * the currently focused element.
+   * If the scope contains the currently focused element, moves focus to the closest focusable element below it.
    *
    * @param options Focus options.
    * @returns `true` if an element was focused.
@@ -92,8 +88,7 @@ export interface FocusControls {
   focusDown(options?: UnorderedFocusOptions): boolean;
 
   /**
-   * If focus scope contains the currently focused element, then moves focus to the closest focusable element at left
-   * side from the currently focused element.
+   * If the scope contains the currently focused element, moves focus to the closest focusable element to the left.
    *
    * @param options Focus options.
    * @returns `true` if an element was focused.
@@ -101,8 +96,7 @@ export interface FocusControls {
   focusLeft(options?: UnorderedFocusOptions): boolean;
 
   /**
-   * If focus scope contains the currently focused element, then moves focus to the closest focusable element at right
-   * side from the currently focused element.
+   * If the scope contains the currently focused element, moves focus to the closest focusable element to the right.
    *
    * @param options Focus options.
    * @returns `true` if an element was focused.
@@ -110,12 +104,12 @@ export interface FocusControls {
   focusRight(options?: UnorderedFocusOptions): boolean;
 
   /**
-   * Returns `true` if a focus scope contains focused element, or if a focus scope is a part of an active focus trap.
+   * Returns `true` if the scope contains the focused element, or if the scope is part of an active focus trap.
    */
   isActive(): boolean;
 
   /**
-   * Returns `true` if the currently focused element is contained inside the scope container.
+   * Returns `true` if the currently focused element is contained within the scope container.
    */
   hasFocus(): boolean;
 }
@@ -125,7 +119,7 @@ const FocusControlsContext = createContext<FocusControls | null>(null);
 FocusControlsContext.displayName = 'FocusControlsContext';
 
 /**
- * Provides {@link FocusControls} to underlying children.
+ * Provides {@link FocusControls} to descendant components.
  *
  * @see {@link useFocusControls}
  * @group Behaviors
@@ -133,8 +127,8 @@ FocusControlsContext.displayName = 'FocusControlsContext';
 export const FocusControlsProvider = FocusControlsContext.Provider;
 
 /**
- * Returns {@link FocusControls} of the enclosing {@link useFocusScope focus scope}, or `null` if there's no enclosing
- * {@link FocusControlsProvider}.
+ * Returns {@link FocusControls} from the enclosing {@link useFocusScope focus scope},
+ * or `null` if there is no enclosing {@link FocusControlsProvider}.
  *
  * @see {@link FocusControlsProvider}
  * @group Behaviors

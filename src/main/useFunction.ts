@@ -2,13 +2,13 @@ import { useRef } from 'react';
 import { isEqual } from './utils/lang.js';
 
 /**
- * Calls a function during render if any of its arguments have changed between renders.
+ * Calls a function during render if any of its arguments have changed since the previous render.
  *
- * @param fn A function to call.
- * @param args Function arguments.
- * @returns A function return value, or a cached return value if arguments didn't change.
- * @template A Function arguments.
- * @template R A function return value.
+ * @param fn The function to call.
+ * @param args The function arguments.
+ * @returns The function's return value, or a cached return value if the arguments did not change.
+ * @template A The function arguments.
+ * @template R The function return value.
  * @see {@link useFunctionOnce}
  * @see {@link useFunctionEffect}
  * @group Other
@@ -16,7 +16,7 @@ import { isEqual } from './utils/lang.js';
 export function useFunction<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;
 
 export function useFunction(fn: Function) {
-  const ref = useRef<unknown[]>(null);
+  const ref = useRef<unknown[] | null>(null);
 
   let hasChanged;
   let args = ref.current;

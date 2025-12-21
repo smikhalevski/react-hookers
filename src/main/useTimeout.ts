@@ -4,26 +4,27 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray } from './utils/lang.js';
 
 /**
- * Returns the protocol that delays invoking a callback until after a timeout.
+ * Returns an API that delays invoking a callback until after a timeout.
  *
- * The delayed invocation is automatically cancelled on unmount.
+ * The delayed invocation is automatically cancelled when the component unmounts.
  *
- * The timeout should be started/stopped after the component is mounted. Before that, it is a no-op.
+ * The timeout should be started or stopped only after the component has mounted.
+ * Before that, calling either function is a no-op.
  *
  * @example
  * const [schedule, cancel] = useTimeout();
  *
  * useEffect(() => {
- *   // Cancels pending debounce and schedules the new call
+ *   // Cancels any pending timeout and schedules a new call
  *   schedule(
  *     (a, b) => {
  *       doSomething(a, b);
  *     },
- *     500, // Timeout after which the callback is called
- *     a, b, // Varargs that are passed to the callback
+ *     500, // Timeout delay in milliseconds
+ *     a, b, // Arguments passed to the callback
  *   );
  *
- *   // Cancels the last debounce call
+ *   // Cancels the last scheduled call
  *   cancel();
  * }, []);
  *

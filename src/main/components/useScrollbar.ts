@@ -5,22 +5,23 @@ import { emptyArray, noop } from '../utils/lang.js';
 import { HeadlessTrackHandleProps, useTrackHandle } from './useTrackHandle.js';
 
 /**
- * An info about the current state of a scrollbar.
+ * Information about the current state of a scrollbar.
  *
  * @see {@link HeadlessScrollbarProps.onScroll}
  * @group Components
  */
 export interface ScrollbarInfo {
   /**
-   * A scroll percentage of a container, determines a position of a scrollbar handle.
+   * The scroll percentage of a container, which determines the position of the scrollbar handle.
    *
-   * Percentage can be less than 0 and greater than 1 during an overscroll.
+   * The percentage can be less than 0 or greater than 1 during overscroll.
    */
   percentage: number;
 
   /**
-   * A container bounding rect size divided by a container scroll size, determines the size of a scrollbar handle,
-   * so it reflects the amount of visible content.
+   * The ratio of the container's bounding rect size to its scroll size.
+   *
+   * Determines the size of the scrollbar handle so that it reflects the amount of visible content.
    */
   ratio: number;
 }
@@ -32,31 +33,33 @@ export interface ScrollbarInfo {
  */
 export interface HeadlessScrollbarValue {
   /**
-   * Props of an element that must have a scroll handle behavior.
+   * Props for the element that implements the scroll handle behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   handleProps: DOMAttributes<Element>;
 
   /**
-   * `true` if container is scrollable, and scrollbar has something to scroll.
+   * `true` if the container is scrollable and the scrollbar has content to scroll.
    */
   isScrollable: boolean;
 
   /**
-   * `true` if the scrollbar handle drag has started, or if a container is being scrolled. Scrollbar stays active for
-   * {@link HeadlessScrollbarProps.deactivateDelay deactivateDelay} after becoming idle.
+   * `true` if the scrollbar handle drag has started or the container is being scrolled.
+   *
+   * The scrollbar remains active for {@link HeadlessScrollbarProps.deactivateDelay deactivateDelay}
+   * after becoming idle.
    */
   isActive: boolean;
 
   /**
-   * `true` if a scroll handle is currently being dragged.
+   * `true` if the scrollbar handle is currently being dragged.
    */
   isDragged: boolean;
 }
 
 /**
- * Props of the {@link useScrollbar} hook.
+ * Props for the {@link useScrollbar} hook.
  *
  * @group Components
  */
@@ -67,45 +70,46 @@ export interface HeadlessScrollbarProps {
   containerRef: RefObject<Element | null>;
 
   /**
-   * Returns a bounding rect of a track.
+   * Returns the bounding rect of the scrollbar track.
    */
   getTrackRect: () => DOMRect | undefined;
 
   /**
-   * Minimum distance between {@link getTrackRect a scrollbar track} bounds and
-   * {@link HeadlessScrollbarValue.handleProps a scrollbar handle} in the direction of a scrollbar {@link orientation}.
+   * The minimum distance between the bounds of the {@link getTrackRect scrollbar track} and the
+   * {@link HeadlessScrollbarValue.handleProps scrollbar handle} along the scrollbar {@link orientation}.
    *
    * @default 0
    */
   handleMargin?: number;
 
   /**
-   * The orientations of a scrollbar track along which a scrollbar handle can be dragged.
+   * The orientation of the scrollbar track along which the scrollbar handle can be dragged.
    *
    * @default "vertical"
    */
   orientation?: 'horizontal' | 'vertical';
 
   /**
-   * A delay after which scrollbar is {@link HeadlessScrollbarValue.isActive deactivated}.
+   * A delay after which the scrollbar is {@link HeadlessScrollbarValue.isActive deactivated}.
    *
    * @default 3000
    */
   deactivateDelay?: number;
 
   /**
-   * A handler that is called when a {@link containerRef container} is being scrolled.
+   * A callback invoked when the {@link containerRef container} is scrolled.
    *
-   * @param info An info about the current state of a scrollbar. The info object is reused between handler invocations.
+   * @param info Information about the current state of the scrollbar.
+   * The info object is reused between handler invocations.
    */
   onScroll?: (info: Readonly<ScrollbarInfo>) => void;
 }
 
 /**
- * Provides the behavior and accessibility implementation for a scrollbar component.
+ * Provides behavior and accessibility for a scrollbar component.
  *
  * @param props Scrollbar props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Components
  */
 export function useScrollbar(props: HeadlessScrollbarProps): HeadlessScrollbarValue {

@@ -12,7 +12,7 @@ import { emptyObject } from '../utils/lang.js';
 import { mergeProps } from '../utils/mergeProps.js';
 
 /**
- * A state shared by a {@link useMenu} and {@link useMenuItem}.
+ * A state shared by {@link useMenu} and {@link useMenuItem}.
  *
  * @group Components
  */
@@ -60,27 +60,27 @@ export class HeadlessMenuState {
  */
 export interface HeadlessMenuValue {
   /**
-   * Props of an element that must have a menu behavior.
+   * Props for the element that implements menu behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   menuProps: HTMLAttributes<HTMLElement>;
 }
 
 /**
- * Props of the {@link useMenu} hook.
+ * Props for the {@link useMenu} hook.
  *
  * @group Components
  */
 export interface HeadlessMenuProps {
   /**
-   * A handler that is called when a user requested to close the menu by pressing an arrow key.
+   * A callback invoked when the user requests to close the menu by pressing an arrow key.
    */
   onClose?: () => void;
 }
 
 /**
- * A menu displays a list of actions or options that a user can choose.
+ * A menu displays a list of actions or options that a user can choose from.
  *
  * @example
  * function Menu(props) {
@@ -168,19 +168,19 @@ function createMenuManager(): MenuManager {
  */
 export interface HeadlessMenuItemValue {
   /**
-   * Props of an element that must have a menu item behavior.
+   * Props for the element that implements menu item behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   menuItemProps: HTMLAttributes<HTMLElement>;
 
   /**
-   * `true` if a menu item is currently focused.
+   * `true` if the menu item is currently focused.
    */
   isFocused: boolean;
 
   /**
-   * `true` if a menu item is currently pressed.
+   * `true` if the menu item is currently pressed.
    */
   isPressed: boolean;
 
@@ -191,50 +191,49 @@ export interface HeadlessMenuItemValue {
 }
 
 /**
- * Props of the {@link useMenuItem} hook.
+ * Props for the {@link useMenuItem} hook.
  *
- * @template T A value that is passed to {@link onAction} handler.
+ * @template T A value passed to the {@link onAction} handler.
  * @group Components
  */
 export interface HeadlessMenuItemProps<T> {
   /**
-   * An ID that uniquely identifies a menu item. If omitted a fallback ID is dynamically created.
+   * An ID that uniquely identifies a menu item. If omitted, a fallback ID is generated.
    */
   id?: string;
 
   /**
-   * A value that is passed to {@link onAction} handler.
+   * A value passed to the {@link onAction} handler.
    */
   value?: T;
 
   /**
-   * If `true` then menu item is disabled.
+   * If `true`, the menu item is disabled.
    *
    * @default false
    */
   isDisabled?: boolean;
 
   /**
-   * If `true` then a menu item is {@link HeadlessMenuItemValue.isExpanded expanded} if a user presses
-   * <kbd>ArrowRight</kbd> or <kbd>ArrowLeft</kbd> to expand or collapse the submenu.
+   * If `true`, the menu item controls a submenu and can be expanded
+   * or collapsed using <kbd>ArrowRight</kbd> or <kbd>ArrowLeft</kbd>.
    *
-   * An {@link HeadlessMenuItemValue.isExpanded expanded} menu item with a submenu is considered expanded.
-   *
-   * {@link onAction} is ignored for menu items that have a submenu.
+   * An expanded menu item with a submenu is considered active.
+   * {@link onAction} is ignored for menu items with a submenu.
    *
    * @default false
    */
   hasSubmenu?: boolean;
 
   /**
-   * A delay in milliseconds after which a submenu is expanded.
+   * A delay, in milliseconds, after which a submenu is expanded.
    *
    * @default 200
    */
   expandDelay?: number;
 
   /**
-   * A handler that is called when user presses a menu item.
+   * A callback invoked when the user activates the menu item.
    *
    * @see {@link ActionHandlerProvider}
    * @see {@link hasSubmenu}
@@ -245,9 +244,9 @@ export interface HeadlessMenuItemProps<T> {
 /**
  * A single item in a {@link useMenu menu}.
  *
- * @param ref A reference to a menu item element. This must be the same element to which
- * {@link HeadlessMenuItemValue.menuItemProps} are attached.
- * @param state
+ * @param ref A reference to the menu item element. This must be the same element to which
+ * {@link HeadlessMenuItemValue.menuItemProps} are applied.
+ * @param state Shared menu state.
  * @param props Menu item props.
  * @group Components
  */
@@ -258,8 +257,10 @@ export function useMenuItem<T>(
 ): HeadlessMenuItemValue {
   const fallbackId = useId();
   const id = props.id || fallbackId;
+
   const [isExpanded, setExpanded] = useState(state.expandedId === id);
   const [isTabbable, setTabbable] = useState(state.tabbableId === id);
+
   const manager = useFunctionOnce(createMenuItemManager, setExpanded, setTabbable);
 
   manager.id = id;
@@ -277,6 +278,7 @@ export function useMenuItem<T>(
   value.menuItemProps.role = 'menuitem';
   value.menuItemProps['aria-disabled'] = props.isDisabled || undefined;
   value.menuItemProps.tabIndex = props.isDisabled ? undefined : isTabbable ? 0 : -1;
+
   value.isPressed = pressableValue.isPressed;
   value.isFocused = pressableValue.isFocused;
   value.isExpanded = isExpanded;

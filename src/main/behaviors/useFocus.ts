@@ -20,14 +20,14 @@ export function cancelFocus(): void {
 }
 
 /**
- * Options of the {@link requestFocus} function.
+ * Options for the {@link requestFocus} function.
  *
  * @group Behaviors
  */
 export interface RequestFocusOptions {
   /**
-   * If `true` no scrolling will occur after element receives focus, otherwise the browser scrolls the document to bring
-   * the newly-focused element into view.
+   * If `true`, no scrolling will occur after the element receives focus. Otherwise, the browser scrolls the document
+   * to bring the newly focused element into view.
    *
    * @default false
    */
@@ -39,7 +39,7 @@ export interface RequestFocusOptions {
  *
  * @param element An element to focus.
  * @param options Focus options.
- * @returns `true` if an element is focused.
+ * @returns `true` if the element is focused.
  * @group Behaviors
  */
 export function requestFocus(element: Element | null, options?: RequestFocusOptions): boolean {
@@ -59,31 +59,31 @@ export function requestFocus(element: Element | null, options?: RequestFocusOpti
  */
 export interface FocusValue {
   /**
-   * Props of an element for which focus is tracked.
+   * Props for the element for which focus is tracked.
    *
-   * An object which identity never changes between renders.
+   * An object whose identity never changes between renders.
    */
   focusProps: DOMAttributes<HTMLElement>;
 
   /**
-   * `true` if an element is currently focused.
+   * `true` if the element is currently focused.
    */
   isFocused: boolean;
 
   /**
-   * `true` if an element is currently focused and focus should be visible.
+   * `true` if the element is currently focused and focus should be visible.
    */
   isFocusVisible: boolean;
 }
 
 /**
- * Props of the {@link useFocus} hook.
+ * Props for the {@link useFocus} hook.
  *
  * @group Behaviors
  */
 export interface FocusProps {
   /**
-   * If `true` then focus events are disabled.
+   * If `true`, focus events are disabled.
    *
    * @default false
    */
@@ -95,7 +95,7 @@ export interface FocusProps {
   onFocus?: () => void;
 
   /**
-   * A handler that is called when the element receives focus that must be visible to a user.
+   * A handler that is called when the element receives focus and focus should be visible.
    */
   onFocusVisible?: () => void;
 
@@ -105,9 +105,9 @@ export interface FocusProps {
   onBlur?: () => void;
 
   /**
-   * A handler that is called when the element's focus status changes.
+   * A handler that is called when the element's focus state changes.
    *
-   * @param isFocused `true` if an element is focused.
+   * @param isFocused `true` if the element is focused.
    */
   onFocusChange?: (isFocused: boolean) => void;
 }
@@ -116,7 +116,7 @@ export interface FocusProps {
  * Handles focus events and normalizes them across platforms.
  *
  * @param props Focus props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Behaviors
  */
 export function useFocus(props: FocusProps = emptyObject): FocusValue {
@@ -148,6 +148,20 @@ interface FocusManager {
 function createFocusManager(setStatus: (status: number) => void): FocusManager {
   let status = STATUS_BLURRED;
 
+  const cancel = (): void => {
+    const { isDisabled, onFocusChange, onBlur } = manager.props;
+
+    if (isDisabled || status === STATUS_BLURRED) {
+      return;
+    }
+
+    status = STATUS_BLURRED;
+    setStatus(status);
+
+    onFocusChange?.(false);
+    onBlur?.();
+  };
+
   const handleMounted: EffectCallback = () => {
     const unsubscribeFocusRing = focusRing.subscribe(() => {
       const { onFocusVisible } = manager.props;
@@ -156,12 +170,12 @@ function createFocusManager(setStatus: (status: number) => void): FocusManager {
         return;
       }
 
-      const prevFocusStatus = status;
+      const prevStatus = status;
 
       status = focusRing.isVisible ? STATUS_FOCUS_VISIBLE : STATUS_FOCUSED;
       setStatus(status);
 
-      if (prevFocusStatus === STATUS_FOCUSED && status === STATUS_FOCUS_VISIBLE) {
+      if (prevStatus === STATUS_FOCUSED && status === STATUS_FOCUS_VISIBLE) {
         onFocusVisible?.();
       }
     });
@@ -206,20 +220,6 @@ function createFocusManager(setStatus: (status: number) => void): FocusManager {
     if (status === STATUS_FOCUS_VISIBLE) {
       onFocusVisible?.();
     }
-  };
-
-  const cancel = (): void => {
-    const { isDisabled, onFocusChange, onBlur } = manager.props;
-
-    if (isDisabled || status === STATUS_BLURRED) {
-      return;
-    }
-
-    status = STATUS_BLURRED;
-    setStatus(status);
-
-    onFocusChange?.(false);
-    onBlur?.();
   };
 
   const manager: FocusManager = {

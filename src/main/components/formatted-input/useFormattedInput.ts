@@ -17,7 +17,7 @@ import { isEqual } from '../../utils/lang.js';
 import { mergeProps } from '../../utils/mergeProps.js';
 
 /**
- * A state of a {@link useFormattedInput formatted input}.
+ * The state of a {@link useFormattedInput formatted input}.
  *
  * @template V An input value.
  * @see {@link useFormattedInput}
@@ -25,28 +25,28 @@ import { mergeProps } from '../../utils/mergeProps.js';
  */
 export interface FormattedInputState<V> {
   /**
-   * A value exposed by an input.
+   * The value exposed by the input.
    */
   value: V;
 
   /**
-   * A formatted value rendered in an input.
+   * The formatted value rendered in the input.
    */
   formattedValue: string;
 
   /**
-   * A character index in {@link formattedValue} where a selected range starts (inclusive).
+   * The character index in {@link formattedValue} where the selected range starts (inclusive).
    */
   selectionStart: number;
 
   /**
-   * A character index in {@link formattedValue} where a selected range ends (exclusive).
+   * The character index in {@link formattedValue} where the selected range ends (exclusive).
    */
   selectionEnd: number;
 }
 
 /**
- * A handler that updates state when various input events occur.
+ * A handler that updates state in response to various input events.
  *
  * @template V An input value.
  * @template S A mutable state of a formatted input.
@@ -55,55 +55,55 @@ export interface FormattedInputState<V> {
  */
 export interface FormattedInputHandler<V, S extends FormattedInputState<V> = FormattedInputState<V>> {
   /**
-   * Returns an initial mutable state of a formatted input that corresponds to a `value`.
+   * Returns the initial mutable state of a formatted input corresponding to the given value.
    *
-   * @param value A value provided to a {@link useFormattedInput}.
+   * @param value A value provided to {@link useFormattedInput}.
    */
   getInitialState(value: V): S;
 
   /**
-   * Updates the state after a user has changed a formatted value.
+   * Updates the state after the user changes the formatted value.
    *
-   * @param state The state of an input before the formatted value change.
+   * @param state The state of the input before the formatted value change.
    * @param nextFormattedValue The new formatted value.
    * @param nextSelectionStart The new start of the text selection.
    * @param nextSelectionEnd The new end of the text selection.
-   * @returns A new mutable state of a {@link useFormattedInput formatted input}.
    */
   onChange(state: S, nextFormattedValue: string, nextSelectionStart: number, nextSelectionEnd: number): void;
 
   /**
-   * Updates the state after the text selection is changed.
+   * Updates the state after the text selection changes.
    *
-   * By default, state is updated with the new selection range.
+   * By default, the state is updated with the new selection range.
    *
-   * @param state The state of an input before the selection change.
+   * @param state The state of the input before the selection change.
    * @param nextSelectionStart The new start of the text selection.
    * @param nextSelectionEnd The new end of the text selection.
    */
   onSelect?(state: S, nextSelectionStart: number, nextSelectionEnd: number): void;
 
   /**
-   * Updates the state when an input is focused. No-op by default.
+   * Updates the state when the input is focused. No-op by default.
    *
-   * @param state The current state of an input.
+   * @param state The current state of the input.
    */
   onFocus?(state: S): void;
 
   /**
-   * Updates the state when input is blurred. No-op by default.
+   * Updates the state when the input is blurred. No-op by default.
    *
-   * @param state The current state of an input.
+   * @param state The current state of the input.
    */
   onBlur?(state: S): void;
 
   /**
-   * Returns the selected text. Called when text is copied or cut from a formatted input.
+   * Returns the selected text.
    *
-   * By default, a substring of {@link FormattedInputState.formattedValue formatted value} is used.
+   * Called when text is copied or cut from a formatted input.
+   * By default, a substring of {@link FormattedInputState.formattedValue the formatted value} is used.
    *
-   * @param state The current state of an input.
-   * @returns A selected text.
+   * @param state The current state of the input.
+   * @returns The selected text.
    */
   getSelectedText?(state: S): string;
 }
@@ -115,83 +115,83 @@ export interface FormattedInputHandler<V, S extends FormattedInputState<V> = For
  */
 export interface FormattedInputValue<V> {
   /**
-   * Props of an element that must have a formatted input behaviour.
+   * Props for the element that implements the formatted input behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   inputProps: InputHTMLAttributes<HTMLInputElement>;
 
   /**
-   * Props of an element that must have an input label behavior.
+   * Props for the element that implements the input label behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   labelProps: LabelHTMLAttributes<HTMLElement>;
 
   /**
-   * The edited value.
+   * The current edited value.
    */
   value: V;
 
   /**
-   * A formatted value rendered in an input.
+   * The formatted value rendered in the input.
    */
   formattedValue: string;
 
   /**
-   * `true` if an element is currently hovered.
+   * `true` if the element is currently hovered.
    */
   isHovered: boolean;
 
   /**
-   * `true` if an element is currently focused.
+   * `true` if the element is currently focused.
    */
   isFocused: boolean;
 
   /**
-   * `true` if an element is currently focused and focus should be visible.
+   * `true` if the element is currently focused and focus should be visible.
    */
   isFocusVisible: boolean;
 }
 
 /**
- * Props of the {@link useFormattedInput} hook.
+ * Props for the {@link useFormattedInput} hook.
  *
  * @template V An input value.
  * @group Components
  */
 export interface FormattedInputProps<V> extends HoverProps, FocusProps {
   /**
-   * A handler that updates state when various input events occur.
+   * A handler that updates state in response to various input events.
    */
   handler: FormattedInputHandler<V, any>;
 
   /**
-   * An input value.
+   * The input value.
    */
   value: V;
 
   /**
-   * A handler that is called when an input value is changed.
+   * A callback invoked when the input value changes.
    *
-   * @param value An input value.
+   * @param value The new input value.
    */
   onChange?: (value: V) => void;
 
   /**
-   * An ID that uniquely identifies a text input.
+   * An ID that uniquely identifies the text input.
    */
   id?: string;
 
   /**
-   * If `true` then an input is marked as invalid.
+   * If `true`, the input is marked as invalid.
    *
    * @default false
    */
   isInvalid?: boolean;
 
   /**
-   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   * If `true`, the element is {@link isAutoFocusable auto-focusable} within a {@link useFocusScope focus scope}.
    *
    * @default false
    */
@@ -199,17 +199,20 @@ export interface FormattedInputProps<V> extends HoverProps, FocusProps {
 }
 
 /**
- * Provides the behavior for a text input that allows editing a value as a formatted text.
+ * Provides behavior for a text input that allows editing a value as formatted text.
  *
  * @example
  * const [value, setValue] = useState<number>();
  *
- * const numberInputHandler = useMemo(() => new NumberInputHandler(new Intl.NumberFormat('en')), []);
+ * const numberInputHandler = useMemo(
+ *   () => new NumberInputHandler(new Intl.NumberFormat('en')),
+ *   []
+ * );
  *
  * const { inputProps } = useFormattedNumber({
  *   value,
  *   onChange: setValue,
- *   handler: numberInputHandler
+ *   handler: numberInputHandler,
  * });
  *
  * <input {...inputProps} />

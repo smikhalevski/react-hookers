@@ -18,7 +18,7 @@ import { requestFocus } from './useFocus.js';
 const cancelPressPubSub = new PubSub();
 
 /**
- * Cancels press of the currently pressed element.
+ * Cancels the press interaction of the currently pressed element.
  *
  * @see {@link usePress}
  * @group Behaviors
@@ -34,26 +34,26 @@ export function cancelPress(): void {
  */
 export interface PressValue {
   /**
-   * Props of an element for which press interactions are tracked.
+   * Props for the element for which press interactions are tracked.
    *
-   * An object which identity never changes between renders.
+   * An object whose identity never changes between renders.
    */
   pressProps: DOMAttributes<Element>;
 
   /**
-   * `true` if an element is currently pressed.
+   * `true` if the element is currently pressed.
    */
   isPressed: boolean;
 }
 
 /**
- * Props of the {@link usePress} hook.
+ * Props for the {@link usePress} hook.
  *
  * @group Behaviors
  */
 export interface PressProps {
   /**
-   * If `true` then press events are disabled.
+   * If `true`, press interactions are disabled.
    *
    * @default false
    */
@@ -75,9 +75,9 @@ export interface PressProps {
   onPress?: () => void;
 
   /**
-   * A handler that is called when the press state changes.
+   * A handler that is called when the pressed state changes.
    *
-   * @param isPressed `true` if an element is pressed.
+   * @param isPressed `true` if the element is pressed.
    */
   onPressChange?: (isPressed: boolean) => void;
 }
@@ -86,7 +86,7 @@ export interface PressProps {
  * Handles press interactions across mouse, touch, keyboard, and screen readers.
  *
  * @param props Press props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Behaviors
  */
 export function usePress(props: PressProps = emptyObject): PressValue {
@@ -172,7 +172,7 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
 
     cancelPress();
 
-    // If pressable elements are nested then only the topmost must be pressed
+    // If pressable elements are nested, only the topmost should handle the press.
     event.preventDefault();
 
     status = STATUS_PRESSED_BY_POINTER;
@@ -217,7 +217,7 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
 
     const unsubscribeCursor = cursor.subscribe(() => {
       if (!cursor.isActive) {
-        // Cancel press if cursor was deactivated
+        // Cancel the press if the cursor was deactivated
         cancel();
       }
     });
@@ -242,7 +242,7 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
     onPressChange?.(true);
     onPressStart?.();
 
-    // Also fixes iOS Safari does not focus clicked buttons so manual focus is required
+    // iOS Safari does not focus clicked buttons, so manual focus is required.
     // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#clicking_and_focus
     // https://bugs.webkit.org/show_bug.cgi?id=22261
     requestFocus(currentTarget, { isScrollPrevented: true });
@@ -271,7 +271,7 @@ function createPressManager(setPressed: (isPressed: boolean) => void): PressMana
 
     focusRing.reveal();
 
-    // If pressable elements are nested then only the topmost must be pressed
+    // If pressable elements are nested, only the topmost should handle the press
     event.preventDefault();
 
     status = STATUS_PRESSED_BY_KEYBOARD;
@@ -321,7 +321,7 @@ function isKeyboardPressEvent(pressedTarget: Element, event: React.KeyboardEvent
 
   return (
     (key === 'Enter' || key === ' ' || key === 'Space') &&
-    // Links are pressed by the Enter key
+    // Links are pressed with the Enter key
     (!(pressedTarget.getAttribute('role') === 'link' || pressedTarget.tagName === 'A') || key === 'Enter')
   );
 }

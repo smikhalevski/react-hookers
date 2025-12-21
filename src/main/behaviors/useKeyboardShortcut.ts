@@ -4,38 +4,38 @@ import { Platform, usePlatform } from '../usePlatform.js';
 import { emptyArray } from '../utils/lang.js';
 
 /**
- * Props of the {@link useKeyboardShortcut} hook.
+ * Props for the {@link useKeyboardShortcut} hook.
  *
  * @group Behaviors
  */
 export interface KeyboardShortcutProps {
   /**
-   * A container inside which a shortcut is applied. By default, a shortcut is document-wide.
+   * A container within which a shortcut is active. By default, shortcuts are document-wide.
    */
   containerRef?: RefObject<Element | null>;
 
   /**
-   * If `true` then shortcut isn't captured.
+   * If `true`, the shortcut is not captured.
    *
    * @default false
    */
   isDisabled?: boolean;
 
   /**
-   * An array of keys that must be simultaneously pressed to call an {@link onAction action}.
+   * Keys that must be pressed simultaneously to trigger the {@link onAction action}.
    */
   shortcut: ReadonlyArray<KeyCode | SyntheticKeyCode | (string & {}) | number>;
 
   /**
-   * A handler that is called when all keys from a {@link shortcut} are pressed.
+   * A handler that is called when all keys in {@link shortcut} are pressed.
    */
   onAction?: () => void;
 }
 
 /**
- * Calls an {@link KeyboardShortcutProps.onAction action} if a shortcut is pressed on a keyboard.
+ * Calls {@link KeyboardShortcutProps.onAction onAction} when the shortcut is pressed.
  *
- * Characters 0-9 and A-Z are treated as Digit0-Digit9 and KeyA-KeyZ respectively.
+ * Characters 0–9 and A–Z are treated as Digit0–Digit9 and KeyA–KeyZ respectively.
  *
  * @example
  * useKeyboardShortcut({
@@ -43,7 +43,7 @@ export interface KeyboardShortcutProps {
  *   shortcut: ['Ctrl', 'J'],
  *   onAction() {
  *     // Handle shortcut action here
- *   }
+ *   },
  * });
  *
  * @group Behaviors
@@ -90,7 +90,7 @@ function registerKeyboardShortcutManager(manager: KeyboardShortcutManager): () =
     if (keyboardShortcutManagers.length === 0) {
       document.removeEventListener('keydown', handleKeyDown, true);
       document.removeEventListener('keyup', handleKeyUp, true);
-      window.addEventListener('blur', handleClearKeys);
+      window.removeEventListener('blur', handleClearKeys);
     }
   };
 }
@@ -155,7 +155,7 @@ function isKeyPressed(manager: KeyboardShortcutManager, key: string | number): b
   }
 
   if (key === 'Ctrl') {
-    return pressedKeys.has(manager.platform.isApple ? 'Meta' : 'Ctrl');
+    return pressedKeys.has(manager.platform.isApple ? 'Meta' : 'Control');
   }
 
   return pressedKeys.has(key) || pressedCodes.has(key) || pressedKeyCodes.has(stableKeyCodes[key]);
@@ -201,11 +201,11 @@ const stableKeyCodes: Record<string, number> = {
 };
 
 /**
- * A keyboard key code of a synthetic key that depends on a platform.
+ * A keyboard key code for a synthetic key that depends on the platform.
  *
  * <dl>
  * <dt>"Ctrl"</dt>
- * <dd>Interpreted as a <kbd>Command</kbd> on Apple devices and <kbd>Control</kbd> everywhere else.</dd>
+ * <dd>Interpreted as <kbd>Command</kbd> on Apple devices and <kbd>Control</kbd> everywhere else.</dd>
  * </dl>
  *
  * @group Behaviors
@@ -213,7 +213,7 @@ const stableKeyCodes: Record<string, number> = {
 export type SyntheticKeyCode = 'Ctrl';
 
 /**
- * A well-known keyboard key codes.
+ * Well-known keyboard key codes.
  *
  * @group Behaviors
  */

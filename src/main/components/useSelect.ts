@@ -12,92 +12,92 @@ import { mergeProps } from '../utils/mergeProps.js';
  */
 export interface HeadlessSelectValue<T> {
   /**
-   * Props of an element that must have a select trigger behavior.
+   * Props for the element that implements select trigger behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   triggerProps: HTMLAttributes<HTMLElement>;
 
   /**
-   * Props of an element that must have a select label behavior.
+   * Props for the element that implements select label behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   labelProps: LabelHTMLAttributes<HTMLElement>;
 
   /**
-   * `true` if a select dropdown is opened.
+   * `true` if the select dropdown is open.
    */
   isOpened: boolean;
 
   /**
-   * `true` if an element is currently hovered.
+   * `true` if the element is currently hovered.
    */
   isHovered: boolean;
 
   /**
-   * `true` if an element is currently focused.
+   * `true` if the element is currently focused.
    */
   isFocused: boolean;
 
   /**
-   * `true` if an element is currently focused and focus should be visible.
+   * `true` if the element is currently focused and focus should be visible.
    */
   isFocusVisible: boolean;
 
   /**
-   * `true` if an element is currently pressed.
+   * `true` if the element is currently pressed.
    */
   isPressed: boolean;
 
   /**
-   * A handler that must be called when a value is selected.
+   * A callback that must be invoked when a value is selected.
    *
-   * @param value A selected value.
+   * @param value The selected value.
    */
   onSelect: (value: T) => void;
 }
 
 /**
- * Props of the {@link useSelect} hook.
+ * Props for the {@link useSelect} hook.
  *
  * @template T A selected value.
  * @group Components
  */
 export interface HeadlessSelectProps<T> extends PressableProps {
   /**
-   * A selected value.
+   * The currently selected value.
    */
   value: T | undefined;
 
   /**
-   * A handled that is called when selected value is changed.
+   * A callback invoked when the selected value changes.
    *
-   * @param value A new selected value.
+   * @param value The new selected value.
    */
   onChange: (value: T) => void;
 
   /**
-   * A handler that is called when a select popover opened state is changed.
+   * A callback invoked when the open state of the select popover changes.
    *
-   * @param isOpened `true` if a select popover must be visible to a user.
+   * @param isOpened `true` if the select popover should be visible.
    */
   onOpenChange?: (isOpened: boolean) => void;
 
   /**
-   * An ID that uniquely identifies a text input.
+   * An ID that uniquely identifies the select control.
    */
   id?: string;
 
   /**
-   * If `true` then a control is marked as invalid.
+   * If `true`, the control is marked as invalid.
    *
    * @default false
    */
   isInvalid?: boolean;
 
   /**
-   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   * If `true`, the element is {@link isAutoFocusable auto-focusable} within a {@link useFocusScope focus scope}.
    *
    * @default false
    */
@@ -105,11 +105,12 @@ export interface HeadlessSelectProps<T> extends PressableProps {
 }
 
 /**
- * Provides the behavior and accessibility implementation for a select component. A select displays a collapsible list
- * of options and allows a user to select one of them.
+ * Provides behavior and accessibility for a select component.
+ *
+ * A select displays a collapsible list of options and allows the user to select one of them.
  *
  * @param props Select props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @template T A selected value.
  * @group Components
  */

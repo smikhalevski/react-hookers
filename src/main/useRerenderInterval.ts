@@ -2,9 +2,9 @@ import { useIntervalCallback } from './useIntervalCallback.js';
 import { useRerender } from './useRerender.js';
 
 /**
- * Re-renders the component on a periodic interval.
+ * Forces the component to re-render at a fixed interval.
  *
- * @param ms The interval duration in milliseconds.
+ * @param ms The interval duration, in milliseconds.
  * @see {@link useIntervalCallback}
  * @see {@link useRerender}
  * @group Other

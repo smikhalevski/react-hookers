@@ -3,20 +3,21 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray } from './utils/lang.js';
 
 /**
- * Returns the protocol that starts and stops an animation loop.
+ * Returns an API that starts and stops an animation loop.
  *
- * When `start` is called the animation loop starts invoking the provided callback using `requestAnimationFrame`. If an
- * animation is already started then it is stopped and started with the new callback.
+ * When `start` is called, the animation loop begins invoking the provided callback using `requestAnimationFrame`.
+ * If an animation is already running, it is stopped and restarted with the new callback.
  *
- * An animation is automatically stopped on unmount.
+ * The animation is automatically stopped when the component unmounts.
  *
- * An animation should be started/stopped after the component is mounted. Before that, it is a no-op.
+ * The animation should be started or stopped only after the component has mounted. Before that, calling either function
+ * is a no-op.
  *
  * @example
  * const [start, stop] = useAnimationFrame();
  *
  * useEffect(() => {
- *   // Cancels pending animation loop and schedules the new animation loop
+ *   // Cancels any pending animation loop and schedules a new one
  *   start(() => {
  *     // Apply animation changes
  *   });

@@ -3,12 +3,18 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray } from './utils/lang.js';
 
 /**
- * Returns a stable function identity that is no-op during initial render and after unmount.
+ * Returns a stable function identity that is a no-op during the initial render and after the component is unmounted.
  *
- * @param fn A callback that is called by the returned handler.
+ * @example
+ * function MyComponent(props) {
+ *   // Handler identity never changes
+ *   const handleClick = useHandler(props.onClick);
+ * }
+ *
+ * @param fn A callback that is invoked by the returned handler.
  * @returns A stable function identity.
- * @template A Arguments of a handler.
- * @template R A return value of a handler.
+ * @template A The handler argument types.
+ * @template R The handler return value.
  * @group Other
  */
 export function useHandler<A extends any[], R>(

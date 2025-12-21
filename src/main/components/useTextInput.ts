@@ -13,96 +13,96 @@ import { mergeProps } from '../utils/mergeProps.js';
  */
 export interface HeadlessTextInputValue {
   /**
-   * Props of an element that must have a text input behavior.
+   * Props for the element that implements text input behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   inputProps: InputHTMLAttributes<HTMLElement>;
 
   /**
-   * Props of an element that must have an input label behavior.
+   * Props for the element that implements input label behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   labelProps: LabelHTMLAttributes<HTMLElement>;
 
   /**
-   * An input text value.
+   * The current input text value.
    */
   value: string;
 
   /**
-   * `true` if an element is currently hovered.
+   * `true` if the element is currently hovered.
    */
   isHovered: boolean;
 
   /**
-   * `true` if an element is currently focused.
+   * `true` if the element is currently focused.
    */
   isFocused: boolean;
 
   /**
-   * `true` if an element is currently focused and focus should be visible.
+   * `true` if the element is currently focused and focus should be visible.
    */
   isFocusVisible: boolean;
 }
 
 /**
- * Props of the {@link useTextInput} hook.
+ * Props for the {@link useTextInput} hook.
  *
  * @group Components
  */
 export interface HeadlessTextInputProps extends HoverProps, FocusProps {
   /**
-   * An input text value.
+   * The input text value.
    */
   value: string | undefined;
 
   /**
-   * A handler that is called when an input text value is changed.
+   * A callback invoked when the input text value changes.
    *
-   * @param value An input text value.
+   * @param value The new input text value.
    */
   onChange: (value: string) => void;
 
   /**
-   * An ID that uniquely identifies a text input.
+   * An ID that uniquely identifies the text input.
    */
   id?: string;
 
   /**
-   * If `true` then an input is marked as invalid.
+   * If `true`, the input is marked as invalid.
    *
    * @default false
    */
   isInvalid?: boolean;
 
   /**
-   * If `true` then a text input is treated as a textarea element.
+   * If `true`, the text input is treated as a textarea element.
    *
    * @default false
    */
   isTextArea?: boolean;
 
   /**
-   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   * If `true`, the element is {@link isAutoFocusable auto-focusable} within a {@link useFocusScope focus scope}.
    *
    * @default false
    */
   isAutofocused?: boolean;
 
   /**
-   * What permission the user agent has to provide automated assistance in filling out form field values, as well as
-   * guidance to the browser as to the type of information expected in the field.
+   * Specifies what permission the user agent has to provide automated assistance in filling out the field,
+   * and what type of information is expected.
    */
   autoComplete?: HTMLInputAutoCompleteAttribute;
 }
 
 /**
- * Provides the behavior and accessibility implementation for a text input.
+ * Provides behavior and accessibility for a text input.
  *
  * @param props Text input props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Components
  */
 export function useTextInput(props: HeadlessTextInputProps): HeadlessTextInputValue {

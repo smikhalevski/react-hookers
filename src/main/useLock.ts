@@ -6,12 +6,12 @@ import { emptyArray, noop } from './utils/lang.js';
 /**
  * Promise-based [lock implementation](https://github.com/smikhalevski/parallel-universe#lock).
  *
- * When someone tries to acquire a lock using `acquire` they receive a promise for a release callback that is fulfilled
- * as soon as previous lock owner invokes their release callback. If `acquire` is called after unmount then the returned
- * promise is never fulfilled.
+ * When someone tries to acquire the lock using `acquire`, they receive a promise for a release callback. The promise
+ * is fulfilled as soon as the previous lock owner invokes their release callback. If `acquire` is called after the
+ * component is unmounted, the returned promise is never fulfilled.
  *
  * @example
- * const [locked, acquire] = useLock();
+ * const [isLocked, acquire] = useLock();
  *
  * async function doSomething() {
  *   const release = await acquire();
@@ -22,7 +22,7 @@ import { emptyArray, noop } from './utils/lang.js';
  *   }
  * }
  *
- * // Long process would be executed three times sequentially
+ * // The long process will be executed three times sequentially
  * doSomething();
  * doSomething();
  * doSomething();
@@ -61,7 +61,7 @@ function createLockManager(setLocked: (isLocked: boolean) => void): LockManager 
     });
   };
 
-  const onMounted: EffectCallback = () => {
+  const handleMounted: EffectCallback = () => {
     isMounted = true;
 
     return () => {
@@ -71,6 +71,6 @@ function createLockManager(setLocked: (isLocked: boolean) => void): LockManager 
 
   return {
     acquire,
-    onMounted: onMounted,
+    onMounted: handleMounted,
   };
 }

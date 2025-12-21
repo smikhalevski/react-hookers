@@ -1,9 +1,10 @@
 import { useReducer } from 'react';
 
 /**
- * Returns a callback that unconditionally re-renders a component.
+ * Returns a callback that unconditionally forces a component to re-render.
  *
- * **Note:** Using this hook makes your code imperative, which is generally considered a bad practice.
+ * **Note:** Using this hook introduces imperative behavior, which is generally discouraged in React and should be used
+ * sparingly.
  *
  * @group Other
  */

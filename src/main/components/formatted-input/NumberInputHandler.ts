@@ -1,27 +1,27 @@
 import { FormattedInputHandler, FormattedInputState } from './useFormattedInput.js';
 
 /**
- * Options of the {@link NumberInputHandler}.
+ * Options for the {@link NumberInputHandler}.
  *
  * @group Components
  */
 export interface NumberInputHandlerOptions {
   /**
-   * If `true` then the handler won't allow changing the sign of the edited number.
+   * If `true`, the handler prevents changing the sign of the edited number.
    *
    * @default false
    */
   isSignLocked?: boolean;
 
   /**
-   * If `true` then formatting is rendered for an `undefined` value.
+   * If `true`, formatting is rendered for an `undefined` value.
    *
    * @default false
    */
   isUndefinedValueFormatted?: boolean;
 
   /**
-   * If `true` then formatting is removed when a number is copied or cut.
+   * If `true`, formatting is removed when a number is copied or cut.
    *
    * @default false
    */
@@ -29,7 +29,7 @@ export interface NumberInputHandlerOptions {
 }
 
 /**
- * A state handled by the {@link NumberInputHandler}.
+ * State managed by the {@link NumberInputHandler}.
  *
  * @group Components
  */
@@ -41,17 +41,20 @@ export interface NumberInputState extends FormattedInputState<number | undefined
 }
 
 /**
- * A handler of numeric {@link useFormattedInput formatted input}.
+ * A handler for numeric {@link useFormattedInput formatted input}.
  *
  * @example
  * const [value, setValue] = useState<number>();
  *
- * const numberInputHandler = useMemo(() => new NumberInputHandler(new Intl.NumberFormat('en')), []);
+ * const numberInputHandler = useMemo(
+ *   () => new NumberInputHandler(new Intl.NumberFormat('en')),
+ *   []
+ * );
  *
  * const { inputProps } = useFormattedNumber({
  *   value,
  *   onChange: setValue,
- *   handler: numberInputHandler
+ *   handler: numberInputHandler,
  * });
  *
  * <input {...inputProps} />
@@ -61,7 +64,7 @@ export interface NumberInputState extends FormattedInputState<number | undefined
  */
 export class NumberInputHandler implements FormattedInputHandler<number | undefined, NumberInputState> {
   /**
-   * The format-specific code point mappings.
+   * Format-specific code point mappings.
    *
    * @internal
    */
@@ -73,14 +76,14 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
   protected _options: NumberInputHandlerOptions;
 
   /**
-   * `true` if number input supports decimal separator.
+   * `true` if the number input supports a decimal separator.
    */
   readonly isDecimal: boolean;
 
   /**
    * Creates a new {@link NumberInputHandler} instance.
    *
-   * @param format The number format that handler uses to format input values.
+   * @param format The number format used to format input values.
    * @param options Handler options.
    */
   constructor(
@@ -159,7 +162,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     const prevDiff = prevFormattedValue.substring(i, prevFormattedValue.length - j);
     const nextDiff = nextFormattedValue.substring(i, nextFormattedValue.length - j);
 
-    // Deleted and inserted decoded chars
+    // Deleted and inserted decoded characters
     let prevChars = decodeNumericChars(prevDiff, encoding);
     let nextChars = decodeNumericChars(nextDiff, encoding);
 
@@ -169,7 +172,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     }
 
     if (prevChars.length === 0 && nextChars.length === 0) {
-      // Only decoration chars were affected
+      // Only decoration characters were affected
 
       if (prevDiff.length !== 0 && nextDiff.length === 0) {
         // Deleted a decoration char, move selection to the intended position
@@ -180,16 +183,16 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
     }
 
     if (prevChars.includes(MINUS_SIGN_CHAR) !== nextChars.includes(MINUS_SIGN_CHAR)) {
-      // The minus sign presence has changed (it was either deleted or inserted)
+      // Minus sign was inserted or removed
       state.sign *= -1;
     }
 
-    // Number chars before and after the edited substring
+    // Numeric characters before and after the edited range
     let prefixChars = decodeNumericChars(prevFormattedValue.substring(0, i), encoding);
     let suffixChars = decodeNumericChars(prevFormattedValue.substring(prevFormattedValue.length - j), encoding);
 
     if (nextChars.includes(DECIMAL_CHAR)) {
-      // A decimal separator position was changed
+      // Decimal separator position changed
       prefixChars = prefixChars.replace(DECIMAL_CHAR, '');
       suffixChars = suffixChars.replace(DECIMAL_CHAR, '');
     }
@@ -267,7 +270,7 @@ export class NumberInputHandler implements FormattedInputHandler<number | undefi
 
     state.formattedValue = this.format.format(state.value);
 
-    // Ensure that the value exactly matches the formatted value
+    // Ensure the value exactly matches the formatted value
     state.value =
       Math.abs(parseFloat(decodeNumericChars(state.formattedValue, this._encoding))) /
       state.sign /

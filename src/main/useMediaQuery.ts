@@ -2,13 +2,13 @@ import { EffectCallback, useEffect, useState } from 'react';
 import { useFunctionOnce } from './useFunctionOnce.js';
 
 /**
- * Returns `true` if the window {@link Window.matchMedia matches the media query}, or `false` otherwise.
+ * Returns `true` if the window {@link Window.matchMedia matches the given media query}, or `false` otherwise.
  *
  * @example
  * const isMatched = useMediaQuery('(min-width: 600px)');
  *
- * @param query The media query to match.
- * @param initialValue A value returned during the initial render.
+ * @param query The media query to evaluate.
+ * @param initialValue The value returned during the initial render.
  * @group Other
  */
 export function useMediaQuery(query: string, initialValue?: boolean): boolean {

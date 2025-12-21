@@ -1,11 +1,11 @@
 /**
- * Removes all diacritic characters from the string.
+ * Removes all diacritic marks from a string.
  *
  * @example
- * normalizeDiacritics('Olá, você aí');
+ * stripDiacritics('Olá, você aí');
  * // ⮕ 'Ola, voce ai'
  *
- * @param str A string to normalize.
+ * @param str The string to normalize.
  * @group Intl
  */
 export function stripDiacritics(str: string): string {
@@ -13,7 +13,7 @@ export function stripDiacritics(str: string): string {
 }
 
 /**
- * Returns {@link Intl.Collator} instance cached for the given locale and options.
+ * Returns an {@link Intl.Collator} instance cached for the given locale and options.
  *
  * @param locale The locale.
  * @param options Collator options.
@@ -24,10 +24,10 @@ export function getCollator(locale: string, options?: Intl.CollatorOptions): Int
 }
 
 /**
- * Returns {@link Intl.ListFormat} instance cached for the given locale and options.
+ * Returns an {@link Intl.ListFormat} instance cached for the given locale and options.
  *
  * @param locale The locale.
- * @param options Format options.
+ * @param options List format options.
  * @group Intl
  */
 export function getListFormat(locale: string, options?: Intl.ListFormatOptions): Intl.ListFormat {
@@ -35,10 +35,10 @@ export function getListFormat(locale: string, options?: Intl.ListFormatOptions):
 }
 
 /**
- * Returns {@link Intl.NumberFormat} instance cached for the given locale and options.
+ * Returns an {@link Intl.NumberFormat} instance cached for the given locale and options.
  *
  * @param locale The locale.
- * @param options Format options.
+ * @param options Number format options.
  * @group Intl
  */
 export function getNumberFormat(locale: string, options?: Intl.NumberFormatOptions): Intl.NumberFormat {
@@ -46,10 +46,10 @@ export function getNumberFormat(locale: string, options?: Intl.NumberFormatOptio
 }
 
 /**
- * Returns {@link Intl.DateTimeFormat} instance cached for the given locale and options.
+ * Returns an {@link Intl.DateTimeFormat} instance cached for the given locale and options.
  *
  * @param locale The locale.
- * @param options Format options.
+ * @param options Date/time format options.
  * @group Intl
  */
 export function getDateTimeFormat(locale: string, options?: Intl.DateTimeFormatOptions): Intl.DateTimeFormat {
@@ -57,7 +57,7 @@ export function getDateTimeFormat(locale: string, options?: Intl.DateTimeFormatO
 }
 
 /**
- * Returns {@link Intl.PluralRules} instance cached for the given locale and options.
+ * Returns an {@link Intl.PluralRules} instance cached for the given locale and options.
  *
  * @param locale The locale.
  * @param options Plural rules options.
@@ -68,10 +68,10 @@ export function getPluralRules(locale: string, options?: Intl.PluralRulesOptions
 }
 
 /**
- * Returns {@link Intl.DisplayNames} instance cached for the given locale and options.
+ * Returns an {@link Intl.DisplayNames} instance cached for the given locale and options.
  *
  * @param locale The locale.
- * @param options Display name options.
+ * @param options Display names options.
  * @group Intl
  */
 export function getDisplayNames(locale: string, options: Intl.DisplayNamesOptions): Intl.DisplayNames {
@@ -79,10 +79,10 @@ export function getDisplayNames(locale: string, options: Intl.DisplayNamesOption
 }
 
 /**
- * Returns {@link Intl.RelativeTimeFormat} instance cached for the given locale and options.
+ * Returns an {@link Intl.RelativeTimeFormat} instance cached for the given locale and options.
  *
  * @param locale The locale.
- * @param options Format options.
+ * @param options Relative time format options.
  * @group Intl
  */
 export function getRelativeTimeFormat(

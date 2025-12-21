@@ -23,7 +23,7 @@ export type AnchorAlign =
   | 'outerEnd';
 
 /**
- * An info about the current target position around an anchor.
+ * Info about the current target position around an anchor.
  *
  * @see {@link AnchorPositionProps.onPositionChange}
  * @group Behaviors
@@ -45,34 +45,34 @@ export interface AnchorPositionInfo {
   containerRect: DOMRect;
 
   /**
-   * A horizontal position of a target, relative to a window.
+   * A horizontal position of a target, relative to the window.
    */
   x: number;
 
   /**
-   * A vertical position of a target, relative to a window.
+   * A vertical position of a target, relative to the window.
    */
   y: number;
 
   /**
-   * The maximum width of a target, so it can fit into a container.
+   * The maximum width of the target so it can fit into the container.
    */
   maxWidth: number;
 
   /**
-   * The maximum height of a target, so it can fit into a container.
+   * The maximum height of the target so it can fit into the container.
    */
   maxHeight: number;
 
   /**
-   * An arrow offset, relative to a target.
+   * An arrow offset, relative to the target.
    *
-   * `undefined` if {@link targetPlacement} isn't top, right, bottom or left.
+   * `undefined` if {@link targetPlacement} isn't top, right, bottom, or left.
    */
   arrowOffset: number | undefined;
 
   /**
-   * The position of a target, relative to the anchor.
+   * The position of the target relative to the anchor.
    *
    * <table>
    * <tr> <td>topLeft</td>     <td>top</td>     <td align="right">topRight</td>    </tr>
@@ -100,28 +100,28 @@ export interface AnchorPositionInfo {
  */
 export interface AnchorPositionVariant {
   /**
-   * A horizontal padding inside a container that must be avoided during a target placement.
+   * Horizontal padding inside a container that must be avoided during target placement.
    *
    * @default 0
    */
   containerPaddingX?: number;
 
   /**
-   * A vertical padding inside a container that must be avoided during a target placement.
+   * Vertical padding inside a container that must be avoided during target placement.
    *
    * @default 0
    */
   containerPaddingY?: number;
 
   /**
-   * A horizontal distance between an anchor and a target.
+   * Horizontal distance between an anchor and a target.
    *
    * @default 0
    */
   anchorMarginX?: number;
 
   /**
-   * A vertical distance between an anchor and a target.
+   * Vertical distance between an anchor and a target.
    *
    * @default 0
    */
@@ -135,62 +135,62 @@ export interface AnchorPositionVariant {
   arrowSize?: number;
 
   /**
-   * A margin between an arrow and a target bonding rect.
+   * A margin between an arrow and a target bounding rect.
    *
    * @default 0
    */
   arrowMargin?: number;
 
   /**
-   * A horizontal alignment of a target relative to an anchor.
+   * Horizontal alignment of a target relative to an anchor.
    *
    * @default "center"
    */
   alignX?: AnchorAlign;
 
   /**
-   * A vertical alignment of a target relative to an anchor.
+   * Vertical alignment of a target relative to an anchor.
    *
    * @default "outerStart"
    */
   alignY?: AnchorAlign;
 
   /**
-   * The minimum required width that must be available for a target.
+   * The minimum required width that must be available for the target.
    */
   minWidth?: number;
 
   /**
-   * The minimum required height that must be available for a target.
+   * The minimum required height that must be available for the target.
    */
   minHeight?: number;
 }
 
 /**
- * Props of the {@link useAnchorPosition} hook.
+ * Props for the {@link useAnchorPosition} hook.
  *
  * @group Behaviors
  */
 export interface AnchorPositionProps {
   /**
-   * Returns a bounding rect of an element that is positioned around an anchor.
+   * Returns a bounding rect of the element positioned around an anchor.
    */
   getTargetRect: () => DOMRect | undefined;
 
   /**
-   * Returns a bounding rect of an anchor relative to a window around which a target is positioned.
+   * Returns a bounding rect of an anchor (relative to the window) around which a target is positioned.
    */
   getAnchorRect: () => DOMRect | undefined;
 
   /**
-   * Returns a bounding rect of a container that constrains a target positioning.
+   * Returns a bounding rect of a container that constrains target positioning.
    *
-   * By default, window visual viewport is used as a container.
+   * By default, the visual viewport is used as a container.
    */
   getContainerRect?: () => DOMRect | undefined;
 
   /**
-   * If `true` then anchored position of a target element isn't tracked.
+   * If `true`, anchored positioning isn't tracked.
    *
    * @default false
    */
@@ -204,23 +204,22 @@ export interface AnchorPositionProps {
   variants?: AnchorPositionVariant[];
 
   /**
-   * If `true` then horizontal alignment is mirrored.
+   * If `true`, horizontal alignment is mirrored.
    *
-   * By default, RTL is derived a document.
+   * By default, RTL is derived from the document.
    */
   isRTL?: boolean;
 
   /**
-   * A handler that is called when the target element must be repositioned.
+   * Called when the target element must be repositioned.
    *
-   * @param info An info about the current target position around an anchor. The info object is reused between handler
-   * invocations.
+   * @param info Info about the current target position around an anchor. This object is reused between invocations.
    */
   onPositionChange: (info: Readonly<AnchorPositionInfo>) => void;
 }
 
 /**
- * Positions a target element around the anchor element.
+ * Positions a target element around an anchor element.
  *
  * @example
  * const anchorRef = useRef(null);
@@ -310,7 +309,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
     const containerRect = getContainerRect() || getViewportRect();
 
     if (anchorRect === undefined || targetRect === undefined || variants.length === 0) {
-      // Nothing to anchor, or no position variants
+      // Nothing to anchor, or no position variants.
       prevMaxWidth = prevMaxHeight = -1;
 
       handle = requestAnimationFrame(frameRequestCallback);
@@ -393,7 +392,7 @@ function createAnchorPositionManager(): AnchorPositionManager {
         break;
       }
 
-      // Check constraints and pick a variant
+      // Check constraints and pick a variant.
       if (maxWidth * maxHeight > pickedVariantScore) {
         pickedVariantIndex = i;
         pickedVariantScore = maxWidth * maxHeight;
@@ -473,7 +472,7 @@ const ALIGN_OUTER_START: AnchorAlign = 'outerStart';
 const ALIGN_OUTER_END: AnchorAlign = 'outerEnd';
 
 /**
- * The internal state object that is reused by all {@link AnchorPositionManager} instances.
+ * The internal state object reused by all {@link AnchorPositionManager} instances.
  */
 const state: AnchorPositionState = {
   // Input
@@ -533,16 +532,16 @@ export function updateAnchorPosition(state: AnchorPositionState): void {
 
   const arrowSpacing = min(targetSize, 2 * arrowMargin + arrowSize);
 
-  let position;
-  let maxSize;
+  let position: number;
+  let maxSize: number;
   let actualAlign = align;
-  let arrowOffset;
+  let arrowOffset: number | undefined;
 
-  let startSize;
-  let endSize;
+  let startSize: number;
+  let endSize: number;
 
-  let minPosition;
-  let maxPosition;
+  let minPosition: number;
+  let maxPosition: number;
 
   if (align === ALIGN_OUTER_START || align === ALIGN_OUTER_END) {
     // Available size

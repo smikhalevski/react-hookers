@@ -6,15 +6,15 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 /**
  * Merges multiple props objects into a single object.
  *
- * Properties with names that match `/^on[A-Z]/` and function values are considered event handlers and merged into
- * a single function.
+ * Properties whose names match `/^on[A-Z]/` and whose values are functions are treated as event handlers and merged
+ * into a single function.
  *
- * `"ref"` properties are considered to store refs and are merged into a single callback ref.
+ * The `"ref"` property is treated as a ref and merged into a single callback ref.
  *
- * `"className"` properties are concatenated.
+ * The `"className"` property values are concatenated.
  *
- * @param props Props to merge.
- * @template T Props to merge.
+ * @param props The props objects to merge.
+ * @template T The props types to merge.
  * @group Other
  */
 export function mergeProps<T extends any[]>(...props: T): UnionToIntersection<NonNullable<T[number]>>;

@@ -8,28 +8,28 @@ import { cancelFocus, requestFocus } from './useFocus.js';
 import { FocusControls, OrderedFocusOptions, UnorderedFocusOptions, useFocusControls } from './useFocusControls.js';
 
 /**
- * Props of the {@link useFocusScope} hook.
+ * Props for the {@link useFocusScope} hook.
  *
  * @group Behaviors
  */
 export interface FocusScopeProps extends UnorderedFocusOptions {
   /**
-   * If `true` then focuses the first {@link approveFocusCandidate approved candidate} element inside a container
-   * when a scope is mounted.
+   * If `true`, focuses the first {@link approveFocusCandidate approved candidate} element inside the container
+   * when the scope is mounted.
    *
    * By default, autofocus is enabled if the {@link focusRing focus ring} is visible.
    */
   isAutofocused?: boolean;
 
   /**
-   * If `true` then focus won't be able to leave the scope.
+   * If `true`, focus cannot leave the scope.
    *
    * @default false
    */
   isFocusTrap?: boolean;
 
   /**
-   * If `true` then focus is restored to the element that was focused before this scope was mounted.
+   * If `true`, focus is restored to the element that was focused before this scope was mounted.
    *
    * By default, focus is restored if the {@link focusRing focus ring} is visible.
    */
@@ -37,7 +37,7 @@ export interface FocusScopeProps extends UnorderedFocusOptions {
 }
 
 /**
- * Creates a focus scope inside a container element and returns controls to move focus around.
+ * Creates a focus scope inside a container element and returns controls to move focus within it.
  *
  * @example
  * const containerRef = useRef(null);
@@ -45,13 +45,13 @@ export interface FocusScopeProps extends UnorderedFocusOptions {
  *
  * <FocusControlsProvider value={focusControls}>
  *   <div ref={containerRef}>
- *     <input/>
+ *     <input />
  *   </div>
  * </FocusControlsProvider>
  *
  * @param ref A ref to a container element inside which focus state is managed.
- * @param props Focus scope props.
- * @returns Focus controls that allow to move focus around in a container element. An object which identity never
+ * @param props Focus-scope props.
+ * @returns Focus controls that allow moving focus within the container element. An object whose identity never
  * changes between renders.
  * @group Behaviors
  */
@@ -84,7 +84,7 @@ function createFocusScopeManager(): FocusScopeManager {
     manager.lastFocusedElement = getFocusedElement();
 
     if (isAutofocused) {
-      // Focus the first approved auto-focusable element
+      // Focus the first approved auto-focusable element.
       focusControls.focusFirst({
         ...manager.props,
 
@@ -93,7 +93,7 @@ function createFocusScopeManager(): FocusScopeManager {
       }) ||
         // Focus the first focusable element
         focusControls.focusFirst(manager.props) ||
-        // Hide focus
+        // Or hide focus
         (isFocusTrap && cancelFocus());
     } else if (isFocusTrap) {
       cancelFocus();
@@ -102,9 +102,8 @@ function createFocusScopeManager(): FocusScopeManager {
     return () => {
       const { isFocusRestored = focusRing.isVisible } = manager.props;
 
-      // If an intermediate focus scope unmounts it sets its lastFocusedElement to
-      // the next currently mounted scope. For example, when popup is opened from
-      // the dropdown that is closed.
+      // If an intermediate focus scope unmounts, it passes its lastFocusedElement to
+      // the next currently mounted scope (e.g., a popup opened from a dropdown that then closes).
       const managerIndex = focusScopeManagers.indexOf(manager) - 1;
 
       if (managerIndex >= 0) {
@@ -187,7 +186,7 @@ function handleFocusTrapRetainFocus(event: FocusEvent): void {
     return;
   }
 
-  // Return focus back to a focus trap
+  // Return focus back to the focus trap
   if (!requestFocus(event.relatedTarget as Element | null)) {
     cancelFocus();
   }
@@ -211,7 +210,7 @@ function handleFocusTrapTabKeyDown(event: KeyboardEvent): void {
     approveFocusCandidate: isTabbable,
   };
 
-  // Focus the next element in the tab order
+  // Focus the next element in tab order
   if (!focusRelative(focusTrap, event.shiftKey, options)) {
     // Or cycle focus
     focusAbsolute(focusTrap, event.shiftKey, options);
@@ -225,12 +224,12 @@ function handleFocusTrapClickAway(event: PointerEvent): void {
     return;
   }
 
-  // Prevent focus and clicks outside a trap container
+  // Prevent focus and clicks outside the trap container
   event.preventDefault();
 }
 
 /**
- * Returns the manager of the topmost focus trap.
+ * Returns the manager for the topmost focus trap.
  */
 function getFocusTrap(): FocusScopeManager | null {
   for (const manager of focusScopeManagers) {
@@ -259,8 +258,8 @@ const FOCUS_CANDIDATE_SELECTOR =
   'input,textarea,select,button,details,summary,a[href],[tabindex],audio[controls],video[controls],[contenteditable]';
 
 /**
- * Returns potentially focusable elements under the {@link manager} and all of its descendants. The order of elements is
- * undefined. Returned elements aren't guaranteed to actually be able to receive focus.
+ * Returns potentially focusable elements under {@link manager} and all of its descendants. The order of elements is
+ * undefined. Returned elements are not guaranteed to be focusable.
  */
 function getFocusCandidates(
   manager: FocusScopeManager,
@@ -294,7 +293,7 @@ function getFocusCandidates(
 }
 
 /**
- * Returns `true` if a {@link manager} or any of its descendants contain an {@link element}.
+ * Returns `true` if {@link manager} or any of its descendants contains {@link element}.
  */
 function containsElement(manager: FocusScopeManager, element: Element | null): boolean {
   const container = manager.ref.current;
@@ -312,7 +311,7 @@ function containsElement(manager: FocusScopeManager, element: Element | null): b
 }
 
 /**
- * Returns `true` if a {@link parentManager} is equal to or contains a {@link manager}.
+ * Returns `true` if {@link parentManager} is equal to or contains {@link manager}.
  */
 function containsManager(parentManager: FocusScopeManager, manager: FocusScopeManager): boolean {
   if (parentManager === manager) {
@@ -328,8 +327,8 @@ function containsManager(parentManager: FocusScopeManager, manager: FocusScopeMa
 }
 
 /**
- * Focuses a candidate element at given index. If candidate wasn't approved or successfully focused, a subsequent
- * candidate is tried, and so on until there are no candidates, or one of them was focused.
+ * Focuses the candidate at {@link index}. If it can't be focused or isn't approved, subsequent candidates are tried
+ * until one is focused or candidates are exhausted.
  */
 function focusAtIndex(candidates: FocusableElement[], index: number, options: UnorderedFocusOptions): boolean {
   const { approveFocusCandidate } = options;
@@ -346,7 +345,7 @@ function focusAtIndex(candidates: FocusableElement[], index: number, options: Un
 }
 
 /**
- * Focuses the first or the last element in manager containers.
+ * Focuses the first or the last element in the manager containers.
  */
 function focusAbsolute(
   manager: FocusScopeManager,
@@ -365,7 +364,7 @@ function focusAbsolute(
 }
 
 /**
- * Focuses the next or the previous element relative to the currently focused element in manager containers.
+ * Focuses the next or the previous element relative to the currently focused element in the manager containers.
  */
 function focusRelative(
   manager: FocusScopeManager,
@@ -391,7 +390,7 @@ function focusRelative(
 }
 
 /**
- * Focuses to the closest element in a {@link direction} from the currently focused element.
+ * Focuses the closest element in {@link direction} relative to the currently focused element.
  */
 function focusInDirection(
   manager: FocusScopeManager,
@@ -413,8 +412,8 @@ const DIRECTION_DOWN = 2;
 const DIRECTION_LEFT = 3;
 
 /**
- * Returns elements from {@link elements} that are in {@link direction} from the {@link pivotElement}, sorted by
- * a perceived proximity.
+ * Returns elements from {@link elements} that are in {@link direction} relative to {@link pivotElement}, sorted by
+ * perceived proximity.
  */
 function getElementsInDirection(
   pivotElement: FocusableElement,
@@ -441,7 +440,7 @@ function getElementsInDirection(
     const bx2 = rectB.right;
 
     let majorDistance = 0;
-    let crossDistance;
+    let crossDistance: number;
     let crossSize = 0;
 
     if (direction === DIRECTION_UP && by2 < ay2 && by1 < ay1) {

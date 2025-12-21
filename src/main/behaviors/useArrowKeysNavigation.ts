@@ -23,13 +23,13 @@ export type FocusCycle =
   | 'pageDownToLast';
 
 /**
- * Props of the {@link useArrowKeysNavigation} hook.
+ * Props for the {@link useArrowKeysNavigation} hook.
  *
  * @group Behaviors
  */
 export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
   /**
-   * If `true` then arrow navigation is disabled.
+   * If `true`, arrow navigation is disabled.
    *
    * @default false
    */
@@ -52,16 +52,15 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
   orientation?: 'vertical' | 'horizontal' | 'auto';
 
   /**
-   * <kbd>PageUp</kbd> and <kbd>PageDown</kbd> keys behavior:
+   * <kbd>PageUp</kbd> and <kbd>PageDown</kbd> behavior:
    *
    * <dl>
    * <dt>"focus"</dt>
-   * <dd>Move focus to the first or last element. If {@link focusCycle focus cycling} is enabled it is also
-   * applied.</dd>
+   * <dd>Moves focus to the first or last element. If {@link focusCycle} is enabled, it is also applied.</dd>
    * <dt>"prevent"</dt>
-   * <dd>Paging events are prevented.</dd>
+   * <dd>Prevents paging events.</dd>
    * <dt>"none"</dt>
-   * <dd>Paging events are ignored and default browser behavior may take place.</dd>
+   * <dd>Ignores paging events and allows the default browser behavior.</dd>
    * </dl>
    *
    * @default "none"
@@ -71,20 +70,20 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
   /**
    * The ordered list of focus cycling modifiers.
    *
-   * By default, no focus cycling is done.
+   * By default, no focus cycling is performed.
    */
   focusCycle?: readonly FocusCycle[];
 
   /**
-   * If `true` then <kbd>ArrowLeft</kbd> and <kbd>ArrowRight</kbd> behavior is mirrored when focus is cycled.
+   * If `true`, <kbd>ArrowLeft</kbd> and <kbd>ArrowRight</kbd> behavior is mirrored when focus is cycled.
    *
-   * By default, RTL is derived a document.
+   * By default, RTL is derived from the document.
    */
   isRTL?: boolean;
 }
 
 /**
- * Enables arrow keys navigation inside a container.
+ * Enables arrow keys navigation inside an active focus scope.
  *
  * @example
  * const containerRef = useRef(null);
@@ -93,10 +92,10 @@ export interface ArrowKeysNavigationProps extends OrderedFocusOptions {
  * useArrowKeysNavigation(focusControls);
  *
  * <div ref={containerRef}>
- *   <input/>
+ *   <input />
  * </div>
  *
- * @param focusControls Focus controls that are used to move focus around. If `null` then arrow keys are disabled.
+ * @param focusControls Focus controls used to move focus. If `null`, arrow keys are disabled.
  * @param props Arrow keys props.
  * @see {@link FocusScope}
  * @see {@link ArrowKeysNavigation}
@@ -182,7 +181,7 @@ function handleArrowKeyDown(event: KeyboardEvent): void {
       (orientation !== 'horizontal' && (key === KEY_ARROW_UP || key === KEY_ARROW_DOWN)) ||
       (orientation !== 'vertical' && (key === KEY_ARROW_LEFT || key === KEY_ARROW_RIGHT))
     ) {
-      // Deactivate cursor when user is navigating via keyboard to prevent scroll from triggering unexpected hover
+      // Deactivate cursor when navigating via keyboard to prevent scroll from triggering unexpected hover.
       cursor.deactivate();
 
       focusRing.reveal();

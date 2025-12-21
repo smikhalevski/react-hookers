@@ -3,18 +3,18 @@ import { PubSub } from 'parallel-universe';
 const cursorPubSub = new PubSub();
 
 /**
- * A cursor activation status controller.
+ * Controls the cursor activation state.
  *
  * @group Behaviors
  */
 export const cursor = {
   /**
-   * `true` if cursor interactions are enabled.
+   * `true` if cursor interactions are currently enabled.
    */
   isActive: true,
 
   /**
-   * Enables interactions with cursor.
+   * Enables cursor interactions.
    */
   activate(): void {
     if (!cursor.isActive) {
@@ -24,7 +24,7 @@ export const cursor = {
   },
 
   /**
-   * Disables interactions with cursor.
+   * Disables cursor interactions.
    */
   deactivate(): void {
     if (cursor.isActive) {
@@ -34,10 +34,10 @@ export const cursor = {
   },
 
   /**
-   * Subscribes a listener to cursor activation status changes.
+   * Subscribes a listener to cursor activation state changes.
    *
-   * @param listener A listener to call when cursor activation status has changed.
-   * @returns A callback that unsubscribes a listener.
+   * @param listener A callback invoked when the cursor activation state changes.
+   * @returns A function that unsubscribes the listener.
    */
   subscribe(listener: () => void): () => void {
     const unsubscribe = cursorPubSub.subscribe(listener);

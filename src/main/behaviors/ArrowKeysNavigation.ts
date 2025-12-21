@@ -3,9 +3,9 @@ import { ArrowKeysNavigationProps, useArrowKeysNavigation } from './useArrowKeys
 import { useFocusControls } from './useFocusControls.js';
 
 /**
- * The component alternative of the {@link useArrowKeysNavigation} hook.
+ * The component-based alternative to the {@link useArrowKeysNavigation} hook.
  *
- * Enables arrow navigation inside an enclosing {@link FocusScope}.
+ * Enables arrow-key navigation within an enclosing {@link FocusScope}.
  *
  * @example
  * const containerRef = useRef(null);
@@ -13,7 +13,7 @@ import { useFocusControls } from './useFocusControls.js';
  * <FocusScope containerRef={containerRef}>
  *   <ArrowKeysNavigation>
  *     <div ref={containerRef}>
- *       <input/>
+ *       <input />
  *     </div>
  *   </ArrowKeysNavigation>
  * </FocusScope>

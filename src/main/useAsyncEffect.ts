@@ -4,19 +4,20 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 /**
  * The callback provided to {@link useAsyncEffect}.
  *
- * The returned cleanup callback is ignored if signal was aborted.
+ * The returned cleanup callback is ignored if the signal was aborted.
  *
- * @param signal The signal that is aborted when effect was discarded.
- * @returns The cleanup callback that is invoked when effect unmounted.
+ * @param signal The signal that is aborted when the effect is discarded.
+ * @returns A cleanup callback that is invoked when the effect is unmounted.
  * @group Other
  */
 export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => void) | void>;
 
 /**
- * Analogue of `React.useEffect` that can handle a {@link Promise} returned from the effect callback. Returned promise
- * may resolve with a destructor / cleanup callback. An effect callback receives an {@link AbortSignal} that is aborted
- * if effect is called again before the previously returned promise is resolved. Cleanup callbacks returned from
- * the aborted effects are ignored.
+ * An analogue of `React.useEffect` that supports a {@link Promise} returned from the effect callback.
+ *
+ * The returned promise may resolve to a destructor/cleanup callback. The effect callback receives an
+ * {@link AbortSignal} that is aborted if the effect is re-run before the previously returned promise resolves.
+ * Cleanup callbacks returned from aborted effects are ignored.
  *
  * @example
  * useAsyncEffect(
@@ -30,9 +31,9 @@ export type AsyncEffectCallback = (signal: AbortSignal) => PromiseLike<(() => vo
  *   [a, b],
  * );
  *
- * @param fn The callback that is invoked if `deps` have changed. An effect may return a destructor/cleanup callback.
- * The previous effect is cleaned up before executing the next effect.
- * @param deps The list of dependencies. If `undefined` then `effect` is called on every render.
+ * @param fn The callback that is invoked when `deps` change. The effect may return a destructor/cleanup callback.
+ * The previous effect is cleaned up before executing the next one.
+ * @param deps The list of dependencies. If `undefined`, the effect is executed on every render.
  * @group Other
  */
 export function useAsyncEffect(fn: AsyncEffectCallback, deps?: DependencyList): void {

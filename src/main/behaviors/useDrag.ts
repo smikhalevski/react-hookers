@@ -10,14 +10,14 @@ import { emptyArray, noop } from '../utils/lang.js';
  */
 export interface DragValue {
   /**
-   * Props of an element for which drag is tracked.
+   * Props for the element for which drag interactions are tracked.
    *
-   * An object which identity never changes between renders.
+   * An object whose identity never changes between renders.
    */
   dragProps: DOMAttributes<Element>;
 
   /**
-   * `true` if an element is currently being dragged.
+   * `true` if the element is currently being dragged.
    */
   isDragged: boolean;
 
@@ -28,49 +28,47 @@ export interface DragValue {
 }
 
 /**
- * An info about the current drag frame.
+ * Info about the current drag frame.
  *
  * @see {@link DragProps.onDrag}
  * @group Behaviors
  */
 export interface DragInfo {
   /**
-   * The X coordinate of the dragged element's bounding rect, captured when the drag has started.
+   * The X coordinate of the dragged element's bounding rect, captured when the drag started.
    *
-   * Doesn't include the scroll position.
+   * Does not include scroll position.
    */
   startX: number;
 
   /**
-   * The Y coordinate of the dragged element's bounding rect, captured when the drag has started.
+   * The Y coordinate of the dragged element's bounding rect, captured when the drag started.
    *
-   * Doesn't include the scroll position.
+   * Does not include scroll position.
    */
   startY: number;
 
   /**
    * The current X coordinate of the dragged element's bounding rect.
    *
-   * Doesn't include the scroll position.
+   * Does not include scroll position.
    */
   x: number;
 
   /**
    * The current Y coordinate of the dragged element's bounding rect.
    *
-   * Doesn't include the scroll position.
+   * Does not include scroll position.
    */
   y: number;
 
   /**
-   * The distance between the X coordinate of the dragged element's bounding rect and pointer X position, captured when
-   * the drag has started.
+   * The distance between the element's X coordinate and the pointer X position, captured when the drag started.
    */
   offsetX: number;
 
   /**
-   * The distance between the T coordinate of the dragged element's bounding rect and pointer Y position, captured when
-   * the drag has started.
+   * The distance between the element's Y coordinate and the pointer Y position, captured when the drag started.
    */
   offsetY: number;
 
@@ -86,49 +84,49 @@ export interface DragInfo {
 }
 
 /**
- * Props of the {@link useDrag} hook.
+ * Props for the {@link useDrag} hook.
  *
  * @group Behaviors
  */
 export interface DragProps {
   /**
-   * If `true` drag listeners are disabled.
+   * If `true`, drag listeners are disabled.
    *
    * @default false
    */
   isDisabled?: boolean;
 
   /**
-   * A handler that is called when a user starts to drag an element.
+   * A handler that is called when the user starts dragging the element.
    *
-   * @param info An info about the current drag frame.
+   * @param info Info about the current drag frame.
    */
   onDragStart?: (info: DragInfo) => void;
 
   /**
-   * A handler that is called when a user stops dragging an element.
+   * A handler that is called when the user stops dragging the element.
    *
-   * @param info An info about the current drag frame.
+   * @param info Info about the current drag frame.
    */
   onDragEnd?: (info: DragInfo) => void;
 
   /**
-   * A handler that is called when a user is actively dragging an element.
+   * A handler that is called while the user is actively dragging the element.
    *
-   * @param info An info about the current drag frame.
+   * @param info Info about the current drag frame.
    */
   onDrag?: (info: DragInfo) => void;
 
   /**
    * A handler that is called when the drag state changes.
    *
-   * @param isDragged `true` if an element is dragged.
+   * @param isDragged `true` if the element is being dragged.
    */
   onDragChange?: (isDragged: boolean) => void;
 }
 
 /**
- * Handles the drag behavior across platforms.
+ * Handles drag interactions across platforms.
  *
  * @example
  * const targetRef = useRef(null);
@@ -136,7 +134,7 @@ export interface DragProps {
  * const { dragProps, isDragged } = useDrag({
  *   onDrag(info) {
  *     targetRef.current.style.inset = `${info.y}px auto auto ${info.x}px`;
- *   }
+ *   },
  * });
  *
  * <div
@@ -151,7 +149,7 @@ export interface DragProps {
  * />
  *
  * @param props Drag props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Behaviors
  */
 export function useDrag(props: DragProps): DragValue {

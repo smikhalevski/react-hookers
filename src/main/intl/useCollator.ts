@@ -3,7 +3,7 @@ import { useLocale } from './useLocale.js';
 import { getCollator } from './utils.js';
 
 /**
- * Provides localized {@link Intl.Collator} for the current {@link useLocale locale}.
+ * Returns a localized {@link Intl.Collator} for the current {@link useLocale locale}.
  *
  * @example
  * const collator = useCollator({ caseFirst: 'upper' });
@@ -11,7 +11,7 @@ import { getCollator } from './utils.js';
  * collator.compare('Hello', 'goodbye');
  * // ⮕ 1
  *
- * @param options Collator options. Create options outside of rendering to enable format caching.
+ * @param options Collator options. Create the options object outside of render to enable formatter caching.
  * @group Intl
  */
 export function useCollator(options: Intl.CollatorOptions = emptyObject): Intl.Collator {

@@ -3,9 +3,9 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray } from './utils/lang.js';
 
 /**
- * Returns stateful values and a function to update them. Upon invocation of `setState`, the `value` is assigned
- * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and
- * component is re-rendered again.
+ * Returns stateful values and a function to update them. When you call `setState`, `value` is assigned synchronously
+ * and the component re-renders. After `ms`, `debouncedValue` is synchronized with `value`, and the component re-renders
+ * again.
  *
  * @example
  * const [value, debouncedValue, setValue] = useDebouncedState(500, 'hello');
@@ -21,7 +21,7 @@ import { emptyArray } from './utils/lang.js';
  * />
  *
  * @param ms A delay after which `debouncedValue` is synchronized with `value`.
- * @param initialValue An initial value or a callback that returns an initial state.
+ * @param initialValue An initial value or a callback that returns the initial state.
  * @template T A stateful value.
  * @group Other
  */
@@ -31,9 +31,9 @@ export function useDebouncedState<T>(
 ): [value: T, debouncedValue: T, setValue: Dispatch<SetStateAction<T>>];
 
 /**
- * Returns stateful values and a function to update them. Upon invocation of `setState`, the `value` is assigned
- * synchronously, and the component is re-rendered. After the `ms` the `debouncedValue` is set to `value` and
- * component is re-rendered again.
+ * Returns stateful values and a function to update them. When you call `setState`, `value` is assigned synchronously
+ * and the component re-renders. After `ms`, `debouncedValue` is synchronized with `value`, and the component re-renders
+ * again.
  *
  * @example
  * const [value, debouncedValue, setValue] = useDebouncedState(500);

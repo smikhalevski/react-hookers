@@ -6,7 +6,7 @@ import { NumberInputHandler, type NumberInputHandlerOptions } from './NumberInpu
 import { type FormattedInputValue, useFormattedInput } from './useFormattedInput.js';
 
 /**
- * Props of the {@link useNumberInput} hook.
+ * Props for the {@link useNumberInput} hook.
  *
  * @group Components
  */
@@ -17,31 +17,33 @@ export interface HeadlessNumberInputProps extends NumberInputHandlerOptions, Hov
   value: number | undefined;
 
   /**
-   * A handler that is called when an input value is changed.
+   * A callback invoked when the input value changes.
    *
-   * @param value An input value.
+   * @param value The new input value.
    */
   onChange?: (value: number | undefined) => void;
 
   /**
-   * A number format. By default, a format that uses the current locale.
+   * The number format to use.
+   *
+   * By default, a format based on the current locale is used.
    */
   format?: Intl.NumberFormat;
 
   /**
-   * An ID that uniquely identifies a text input.
+   * An ID that uniquely identifies the text input.
    */
   id?: string;
 
   /**
-   * If `true` then an input is marked as invalid.
+   * If `true`, the input is marked as invalid.
    *
    * @default false
    */
   isInvalid?: boolean;
 
   /**
-   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   * If `true`, the element is {@link isAutoFocusable auto-focusable} within a {@link useFocusScope focus scope}.
    *
    * @default false
    */
@@ -49,12 +51,15 @@ export interface HeadlessNumberInputProps extends NumberInputHandlerOptions, Hov
 }
 
 /**
- * Provides the behavior for a formatted number input.
+ * Provides behavior for a formatted number input.
  *
  * @example
  * const [value, setValue] = useState<number>();
  *
- * const { inputProps } = useNumberInput({ value, onChange: setValue });
+ * const { inputProps } = useNumberInput({
+ *   value,
+ *   onChange: setValue,
+ * });
  *
  * <input {...inputProps} />
  *

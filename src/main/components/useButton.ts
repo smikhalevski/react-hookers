@@ -10,41 +10,41 @@ import { DATA_AUTOFOCUS } from '../utils/dom.js';
  */
 export interface HeadlessButtonValue {
   /**
-   * Props of an element that must have a button behavior.
+   * Props for the element that implements button behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   buttonProps: ButtonHTMLAttributes<HTMLButtonElement>;
 
   /**
-   * `true` if an element is currently pressed.
+   * `true` if the element is currently pressed.
    */
   isPressed: boolean;
 
   /**
-   * `true` if an element is currently hovered.
+   * `true` if the element is currently hovered.
    */
   isHovered: boolean;
 
   /**
-   * `true` if an element is currently focused.
+   * `true` if the element is currently focused.
    */
   isFocused: boolean;
 
   /**
-   * `true` if an element is currently focused and focus should be visible.
+   * `true` if the element is currently focused and focus should be visible.
    */
   isFocusVisible: boolean;
 }
 
 /**
- * Props of the {@link useButton} hook.
+ * Props for the {@link useButton} hook.
  *
  * @group Components
  */
 export interface HeadlessButtonProps extends PressableProps {
   /**
-   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   * If `true`, the element is {@link isAutoFocusable auto-focusable} within a {@link useFocusScope focus scope}.
    *
    * @default false
    */
@@ -52,11 +52,12 @@ export interface HeadlessButtonProps extends PressableProps {
 }
 
 /**
- * Provides the behavior and accessibility implementation for a button component. Handles mouse, keyboard, and touch
- * interactions, focus behavior, and ARIA props for both native button elements.
+ * Provides behavior and accessibility for a button component.
+ *
+ * Handles mouse, keyboard, and touch interactions, focus behavior, and ARIA props for native button elements.
  *
  * @param props Button props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Components
  */
 export function useButton(props: HeadlessButtonProps): HeadlessButtonValue {
@@ -68,6 +69,7 @@ export function useButton(props: HeadlessButtonProps): HeadlessButtonValue {
   value.buttonProps['aria-disabled'] = value.buttonProps.disabled = props.isDisabled || undefined;
   value.buttonProps.tabIndex = props.isDisabled ? undefined : 0;
   value.buttonProps[DATA_AUTOFOCUS] = props.isAutofocused || undefined;
+
   value.isPressed = pressableValue.isPressed;
   value.isHovered = pressableValue.isHovered;
   value.isFocused = pressableValue.isFocused;

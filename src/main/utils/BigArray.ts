@@ -17,7 +17,7 @@ interface Block<T> {
 /**
  * A mutable array that can store up to 2&#8309;&#8308;&#8239;-&#8239;2 elements.
  *
- * Indices should be in range [{@link Number.MIN_SAFE_INTEGER}, {@link Number.MAX_SAFE_INTEGER}].
+ * Indices must be in the range [{@link Number.MIN_SAFE_INTEGER}, {@link Number.MAX_SAFE_INTEGER}].
  *
  * @example
  * const array = new BigArray<string>();
@@ -28,7 +28,7 @@ interface Block<T> {
  *   const value = array.get(i);
  * }
  *
- * @template T A value stored in an array.
+ * @template T The type of values stored in the array.
  * @group Other
  */
 export class BigArray<T> {
@@ -36,29 +36,29 @@ export class BigArray<T> {
   private _positiveBlocks: Block<Block<Block<T>>> = {};
 
   /**
-   * An index of the first element in an array, inclusive.
+   * The index of the first element in the array (inclusive).
    */
   startIndex = 0;
 
   /**
-   * An index of the last element in an array, exclusive.
+   * The index of the last element in the array (exclusive).
    */
   endIndex = 0;
 
   /**
-   * The total number of negative indexes in the array.
+   * The total number of negative indices in the array.
    */
   negativeCount = 0;
 
   /**
-   * The total number of positive indexes in the array.
+   * The total number of non-negative indices in the array.
    */
   positiveCount = 0;
 
   /**
-   * Returns an element stored at an index or `undefined`.
+   * Returns the element stored at `index`, or `undefined` if no element exists at that index.
    *
-   * @param index An integer index of an element.
+   * @param index An integer element index.
    */
   get(index: number): T {
     const blocks = index >= 0 ? this._positiveBlocks : ((index = -index - 1), this._negativeBlocks);
@@ -82,11 +82,11 @@ export class BigArray<T> {
   }
 
   /**
-   * Returns an element stored at an index or uses `lazyValue` to produce an element.
+   * Returns the element stored at `index`, or uses `lazyValue` to produce and store an element.
    *
-   * @param index An integer index of an element.
-   * @param lazyValue A value or a callback that returns a value for an index.
-   * @returns A value stored at an index.
+   * @param index An integer element index.
+   * @param lazyValue A value or a callback that returns a value for the given index.
+   * @returns The value stored at `index`.
    */
   getOrSet(index: number, lazyValue: T | ((index: number) => T)): T {
     if (!isSafeInteger(index)) {
@@ -130,10 +130,10 @@ export class BigArray<T> {
   }
 
   /**
-   * Sets an element at an index.
+   * Sets the element at `index`.
    *
-   * @param index An integer index of an element.
-   * @param value A value to set.
+   * @param index An integer element index.
+   * @param value The value to store.
    */
   set(index: number, value: T): this {
     if (!isSafeInteger(index)) {
@@ -179,9 +179,9 @@ export class BigArray<T> {
   }
 
   /**
-   * Returns `true` if an array contains an element with the index.
+   * Returns `true` if the array contains an element at `index`.
    *
-   * @param index An integer index of an element.
+   * @param index An integer element index.
    */
   has(index: number): boolean {
     const blocks = index >= 0 ? this._positiveBlocks : ((index = -index - 1), this._negativeBlocks);
@@ -205,9 +205,9 @@ export class BigArray<T> {
   }
 
   /**
-   * Appends an element to an array after the {@link endIndex}.
+   * Appends an element to the array at {@link endIndex}.
    *
-   * @param value A value to append.
+   * @param value The value to append.
    */
   push(value: T): this {
     this.set(this.endIndex, value);
@@ -215,9 +215,9 @@ export class BigArray<T> {
   }
 
   /**
-   * Prepends an element to an array before the {@link startIndex}.
+   * Prepends an element to the array before {@link startIndex}.
    *
-   * @param value A value to prepend.
+   * @param value The value to prepend.
    */
   unshift(value: T): this {
     this.set(this.startIndex - 1, value);
@@ -225,13 +225,13 @@ export class BigArray<T> {
   }
 
   /**
-   * Copies `length` number of elements from `source` (starting at `sourceStartIndex`) to this array (starting
-   * at `startIndex`).
+   * Copies up to `length` elements from `source` (starting at `sourceStartIndex`) into this array
+   * (starting at `startIndex`).
    *
    * @param source The source of elements.
    * @param startIndex The index in this array to start writing at.
-   * @param sourceStartIndex The index in source array to start reading at.
-   * @param length The maximum number of elements to read from he source.
+   * @param sourceStartIndex The index in the source to start reading at.
+   * @param length The maximum number of elements to read from the source.
    */
   copyOver(source: Iterable<T> | ArrayLike<T>, startIndex = 0, sourceStartIndex = 0, length = Infinity): this {
     if ('length' in source) {
@@ -267,7 +267,7 @@ export class BigArray<T> {
         continue;
       }
       if (i >= sourceStartIndex + length) {
-        // Stop after the required number of elements was consumed
+        // Stop after the required number of elements is consumed
         break;
       }
       this.set(startIndex - sourceStartIndex + i, value);
@@ -278,11 +278,10 @@ export class BigArray<T> {
   }
 
   /**
-   * Returns a slice of elements of this array. The total length of the slice won't exceed 2&sup3;&sup2; number
-   * of items.
+   * Returns a slice of elements from this array. The slice length will not exceed 2&sup3;&sup2; items.
    *
-   * @param startIndex The start index of the slice, inclusive.
-   * @param endIndex The end index of the slice, exclusive.
+   * @param startIndex The start index of the slice (inclusive).
+   * @param endIndex The end index of the slice (exclusive).
    */
   slice(startIndex = this.startIndex, endIndex = this.endIndex): T[] {
     const values: T[] = [];
@@ -293,7 +292,7 @@ export class BigArray<T> {
   }
 
   /**
-   * Returns a new iterator object that contains indexes of {@link has existing elements}.
+   * Returns an iterator over indices of existing elements (as determined by {@link has}).
    */
   *indexes(): IterableIterator<number> {
     const { _negativeBlocks, _positiveBlocks } = this;
@@ -328,14 +327,14 @@ export class BigArray<T> {
   }
 
   /**
-   * Returns a new iterator object that contains existing values.
+   * Returns an iterator over existing values.
    */
   values(): IterableIterator<T> {
     return this[Symbol.iterator]();
   }
 
   /**
-   * Returns a new iterator object that contains existing values.
+   * Returns an iterator over existing values.
    */
   *[Symbol.iterator](): IterableIterator<T> {
     const { _negativeBlocks, _positiveBlocks } = this;

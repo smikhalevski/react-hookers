@@ -4,25 +4,25 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray, noop } from './utils/lang.js';
 
 /**
- * The replacement for `window.setInterval` that schedules a function to be repeatedly called with a fixed time delay
- * between each call. Interval is cancelled when component is unmounted or when a new interval is scheduled.
+ * A replacement for `window.setInterval` that schedules a function to be called repeatedly with a fixed delay between
+ * executions. The interval is cancelled when the component is unmounted or when a new interval is scheduled.
  *
- * All functions that were scheduled with the same delay are invoked synchronously across all components that use this
- * hook.
+ * All functions scheduled with the same delay are invoked synchronously across all components that use this hook.
  *
- * Intervals must be scheduled/canceled after the component is mounted. Before that, it is a no-op.
+ * Intervals must be scheduled or cancelled after the component has mounted.
+ * Before that, calling either function is a no-op.
  *
  * @example
  * const [schedule, cancel] = useInterval();
  *
  * useEffect(() => {
- *   // Cancels currently scheduled callback and schedules the new one
+ *   // Cancels the currently scheduled callback and schedules a new one
  *   schedule(
  *     (a, b) => {
  *       doSomething(a, b);
  *     },
  *     500, // Interval delay
- *     a, b, // Varargs that are passed to the callback
+ *     a, b, // Arguments passed to the callback
  *   );
  *
  *   // Stops invoking the callback that was last provided to schedule()
@@ -103,7 +103,7 @@ function getOrCreateScheduler(ms: number): (cb: () => void) => () => void {
         cb();
       } catch (error) {
         setTimeout(() => {
-          // Force uncaught exception
+          // Force an uncaught exception
           throw error;
         }, 0);
       }

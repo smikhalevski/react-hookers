@@ -1,10 +1,10 @@
 /**
- * Copies text to clipboard.
+ * Copies text to the clipboard.
  *
- * **Note:** This only works in scope of the keyboard or mouse event handler, noop otherwise.
+ * **Note:** This only works within the scope of a keyboard or mouse event handler. Otherwise, it is a no-op.
  *
- * @param text Text to write to clipboard.
- * @returns `true` if text was successfully written, or `false` otherwise.
+ * @param text The text to write to the clipboard.
+ * @returns `true` if the text was successfully written; otherwise, `false`.
  * @group Other
  */
 export function writeToClipboard(text: string): boolean {

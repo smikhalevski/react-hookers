@@ -2,16 +2,17 @@ import { SyntheticEvent } from 'react';
 import { FocusableElement } from '../types.js';
 
 /**
- * An attribute that replaces `autofocus` for a {@link useFocusScope focus scope}. Expects a boolean value.
+ * An attribute that replaces `autofocus` for a {@link useFocusScope focus scope}.
+ * Expects a boolean value.
  *
  * @group Other
  */
 export const DATA_AUTOFOCUS = 'data-autofocus';
 
 /**
- * Returns `true` if event was dispatched from a portal.
+ * Returns `true` if the event was dispatched from a portal.
  *
- * @param event An event to check.
+ * @param event The event to check.
  * @group Other
  */
 export function isPortalEvent(event: SyntheticEvent): boolean {
@@ -19,9 +20,9 @@ export function isPortalEvent(event: SyntheticEvent): boolean {
 }
 
 /**
- * Returns `true` if an element has the right-to-left text direction.
+ * Returns `true` if an element has right-to-left text direction.
  *
- * @param element An element to check text direction of. If `null` then document text direction is checked.
+ * @param element An element whose text direction should be checked. If `null`, the document text direction is used.
  * @group Other
  */
 export function isRTLElement(element: Element | null = null): boolean {
@@ -29,7 +30,7 @@ export function isRTLElement(element: Element | null = null): boolean {
 }
 
 /**
- * Returns the currently focused element or `null` if no element is focused.
+ * Returns the currently focused element, or `null` if no element is focused.
  *
  * @group Other
  */
@@ -43,7 +44,7 @@ export function getFocusedElement(): FocusableElement | null {
 }
 
 /**
- * Sorts elements in the order <kbd>Tab</kbd> key passes focus from element to element.
+ * Sorts elements in the order that the <kbd>Tab</kbd> key moves focus.
  *
  * @group Other
  */
@@ -52,7 +53,7 @@ export function sortByTabOrder(a: FocusableElement, b: FocusableElement): number
 }
 
 /**
- * Sorts elements in an order they appear in a document.
+ * Sorts elements in the order they appear in the document.
  *
  * @group Other
  */
@@ -73,7 +74,7 @@ export function sortByDocumentOrder(a: Element, b: Element): number {
 }
 
 /**
- * Sorts elements in an order they visually appear on the screen.
+ * Sorts elements in the order they visually appear on the screen.
  *
  * @group Other
  */
@@ -85,9 +86,9 @@ export function sortByVisualOrder(a: Element, b: Element): number {
 }
 
 /**
- * Returns `true` if element has focus capability.
+ * Returns `true` if an element is capable of receiving focus.
  *
- * @param element An element to check.
+ * @param element The element to check.
  * @group Other
  */
 export function isFocusable(element: Element): element is FocusableElement {
@@ -97,7 +98,7 @@ export function isFocusable(element: Element): element is FocusableElement {
 /**
  * Returns `true` if an element participates in <kbd>Tab</kbd> navigation.
  *
- * @param element An element to check.
+ * @param element The element to check.
  * @group Other
  */
 export function isTabbable(element: FocusableElement): boolean {
@@ -107,7 +108,7 @@ export function isTabbable(element: FocusableElement): boolean {
 /**
  * Returns `true` if an element is expected to be automatically focused in a {@link useFocusScope focus scope}.
  *
- * @param element An element to check.
+ * @param element The element to check.
  * @group Other
  */
 export function isAutoFocusable(element: Element): boolean {
@@ -117,7 +118,7 @@ export function isAutoFocusable(element: Element): boolean {
 /**
  * Returns the normalized tab index of an element.
  *
- * @param element An element to get tab index of.
+ * @param element The element whose tab index should be retrieved.
  * @group Other
  */
 export function getTabIndex(element: FocusableElement): number {

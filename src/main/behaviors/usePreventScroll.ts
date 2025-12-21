@@ -3,13 +3,13 @@ import { useFunctionOnce } from '../useFunctionOnce.js';
 import { emptyObject, noop } from '../utils/lang.js';
 
 /**
- * Props of the {@link usePreventScroll} hook.
+ * Props for the {@link usePreventScroll} hook.
  *
  * @group Behaviors
  */
 export interface PreventScrollProps {
   /**
-   * If `true` then scroll isn't prevented.
+   * If `true`, scroll is not prevented.
    *
    * @default false
    */
@@ -17,9 +17,9 @@ export interface PreventScrollProps {
 }
 
 /**
- * Prevents window scroll.
+ * Prevents window scrolling.
  *
- * @param props Prevent scroll props.
+ * @param props Prevent-scroll props.
  * @group Behaviors
  */
 export function usePreventScroll(props: PreventScrollProps = emptyObject): void {
@@ -36,7 +36,7 @@ interface PreventScrollManager {
 }
 
 function createPreventScrollManager(): PreventScrollManager {
-  const handleDisableUpdated: EffectCallback = () => {
+  const handleDisabledUpdated: EffectCallback = () => {
     if (!manager.props.isDisabled) {
       return disableScroll();
     }
@@ -44,7 +44,7 @@ function createPreventScrollManager(): PreventScrollManager {
 
   const manager: PreventScrollManager = {
     props: undefined!,
-    onDisabledUpdated: handleDisableUpdated,
+    onDisabledUpdated: handleDisabledUpdated,
   };
 
   return manager;
@@ -62,7 +62,7 @@ function disableScroll(): () => void {
   const { paddingRight, overflow } = body.style;
   const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
 
-  // Compensate scrollbar width
+  // Compensate for the scrollbar width
   body.style.paddingRight = parseInt(window.getComputedStyle(body).paddingRight, 10) + scrollBarWidth + 'px';
   body.style.overflow = 'hidden';
 

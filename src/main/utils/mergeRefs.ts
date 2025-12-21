@@ -3,7 +3,7 @@ import type { Ref, RefCallback, RefObject } from 'react';
 /**
  * Merges multiple refs into a single callback ref.
  *
- * @param refs Refs to merge.
+ * @param refs The refs to merge.
  * @group Other
  */
 export function mergeRefs<T>(...refs: Array<Ref<T> | null | undefined>): Ref<T> | undefined;

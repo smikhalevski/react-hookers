@@ -1,7 +1,7 @@
 const { min, max } = Math;
 
 /**
- * Reruns a rect that bounds an intersection of two rects.
+ * Returns a rectangle that bounds the intersection of two rectangles.
  *
  * @group Other
  */
@@ -28,7 +28,9 @@ export function intersectRects(a: DOMRect, b: DOMRect): DOMRect {
 }
 
 /**
- * Returns the percentage of intersection of two rects.
+ * Returns the intersection ratio of two rectangles.
+ *
+ * The result is the area of the intersection divided by the area of the second rectangle.
  *
  * @group Other
  */
@@ -50,7 +52,7 @@ export function getIntersectionRatio(a: DOMRect, b: DOMRect): number {
 }
 
 /**
- * Returns a rect that bounds the visual viewport of a window.
+ * Returns a rectangle that bounds the visual viewport of the window.
  *
  * @group Other
  */

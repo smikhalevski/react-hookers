@@ -5,10 +5,10 @@ import { mergeProps } from './utils/mergeProps.js';
 import { mergeRefs } from './utils/mergeRefs.js';
 
 /**
- * A value delegated to children of the {@link DelegateContext.Provider}.
+ * A value delegated to children of {@link DelegateContext.Provider}.
  *
  * @template P Delegated props.
- * @template E An element to which props are delegated.
+ * @template E The element type to which props are delegated.
  * @see {@link createDelegateContext}
  * @group Other
  */
@@ -19,16 +19,16 @@ export interface DelegateValue<P = {}, E = any> {
   props?: P;
 
   /**
-   * A reference that must be added to an element to which {@link props} are delegated.
+   * A ref that must be attached to the element to which {@link props} are delegated.
    */
   ref?: Ref<E>;
 }
 
 /**
- * Props of the {@link DelegateContext.Provider} component.
+ * Props for {@link DelegateContext.Provider}.
  *
  * @template P Delegated props.
- * @template E An element to which props are delegated.
+ * @template E The element type to which props are delegated.
  * @see {@link createDelegateContext}
  * @group Other
  */
@@ -40,7 +40,7 @@ export interface DelegateProviderProps<P, E> extends DelegateValue<P, E> {
  * A context that carries props and a ref that can be consumed by descendants of a provider.
  *
  * @template P Delegated props.
- * @template E An element to which props are delegated.
+ * @template E The element type to which props are delegated.
  * @see {@link createDelegateContext}
  * @group Other
  */
@@ -52,31 +52,31 @@ export interface DelegateContext<P, E> {
 /**
  * Creates a context that merges delegated props and refs.
  *
- * Context children are re-rendered if {@link DelegateProviderProps.props props} or
- * {@link DelegateProviderProps.ref ref} is changed.
+ * Context consumers re-render when {@link DelegateProviderProps.props props} or {@link DelegateProviderProps.ref ref}
+ * changes.
  *
- * If a provider is nested in a provider of the same delegate context, then it merges its props and ref with props and
- * ref received from the enclosing provider.
+ * If a provider is nested inside another provider of the same delegate context, it merges its props and ref with the
+ * props and ref from the enclosing provider.
  *
  * @example
  * // 1. Create a context
  * const MyContext = createDelegateContext<{ foo: string }>();
  *
- * // 2. Use context in a component
+ * // 2. Use the context in a component
  * function Bar() {
  *   const { props, ref } = useContext(MyContext);
  *
  *   // Use props and ref here
- *   return props.foo;
+ *   return props?.foo;
  * }
  *
- * // 3. Render a provider and delegate props and ref to a child component,
+ * // 3. Render a provider and delegate props (and optionally a ref) to descendants
  * <MyContext.Provider props={{ foo: 'hello' }}>
- *   <Bar/>
- * </MyContext>
+ *   <Bar />
+ * </MyContext.Provider>
  *
  * @template P Delegated props.
- * @template E An element to which props are delegated.
+ * @template E The element type to which props are delegated.
  * @returns A context that carries delegated props and a ref.
  * @group Other
  */

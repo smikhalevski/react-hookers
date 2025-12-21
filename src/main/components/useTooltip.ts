@@ -15,69 +15,70 @@ import { mergeProps } from '../utils/mergeProps.js';
  */
 export interface HeadlessTooltipValue {
   /**
-   * Props of an element that must have a tooltip behavior.
+   * Props for the element that implements tooltip behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   tooltipProps: HTMLAttributes<HTMLElement>;
 
   /**
-   * Props of an anchor element that around which a tooltip is positioned.
+   * Props for the anchor element around which the tooltip is positioned.
    */
   anchorProps: HTMLAttributes<HTMLElement>;
 }
 
 /**
- * Props of the {@link useTooltip} hook.
+ * Props for the {@link useTooltip} hook.
  *
  * @group Components
  */
 export interface HeadlessTooltipProps {
   /**
-   * If `true` then a tooltip is visible to a user.
+   * If `true`, the tooltip is visible to the user.
    *
    * @default false
    */
   isOpened?: boolean;
 
   /**
-   * A delay time for the tooltip to show up after a user hovers pointer over an anchor element.
+   * The delay, in milliseconds, before the tooltip is shown after the user hovers over the anchor element.
    *
    * @default 1200
    */
   delay?: number;
 
   /**
-   * A delay time for the tooltip to close after a user moved a pointer away from an anchor element.
+   * The delay, in milliseconds, before the tooltip is closed after the user moves the pointer away from
+   * the anchor element.
    *
    * @default 800
    */
   closeDelay?: number;
 
   /**
-   * A handler that is called when a tooltip must be opened: user hover mouse over an anchor, or an anchor was focused
-   * via a keyboard.
+   * A callback invoked when the tooltip should be opened, such as when the user hovers over the anchor element
+   * or focuses it via the keyboard.
    */
   onOpen?: () => void;
 
   /**
-   * A handler that is called when a tooltip must be closed.
+   * A callback invoked when the tooltip should be closed.
    */
   onClose?: () => void;
 
   /**
-   * A handler that is called when a tooltip opened state is changed.
+   * A callback invoked when the tooltip open state changes.
    *
-   * @param isOpened `true` if a tooltip must be visible to a user.
+   * @param isOpened `true` if the tooltip should be visible.
    */
   onOpenChanged?: (isOpened: boolean) => void;
 }
 
 /**
- * Provides the behavior and accessibility implementation for a tooltip.
+ * Provides behavior and accessibility for a tooltip component.
  *
  * @param props Tooltip props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Components
  */
 export function useTooltip(props: HeadlessTooltipProps): HeadlessTooltipValue {

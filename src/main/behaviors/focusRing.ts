@@ -3,18 +3,18 @@ import { PubSub } from 'parallel-universe';
 const focusRingPubSub = new PubSub();
 
 /**
- * A focus indication that should be shown around a focused element.
+ * A visual focus indicator that is shown around a focused element.
  *
  * @group Behaviors
  */
 export const focusRing = {
   /**
-   * `true` if a focus ring must be visible to a user.
+   * `true` if the focus ring is currently visible.
    */
   isVisible: false,
 
   /**
-   * Reveals the focus ring to a user.
+   * Reveals the focus ring.
    */
   reveal(): void {
     if (!focusRing.isVisible) {
@@ -24,7 +24,7 @@ export const focusRing = {
   },
 
   /**
-   * Conceals the focus ring from a user.
+   * Conceals the focus ring.
    */
   conceal(): void {
     if (focusRing.isVisible) {
@@ -36,8 +36,8 @@ export const focusRing = {
   /**
    * Subscribes a listener to focus ring visibility changes.
    *
-   * @param listener A listener to call when focus ring visibility has changed.
-   * @returns A callback that unsubscribes a listener.
+   * @param listener A callback invoked when focus ring visibility changes.
+   * @returns A function that unsubscribes the listener.
    */
   subscribe(listener: () => void): () => void {
     const unsubscribe = focusRingPubSub.subscribe(listener);

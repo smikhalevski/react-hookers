@@ -12,69 +12,69 @@ import { mergeProps } from '../utils/mergeProps.js';
  */
 export interface HeadlessCheckboxValue {
   /**
-   * Props of an element that must have a checkbox behavior.
+   * Props for the element that implements checkbox behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   inputProps: InputHTMLAttributes<HTMLInputElement>;
 
   /**
-   * Props of an element that must have a checkbox label behavior.
+   * Props for the element that implements checkbox label behavior.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   labelProps: LabelHTMLAttributes<HTMLLabelElement>;
 
   /**
-   * `true` if an element is currently hovered.
+   * `true` if the element is currently hovered.
    */
   isHovered: boolean;
 
   /**
-   * `true` if an element is currently focused.
+   * `true` if the element is currently focused.
    */
   isFocused: boolean;
 
   /**
-   * `true` if an element is currently focused and focus should be visible.
+   * `true` if the element is currently focused and focus should be visible.
    */
   isFocusVisible: boolean;
 }
 
 /**
- * Props of the {@link useCheckbox} hook.
+ * Props for the {@link useCheckbox} hook.
  *
  * @group Components
  */
 export interface HeadlessCheckboxProps extends HoverProps, FocusProps {
   /**
-   * If `true` then a checkbox is checked.
+   * If `true`, the checkbox is checked.
    *
    * @default false
    */
   isChecked?: boolean;
 
   /**
-   * A handler that is called when a checkbox is checked or unchecked.
+   * A callback invoked when the checkbox is checked or unchecked.
    *
-   * @param isChecked `true` if checkbox is checked.
+   * @param isChecked `true` if the checkbox is checked.
    */
   onChange?: (isChecked: boolean) => void;
 
   /**
-   * An ID that uniquely identifies a checkbox.
+   * An ID that uniquely identifies the checkbox.
    */
   id?: string;
 
   /**
-   * If `true` then a checkbox is marked as invalid.
+   * If `true`, the checkbox is marked as invalid.
    *
    * @default false
    */
   isInvalid?: boolean;
 
   /**
-   * If `true` then element is {@link isAutoFocusable auto-focusable} inside a {@link useFocusScope focus scope}.
+   * If `true`, the element is {@link isAutoFocusable auto-focusable} within a {@link useFocusScope focus scope}.
    *
    * @default false
    */
@@ -82,8 +82,9 @@ export interface HeadlessCheckboxProps extends HoverProps, FocusProps {
 }
 
 /**
- * Provides the behavior and accessibility implementation for a checkbox component. Checkboxes allow users to select
- * multiple items from a list of individual items, or to mark one individual item as selected.
+ * Provides behavior and accessibility for a checkbox component.
+ *
+ * Checkboxes allow users to select multiple independent options, or to toggle a single option.
  *
  * @param props Checkbox props.
  * @group Components
@@ -101,6 +102,7 @@ export function useCheckbox(props: HeadlessCheckboxProps): HeadlessCheckboxValue
   value.inputProps['aria-disabled'] = value.inputProps.disabled = props.isDisabled || undefined;
   value.inputProps['aria-invalid'] = props.isInvalid || undefined;
   value.inputProps[DATA_AUTOFOCUS] = props.isAutofocused || undefined;
+
   value.isHovered = hoverValue.isHovered;
   value.isFocused = focusValue.isFocused;
   value.isFocusVisible = focusValue.isFocusVisible;

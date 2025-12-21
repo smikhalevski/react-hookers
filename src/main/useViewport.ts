@@ -4,21 +4,21 @@ import { emptyArray } from './utils/lang.js';
 import { getViewportRect } from './utils/rects.js';
 
 /**
- * Props of the {@link useViewport} hook.
+ * Props for the {@link useViewport} hook.
  *
  * @group Other
  */
 export interface ViewportProps {
   /**
-   * A handler that is called when a viewport is resized.
+   * A callback that is invoked when the viewport is resized.
    *
-   * @param rect A viewport bounding rect.
+   * @param rect The viewport bounding rectangle.
    */
   onResize?: (rect: DOMRect) => void;
 }
 
 /**
- * Observes visual viewport changes.
+ * Observes changes to the visual viewport.
  *
  * @group Other
  */

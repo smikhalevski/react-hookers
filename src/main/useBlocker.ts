@@ -4,23 +4,23 @@ import { useFunctionOnce } from './useFunctionOnce.js';
 import { emptyArray, noop } from './utils/lang.js';
 
 /**
- * Block an async flow and unblock it from an external context.
+ * Blocks an async flow and unblocks it from an external context.
  *
  * @group Other
  */
 export function useBlocker(): [isBlocked: boolean, block: () => Promise<void>, unblock: () => void];
 
 /**
- * Block an async flow and unblock it from an external context.
+ * Blocks an async flow and unblocks it from an external context.
  *
  * @example
  * const [isBlocked, block, unblock] = useBlocker<string>();
  *
  * useEffect(() => {
- *   // Returns a Promise that is resolved with the value passed to unblock(value)
+ *   // Returns a Promise that resolves with the value passed to unblock(value)
  *   block(); // → Promise<string>
  *
- *   // Unblocks the blocker with given value
+ *   // Unblocks the blocker with the given value
  *   unblock('Hello');
  * }, []);
  *

@@ -10,14 +10,14 @@ import { noop } from '../utils/lang.js';
  */
 export interface HeadlessTrackHandleValue {
   /**
-   * Props of a handle element.
+   * Props for the handle element.
    *
-   * An object which identity never changes between renders.
+   * The object identity never changes between renders.
    */
   handleProps: DOMAttributes<Element>;
 
   /**
-   * `true` if a handle is currently being dragged.
+   * `true` if the handle is currently being dragged.
    */
   isDragged: boolean;
 
@@ -28,43 +28,44 @@ export interface HeadlessTrackHandleValue {
 }
 
 /**
- * Props of the {@link useTrackHandle} hook.
+ * Props for the {@link useTrackHandle} hook.
  *
  * @group Components
  */
 export interface HeadlessTrackHandleProps extends DragProps {
   /**
-   * Returns a bounding rect of a track.
+   * Returns the bounding rect of the track.
    */
   getTrackRect: () => DOMRect | undefined;
 
   /**
-   * Minimum distance between {@link getTrackRect track bounds} and handle bounds in the {@link orientation} direction.
+   * The minimum distance between the {@link getTrackRect track bounds} and the handle bounds along
+   * the {@link orientation} direction.
    *
    * @default 0
    */
   handleMargin?: number;
 
   /**
-   * The orientations of a track along which a handle is dragged.
+   * The orientation of the track along which the handle is dragged.
    *
    * @default "horizontal"
    */
   orientation?: 'horizontal' | 'vertical';
 
   /**
-   * A handler that is called when the handle is dragged along the track.
+   * A callback invoked when the handle is dragged along the track.
    *
-   * @param percentage A percentage at which a track is positioned.
+   * @param percentage The percentage position along the track.
    */
   onPercentageChange?: (percentage: number) => void;
 }
 
 /**
- * A handle that can be dragged along the track.
+ * Provides behavior for a handle that can be dragged along a track.
  *
  * @param props Track handle props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Components
  */
 export function useTrackHandle(props: HeadlessTrackHandleProps): HeadlessTrackHandleValue {

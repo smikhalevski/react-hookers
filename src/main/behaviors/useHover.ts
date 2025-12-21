@@ -8,7 +8,7 @@ import { cursor } from './cursor.js';
 const cancelHoverPubSub = new PubSub();
 
 /**
- * Cancels hover of all currently hovered elements.
+ * Cancels hover for all currently hovered elements.
  *
  * @see {@link useHover}
  * @see {@link cursor.deactivate}
@@ -38,26 +38,26 @@ export function getHoveredElements(): Element[] {
  */
 export interface HoverValue {
   /**
-   * Props of an element for which hover interactions are tracked.
+   * Props for the element for which hover interactions are tracked.
    *
-   * An object which identity never changes between renders.
+   * An object whose identity never changes between renders.
    */
   hoverProps: DOMAttributes<Element>;
 
   /**
-   * `true` if an element is currently hovered.
+   * `true` if the element is currently hovered.
    */
   isHovered: boolean;
 }
 
 /**
- * Props of the {@link useHover} hook.
+ * Props for the {@link useHover} hook.
  *
  * @group Behaviors
  */
 export interface HoverProps {
   /**
-   * If `true` then hover events are disabled.
+   * If `true`, hover interactions are disabled.
    *
    * @default false
    */
@@ -76,7 +76,7 @@ export interface HoverProps {
   /**
    * A handler that is called when the hover state changes.
    *
-   * @param isHovered `true` if an element is hovered.
+   * @param isHovered `true` if the element is hovered.
    */
   onHoverChange?: (isHovered: boolean) => void;
 }
@@ -85,7 +85,7 @@ export interface HoverProps {
  * Handles hover events and normalizes them across platforms.
  *
  * @param props Hover props.
- * @returns An object which identity never changes between renders.
+ * @returns An object whose identity never changes between renders.
  * @group Behaviors
  */
 export function useHover(props: HoverProps = emptyObject): HoverValue {
@@ -138,7 +138,7 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
     const unsubscribeCancelHover = cancelHoverPubSub.subscribe(cancel);
     const unsubscribeCursor = cursor.subscribe(() => {
       if (!cursor.isActive) {
-        // Cancel hover if cursor was deactivated
+        // Cancel hover if the cursor was deactivated
         cancel();
       }
     });
@@ -173,8 +173,8 @@ function createHoverManager(setHovered: (isHovered: boolean) => void): HoverMana
     const { isDisabled, onHoverChange, onHoverStart } = manager.props;
 
     if (event.pointerType !== 'mouse' && status === STATUS_NOT_HOVERED) {
-      // Disable hover on touchscreens
-      // Also fixes iOS Safari https://bugs.webkit.org/show_bug.cgi?id=214609
+      // Disable hover on touchscreens.
+      // Also fixes iOS Safari: https://bugs.webkit.org/show_bug.cgi?id=214609
       status = STATUS_HOVER_DISCARDED;
       return;
     }

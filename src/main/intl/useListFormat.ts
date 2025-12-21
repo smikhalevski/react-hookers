@@ -3,9 +3,9 @@ import { useLocale } from './useLocale.js';
 import { getListFormat } from './utils.js';
 
 /**
- * Provides localized {@link Intl.ListFormat} for the current {@link useLocale locale}.
+ * Returns a localized {@link Intl.ListFormat} for the current {@link useLocale locale}.
  *
- * @param options Format options. Create options outside of rendering to enable format caching.
+ * @param options Format options. Create the options object outside of render to enable formatter caching.
  * @group Intl
  */
 export function useListFormat(options: Intl.ListFormatOptions = emptyObject): Intl.ListFormat {

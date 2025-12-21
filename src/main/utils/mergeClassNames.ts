@@ -1,5 +1,5 @@
 /**
- * Merges class names into a single string.
+ * Merges multiple class name values into a single space-separated string.
  *
  * @group Other
  */
