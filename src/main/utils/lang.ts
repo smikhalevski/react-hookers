@@ -71,6 +71,8 @@ export function isEqual(a: unknown, b: unknown): boolean {
  *   { x: { y: 1 } },
  * );
  * // → false
+ *
+ * @group Other
  */
 export function isShallowEqual(a: object, b: object): boolean;
 

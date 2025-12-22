@@ -8,6 +8,7 @@ import { NEVER } from './utils/lang.js';
  * @param value The current value.
  * @param comparator A function that compares the previous and next values.
  * @see {@link isShallowEqual}
+ * @group Other
  */
 export function useCachedValue<T>(value: T, comparator: (prevValue: T, nextValue: T) => boolean): T {
   const ref = useRef<T>(NEVER);
