@@ -130,7 +130,11 @@ export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/r
 export { mergeClassNames } from './utils/mergeClassNames.js';
 export { mergeProps } from './utils/mergeProps.js';
 export { mergeRefs } from './utils/mergeRefs.js';
-export { createDelegatedPropsContext, type DelegatedPropsContext } from './createDelegatedPropsContext.js';
+export {
+  createDelegatedPropsContext,
+  type DelegatedPropsContext,
+  type DelegatedPropsProviderProps,
+} from './createDelegatedPropsContext.js';
 export {
   getRenderInContainer,
   createRenderContainer,
@@ -142,7 +146,6 @@ export { useAnimationFrame } from './useAnimationFrame.js';
 export { useAnimationFrameCallback } from './useAnimationFrameCallback.js';
 export { useAsyncEffect, type AsyncEffectCallback } from './useAsyncEffect.js';
 export { useBlocker } from './useBlocker.js';
-export { useCachedValue } from './useCachedValue.js';
 export { useDebouncedState } from './useDebouncedState.js';
 export { useFunction } from './useFunction.js';
 export { useFunctionEffect } from './useFunctionEffect.js';
@@ -152,6 +155,7 @@ export { useInterval } from './useInterval.js';
 export { useIntervalCallback } from './useIntervalCallback.js';
 export { useLock } from './useLock.js';
 export { useMediaQuery } from './useMediaQuery.js';
+export { useMemoValue } from './useMemoValue.js';
 export {
   detectBrowser,
   detectOS,

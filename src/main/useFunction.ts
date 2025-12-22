@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { isEqual } from './utils/lang.js';
 
 /**
  * Calls a function during render if any of its arguments have changed since the previous render.
@@ -16,17 +15,17 @@ import { isEqual } from './utils/lang.js';
 export function useFunction<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;
 
 export function useFunction(fn: Function) {
-  const ref = useRef<unknown[] | null>(null);
+  const cacheRef = useRef<unknown[]>(null);
 
   let hasChanged;
-  let args = ref.current;
+  let args = cacheRef.current;
 
   if ((hasChanged = args === null || args.length !== arguments.length)) {
-    args = ref.current = [undefined];
+    args = cacheRef.current = [undefined];
   }
 
   for (let i = 1; i < arguments.length; ++i) {
-    if (hasChanged || (hasChanged = !isEqual(args[i], arguments[i]))) {
+    if (hasChanged || (hasChanged = !Object.is(args[i], arguments[i]))) {
       args[i] = arguments[i];
     }
   }

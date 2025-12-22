@@ -62,8 +62,8 @@ export interface DelegatedPropsContext<P> {
  * @param defaultProps The default props.
  * @template P Delegated props.
  * @returns A context that carries delegated props.
+ * @see {@link useMemoValue}
  * @group Other
- * @see {@link useCachedValue}
  */
 export function createDelegatedPropsContext<P>(defaultProps: P): DelegatedPropsContext<P>;
 
@@ -92,8 +92,8 @@ export function createDelegatedPropsContext<P>(defaultProps: P): DelegatedPropsC
  *
  * @template P Delegated props.
  * @returns A context that carries delegated props.
+ * @see {@link useMemoValue}
  * @group Other
- * @see {@link useCachedValue}
  */
 export function createDelegatedPropsContext<P>(): DelegatedPropsContext<P | undefined>;
 

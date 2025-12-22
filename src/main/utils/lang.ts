@@ -53,13 +53,17 @@ export function isEqual(a: unknown, b: unknown): boolean {
 }
 
 /**
- * Performs a shallow equality comparison between two objects.
+ * Performs a shallow equality comparison between two values.
  *
  * Two objects are considered shallowly equal if:
  * - They are the same reference.
  * - Or they have the same set of own enumerable keys and each corresponding value is strictly equal.
  *
  * Nested objects are compared by reference, not by value.
+ *
+ * @example
+ * isShallowEqual(['hello'], ['hello']);
+ * // → true
  *
  * @example
  * isShallowEqual({ x: 1 }, { x: 1 });
@@ -74,11 +78,13 @@ export function isEqual(a: unknown, b: unknown): boolean {
  *
  * @group Other
  */
-export function isShallowEqual(a: object, b: object): boolean;
-
 export function isShallowEqual(a: any, b: any): boolean {
-  if (a === b) {
+  if (Object.is(a, b)) {
     return true;
+  }
+
+  if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') {
+    return false;
   }
 
   const keys = Object.keys(a);

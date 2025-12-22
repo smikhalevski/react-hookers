@@ -16,18 +16,18 @@ import { NEVER } from './utils/lang.js';
 export function useFunctionOnce<A extends any[], R>(fn: (...args: A) => R, ...args: A): R;
 
 export function useFunctionOnce(fn: Function) {
-  const ref = useRef<unknown>(NEVER);
+  const cacheRef = useRef<unknown>(NEVER);
 
-  if (ref.current !== NEVER) {
-    return ref.current;
+  if (cacheRef.current !== NEVER) {
+    return cacheRef.current;
   }
 
   if (arguments.length === 1) {
-    return (ref.current = fn());
+    return (cacheRef.current = fn());
   }
 
   if (arguments.length === 2) {
-    return (ref.current = fn(arguments[1]));
+    return (cacheRef.current = fn(arguments[1]));
   }
 
   const args = [];
@@ -36,5 +36,5 @@ export function useFunctionOnce(fn: Function) {
     args.push(arguments[i]);
   }
 
-  return (ref.current = fn(...args));
+  return (cacheRef.current = fn(...args));
 }
