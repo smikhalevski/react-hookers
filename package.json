@@ -35,21 +35,21 @@
   },
   "homepage": "https://github.com/smikhalevski/react-hookers#readme",
   "devDependencies": {
-    "@testing-library/react": "^16.3.0",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "jsdom": "^27.0.1",
-    "prettier": "^3.6.2",
-    "rimraf": "^6.0.1",
+    "@testing-library/react": "^16.3.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "^27.3.0",
+    "prettier": "^3.7.4",
+    "rimraf": "^6.1.2",
     "tslib": "^2.8.1",
-    "typedoc": "^0.28.14",
+    "typedoc": "^0.28.15",
     "typedoc-plugin-mdn-links": "^5.0.10",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   },
   "dependencies": {
     "parallel-universe": "^6.1.2"
