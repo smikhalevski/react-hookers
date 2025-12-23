@@ -1,3 +1,5 @@
+import { emptyObject } from '../utils/lang.js';
+
 /**
  * Removes all diacritic marks from a string.
  *
@@ -20,7 +22,7 @@ export function stripDiacritics(str: string): string {
  * @group Intl
  */
 export function getCollator(locale: string, options?: Intl.CollatorOptions): Intl.Collator {
-  return getCachedInstance(Intl.Collator, locale, options || defaultOptions);
+  return getCachedInstance(Intl.Collator, locale, options || emptyObject);
 }
 
 /**
@@ -31,7 +33,7 @@ export function getCollator(locale: string, options?: Intl.CollatorOptions): Int
  * @group Intl
  */
 export function getListFormat(locale: string, options?: Intl.ListFormatOptions): Intl.ListFormat {
-  return getCachedInstance(Intl.ListFormat, locale, options || defaultOptions);
+  return getCachedInstance(Intl.ListFormat, locale, options || emptyObject);
 }
 
 /**
@@ -42,7 +44,7 @@ export function getListFormat(locale: string, options?: Intl.ListFormatOptions):
  * @group Intl
  */
 export function getNumberFormat(locale: string, options?: Intl.NumberFormatOptions): Intl.NumberFormat {
-  return getCachedInstance(Intl.NumberFormat, locale, options || defaultOptions);
+  return getCachedInstance(Intl.NumberFormat, locale, options || emptyObject);
 }
 
 /**
@@ -53,7 +55,7 @@ export function getNumberFormat(locale: string, options?: Intl.NumberFormatOptio
  * @group Intl
  */
 export function getDateTimeFormat(locale: string, options?: Intl.DateTimeFormatOptions): Intl.DateTimeFormat {
-  return getCachedInstance(Intl.DateTimeFormat, locale, options || defaultOptions);
+  return getCachedInstance(Intl.DateTimeFormat, locale, options || emptyObject);
 }
 
 /**
@@ -64,7 +66,7 @@ export function getDateTimeFormat(locale: string, options?: Intl.DateTimeFormatO
  * @group Intl
  */
 export function getPluralRules(locale: string, options?: Intl.PluralRulesOptions): Intl.PluralRules {
-  return getCachedInstance(Intl.PluralRules, locale, options || defaultOptions);
+  return getCachedInstance(Intl.PluralRules, locale, options || emptyObject);
 }
 
 /**
@@ -91,8 +93,6 @@ export function getRelativeTimeFormat(
 ): Intl.RelativeTimeFormat {
   return getCachedInstance(Intl.RelativeTimeFormat, locale, options);
 }
-
-const defaultOptions = {};
 
 const instanceCache = new Map<string, WeakMap<Function, WeakMap<object, object>>>();
 

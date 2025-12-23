@@ -1,3 +1,4 @@
+import { useMemoValue } from '../useMemoValue.js';
 import { emptyObject } from '../utils/lang.js';
 import { useLocale } from './useLocale.js';
 import { getNumberFormat } from './utils.js';
@@ -11,9 +12,9 @@ import { getNumberFormat } from './utils.js';
  * format.format(100);
  * // ⮕ '$100.00'
  *
- * @param options Format options. Create the options object outside of render to enable formatter caching.
+ * @param options Format options.
  * @group Intl
  */
 export function useNumberFormat(options: Intl.NumberFormatOptions = emptyObject): Intl.NumberFormat {
-  return getNumberFormat(useLocale().locale, options);
+  return getNumberFormat(useLocale().locale, useMemoValue(options));
 }

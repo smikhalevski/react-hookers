@@ -1,3 +1,4 @@
+import { useMemoValue } from '../useMemoValue.js';
 import { emptyObject } from '../utils/lang.js';
 import { useLocale } from './useLocale.js';
 import { getDateTimeFormat } from './utils.js';
@@ -11,9 +12,9 @@ import { getDateTimeFormat } from './utils.js';
  * format.format(100);
  * // ⮕ 'Monday, April 21, 2025'
  *
- * @param options Format options. Create the options object outside of render to enable formatter caching.
+ * @param options Format options.
  * @group Intl
  */
 export function useDateTimeFormat(options: Intl.DateTimeFormatOptions = emptyObject): Intl.DateTimeFormat {
-  return getDateTimeFormat(useLocale().locale, options);
+  return getDateTimeFormat(useLocale().locale, useMemoValue(options));
 }

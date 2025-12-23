@@ -1,3 +1,4 @@
+import { useMemoValue } from '../useMemoValue.js';
 import { emptyObject } from '../utils/lang.js';
 import { useLocale } from './useLocale.js';
 import { getCollator } from './utils.js';
@@ -11,9 +12,9 @@ import { getCollator } from './utils.js';
  * collator.compare('Hello', 'goodbye');
  * // ⮕ 1
  *
- * @param options Collator options. Create the options object outside of render to enable formatter caching.
+ * @param options Collator options.
  * @group Intl
  */
 export function useCollator(options: Intl.CollatorOptions = emptyObject): Intl.Collator {
-  return getCollator(useLocale().locale, options);
+  return getCollator(useLocale().locale, useMemoValue(options));
 }
