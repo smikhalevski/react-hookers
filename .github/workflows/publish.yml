@@ -45,7 +45,7 @@ jobs:
       - name: Set prerelease version
         if: github.event_name == 'workflow_dispatch'
         run: |
-          npm version --no-git-tag-version ${{ inputs.release_type }}
+          npm version --no-git-tag-version ${{ inputs.prerelease_type }}
   
           npm version --no-git-tag-version "$(npm pkg get version | xargs)-${{ inputs.tag }}.${GITHUB_SHA::7}"
 
@@ -56,7 +56,7 @@ jobs:
       - name: Publish package
         working-directory: ./lib
         run: |
-          npm publish --tag ${{ inputs.tag }}
+          npm publish --tag ${{ inputs.tag || 'latest' }}
 
           echo "::notice title=Package::npm install --save-exact $(npm pkg get name | xargs)@$(npm pkg get version | xargs)"
   
