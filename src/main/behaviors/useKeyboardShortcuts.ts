@@ -4,15 +4,18 @@ import { Platform, usePlatform } from '../usePlatform.js';
 import { emptyArray } from '../utils/lang.js';
 
 /**
- * Props for the {@link useKeyboardShortcut} hook.
+ * Describes a keyboard shortcut configuration.
+ *
+ * A shortcut is triggered when all specified {@link KeyboardShortcut.keys} are pressed simultaneously,
+ * unless the shortcut is disabled.
  *
  * @group Behaviors
  */
-export interface KeyboardShortcutProps {
+export interface KeyboardShortcut {
   /**
-   * A container within which a shortcut is active. By default, shortcuts are document-wide.
+   * Keys that must be pressed simultaneously to trigger the {@link onAction action}.
    */
-  containerRef?: RefObject<Element | null>;
+  keys: ReadonlyArray<KeyCode | SyntheticKeyCode | (string & {}) | number>;
 
   /**
    * If `true`, the shortcut is not captured.
@@ -22,23 +25,35 @@ export interface KeyboardShortcutProps {
   isDisabled?: boolean;
 
   /**
-   * Keys that must be pressed simultaneously to trigger the {@link onAction action}.
-   */
-  shortcut: ReadonlyArray<KeyCode | SyntheticKeyCode | (string & {}) | number>;
-
-  /**
-   * A handler that is called when all keys in {@link shortcut} are pressed.
+   * A handler that is called when all {@link keys} are pressed.
    */
   onAction?: () => void;
 }
 
 /**
- * Calls {@link KeyboardShortcutProps.onAction onAction} when the shortcut is pressed.
+ * Props for the {@link useKeyboardShortcuts} hook.
+ *
+ * @group Behaviors
+ */
+export interface KeyboardShortcutsProps {
+  /**
+   * The array of shortcuts.
+   */
+  shortcuts: readonly KeyboardShortcut[];
+
+  /**
+   * A container within which a shortcut is active. By default, shortcuts are document-wide.
+   */
+  containerRef?: RefObject<Element | null>;
+}
+
+/**
+ * Calls {@link KeyboardShortcut.onAction onAction} when the shortcut is pressed.
  *
  * Characters 0–9 and A–Z are treated as Digit0–Digit9 and KeyA–KeyZ respectively.
  *
  * @example
- * useKeyboardShortcut({
+ * useKeyboardShortcuts({
  *   // Ctrl+J on Windows, Command+J on macOS
  *   shortcut: ['Ctrl', 'J'],
  *   onAction() {
@@ -48,8 +63,8 @@ export interface KeyboardShortcutProps {
  *
  * @group Behaviors
  */
-export function useKeyboardShortcut(props: KeyboardShortcutProps): void {
-  const manager = useFunctionOnce(createKeyboardShortcutManager);
+export function useKeyboardShortcuts(props: KeyboardShortcutsProps): void {
+  const manager = useFunctionOnce(createKeyboardShortcutsManager);
 
   manager.platform = usePlatform();
   manager.props = props;
@@ -57,16 +72,16 @@ export function useKeyboardShortcut(props: KeyboardShortcutProps): void {
   useEffect(manager.onMounted, emptyArray);
 }
 
-interface KeyboardShortcutManager {
+interface KeyboardShortcutsManager {
   platform: Platform;
-  props: KeyboardShortcutProps;
+  props: KeyboardShortcutsProps;
   onMounted: EffectCallback;
 }
 
-function createKeyboardShortcutManager(): KeyboardShortcutManager {
-  const handleMounted: EffectCallback = () => registerKeyboardShortcutManager(manager);
+function createKeyboardShortcutsManager(): KeyboardShortcutsManager {
+  const handleMounted: EffectCallback = () => registerKeyboardShortcutsManager(manager);
 
-  const manager: KeyboardShortcutManager = {
+  const manager: KeyboardShortcutsManager = {
     platform: undefined!,
     props: undefined!,
     onMounted: handleMounted,
@@ -75,19 +90,19 @@ function createKeyboardShortcutManager(): KeyboardShortcutManager {
   return manager;
 }
 
-const keyboardShortcutManagers: KeyboardShortcutManager[] = [];
+const keyboardShortcutsManagers: KeyboardShortcutsManager[] = [];
 
-function registerKeyboardShortcutManager(manager: KeyboardShortcutManager): () => void {
-  if (keyboardShortcutManagers.unshift(manager) === 1) {
+function registerKeyboardShortcutsManager(manager: KeyboardShortcutsManager): () => void {
+  if (keyboardShortcutsManagers.unshift(manager) === 1) {
     document.addEventListener('keydown', handleKeyDown, true);
     document.addEventListener('keyup', handleKeyUp, true);
     window.addEventListener('blur', handleClearKeys);
   }
 
   return () => {
-    keyboardShortcutManagers.splice(keyboardShortcutManagers.indexOf(manager), 1);
+    keyboardShortcutsManagers.splice(keyboardShortcutsManagers.indexOf(manager), 1);
 
-    if (keyboardShortcutManagers.length === 0) {
+    if (keyboardShortcutsManagers.length === 0) {
       document.removeEventListener('keydown', handleKeyDown, true);
       document.removeEventListener('keyup', handleKeyUp, true);
       window.removeEventListener('blur', handleClearKeys);
@@ -108,32 +123,36 @@ function handleKeyDown(event: KeyboardEvent): void {
   pressedCodes.add(event.code);
   pressedKeyCodes.add(event.keyCode);
 
-  manager: for (const manager of keyboardShortcutManagers) {
-    const { isDisabled, containerRef, shortcut, onAction } = manager.props;
+  for (const manager of keyboardShortcutsManagers) {
+    const { containerRef, shortcuts } = manager.props;
 
-    if (
-      isDisabled ||
-      shortcut.length !== pressedKeys.size ||
-      (containerRef !== undefined &&
-        (containerRef.current === null || !containerRef.current.contains(event.target as Element)))
-    ) {
-      continue;
-    }
+    nextShortcut: for (const shortcut of shortcuts) {
+      const { keys, isDisabled, onAction } = shortcut;
 
-    for (const key of shortcut) {
-      if (!isKeyPressed(manager, key)) {
-        continue manager;
+      if (
+        isDisabled ||
+        keys.length !== pressedKeys.size ||
+        (containerRef !== undefined &&
+          (containerRef.current === null || !containerRef.current.contains(event.target as Element)))
+      ) {
+        continue;
       }
+
+      for (const key of keys) {
+        if (!isKeyPressed(manager, key)) {
+          continue nextShortcut;
+        }
+      }
+
+      event.preventDefault();
+
+      pressedKeys.delete(event.key);
+      pressedCodes.delete(event.code);
+      pressedKeyCodes.delete(event.keyCode);
+
+      onAction?.();
+      return;
     }
-
-    event.preventDefault();
-
-    pressedKeys.delete(event.key);
-    pressedCodes.delete(event.code);
-    pressedKeyCodes.delete(event.keyCode);
-
-    onAction?.();
-    return;
   }
 }
 
@@ -149,7 +168,7 @@ function handleClearKeys(): void {
   pressedKeyCodes.clear();
 }
 
-function isKeyPressed(manager: KeyboardShortcutManager, key: string | number): boolean {
+function isKeyPressed(manager: KeyboardShortcutsManager, key: string | number): boolean {
   if (typeof key === 'number') {
     return pressedKeyCodes.has(key);
   }

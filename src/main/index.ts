@@ -37,11 +37,12 @@ export { useFocusScope, type FocusScopeProps } from './behaviors/useFocusScope.j
 export { useHover, cancelHover, type HoverProps, type HoverValue } from './behaviors/useHover.js';
 export { useKeyboard, type KeyboardProps, type KeyboardValue } from './behaviors/useKeyboard.js';
 export {
-  useKeyboardShortcut,
-  type KeyboardShortcutProps,
+  useKeyboardShortcuts,
+  type KeyboardShortcutsProps,
+  type KeyboardShortcut,
   type KeyCode,
   type SyntheticKeyCode,
-} from './behaviors/useKeyboardShortcut.js';
+} from './behaviors/useKeyboardShortcuts.js';
 export { usePress, cancelPress, type PressProps, type PressValue } from './behaviors/usePress.js';
 export { usePressable, type PressableProps, type PressableValue } from './behaviors/usePressable.js';
 export { usePreventScroll, type PreventScrollProps } from './behaviors/usePreventScroll.js';
