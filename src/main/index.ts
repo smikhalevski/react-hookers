@@ -127,7 +127,7 @@ export {
   isPortalEvent,
 } from './utils/dom.js';
 export { arrayOf, callOrGet, isEqual, isShallowEqual } from './utils/lang.js';
-export { getIntersectionRatio, intersectRects, getViewportRect } from './utils/rects.js';
+export { intersectRects, getIntersectionRatio, getWindowRect, getViewportRect } from './utils/rects.js';
 export { mergeClassNames } from './utils/mergeClassNames.js';
 export { mergeProps } from './utils/mergeProps.js';
 export { mergeRefs } from './utils/mergeRefs.js';
@@ -170,5 +170,4 @@ export {
 export { useRerender } from './useRerender.js';
 export { useRerenderInterval } from './useRerenderInterval.js';
 export { useTimeout } from './useTimeout.js';
-export { useViewport, type ViewportProps } from './useViewport.js';
 export { type DOMEventHandler, type FocusableElement, type Schedule } from './types.js';

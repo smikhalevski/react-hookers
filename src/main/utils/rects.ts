@@ -52,7 +52,16 @@ export function getIntersectionRatio(a: DOMRect, b: DOMRect): number {
 }
 
 /**
- * Returns a rectangle that bounds the visual viewport of the window.
+ * Returns a rectangle that bounds the window.
+ *
+ * @group Other
+ */
+export function getWindowRect(): DOMRect {
+  return new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+}
+
+/**
+ * Returns a rectangle that bounds the visual viewport, or the window (if viewport is not supported).
  *
  * @group Other
  */
@@ -60,7 +69,7 @@ export function getViewportRect(): DOMRect {
   const visualViewport = window.visualViewport || null;
 
   if (visualViewport === null) {
-    return new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+    return getWindowRect();
   }
 
   return new DOMRect(visualViewport.offsetLeft, visualViewport.offsetTop, visualViewport.width, visualViewport.height);
